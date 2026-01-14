@@ -37,11 +37,13 @@ export function Navbar() {
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <a href="#inicio" className="flex items-center gap-3 group">
-            <img 
-              src={logo} 
-              alt="Naturaleza Sin Límites" 
-              className="h-12 w-auto transition-transform duration-300 group-hover:scale-105"
-            />
+            <div className="bg-background/90 backdrop-blur-sm rounded-lg p-1.5 shadow-lg">
+              <img 
+                src={logo} 
+                alt="Naturaleza Sin Límites" 
+                className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
           </a>
 
           {/* Desktop Navigation */}
