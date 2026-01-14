@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logo from '@/assets/logo.jpg';
+import logo from '@/assets/logo.png';
 
 const navLinks = [
   { href: '#inicio', label: 'Inicio' },
@@ -37,13 +37,11 @@ export function Navbar() {
         <nav className="flex items-center justify-between">
           {/* Logo */}
           <a href="#inicio" className="flex items-center gap-3 group">
-            <div className="bg-background/90 backdrop-blur-sm rounded-lg p-1.5 shadow-lg">
-              <img 
-                src={logo} 
-                alt="Naturaleza Sin Límites" 
-                className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
+            <img 
+              src={logo} 
+              alt="Naturaleza Sin Límites" 
+              className="h-16 w-auto transition-transform duration-300 group-hover:scale-105"
+            />
           </a>
 
           {/* Desktop Navigation */}

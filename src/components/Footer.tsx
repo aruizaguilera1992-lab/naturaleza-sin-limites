@@ -1,5 +1,5 @@
 import { Mountain, Mail, Phone, MapPin, Instagram, Facebook, Youtube } from 'lucide-react';
-import logo from '@/assets/logo.jpg';
+import logo from '@/assets/logo.png';
 
 const navLinks = [
   { href: '#actividades', label: 'Actividades' },
@@ -29,9 +29,7 @@ export function Footer() {
           {/* Brand Column */}
           <div>
             <a href="#inicio" className="inline-block mb-6">
-              <div className="bg-background rounded-xl p-2 shadow-lg inline-block">
-                <img src={logo} alt="Naturaleza Sin Límites" className="h-20 w-auto" />
-              </div>
+              <img src={logo} alt="Naturaleza Sin Límites" className="h-24 w-auto" />
             </a>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
               Turismo activo profesional y entrenamiento especializado en Málaga. 
