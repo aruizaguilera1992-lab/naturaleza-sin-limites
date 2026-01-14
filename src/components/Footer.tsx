@@ -28,8 +28,10 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div>
-            <a href="#inicio" className="flex items-center gap-3 mb-6">
-              <img src={logo} alt="Naturaleza Sin Límites" className="h-14 w-auto" />
+            <a href="#inicio" className="inline-block mb-6">
+              <div className="bg-background rounded-xl p-2 shadow-lg inline-block">
+                <img src={logo} alt="Naturaleza Sin Límites" className="h-20 w-auto" />
+              </div>
             </a>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
               Turismo activo profesional y entrenamiento especializado en Málaga. 
