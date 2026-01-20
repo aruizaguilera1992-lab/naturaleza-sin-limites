@@ -4,6 +4,7 @@ import { ValueProposition } from '@/components/ValueProposition';
 import { ActivitiesGrid } from '@/components/ActivitiesGrid';
 import { VertigoSapiens } from '@/components/VertigoSapiens';
 import { WhyChooseUs } from '@/components/WhyChooseUs';
+import { BookingForm } from '@/components/BookingForm';
 import { Newsletter } from '@/components/Newsletter';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -18,6 +19,7 @@ const Index = () => {
         <ActivitiesGrid />
         <VertigoSapiens />
         <WhyChooseUs />
+        <BookingForm />
         <Newsletter />
       </main>
       <Footer />
