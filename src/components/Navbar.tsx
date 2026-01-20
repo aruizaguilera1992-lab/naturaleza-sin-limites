@@ -54,9 +54,9 @@ export function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden lg:flex items-center gap-4">
-            <a href="tel:+34600000000" className="flex items-center gap-2 text-foreground/80 hover:text-primary transition-colors">
+            <a href="tel:+34685609542" className="flex items-center gap-2 text-foreground/80 hover:text-primary transition-colors">
               <Phone className="h-4 w-4" />
-              <span className="text-sm font-medium">+34 600 000 000</span>
+              <span className="text-sm font-medium">+34 685 60 95 42</span>
             </a>
             <Button variant="hero" size="default">
               ¡Reserva Ahora!
