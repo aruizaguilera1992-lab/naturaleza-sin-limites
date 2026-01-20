@@ -72,16 +72,40 @@ export const BookingForm = () => {
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    toast({
-      title: '¡Solicitud enviada!',
-      description: 'Nos pondremos en contacto contigo lo antes posible.',
-    });
-    
-    form.reset();
-    setIsSubmitting(false);
+    try {
+      const response = await fetch('https://formspree.io/f/xnjjzrvd', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          actividad: activities.find(a => a.value === data.activity)?.label || data.activity,
+          fecha_preferente: data.preferredDate,
+          numero_personas: data.numberOfPeople,
+          nivel_experiencia: experienceLevels.find(l => l.value === data.experienceLevel)?.label || data.experienceLevel,
+          contacto: data.contactMethod,
+          mensaje: data.message || 'Sin mensaje adicional',
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: '¡Solicitud enviada!',
+          description: 'Nos pondremos en contacto contigo lo antes posible.',
+        });
+        form.reset();
+      } else {
+        throw new Error('Error al enviar');
+      }
+    } catch (error) {
+      toast({
+        title: 'Error al enviar',
+        description: 'Por favor, inténtalo de nuevo o contacta por WhatsApp.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
