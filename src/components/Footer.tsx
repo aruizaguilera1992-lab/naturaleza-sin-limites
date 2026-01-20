@@ -32,8 +32,8 @@ export function Footer() {
               <img src={logo} alt="Naturaleza Sin Límites" className="h-24 w-auto" />
             </a>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-              Turismo activo profesional y entrenamiento especializado en Málaga. 
-              Vive la aventura con seguridad y pasión.
+              Proyecto de guiado y entrenamiento en deportes de montaña en Málaga. 
+              Pasión por la aventura, compromiso con la seguridad.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -92,20 +92,17 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <a
-                  href="mailto:info@naturalezasinlimites.es"
+                  href="mailto:naturaleza.s.limites@gmail.com"
                   className="text-muted-foreground hover:text-primary transition-colors text-sm"
                 >
-                  info@naturalezasinlimites.es
+                  naturaleza.s.limites@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <a
-                  href="tel:+34600000000"
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                >
-                  +34 600 000 000
-                </a>
+                <span className="text-muted-foreground text-sm">
+                  Próximamente teléfono de contacto
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -121,7 +118,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground text-sm">
-              © 2026 Naturaleza Sin Límites - Todos los derechos reservados
+              © 2026 Naturaleza Sin Límites - Proyecto personal
             </p>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-primary transition-colors">Política de Privacidad</a>

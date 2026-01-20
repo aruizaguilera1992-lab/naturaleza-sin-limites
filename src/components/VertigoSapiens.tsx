@@ -99,7 +99,7 @@ export function VertigoSapiens() {
             Más que Entrenamiento: <span className="text-gradient">Tu Comunidad de Aventureros</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            El único programa que integra fitness funcional, formación técnica y comunidad para deportes de aventura
+            Un programa que integra fitness funcional, formación técnica y comunidad para deportes de aventura
           </p>
         </motion.div>
 

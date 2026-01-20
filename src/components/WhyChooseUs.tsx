@@ -3,17 +3,17 @@ import { Shield, Award, Users, Heart, Star, ChevronLeft, ChevronRight } from 'lu
 import { useState, useEffect } from 'react';
 
 const stats = [
-  { value: '500+', label: 'Aventureros Entrenados' },
-  { value: '100+', label: 'Rutas Exploradas' },
-  { value: '15', label: 'Años de Experiencia' },
-  { value: '98%', label: 'Satisfacción' },
+  { value: '50+', label: 'Rutas Exploradas' },
+  { value: '10+', label: 'Años en Montaña' },
+  { value: '4', label: 'Disciplinas' },
+  { value: '100%', label: 'Dedicación' },
 ];
 
 const differentiators = [
   {
     icon: Shield,
-    title: 'Seguridad Certificada',
-    description: 'Guías TD2 titulados, material homologado y protocolos rigurosos.',
+    title: 'Seguridad Prioritaria',
+    description: 'Material homologado, protocolos rigurosos y formación continua.',
   },
   {
     icon: Award,
@@ -216,7 +216,7 @@ export function WhyChooseUs() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-wrap justify-center gap-8 mt-16"
         >
-          {['CICMA Registrado', 'Guías TD2 Certificados', 'Seguro RC 2M€'].map((badge) => (
+          {['Formación técnica en montaña', 'Compromiso con la seguridad', 'Mejora continua'].map((badge) => (
             <div
               key={badge}
               className="flex items-center gap-2 text-muted-foreground"
