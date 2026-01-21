@@ -2,22 +2,26 @@ import { motion } from 'framer-motion';
 import { Mountain, Dumbbell, Shield, Users, Calendar, Trophy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-
 const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.6 }
+  initial: {
+    opacity: 0,
+    y: 30
+  },
+  whileInView: {
+    opacity: 1,
+    y: 0
+  },
+  viewport: {
+    once: true
+  },
+  transition: {
+    duration: 0.6
+  }
 };
-
 export function ValueProposition() {
-  return (
-    <section id="propuesta" className="py-24 bg-gradient-dark">
+  return <section id="propuesta" className="py-24 bg-gradient-dark">
       <div className="container mx-auto px-4">
-        <motion.div
-          {...fadeInUp}
-          className="text-center mb-16"
-        >
+        <motion.div {...fadeInUp} className="text-center mb-16">
           <h2 className="text-section font-heading mb-4">
             Tu Aventura, <span className="text-gradient">Dos Caminos</span>
           </h2>
@@ -28,20 +32,24 @@ export function ValueProposition() {
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Tourism Active Card */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="relative group"
-          >
+          <motion.div initial={{
+          opacity: 0,
+          x: -30
+        }} whileInView={{
+          opacity: 1,
+          x: 0
+        }} viewport={{
+          once: true
+        }} transition={{
+          duration: 0.6
+        }} className="relative group">
             <div className="bg-card border border-border rounded-2xl p-8 h-full transition-all duration-500 hover:border-accent/50 hover:shadow-card">
               <div className="flex items-center gap-4 mb-6">
                 <div className="p-4 bg-accent/20 rounded-xl">
                   <Mountain className="h-8 w-8 text-accent" />
                 </div>
                 <div>
-                  <span className="text-xs uppercase tracking-widest text-accent font-semibold">Turismo Activo</span>
+                  <span className="uppercase tracking-widest text-accent font-semibold text-xl">Turismo Activo</span>
                   <h3 className="text-2xl font-heading text-foreground">Experiencias Únicas en la Naturaleza</h3>
                 </div>
               </div>
@@ -51,12 +59,10 @@ export function ValueProposition() {
               </p>
 
               <div className="grid grid-cols-2 gap-4 mb-8">
-                {['Espeleología', 'Barranquismo', 'Escalada', 'Vías Ferratas'].map((activity) => (
-                  <div key={activity} className="flex items-center gap-2 text-foreground/80">
+                {['Espeleología', 'Barranquismo', 'Escalada', 'Vías Ferratas'].map(activity => <div key={activity} className="flex items-center gap-2 text-foreground/80">
                     <div className="w-1.5 h-1.5 bg-accent rounded-full" />
                     <span className="text-sm font-medium">{activity}</span>
-                  </div>
-                ))}
+                  </div>)}
               </div>
 
               <div className="flex items-center justify-between pt-6 border-t border-border">
@@ -72,13 +78,18 @@ export function ValueProposition() {
           </motion.div>
 
           {/* Vértigo Sapiens Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative group"
-          >
+          <motion.div initial={{
+          opacity: 0,
+          x: 30
+        }} whileInView={{
+          opacity: 1,
+          x: 0
+        }} viewport={{
+          once: true
+        }} transition={{
+          duration: 0.6,
+          delay: 0.2
+        }} className="relative group">
             <div className="bg-gradient-to-br from-primary/15 to-primary/5 border-2 border-primary/40 rounded-2xl p-8 h-full transition-all duration-500 hover:border-primary/70 hover:shadow-glow relative overflow-hidden">
               {/* Badges */}
               <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
@@ -86,9 +97,7 @@ export function ValueProposition() {
                   <Trophy className="h-3.5 w-3.5" />
                   Exclusivo
                 </span>
-                <span className="bg-accent text-accent-foreground text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
-                  Más Popular
-                </span>
+                
               </div>
 
               {/* Header */}
@@ -97,7 +106,7 @@ export function ValueProposition() {
                   <Dumbbell className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <span className="text-xs uppercase tracking-widest text-primary font-bold">Vértigo Sapiens</span>
+                  <span className="uppercase tracking-widest text-primary font-bold text-xl">Vértigo Sapiens</span>
                   <h3 className="text-2xl font-heading text-foreground">Entrena Específico, Rinde Mejor</h3>
                 </div>
               </div>
@@ -146,6 +155,5 @@ export function ValueProposition() {
           </motion.div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
