@@ -114,21 +114,21 @@ export default function Espeleologia() {
                 Curso de Iniciación
               </Button>
             </div>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          >
-            <button
-              onClick={scrollToCourse}
-              className="flex flex-col items-center text-white/60 hover:text-white transition-colors"
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              className="mt-12"
             >
-              <span className="text-sm mb-2">Descubre más</span>
-              <ChevronDown className="h-6 w-6 animate-bounce" />
-            </button>
+              <button
+                onClick={scrollToCourse}
+                className="flex flex-col items-center text-white/60 hover:text-white transition-colors mx-auto"
+              >
+                <span className="text-sm mb-2">Descubre más</span>
+                <ChevronDown className="h-6 w-6 animate-bounce" />
+              </button>
+            </motion.div>
           </motion.div>
         </div>
       </section>
