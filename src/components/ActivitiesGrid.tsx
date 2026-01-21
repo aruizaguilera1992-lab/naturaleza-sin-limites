@@ -14,8 +14,8 @@ const activities = [
     description: 'Descubre cuevas fascinantes con técnicas de progresión vertical. Desde iniciación hasta nivel avanzado.',
     price: 45,
     image: activitySpeleology,
-    cta: 'Ver Rutas',
-    link: null,
+    cta: 'Ver Cuevas',
+    link: '/espeleologia',
   },
   {
     id: 'barranquismo',
