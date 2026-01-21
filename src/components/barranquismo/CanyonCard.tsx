@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Clock, TrendingDown, ArrowDown, ExternalLink, MessageCircle } from 'lucide-react';
+import { Clock, TrendingDown, ArrowDown, Info, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { Barranco } from '@/data/barrancos';
@@ -8,6 +8,7 @@ interface CanyonCardProps {
   barranco: Barranco;
   index: number;
   userLevel: string;
+  onOpenDetail: (barranco: Barranco) => void;
 }
 
 const caracteristicaLabels: Record<string, string> = {
@@ -26,7 +27,7 @@ const nivelColors: Record<string, string> = {
   V6: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
 };
 
-export function CanyonCard({ barranco, index, userLevel }: CanyonCardProps) {
+export function CanyonCard({ barranco, index, userLevel, onOpenDetail }: CanyonCardProps) {
   const whatsappMessage = encodeURIComponent(
     `¡Hola! Me interesa el barranco ${barranco.nombre} en ${barranco.provincia}. Mi nivel es ${userLevel}. ¿Tenéis disponibilidad?`
   );
@@ -111,12 +112,10 @@ export function CanyonCard({ barranco, index, userLevel }: CanyonCardProps) {
             variant="outline"
             size="sm"
             className="flex-1 gap-2"
-            asChild
+            onClick={() => onOpenDetail(barranco)}
           >
-            <a href={barranco.urlInfo} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-4 w-4" />
-              Más info
-            </a>
+            <Info className="h-4 w-4" />
+            Más info
           </Button>
           <Button
             variant="hero"
