@@ -106,6 +106,16 @@
     font-family: 'Montserrat', sans-serif;
     @apply font-bold tracking-tight;
   }
+
+  /* Smooth transitions for interactive elements */
+  a, button {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  /* Focus states */
+  a:focus-visible, button:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
 }
 
 @layer components {

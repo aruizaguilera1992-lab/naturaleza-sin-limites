@@ -45,8 +45,18 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <img src={logo} alt="Naturaleza Sin Límites" className="h-20 w-auto transition-transform duration-300 group-hover:scale-150" />
+          <Link 
+            to="/" 
+            className="flex items-center gap-3 group"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
+            <img 
+              src={logo} 
+              alt="Naturaleza Sin Límites" 
+              className="h-20 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110" 
+            />
           </Link>
 
           {/* Desktop Navigation */}

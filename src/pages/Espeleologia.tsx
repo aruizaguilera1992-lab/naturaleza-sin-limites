@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { ScrollToTop } from '@/components/ScrollToTop';
 import { SpeleologyQuestionnaire, type FilterAnswers } from '@/components/espeleologia/SpeleologyQuestionnaire';
 import { CaveResults } from '@/components/espeleologia/CaveResults';
 import { InitiationCourseCard } from '@/components/espeleologia/InitiationCourseCard';
@@ -232,6 +233,7 @@ export default function Espeleologia() {
 
       <Footer />
       <WhatsAppButton />
+      <ScrollToTop />
     </div>
   );
 }
