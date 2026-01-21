@@ -45,32 +45,23 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between">
           {/* Logo */}
-          <Link 
-            to="/" 
-            className="flex items-center gap-3 group"
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          >
-            <img 
-              src={logo} 
-              alt="Naturaleza Sin Límites" 
-              className="h-20 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110" 
-            />
+          <Link to="/" className="flex items-center gap-3 group" onClick={() => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }}>
+            <img src={logo} alt="Naturaleza Sin Límites" className="h-32 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110" />
           </Link>
 
           {/* Desktop Navigation */}
           <ul className="hidden lg:flex items-center gap-8">
             {navLinks.map(link => <li key={link.href}>
-                {link.isRoute ? (
-                  <Link to={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
+                {link.isRoute ? <Link to={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
                     {link.label}
-                  </Link>
-                ) : (
-                  <a href={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
+                  </Link> : <a href={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
                     {link.label}
-                  </a>
-                )}
+                  </a>}
               </li>)}
           </ul>
 
@@ -80,15 +71,11 @@ export function Navbar() {
               <Phone className="h-4 w-4" />
               <span className="text-sm font-medium">+34 685 60 95 42</span>
             </a>
-            <Button 
-              variant="hero" 
-              size="default"
-              onClick={() => {
-                document.getElementById('contacto')?.scrollIntoView({ 
-                  behavior: 'smooth' 
-                });
-              }}
-            >
+            <Button variant="hero" size="default" onClick={() => {
+            document.getElementById('contacto')?.scrollIntoView({
+              behavior: 'smooth'
+            });
+          }}>
               ¡Reserva Ahora!
             </Button>
           </div>
@@ -117,29 +104,20 @@ export function Navbar() {
             <div className="container mx-auto px-4 py-6">
               <ul className="flex flex-col gap-4">
                 {navLinks.map(link => <li key={link.href}>
-                    {link.isRoute ? (
-                      <Link to={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
+                    {link.isRoute ? <Link to={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
                         {link.label}
-                      </Link>
-                    ) : (
-                      <a href={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
+                      </Link> : <a href={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
                         {link.label}
-                      </a>
-                    )}
+                      </a>}
                   </li>)}
               </ul>
               <div className="mt-6 pt-6 border-t border-border">
-                <Button 
-                  variant="hero" 
-                  size="lg" 
-                  className="w-full"
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    document.getElementById('contacto')?.scrollIntoView({ 
-                      behavior: 'smooth' 
-                    });
-                  }}
-                >
+                <Button variant="hero" size="lg" className="w-full" onClick={() => {
+              setIsMobileMenuOpen(false);
+              document.getElementById('contacto')?.scrollIntoView({
+                behavior: 'smooth'
+              });
+            }}>
                   ¡Reserva Ahora!
                 </Button>
               </div>
