@@ -119,12 +119,12 @@ const ViasFerratas = () => {
             
             <motion.a
               href="#cuestionario"
-              className="inline-flex items-center gap-2 text-white/80 hover:text-primary transition-colors"
+              className="inline-flex flex-col items-center gap-2 text-white/80 hover:text-primary transition-colors"
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <span>Encuentra tu ferrata</span>
               <ChevronDown className="h-5 w-5" />
+              <span>Encuentra tu ferrata</span>
             </motion.a>
           </motion.div>
         </div>
