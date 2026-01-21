@@ -109,7 +109,7 @@ export const BookingForm = () => {
   };
 
   return (
-    <section id="reserva" className="py-20 bg-gradient-dark">
+    <section id="contacto" className="py-20 bg-gradient-dark">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
