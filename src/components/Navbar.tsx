@@ -9,9 +9,9 @@ const navLinks = [{
   label: 'Inicio',
   isRoute: true
 }, {
-  href: '#actividades',
+  href: '/actividades',
   label: 'Actividades',
-  isRoute: false
+  isRoute: true
 }, {
   href: '/vertigo-sapiens',
   label: 'Vértigo Sapiens',
