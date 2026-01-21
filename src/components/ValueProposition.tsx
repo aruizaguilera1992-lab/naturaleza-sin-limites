@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { Mountain, Dumbbell, Shield, Users, Calendar, Video } from 'lucide-react';
+import { Mountain, Dumbbell, Shield, Users, Calendar, Trophy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -78,49 +79,67 @@ export function ValueProposition() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative group"
           >
-            <div className="bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-2xl p-8 h-full transition-all duration-500 hover:border-primary/50 hover:shadow-glow">
-              <div className="absolute top-4 right-4">
-                <span className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            <div className="bg-gradient-to-br from-primary/15 to-primary/5 border-2 border-primary/40 rounded-2xl p-8 h-full transition-all duration-500 hover:border-primary/70 hover:shadow-glow relative overflow-hidden">
+              {/* Badges */}
+              <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
+                <span className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-lg">
+                  <Trophy className="h-3.5 w-3.5" />
                   Exclusivo
+                </span>
+                <span className="bg-accent text-accent-foreground text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
+                  Más Popular
                 </span>
               </div>
 
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-4 bg-primary/20 rounded-xl">
+              {/* Header */}
+              <div className="flex items-center gap-4 mb-6 mt-2">
+                <div className="p-4 bg-primary/20 rounded-xl border border-primary/30">
                   <Dumbbell className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <span className="text-xs uppercase tracking-widest text-primary font-semibold">Vértigo Sapiens</span>
+                  <span className="text-xs uppercase tracking-widest text-primary font-bold">Vértigo Sapiens</span>
                   <h3 className="text-2xl font-heading text-foreground">Entrena Específico, Rinde Mejor</h3>
                 </div>
               </div>
               
+              {/* Description */}
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                Programa de entrenamiento funcional especializado para escalada, barranquismo y espeleología. Prepara tu cuerpo para la aventura.
+                Programa de entrenamiento funcional especializado para deportes de aventura. Preparación física + técnica + comunidad.
               </p>
 
+              {/* Features with checkmarks */}
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3">
-                  <Users className="h-5 w-5 text-primary" />
-                  <span className="text-foreground/80 text-sm">Grupos pequeños (4-6 máx)</span>
+                  <div className="flex-shrink-0 w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center">
+                    <Check className="h-3 w-3 text-primary" />
+                  </div>
+                  <span className="text-foreground text-sm font-medium">Grupos pequeños (4-6 máx)</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Video className="h-5 w-5 text-primary" />
-                  <span className="text-foreground/80 text-sm">Asesoramiento online personalizado</span>
+                  <div className="flex-shrink-0 w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center">
+                    <Check className="h-3 w-3 text-primary" />
+                  </div>
+                  <span className="text-foreground text-sm font-medium">Salidas outdoor programadas</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  <span className="text-foreground/80 text-sm">Salidas outdoor programadas</span>
+                  <div className="flex-shrink-0 w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center">
+                    <Check className="h-3 w-3 text-primary" />
+                  </div>
+                  <span className="text-foreground text-sm font-medium">Asesoramiento personalizado</span>
                 </div>
               </div>
 
+              {/* Price and CTA */}
               <div className="flex items-center justify-between pt-6 border-t border-primary/20">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Desde</span>
-                  <span className="text-xl font-bold text-primary">99€/mes</span>
+                <div className="flex flex-col">
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Desde</span>
+                  <span className="text-2xl font-heading font-bold text-gradient">99€/mes</span>
                 </div>
-                <Button variant="hero" size="sm">
-                  Conocer Más
+                <Button variant="hero" size="default" asChild>
+                  <Link to="/vertigo-sapiens" className="flex items-center gap-2">
+                    Conocer Más
+                    <span className="text-lg">→</span>
+                  </Link>
                 </Button>
               </div>
             </div>
