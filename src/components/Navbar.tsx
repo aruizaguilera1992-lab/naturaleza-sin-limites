@@ -1,23 +1,29 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import logo from '@/assets/logo.png';
 const navLinks = [{
-  href: '#inicio',
-  label: 'Inicio'
+  href: '/',
+  label: 'Inicio',
+  isRoute: true
 }, {
   href: '#actividades',
-  label: 'Actividades'
+  label: 'Actividades',
+  isRoute: false
 }, {
   href: '#vertigo-sapiens',
-  label: 'Vértigo Sapiens'
+  label: 'Vértigo Sapiens',
+  isRoute: false
 }, {
   href: '#nosotros',
-  label: 'Quiénes Somos'
+  label: 'Quiénes Somos',
+  isRoute: false
 }, {
   href: '#contacto',
-  label: 'Contacto'
+  label: 'Contacto',
+  isRoute: false
 }];
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -39,16 +45,22 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between">
           {/* Logo */}
-          <a href="#inicio" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-3 group">
             <img src={logo} alt="Naturaleza Sin Límites" className="h-20 w-auto transition-transform duration-300 group-hover:scale-150" />
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <ul className="hidden lg:flex items-center gap-8">
             {navLinks.map(link => <li key={link.href}>
-                <a href={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
-                  {link.label}
-                </a>
+                {link.isRoute ? (
+                  <Link to={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a href={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
+                    {link.label}
+                  </a>
+                )}
               </li>)}
           </ul>
 
@@ -87,9 +99,15 @@ export function Navbar() {
             <div className="container mx-auto px-4 py-6">
               <ul className="flex flex-col gap-4">
                 {navLinks.map(link => <li key={link.href}>
-                    <a href={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
-                      {link.label}
-                    </a>
+                    {link.isRoute ? (
+                      <Link to={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a href={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
+                        {link.label}
+                      </a>
+                    )}
                   </li>)}
               </ul>
               <div className="mt-6 pt-6 border-t border-border">

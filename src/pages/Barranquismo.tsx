@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Waves, ChevronDown } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
@@ -23,6 +23,11 @@ const Barranquismo = () => {
     caracteristica: null,
     provincia: null,
   });
+
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   const handleQuestionnaireComplete = (answers: FilterAnswers) => {
     setFilters(answers);
