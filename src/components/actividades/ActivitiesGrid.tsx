@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { Clock, MapPin, Users, Heart, Scale, ExternalLink, MessageCircle, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { ActivityDetailModal } from './ActivityDetailModal';
 import type { UnifiedActivity } from '@/hooks/useActivitiesData';
 import type { ViewMode } from '@/pages/Actividades';
 
@@ -30,6 +31,7 @@ function ActivityCard({
   isFavorite, 
   onToggleCompare, 
   onToggleFavorite,
+  onOpenDetail,
   viewMode
 }: { 
   activity: UnifiedActivity; 
@@ -38,6 +40,7 @@ function ActivityCard({
   isFavorite: boolean;
   onToggleCompare: () => void;
   onToggleFavorite: () => void;
+  onOpenDetail: () => void;
   viewMode: ViewMode;
 }) {
   const typeInfo = activityTypeLabels[activity.activityType];
@@ -105,11 +108,9 @@ function ActivityCard({
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" asChild>
-                <Link to={typeInfo.route}>
-                  <Info className="h-4 w-4 mr-1" />
-                  Más info
-                </Link>
+              <Button variant="outline" size="sm" onClick={onOpenDetail}>
+                <Info className="h-4 w-4 mr-1" />
+                Más info
               </Button>
               <Button variant="hero" size="sm" asChild>
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
@@ -239,11 +240,9 @@ function ActivityCard({
         
         {/* Actions */}
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1 text-xs sm:text-sm" asChild>
-            <Link to={typeInfo.route}>
-              <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-              Más info
-            </Link>
+          <Button variant="outline" size="sm" className="flex-1 text-xs sm:text-sm" onClick={onOpenDetail}>
+            <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            Más info
           </Button>
           <Button variant="hero" size="sm" className="flex-1 text-xs sm:text-sm" asChild>
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
@@ -276,6 +275,19 @@ export function ActivitiesGrid({
   onToggleCompare, 
   onToggleFavorite 
 }: ActivitiesGridProps) {
+  const [selectedActivity, setSelectedActivity] = useState<UnifiedActivity | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenDetail = (activity: UnifiedActivity) => {
+    setSelectedActivity(activity);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedActivity(null);
+  };
+
   if (activities.length === 0) {
     return (
       <div className="text-center py-16">
@@ -323,24 +335,33 @@ export function ActivitiesGrid({
   }
   
   return (
-    <div className={cn(
-      "grid gap-4 sm:gap-6",
-      viewMode === 'list' 
-        ? "grid-cols-1" 
-        : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
-    )}>
-      {activities.map((activity, index) => (
-        <ActivityCard
-          key={activity.id}
-          activity={activity}
-          index={index}
-          isInCompareList={compareList.some(a => a.id === activity.id)}
-          isFavorite={favorites.includes(activity.id)}
-          onToggleCompare={() => onToggleCompare(activity)}
-          onToggleFavorite={() => onToggleFavorite(activity.id)}
-          viewMode={viewMode}
-        />
-      ))}
-    </div>
+    <>
+      <div className={cn(
+        "grid gap-4 sm:gap-6",
+        viewMode === 'list' 
+          ? "grid-cols-1" 
+          : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
+      )}>
+        {activities.map((activity, index) => (
+          <ActivityCard
+            key={activity.id}
+            activity={activity}
+            index={index}
+            isInCompareList={compareList.some(a => a.id === activity.id)}
+            isFavorite={favorites.includes(activity.id)}
+            onToggleCompare={() => onToggleCompare(activity)}
+            onToggleFavorite={() => onToggleFavorite(activity.id)}
+            onOpenDetail={() => handleOpenDetail(activity)}
+            viewMode={viewMode}
+          />
+        ))}
+      </div>
+      
+      <ActivityDetailModal
+        activity={selectedActivity}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
+    </>
   );
 }
