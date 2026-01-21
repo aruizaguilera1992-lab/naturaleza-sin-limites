@@ -2,25 +2,26 @@ import { GraduationCap, Calendar, MapPin, Users, Check, AlertTriangle, Clock, Eu
 import { Button } from '@/components/ui/button';
 import { cursoIniciacion } from '@/data/caves';
 import { motion } from 'framer-motion';
-
 interface InitiationCourseCardProps {
   onViewDetails: () => void;
   onEnroll: () => void;
 }
-
-export function InitiationCourseCard({ onViewDetails, onEnroll }: InitiationCourseCardProps) {
-  const whatsappMessage = encodeURIComponent(
-    `¡Hola! Quiero inscribirme en el Curso de Iniciación a la Espeleología. ¿Cuándo es la próxima convocatoria?`
-  );
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-emerald-900/20 border-2 border-primary/30"
-    >
+export function InitiationCourseCard({
+  onViewDetails,
+  onEnroll
+}: InitiationCourseCardProps) {
+  const whatsappMessage = encodeURIComponent(`¡Hola! Quiero inscribirme en el Curso de Iniciación a la Espeleología. ¿Cuándo es la próxima convocatoria?`);
+  return <motion.div initial={{
+    opacity: 0,
+    y: 20
+  }} whileInView={{
+    opacity: 1,
+    y: 0
+  }} viewport={{
+    once: true
+  }} transition={{
+    duration: 0.5
+  }} className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-emerald-900/20 border-2 border-primary/30">
       {/* Badge obligatorio */}
       <div className="absolute top-4 right-4 z-10">
         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-destructive text-destructive-foreground rounded-full text-sm font-semibold">
@@ -38,7 +39,7 @@ export function InitiationCourseCard({ onViewDetails, onEnroll }: InitiationCour
                 <GraduationCap className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <h3 className="font-heading text-2xl font-bold text-foreground">
+                <h3 className="font-heading font-bold text-foreground text-4xl">
                   {cursoIniciacion.nombre}
                 </h3>
                 <p className="text-muted-foreground">
@@ -53,7 +54,7 @@ export function InitiationCourseCard({ onViewDetails, onEnroll }: InitiationCour
             </p>
 
             {/* Quick stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
               <div className="flex items-center gap-2 p-3 bg-background/50 rounded-lg">
                 <Calendar className="h-5 w-5 text-primary" />
                 <div>
@@ -90,47 +91,29 @@ export function InitiationCourseCard({ onViewDetails, onEnroll }: InitiationCour
             <h4 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">
               Contenido del curso
             </h4>
-            <ul className="space-y-2">
-              {cursoIniciacion.contenido.slice(0, 6).map((item, index) => (
-                <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 mb-6">
+              {cursoIniciacion.contenido.slice(0, 6).map((item, index) => <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
                   <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                   <span>{item}</span>
-                </li>
-              ))}
-              {cursoIniciacion.contenido.length > 6 && (
-                <li className="text-sm text-primary font-medium pl-6">
+                </li>)}
+              {cursoIniciacion.contenido.length > 6 && <li className="text-sm text-primary font-medium pl-6">
                   + {cursoIniciacion.contenido.length - 6} temas más...
-                </li>
-              )}
+                </li>}
             </ul>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button variant="outline" className="flex-1 border-primary/50 text-primary hover:bg-primary/10" onClick={onViewDetails}>
+                Más información
+              </Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90" asChild>
+                <a href={`https://wa.me/34685609542?text=${whatsappMessage}`} target="_blank" rel="noopener noreferrer">
+                  ¡Inscribirme!
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
-
-        {/* CTAs - Full width at bottom */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-8 border-t border-primary/20">
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="flex-1 border-primary/50 text-primary hover:bg-primary/10 text-base py-6"
-            onClick={onViewDetails}
-          >
-            Más información
-          </Button>
-          <Button 
-            size="lg"
-            className="flex-1 bg-primary hover:bg-primary/90 text-base py-6"
-            asChild
-          >
-            <a
-              href={`https://wa.me/34685609542?text=${whatsappMessage}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              ¡Inscribirme!
-            </a>
-          </Button>
-        </div>
       </div>
-    </motion.div>
-  );
+    </motion.div>;
 }
