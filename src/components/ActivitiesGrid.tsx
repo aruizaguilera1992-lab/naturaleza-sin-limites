@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import activitySpeleology from '@/assets/activity-speleology.jpg';
 import activityCanyoning from '@/assets/activity-canyoning.jpg';
@@ -14,6 +15,7 @@ const activities = [
     price: 45,
     image: activitySpeleology,
     cta: 'Ver Rutas',
+    link: null,
   },
   {
     id: 'barranquismo',
@@ -23,6 +25,7 @@ const activities = [
     price: 55,
     image: activityCanyoning,
     cta: 'Ver Barrancos',
+    link: '/barranquismo',
   },
   {
     id: 'escalada',
@@ -32,6 +35,7 @@ const activities = [
     price: 49,
     image: activityClimbing,
     cta: 'Ver Escuelas',
+    link: null,
   },
   {
     id: 'vias-ferratas',
@@ -41,6 +45,7 @@ const activities = [
     price: 50,
     image: activityFerrata,
     cta: 'Ver Ferratas',
+    link: null,
   },
 ];
 
@@ -103,13 +108,24 @@ export function ActivitiesGrid() {
                     {activity.description}
                   </p>
 
-                  <Button 
-                    variant="hero" 
-                    size="sm"
-                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0"
-                  >
-                    {activity.cta}
-                  </Button>
+                  {activity.link ? (
+                    <Button 
+                      variant="hero" 
+                      size="sm"
+                      className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0"
+                      asChild
+                    >
+                      <Link to={activity.link}>{activity.cta}</Link>
+                    </Button>
+                  ) : (
+                    <Button 
+                      variant="hero" 
+                      size="sm"
+                      className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0"
+                    >
+                      {activity.cta}
+                    </Button>
+                  )}
                 </div>
               </div>
             </motion.div>
