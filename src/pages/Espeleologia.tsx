@@ -75,31 +75,31 @@ export default function Espeleologia() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 text-center">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 backdrop-blur-sm rounded-full text-primary mb-6">
-              <Mountain className="h-5 w-5" />
-              <span className="text-sm font-medium">Explora el mundo subterráneo</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/20 backdrop-blur-sm rounded-full text-primary mb-4 sm:mb-6">
+              <Mountain className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="text-xs sm:text-sm font-medium">Explora el mundo subterráneo</span>
             </div>
             
-            <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight px-2">
               Explora el Mundo
               <span className="text-primary block">Subterráneo</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-8">
+            <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
               Descubre cuevas y simas en los mejores sistemas kársticos de Andalucía. 
               Desde cuevas horizontales para iniciación hasta simas verticales para expertos.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
               <Button
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto"
                 onClick={scrollToQuestionnaire}
               >
                 Encontrar mi cueva ideal
@@ -107,7 +107,7 @@ export default function Espeleologia() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
+                className="border-white/30 text-white hover:bg-white/10 w-full sm:w-auto"
                 onClick={scrollToCourse}
               >
                 <GraduationCap className="mr-2 h-5 w-5" />
@@ -119,7 +119,7 @@ export default function Espeleologia() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1, duration: 0.5 }}
-              className="mt-12"
+              className="mt-8 sm:mt-12"
             >
               <button
                 onClick={scrollToCourse}
