@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -38,6 +38,13 @@ const initialFilters: Filters = {
   search: '',
 };
 
+const pageTransition = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+};
+
 const Actividades = () => {
   const [activeTab, setActiveTab] = useState<ActivityType>('todas');
   const [filters, setFilters] = useState<Filters>(initialFilters);
@@ -46,6 +53,11 @@ const Actividades = () => {
   const [compareList, setCompareList] = useState<UnifiedActivity[]>([]);
   const [showComparison, setShowComparison] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
+  
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
   
   const { activities, counts } = useActivitiesData();
   
@@ -180,9 +192,19 @@ const Actividades = () => {
   }, []);
   
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div 
+      className="min-h-screen bg-background"
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={pageTransition}
+    >
       <Navbar />
-      <main>
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         <ActivitiesHeroSection 
           onSearch={(search) => handleFilterChange({ search })}
           onQuickFilter={handleQuickFilter}
@@ -253,7 +275,7 @@ const Actividades = () => {
         </section>
         
         <ActivitiesPacks />
-      </main>
+      </motion.main>
       <Footer />
       <WhatsAppButton />
       <ScrollToTop />
@@ -265,7 +287,7 @@ const Actividades = () => {
         onClose={() => setShowComparison(false)}
         onRemove={(id) => setCompareList(prev => prev.filter(a => a.id !== id))}
       />
-    </div>
+    </motion.div>
   );
 };
 
