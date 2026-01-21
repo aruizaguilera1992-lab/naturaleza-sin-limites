@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { 
-  MapPin, ExternalLink, MessageCircle, Check, AlertCircle, X,
+  MapPin, ExternalLink, MessageCircle, Check, AlertCircle,
   Clock, Ruler, ArrowDown, Droplets, Sun, Users, Backpack, Car,
   Mountain, TrendingUp, Compass
 } from 'lucide-react';
@@ -153,19 +153,11 @@ export function ActivityDetailModal({ activity, isOpen, onClose }: ActivityDetai
             </div>
             
             {/* Price Badge */}
-            <div className="absolute top-4 right-14">
+            <div className="absolute top-4 right-4">
               <Badge className="bg-primary text-primary-foreground font-bold text-lg px-4 py-2">
                 {activity.price}
               </Badge>
             </div>
-
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
           </div>
 
           {/* Content */}
