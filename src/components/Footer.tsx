@@ -12,7 +12,7 @@ const activities = [
   { href: '/espeleologia', label: 'Espeleología' },
   { href: '/barranquismo', label: 'Barranquismo' },
   { href: '/escalada', label: 'Escalada' },
-  { href: '#', label: 'Vías Ferratas' },
+  { href: '/vias-ferratas', label: 'Vías Ferratas' },
 ];
 
 const socialLinks = [

@@ -45,7 +45,7 @@ const activities = [
     price: 50,
     image: activityFerrata,
     cta: 'Ver Ferratas',
-    link: null,
+    link: '/vias-ferratas',
   },
 ];
 
