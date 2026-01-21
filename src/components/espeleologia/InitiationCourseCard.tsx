@@ -53,7 +53,7 @@ export function InitiationCourseCard({ onViewDetails, onEnroll }: InitiationCour
             </p>
 
             {/* Quick stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="flex items-center gap-2 p-3 bg-background/50 rounded-lg">
                 <Calendar className="h-5 w-5 text-primary" />
                 <div>
@@ -90,7 +90,7 @@ export function InitiationCourseCard({ onViewDetails, onEnroll }: InitiationCour
             <h4 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">
               Contenido del curso
             </h4>
-            <ul className="space-y-2 mb-6">
+            <ul className="space-y-2">
               {cursoIniciacion.contenido.slice(0, 6).map((item, index) => (
                 <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
                   <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
@@ -103,30 +103,32 @@ export function InitiationCourseCard({ onViewDetails, onEnroll }: InitiationCour
                 </li>
               )}
             </ul>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button 
-                variant="outline" 
-                className="flex-1 border-primary/50 text-primary hover:bg-primary/10"
-                onClick={onViewDetails}
-              >
-                Más información
-              </Button>
-              <Button 
-                className="flex-1 bg-primary hover:bg-primary/90"
-                asChild
-              >
-                <a
-                  href={`https://wa.me/34685609542?text=${whatsappMessage}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  ¡Inscribirme!
-                </a>
-              </Button>
-            </div>
           </div>
+        </div>
+
+        {/* CTAs - Full width at bottom */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-8 border-t border-primary/20">
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="flex-1 border-primary/50 text-primary hover:bg-primary/10 text-base py-6"
+            onClick={onViewDetails}
+          >
+            Más información
+          </Button>
+          <Button 
+            size="lg"
+            className="flex-1 bg-primary hover:bg-primary/90 text-base py-6"
+            asChild
+          >
+            <a
+              href={`https://wa.me/34685609542?text=${whatsappMessage}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ¡Inscribirme!
+            </a>
+          </Button>
         </div>
       </div>
     </motion.div>
