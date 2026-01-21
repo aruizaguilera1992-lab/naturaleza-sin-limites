@@ -70,8 +70,8 @@ export function ValueProposition() {
                   <Shield className="h-5 w-5 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">Desde 45€/persona</span>
                 </div>
-                <Button variant="adventure" size="sm">
-                  Ver Actividades
+                <Button variant="adventure" size="sm" asChild>
+                  <Link to="/actividades">Ver Actividades</Link>
                 </Button>
               </div>
             </div>
