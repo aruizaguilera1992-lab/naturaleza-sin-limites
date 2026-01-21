@@ -35,7 +35,7 @@ const activities = [
     price: 49,
     image: activityClimbing,
     cta: 'Ver Escuelas',
-    link: null,
+    link: '/escalada',
   },
   {
     id: 'vias-ferratas',
