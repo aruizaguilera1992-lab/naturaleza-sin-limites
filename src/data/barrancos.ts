@@ -1,0 +1,312 @@
+export interface Barranco {
+  id: string;
+  nombre: string;
+  provincia: 'Málaga' | 'Granada' | 'Cádiz' | 'Almería' | 'Jaén';
+  nivel: 'V1' | 'V2' | 'V3' | 'V4' | 'V5' | 'V6';
+  nivelExperiencia: 'principiante' | 'intermedio' | 'avanzado' | 'experto';
+  duracion: string;
+  duracionHoras: number;
+  desnivel: string;
+  rapelMaximo: string;
+  caracteristicas: ('rapeles' | 'saltos' | 'toboganes' | 'nado')[];
+  descripcionCorta: string;
+  urlInfo: string;
+  imagen: string;
+  precio: string;
+}
+
+export const barrancos: Barranco[] = [
+  {
+    id: 'rio-verde',
+    nombre: 'Río Verde',
+    provincia: 'Granada',
+    nivel: 'V3',
+    nivelExperiencia: 'intermedio',
+    duracion: '4-6 horas',
+    duracionHoras: 5,
+    desnivel: '280m',
+    rapelMaximo: '15m',
+    caracteristicas: ['rapeles', 'saltos', 'nado'],
+    descripcionCorta: 'Barranco clásico de Granada con agua abundante todo el año. Ideal para iniciados con algo de experiencia.',
+    urlInfo: 'https://infobarrancos.es/barranco/rio-verde',
+    imagen: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800',
+    precio: '55€'
+  },
+  {
+    id: 'rio-lentegi',
+    nombre: 'Río Lentegí',
+    provincia: 'Granada',
+    nivel: 'V2',
+    nivelExperiencia: 'principiante',
+    duracion: '3-4 horas',
+    duracionHoras: 3.5,
+    desnivel: '180m',
+    rapelMaximo: '12m',
+    caracteristicas: ['rapeles', 'saltos', 'toboganes'],
+    descripcionCorta: 'Perfecto para iniciación. Toboganes naturales y ambiente lúdico en un entorno espectacular.',
+    urlInfo: 'https://infobarrancos.es/barranco/rio-lentegi',
+    imagen: 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=800',
+    precio: '45€'
+  },
+  {
+    id: 'rio-higueron',
+    nombre: 'Río Higuerón',
+    provincia: 'Málaga',
+    nivel: 'V3',
+    nivelExperiencia: 'intermedio',
+    duracion: '4-5 horas',
+    duracionHoras: 4.5,
+    desnivel: '200m',
+    rapelMaximo: '20m',
+    caracteristicas: ['rapeles', 'saltos', 'nado'],
+    descripcionCorta: 'Uno de los más bonitos de Málaga. Agua cristalina y formaciones rocosas impresionantes.',
+    urlInfo: 'https://infobarrancos.es/barranco/rio-higueron',
+    imagen: 'https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=800',
+    precio: '50€'
+  },
+  {
+    id: 'chillar',
+    nombre: 'Río Chillar',
+    provincia: 'Málaga',
+    nivel: 'V1',
+    nivelExperiencia: 'principiante',
+    duracion: '2-3 horas',
+    duracionHoras: 2.5,
+    desnivel: '100m',
+    rapelMaximo: '0m',
+    caracteristicas: ['nado', 'toboganes'],
+    descripcionCorta: 'Ruta acuática ideal para familias. Sin rapeles, solo diversión en el agua.',
+    urlInfo: 'https://infobarrancos.es/barranco/rio-chillar',
+    imagen: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800',
+    precio: '35€'
+  },
+  {
+    id: 'zarzalones',
+    nombre: 'Los Zarzalones',
+    provincia: 'Málaga',
+    nivel: 'V4',
+    nivelExperiencia: 'avanzado',
+    duracion: '5-7 horas',
+    duracionHoras: 6,
+    desnivel: '350m',
+    rapelMaximo: '35m',
+    caracteristicas: ['rapeles', 'saltos', 'nado'],
+    descripcionCorta: 'Barranco técnico con rapeles verticales impresionantes. Requiere buena forma física.',
+    urlInfo: 'https://infobarrancos.es/barranco/zarzalones',
+    imagen: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800',
+    precio: '65€'
+  },
+  {
+    id: 'tajo-ronda',
+    nombre: 'Tajo de Ronda',
+    provincia: 'Málaga',
+    nivel: 'V3',
+    nivelExperiencia: 'intermedio',
+    duracion: '3-4 horas',
+    duracionHoras: 3.5,
+    desnivel: '150m',
+    rapelMaximo: '25m',
+    caracteristicas: ['rapeles', 'saltos'],
+    descripcionCorta: 'Descenso espectacular con vistas al famoso Puente Nuevo de Ronda.',
+    urlInfo: 'https://infobarrancos.es/barranco/tajo-ronda',
+    imagen: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800',
+    precio: '55€'
+  },
+  {
+    id: 'garganta-verde',
+    nombre: 'Garganta Verde',
+    provincia: 'Cádiz',
+    nivel: 'V4',
+    nivelExperiencia: 'avanzado',
+    duracion: '6-8 horas',
+    duracionHoras: 7,
+    desnivel: '400m',
+    rapelMaximo: '40m',
+    caracteristicas: ['rapeles', 'nado'],
+    descripcionCorta: 'La catedral del barranquismo en Andalucía. Paredes verticales de vértigo.',
+    urlInfo: 'https://infobarrancos.es/barranco/garganta-verde',
+    imagen: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
+    precio: '75€'
+  },
+  {
+    id: 'sima-cabra',
+    nombre: 'Sima del Cabra',
+    provincia: 'Cádiz',
+    nivel: 'V5',
+    nivelExperiencia: 'experto',
+    duracion: '8-10 horas',
+    duracionHoras: 9,
+    desnivel: '500m',
+    rapelMaximo: '60m',
+    caracteristicas: ['rapeles'],
+    descripcionCorta: 'Descenso extremo solo para expertos. Rapeles aéreos y técnica exigente.',
+    urlInfo: 'https://infobarrancos.es/barranco/sima-cabra',
+    imagen: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=800',
+    precio: '95€'
+  },
+  {
+    id: 'guadalmina',
+    nombre: 'Río Guadalmina',
+    provincia: 'Málaga',
+    nivel: 'V2',
+    nivelExperiencia: 'principiante',
+    duracion: '3-4 horas',
+    duracionHoras: 3.5,
+    desnivel: '120m',
+    rapelMaximo: '10m',
+    caracteristicas: ['rapeles', 'saltos', 'toboganes', 'nado'],
+    descripcionCorta: 'Barranco muy completo para iniciación. Tiene de todo en un entorno paradisíaco.',
+    urlInfo: 'https://infobarrancos.es/barranco/guadalmina',
+    imagen: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800',
+    precio: '45€'
+  },
+  {
+    id: 'almanchares',
+    nombre: 'Río Almanchares',
+    provincia: 'Málaga',
+    nivel: 'V3',
+    nivelExperiencia: 'intermedio',
+    duracion: '4-5 horas',
+    duracionHoras: 4.5,
+    desnivel: '220m',
+    rapelMaximo: '18m',
+    caracteristicas: ['rapeles', 'saltos', 'nado'],
+    descripcionCorta: 'Enclave natural precioso en la Axarquía. Pozas cristalinas y vegetación exuberante.',
+    urlInfo: 'https://infobarrancos.es/barranco/almanchares',
+    imagen: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=800',
+    precio: '50€'
+  },
+  {
+    id: 'poqueira',
+    nombre: 'Río Poqueira',
+    provincia: 'Granada',
+    nivel: 'V4',
+    nivelExperiencia: 'avanzado',
+    duracion: '6-7 horas',
+    duracionHoras: 6.5,
+    desnivel: '380m',
+    rapelMaximo: '30m',
+    caracteristicas: ['rapeles', 'saltos', 'nado'],
+    descripcionCorta: 'En el corazón de la Alpujarra. Agua fría de Sierra Nevada y paisajes únicos.',
+    urlInfo: 'https://infobarrancos.es/barranco/poqueira',
+    imagen: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800',
+    precio: '65€'
+  },
+  {
+    id: 'trevejo',
+    nombre: 'Barranco del Trevejo',
+    provincia: 'Granada',
+    nivel: 'V2',
+    nivelExperiencia: 'principiante',
+    duracion: '2-3 horas',
+    duracionHoras: 2.5,
+    desnivel: '130m',
+    rapelMaximo: '8m',
+    caracteristicas: ['rapeles', 'toboganes', 'nado'],
+    descripcionCorta: 'Perfecto para primeras experiencias. Corto pero muy divertido.',
+    urlInfo: 'https://infobarrancos.es/barranco/trevejo',
+    imagen: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800',
+    precio: '40€'
+  },
+  {
+    id: 'majales',
+    nombre: 'Los Majales',
+    provincia: 'Cádiz',
+    nivel: 'V3',
+    nivelExperiencia: 'intermedio',
+    duracion: '4-5 horas',
+    duracionHoras: 4.5,
+    desnivel: '250m',
+    rapelMaximo: '22m',
+    caracteristicas: ['rapeles', 'saltos'],
+    descripcionCorta: 'En plena Sierra de Grazalema. Roca caliza esculpida por el agua.',
+    urlInfo: 'https://infobarrancos.es/barranco/majales',
+    imagen: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800',
+    precio: '55€'
+  },
+  {
+    id: 'paterna',
+    nombre: 'Río Paterna',
+    provincia: 'Cádiz',
+    nivel: 'V2',
+    nivelExperiencia: 'principiante',
+    duracion: '3-4 horas',
+    duracionHoras: 3.5,
+    desnivel: '140m',
+    rapelMaximo: '12m',
+    caracteristicas: ['rapeles', 'saltos', 'toboganes', 'nado'],
+    descripcionCorta: 'Barranco lúdico con saltos opcionales. Muy recomendado para grupos.',
+    urlInfo: 'https://infobarrancos.es/barranco/paterna',
+    imagen: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800',
+    precio: '45€'
+  },
+  {
+    id: 'buitreras',
+    nombre: 'Las Buitreras',
+    provincia: 'Málaga',
+    nivel: 'V5',
+    nivelExperiencia: 'experto',
+    duracion: '8-10 horas',
+    duracionHoras: 9,
+    desnivel: '450m',
+    rapelMaximo: '55m',
+    caracteristicas: ['rapeles', 'nado'],
+    descripcionCorta: 'Uno de los más difíciles de Andalucía. Solo para barranquistas experimentados.',
+    urlInfo: 'https://infobarrancos.es/barranco/buitreras',
+    imagen: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800',
+    precio: '90€'
+  },
+  {
+    id: 'moreno',
+    nombre: 'Barranco Moreno',
+    provincia: 'Granada',
+    nivel: 'V3',
+    nivelExperiencia: 'intermedio',
+    duracion: '4-5 horas',
+    duracionHoras: 4.5,
+    desnivel: '200m',
+    rapelMaximo: '20m',
+    caracteristicas: ['rapeles', 'saltos', 'toboganes'],
+    descripcionCorta: 'Muy divertido con toboganes naturales espectaculares.',
+    urlInfo: 'https://infobarrancos.es/barranco/moreno',
+    imagen: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800',
+    precio: '50€'
+  },
+  {
+    id: 'casares',
+    nombre: 'Barranco de Casares',
+    provincia: 'Málaga',
+    nivel: 'V2',
+    nivelExperiencia: 'principiante',
+    duracion: '2-3 horas',
+    duracionHoras: 2.5,
+    desnivel: '100m',
+    rapelMaximo: '10m',
+    caracteristicas: ['rapeles', 'saltos', 'nado'],
+    descripcionCorta: 'Corto y accesible, perfecto para media jornada de aventura.',
+    urlInfo: 'https://infobarrancos.es/barranco/casares',
+    imagen: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
+    precio: '40€'
+  },
+  {
+    id: 'lanjaron',
+    nombre: 'Río Lanjarón',
+    provincia: 'Granada',
+    nivel: 'V4',
+    nivelExperiencia: 'avanzado',
+    duracion: '5-6 horas',
+    duracionHoras: 5.5,
+    desnivel: '320m',
+    rapelMaximo: '28m',
+    caracteristicas: ['rapeles', 'saltos', 'nado'],
+    descripcionCorta: 'Agua abundante todo el año. Técnico pero muy gratificante.',
+    urlInfo: 'https://infobarrancos.es/barranco/lanjaron',
+    imagen: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800',
+    precio: '60€'
+  }
+];
+
+export type NivelExperiencia = 'principiante' | 'intermedio' | 'avanzado' | 'experto';
+export type DuracionPreferida = 'medio-dia' | 'dia-completo' | 'jornada-larga';
+export type Caracteristica = 'rapeles' | 'saltos' | 'toboganes' | 'nado' | 'todo';
+export type Provincia = 'Málaga' | 'Granada' | 'Cádiz' | 'cualquiera';
