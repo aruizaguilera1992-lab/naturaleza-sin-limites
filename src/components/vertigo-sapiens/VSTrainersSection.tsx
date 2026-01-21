@@ -1,59 +1,13 @@
 import { motion } from 'framer-motion';
-import { Award, Mountain, Users, BookOpen } from 'lucide-react';
 
-const trainers = [
-  {
-    name: 'Antonio García',
-    role: 'Fundador & Head Coach',
-    avatar: 'AG',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
-    certifications: [
-      'Técnico deportivo en escalada',
-      'Guía de barranquismo',
-      'Entrenador personal NSCA-CPT',
-    ],
-    experience: [
-      '+10 años en deportes de montaña',
-      '+50 barrancos explorados',
-      'Formador de espeleología',
-    ],
-    specialty: 'Escalada y fuerza específica',
-  },
-  {
-    name: 'Laura Sánchez',
-    role: 'Coach de Movilidad',
-    avatar: 'LS',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80',
-    certifications: [
-      'Fisioterapeuta deportiva',
-      'Especialista en movilidad FRC',
-      'Instructora de yoga',
-    ],
-    experience: [
-      '+8 años en rehabilitación deportiva',
-      'Escaladora desde hace 12 años',
-      'Especialista en prevención de lesiones',
-    ],
-    specialty: 'Movilidad y prevención',
-  },
-  {
-    name: 'Miguel Torres',
-    role: 'Coach de Resistencia',
-    avatar: 'MT',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
-    certifications: [
-      'Licenciado en CAFYD',
-      'Especialista en trail running',
-      'Técnico en espeleología',
-    ],
-    experience: [
-      '+15 maratones de montaña',
-      'Explorador de cuevas (+100 cavidades)',
-      'Guía de alta montaña',
-    ],
-    specialty: 'Resistencia y espeleología',
-  },
-];
+const founder = {
+  name: 'Antonio Ruiz Aguilera',
+  role: 'Fundador & Coach Especialista en Fuerza, Biomecánica y Aventura',
+  image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+  bio: `Entrenador personal con Máster en Entrenamiento Deportivo-Físico y más de 5 años de experiencia en centros de referencia, donde ha diseñado programas de fuerza, resistencia y readaptación para más de 100 clientes mensuales. Su trabajo integra biomecánica aplicada, prevención de lesiones y disciplinas como yoga y pilates para construir una base sólida antes de exigir al máximo el rendimiento.
+
+Como Técnico Deportivo en Espeleología (TD1 y TD2), ha coordinado y guiado decenas de expediciones y competiciones oficiales de espeleología y descenso de cañones en Andalucía, lo que le permite llevar el entrenamiento más allá del gimnasio y convertir la naturaleza en una herramienta de transformación personal. Su enfoque une ciencia del entrenamiento, experiencias de aventura y un acompañamiento cercano para que cada persona gane fuerza, confianza y autonomía dentro y fuera de la montaña.`,
+};
 
 export function VSTrainersSection() {
   return (
@@ -69,83 +23,46 @@ export function VSTrainersSection() {
           className="text-center mb-16"
         >
           <h2 className="text-section font-heading mb-4">
-            Equipo de <span className="text-gradient">Entrenadores</span>
+            Fundador y <span className="text-gradient">Entrenador Principal</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Profesionales apasionados por la aventura con las mejores credenciales
+            Experiencia, ciencia del entrenamiento y pasión por la aventura
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {trainers.map((trainer, index) => (
-            <motion.div
-              key={trainer.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group"
-            >
-              <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300">
-                {/* Photo */}
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={trainer.image}
-                    alt={trainer.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  
-                  {/* Specialty Badge */}
-                  <div className="absolute bottom-4 left-4">
-                    <span className="bg-primary/90 text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                      {trainer.specialty}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Info */}
-                <div className="p-6">
-                  <h3 className="font-heading text-xl font-semibold text-foreground mb-1">
-                    {trainer.name}
-                  </h3>
-                  <p className="text-primary text-sm font-medium mb-4">{trainer.role}</p>
-
-                  {/* Certifications */}
-                  <div className="mb-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                      <Award className="h-4 w-4 text-primary" />
-                      <span className="font-semibold text-foreground">Titulaciones:</span>
-                    </div>
-                    <ul className="space-y-1">
-                      {trainer.certifications.map((cert) => (
-                        <li key={cert} className="text-sm text-muted-foreground flex items-start gap-2">
-                          <span className="w-1 h-1 bg-primary rounded-full mt-2 flex-shrink-0" />
-                          {cert}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Experience */}
-                  <div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                      <Mountain className="h-4 w-4 text-primary" />
-                      <span className="font-semibold text-foreground">Experiencia:</span>
-                    </div>
-                    <ul className="space-y-1">
-                      {trainer.experience.map((exp) => (
-                        <li key={exp} className="text-sm text-muted-foreground flex items-start gap-2">
-                          <span className="w-1 h-1 bg-primary rounded-full mt-2 flex-shrink-0" />
-                          {exp}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+        <div className="flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-2xl"
+          >
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300">
+              {/* Photo */}
+              <div className="relative aspect-[16/9] overflow-hidden">
+                <img
+                  src={founder.image}
+                  alt={founder.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               </div>
-            </motion.div>
-          ))}
+
+              {/* Info */}
+              <div className="p-6 md:p-8">
+                <h3 className="font-heading text-2xl md:text-3xl font-semibold text-foreground mb-2">
+                  {founder.name}
+                </h3>
+                <p className="text-primary text-sm md:text-base font-medium mb-6">{founder.role}</p>
+
+                {/* Bio */}
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
+                  {founder.bio}
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
