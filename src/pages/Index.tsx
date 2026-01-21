@@ -8,6 +8,7 @@ import { BookingForm } from '@/components/BookingForm';
 import { Newsletter } from '@/components/Newsletter';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { ScrollToTop } from '@/components/ScrollToTop';
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
       </main>
       <Footer />
       <WhatsAppButton />
+      <ScrollToTop />
     </div>
   );
 };

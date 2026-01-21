@@ -4,6 +4,7 @@ import { Waves, ChevronDown } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { ScrollToTop } from '@/components/ScrollToTop';
 import { CanyoningQuestionnaire } from '@/components/barranquismo/CanyoningQuestionnaire';
 import { CanyonResults } from '@/components/barranquismo/CanyonResults';
 import type { NivelExperiencia, DuracionPreferida, Caracteristica, Provincia } from '@/data/barrancos';
@@ -173,6 +174,7 @@ const Barranquismo = () => {
 
       <Footer />
       <WhatsAppButton />
+      <ScrollToTop />
     </div>
   );
 };

@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Mountain, MessageCircle } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
+import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { ScrollToTop } from '@/components/ScrollToTop';
 import { Button } from '@/components/ui/button';
 import { ClimbingQuestionnaire } from '@/components/escalada/ClimbingQuestionnaire';
 import { CragResults } from '@/components/escalada/CragResults';
@@ -171,6 +173,8 @@ export default function Escalada() {
       </section>
 
       <Footer />
+      <WhatsAppButton />
+      <ScrollToTop />
     </div>
   );
 }
