@@ -3,7 +3,7 @@ import logo from '@/assets/logo.png';
 
 const navLinks = [
   { href: '#actividades', label: 'Actividades' },
-  { href: '#vertigo-sapiens', label: 'Vértigo Sapiens' },
+  { href: '/vertigo-sapiens', label: 'Vértigo Sapiens' },
   { href: '#nosotros', label: 'Sobre Nosotros' },
   { href: '#contacto', label: 'Contacto' },
 ];
