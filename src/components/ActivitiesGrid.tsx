@@ -141,10 +141,10 @@ export function ActivitiesGrid() {
           className="text-center mt-12"
         >
           <p className="text-muted-foreground mb-4">
-            ¿No sabes cuál elegir? Contacta con nosotros y te asesoraremos
+            ¿Quieres ver todas las actividades disponibles?
           </p>
-          <Button variant="outline" size="lg">
-            Solicitar Información
+          <Button variant="hero" size="lg" asChild>
+            <Link to="/actividades">Ver Todas las Actividades</Link>
           </Button>
         </motion.div>
       </div>
