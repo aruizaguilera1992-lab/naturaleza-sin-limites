@@ -57,7 +57,7 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <ul className="hidden lg:flex items-center gap-8">
             {navLinks.map(link => <li key={link.href}>
-                {link.isRoute ? <Link to={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
+                {link.isRoute ? <Link to={link.href} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
                     {link.label}
                   </Link> : <a href={link.href} className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider">
                     {link.label}
@@ -104,7 +104,7 @@ export function Navbar() {
             <div className="container mx-auto px-4 py-6">
               <ul className="flex flex-col gap-4">
                 {navLinks.map(link => <li key={link.href}>
-                    {link.isRoute ? <Link to={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
+                    {link.isRoute ? <Link to={link.href} onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
                         {link.label}
                       </Link> : <a href={link.href} onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider">
                         {link.label}
