@@ -1,3 +1,5 @@
+import caveTesoroSorbas from '@/assets/cave-tesoro-sorbas.jpg';
+
 export interface DificultadTecnica {
   fisica: number;
   tecnica: number;
@@ -516,8 +518,8 @@ export const cuevas: Cueva[] = [
     descripcionCorta: 'Ruta de iniciación en el espectacular Karst de Sorbas',
     descripcionLarga: 'El Karst de Sorbas es uno de los paisajes geológicos más singulares de Europa, formado en yesos. La Cueva del Tesoro ofrece una ruta de iniciación perfecta para conocer este ecosistema único, con galerías amplias y cristalizaciones de yeso espectaculares.',
     caracteristicas: ['horizontal', 'karst-yesos', 'cristales', 'amplia'],
-    imagen: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
-    imagenGrande: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200',
+    imagen: caveTesoroSorbas,
+    imagenGrande: caveTesoroSorbas,
     mejorEpoca: 'Todo el año',
     grupoMinimo: 4,
     materialIncluido: true,
