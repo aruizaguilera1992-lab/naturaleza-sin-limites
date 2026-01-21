@@ -4,6 +4,7 @@ import { RotateCcw, ArrowUpDown, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CanyonCard } from './CanyonCard';
+import { CanyonDetailModal } from './CanyonDetailModal';
 import { barrancos, type Barranco, type NivelExperiencia, type DuracionPreferida, type Caracteristica, type Provincia } from '@/data/barrancos';
 
 interface FilterAnswers {
@@ -22,6 +23,18 @@ type SortOption = 'nivel' | 'duracion' | 'precio';
 
 export function CanyonResults({ filters, onReset }: CanyonResultsProps) {
   const [sortBy, setSortBy] = useState<SortOption>('nivel');
+  const [selectedBarranco, setSelectedBarranco] = useState<Barranco | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenDetail = (barranco: Barranco) => {
+    setSelectedBarranco(barranco);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBarranco(null);
+  };
 
   const filteredBarrancos = useMemo(() => {
     let result = [...barrancos];
@@ -170,6 +183,7 @@ export function CanyonResults({ filters, onReset }: CanyonResultsProps) {
               barranco={barranco}
               index={index}
               userLevel={nivelLabel}
+              onOpenDetail={handleOpenDetail}
             />
           ))}
         </div>
@@ -191,6 +205,14 @@ export function CanyonResults({ filters, onReset }: CanyonResultsProps) {
           </Button>
         </motion.div>
       )}
+
+      {/* Detail Modal */}
+      <CanyonDetailModal
+        barranco={selectedBarranco}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        userLevel={nivelLabel}
+      />
     </div>
   );
 }
