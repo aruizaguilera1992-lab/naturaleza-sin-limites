@@ -153,7 +153,7 @@ export function ActivityDetailModal({ activity, isOpen, onClose }: ActivityDetai
             </div>
             
             {/* Price Badge */}
-            <div className="absolute top-4 right-4">
+            <div className="absolute top-4 right-14">
               <Badge className="bg-primary text-primary-foreground font-bold text-lg px-4 py-2">
                 {activity.price}
               </Badge>
