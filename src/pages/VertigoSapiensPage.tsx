@@ -8,6 +8,9 @@ import { VSComponentsSection } from '@/components/vertigo-sapiens/VSComponentsSe
 import { VSPlansSection } from '@/components/vertigo-sapiens/VSPlansSection';
 import { VSCalendarSection } from '@/components/vertigo-sapiens/VSCalendarSection';
 import { VSTestimonialsSection } from '@/components/vertigo-sapiens/VSTestimonialsSection';
+import { VSFacilitiesSection } from '@/components/vertigo-sapiens/VSFacilitiesSection';
+import { VSTrainersSection } from '@/components/vertigo-sapiens/VSTrainersSection';
+import { VSEnrollmentSection } from '@/components/vertigo-sapiens/VSEnrollmentSection';
 import { VSFAQSection } from '@/components/vertigo-sapiens/VSFAQSection';
 import { VSTrialFormSection } from '@/components/vertigo-sapiens/VSTrialFormSection';
 
@@ -23,6 +26,9 @@ const VertigoSapiensPage = () => {
         <VSPlansSection />
         <VSCalendarSection />
         <VSTestimonialsSection />
+        <VSFacilitiesSection />
+        <VSTrainersSection />
+        <VSEnrollmentSection />
         <VSFAQSection />
         <VSTrialFormSection />
       </main>
