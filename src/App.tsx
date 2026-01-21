@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Barranquismo from "./pages/Barranquismo";
 import Escalada from "./pages/Escalada";
 import Espeleologia from "./pages/Espeleologia";
+import ViasFerratas from "./pages/ViasFerratas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/barranquismo" element={<Barranquismo />} />
           <Route path="/escalada" element={<Escalada />} />
           <Route path="/espeleologia" element={<Espeleologia />} />
+          <Route path="/vias-ferratas" element={<ViasFerratas />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
