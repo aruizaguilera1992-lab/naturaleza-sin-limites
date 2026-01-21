@@ -54,9 +54,9 @@ const Actividades = () => {
   const [showComparison, setShowComparison] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   
-  // Scroll to top on page load
+  // Scroll to top on page load - instant scroll for better UX on navigation
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
   
   const { activities, counts } = useActivitiesData();
