@@ -57,7 +57,7 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
                 placeholder="Busca por nivel, zona, duración o tipo..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-24 py-6 text-base sm:text-lg bg-white/95 backdrop-blur-sm border-0 rounded-full shadow-xl"
+                className="pl-12 pr-24 py-6 text-base sm:text-lg bg-white/95 backdrop-blur-sm border-0 rounded-full shadow-xl text-black placeholder:text-gray-500"
               />
               <Button 
                 type="submit"
