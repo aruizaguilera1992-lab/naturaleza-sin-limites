@@ -16,6 +16,13 @@ interface FilterAnswers {
   provincia: string;
 }
 
+const pageTransition = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+};
+
 export default function Escalada() {
   const [showResults, setShowResults] = useState(false);
   const [filters, setFilters] = useState<FilterAnswers>({
@@ -46,8 +53,19 @@ export default function Escalada() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div 
+      className="min-h-screen bg-background"
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={pageTransition}
+    >
       <Navbar />
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
 
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
@@ -172,9 +190,11 @@ export default function Escalada() {
         </div>
       </section>
 
+      </motion.main>
+
       <Footer />
       <WhatsAppButton />
       <ScrollToTop />
-    </div>
+    </motion.div>
   );
 }

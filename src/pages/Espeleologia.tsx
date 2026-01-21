@@ -11,6 +11,13 @@ import { CaveResults } from '@/components/espeleologia/CaveResults';
 import { InitiationCourseCard } from '@/components/espeleologia/InitiationCourseCard';
 import speleologyHero from '@/assets/activity-speleology.jpg';
 
+const pageTransition = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+};
+
 export default function Espeleologia() {
   const [showResults, setShowResults] = useState(false);
   const [filters, setFilters] = useState<FilterAnswers>({
@@ -21,7 +28,7 @@ export default function Espeleologia() {
   });
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleQuestionnaireComplete = (answers: FilterAnswers) => {
@@ -61,8 +68,19 @@ export default function Espeleologia() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div 
+      className="min-h-screen bg-background"
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={pageTransition}
+    >
       <Navbar />
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
       
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -231,9 +249,11 @@ export default function Espeleologia() {
         </div>
       </section>
 
+      </motion.main>
+
       <Footer />
       <WhatsAppButton />
       <ScrollToTop />
-    </div>
+    </motion.div>
   );
 }
