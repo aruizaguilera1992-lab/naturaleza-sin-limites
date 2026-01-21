@@ -6,7 +6,7 @@ const founder = {
   image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
   bio: `Entrenador personal con Máster en Entrenamiento Deportivo-Físico y más de 5 años de experiencia en centros de referencia, donde ha diseñado programas de fuerza, resistencia y readaptación para más de 100 clientes mensuales. Su trabajo integra biomecánica aplicada, prevención de lesiones y disciplinas como yoga y pilates para construir una base sólida antes de exigir al máximo el rendimiento.
 
-Como Técnico Deportivo en Espeleología (TD1 y TD2), ha coordinado y guiado decenas de expediciones y competiciones oficiales de espeleología y descenso de cañones en Andalucía, lo que le permite llevar el entrenamiento más allá del gimnasio y convertir la naturaleza en una herramienta de transformación personal. Su enfoque une ciencia del entrenamiento, experiencias de aventura y un acompañamiento cercano para que cada persona gane fuerza, confianza y autonomía dentro y fuera de la montaña.`,
+Como Técnico Deportivo en Espeleología TD2, ha coordinado y guiado decenas de expediciones y competiciones oficiales de espeleología y descenso de cañones en Andalucía, lo que le permite llevar el entrenamiento más allá del gimnasio y convertir la naturaleza en una herramienta de transformación personal. Su enfoque une ciencia del entrenamiento, experiencias de aventura y un acompañamiento cercano para que cada persona gane fuerza, confianza y autonomía dentro y fuera de la montaña.`,
 };
 
 export function VSTrainersSection() {
