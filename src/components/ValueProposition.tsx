@@ -93,7 +93,7 @@ export function ValueProposition() {
             <div className="bg-gradient-to-br from-primary/15 to-primary/5 border-2 border-primary/40 rounded-2xl p-8 h-full transition-all duration-500 hover:border-primary/70 hover:shadow-glow relative overflow-hidden">
               {/* Badges */}
               <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
-                <span className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-lg">
+                <span className="bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-lg px-[11px] py-[3px]">
                   <Trophy className="h-3.5 w-3.5" />
                   Exclusivo
                 </span>
