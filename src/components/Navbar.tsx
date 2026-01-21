@@ -70,7 +70,15 @@ export function Navbar() {
               <Phone className="h-4 w-4" />
               <span className="text-sm font-medium">+34 685 60 95 42</span>
             </a>
-            <Button variant="hero" size="default">
+            <Button 
+              variant="hero" 
+              size="default"
+              onClick={() => {
+                document.getElementById('contacto')?.scrollIntoView({ 
+                  behavior: 'smooth' 
+                });
+              }}
+            >
               ¡Reserva Ahora!
             </Button>
           </div>
@@ -111,7 +119,17 @@ export function Navbar() {
                   </li>)}
               </ul>
               <div className="mt-6 pt-6 border-t border-border">
-                <Button variant="hero" size="lg" className="w-full">
+                <Button 
+                  variant="hero" 
+                  size="lg" 
+                  className="w-full"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    document.getElementById('contacto')?.scrollIntoView({ 
+                      behavior: 'smooth' 
+                    });
+                  }}
+                >
                   ¡Reserva Ahora!
                 </Button>
               </div>
