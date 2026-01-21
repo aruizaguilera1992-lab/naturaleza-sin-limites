@@ -1,11 +1,12 @@
-import { Mountain, Mail, Phone, MapPin, Instagram, Facebook, Youtube } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Mail, Phone, MapPin, Instagram, Facebook, Youtube } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 const navLinks = [
-  { href: '#actividades', label: 'Actividades' },
+  { href: '/#actividades', label: 'Actividades' },
   { href: '/vertigo-sapiens', label: 'Vértigo Sapiens' },
-  { href: '#nosotros', label: 'Sobre Nosotros' },
-  { href: '#contacto', label: 'Contacto' },
+  { href: '/#nosotros', label: 'Sobre Nosotros' },
+  { href: '/#contacto', label: 'Contacto' },
 ];
 
 const activities = [
@@ -22,15 +23,48 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith('/#')) {
+      const sectionId = href.substring(2);
+      if (location.pathname === '/') {
+        // Already on home page, just scroll
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        // Navigate to home then scroll
+        navigate('/');
+        setTimeout(() => {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    }
+  };
+
+  const handleLogoClick = () => {
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <footer className="bg-adventure-dark border-t border-border">
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div>
-            <a href="#inicio" className="inline-block mb-6">
+            <button onClick={handleLogoClick} className="inline-block mb-6 cursor-pointer">
               <img src={logo} alt="Naturaleza Sin Límites" className="h-24 w-auto" />
-            </a>
+            </button>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
               Proyecto de guiado y entrenamiento en deportes de montaña en Málaga. 
               Pasión por la aventura, compromiso con la seguridad.
@@ -57,12 +91,21 @@ export function Footer() {
             <ul className="space-y-3">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                  >
-                    {link.label}
-                  </a>
+                  {link.href.startsWith('/#') ? (
+                    <button
+                      onClick={() => handleNavClick(link.href)}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm text-left"
+                    >
+                      {link.label}
+                    </button>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -74,12 +117,12 @@ export function Footer() {
             <ul className="space-y-3">
               {activities.map((activity) => (
                 <li key={activity.label}>
-                  <a
-                    href={activity.href}
+                  <Link
+                    to={activity.href}
                     className="text-muted-foreground hover:text-primary transition-colors text-sm"
                   >
                     {activity.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -124,9 +167,9 @@ export function Footer() {
               © 2026 Naturaleza Sin Límites - Proyecto personal
             </p>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-primary transition-colors">Política de Privacidad</a>
-              <a href="#" className="hover:text-primary transition-colors">Términos y Condiciones</a>
-              <a href="#" className="hover:text-primary transition-colors">Cookies</a>
+              <Link to="/privacidad" className="hover:text-primary transition-colors">Política de Privacidad</Link>
+              <Link to="/terminos" className="hover:text-primary transition-colors">Términos y Condiciones</Link>
+              <Link to="/cookies" className="hover:text-primary transition-colors">Cookies</Link>
             </div>
           </div>
         </div>
