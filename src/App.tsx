@@ -8,6 +8,7 @@ import Barranquismo from "./pages/Barranquismo";
 import Escalada from "./pages/Escalada";
 import Espeleologia from "./pages/Espeleologia";
 import ViasFerratas from "./pages/ViasFerratas";
+import VertigoSapiensPage from "./pages/VertigoSapiensPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/escalada" element={<Escalada />} />
           <Route path="/espeleologia" element={<Espeleologia />} />
           <Route path="/vias-ferratas" element={<ViasFerratas />} />
+          <Route path="/vertigo-sapiens" element={<VertigoSapiensPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
