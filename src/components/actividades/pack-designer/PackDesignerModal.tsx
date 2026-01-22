@@ -155,7 +155,7 @@ export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerMo
       .map(([type, selected]) => {
         const sel = selected as SelectedActivity;
         const dateStr = sel.date ? format(sel.date, "d MMM yyyy", { locale: es }) : 'Por confirmar';
-        return `- ${sel.activity.name}: ${dateStr} ${sel.time || ''}`;
+        return `- ${sel.activity.name}: ${dateStr}`;
       })
       .join('\n');
 

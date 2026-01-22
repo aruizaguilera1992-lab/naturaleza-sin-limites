@@ -136,7 +136,7 @@ export function CustomPackDesignerModal({ open, onOpenChange }: CustomPackDesign
 
   // Validation
   const canProceedStep1 = state.selectedActivities.length >= 2;
-  const canProceedStep2 = state.selectedActivities.every(s => s.date && s.time);
+  const canProceedStep2 = state.selectedActivities.every(s => s.date);
   const canProceedStep3 = 
     state.coordinator.name.trim().length >= 2 &&
     state.coordinator.email.includes('@') &&
@@ -148,7 +148,7 @@ export function CustomPackDesignerModal({ open, onOpenChange }: CustomPackDesign
   const handleConfirm = () => {
     const activitiesList = state.selectedActivities.map(s => {
       const dateStr = s.date ? format(s.date, "d MMM yyyy", { locale: es }) : 'Por confirmar';
-      return `- ${s.activity.name}: ${dateStr} ${s.time || ''}`;
+      return `- ${s.activity.name}: ${dateStr}`;
     }).join('\n');
 
     const discounts = [];
@@ -416,7 +416,7 @@ ${state.coordinator.name}
                     2️⃣ Programa tus salidas
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Selecciona fecha y hora para cada actividad
+                    Selecciona fecha para cada actividad
                   </p>
                 </div>
 
@@ -433,47 +433,31 @@ ${state.coordinator.name}
                           <span className="font-semibold text-foreground">{selected.activity.name}</span>
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-3">
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "justify-start text-left font-normal",
-                                  !selected.date && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {selected.date ? format(selected.date, "dd/MM/yyyy", { locale: es }) : "Fecha"}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 z-[100]" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={selected.date}
-                                onSelect={(date) => date && handleUpdateActivity(index, { date })}
-                                disabled={(date) => date < new Date() || date > validityEndDate}
-                                initialFocus
-                                className="p-3 pointer-events-auto"
-                              />
-                            </PopoverContent>
-                          </Popover>
-
-                          <Select
-                            value={selected.time || ''}
-                            onValueChange={(time) => handleUpdateActivity(index, { time })}
-                          >
-                            <SelectTrigger className={cn(!selected.time && "text-muted-foreground")}>
-                              <Clock className="mr-2 h-4 w-4" />
-                              <SelectValue placeholder="Hora" />
-                            </SelectTrigger>
-                            <SelectContent className="z-[100]">
-                              {timeSlots.map((time) => (
-                                <SelectItem key={time} value={time}>{time}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
+                        {/* Date Picker */}
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !selected.date && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {selected.date ? format(selected.date, "dd/MM/yyyy", { locale: es }) : "Seleccionar fecha"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 z-[100]" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={selected.date}
+                              onSelect={(date) => date && handleUpdateActivity(index, { date })}
+                              disabled={(date) => date < new Date() || date > validityEndDate}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     );
                   })}
@@ -672,8 +656,8 @@ ${state.coordinator.name}
                             </span>
                           </div>
                           <div className="pl-6 text-sm text-muted-foreground">
-                            {selected.date && selected.time && (
-                              <p>📅 {format(selected.date, "d MMM yyyy", { locale: es })}, {selected.time}h</p>
+                            {selected.date && (
+                              <p>📅 {format(selected.date, "d MMM yyyy", { locale: es })}</p>
                             )}
                           </div>
                         </div>
