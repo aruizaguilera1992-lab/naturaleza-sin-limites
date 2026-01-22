@@ -98,9 +98,9 @@ export function PackStep4Summary({
                 </span>
               </div>
               <div className="pl-6 text-sm text-muted-foreground space-y-0.5">
-                {selected.date && selected.time && (
+                {selected.date && (
                   <p className="flex items-center gap-1">
-                    📅 {format(selected.date, "d MMM yyyy", { locale: es })}, {selected.time}h
+                    📅 {format(selected.date, "d MMM yyyy", { locale: es })}
                   </p>
                 )}
                 <p className="flex items-center gap-1">
