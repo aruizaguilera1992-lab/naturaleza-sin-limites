@@ -84,19 +84,18 @@ export function PackStep1Activities({
       {/* Pricing Summary */}
       <div className="border-t border-border pt-4 space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Subtotal actividades:</span>
-          <span className="text-foreground">{subtotal}€</span>
+          <span className="text-muted-foreground">Precio por persona (pack):</span>
+          <span className="text-foreground font-semibold">{packPrice}€</span>
         </div>
         {discount > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Descuento pack:</span>
-            <span className="text-primary font-semibold">-{discount}€</span>
+            <span className="text-muted-foreground">Ahorro vs. individual:</span>
+            <span className="text-primary font-semibold">-{discount}€/persona</span>
           </div>
         )}
-        <div className="flex justify-between text-lg font-bold">
-          <span className="text-foreground">TOTAL:</span>
-          <span className="text-foreground">{isComplete ? packPrice : subtotal}€</span>
-        </div>
+        <p className="text-xs text-muted-foreground pt-2">
+          * El precio final se calculará según el número de participantes
+        </p>
       </div>
 
       {/* Continue Button */}

@@ -45,14 +45,20 @@ export function PackStep4Summary({
     SelectedActivity
   ][];
   
-  const subtotal = activities.reduce((sum, [_, s]) => sum + s.activity.priceValue, 0);
-  const packPrice = parseInt(pack.price.replace('€', ''));
-  const discount = subtotal - packPrice;
+  // packPrice is per person
+  const pricePerPerson = parseInt(pack.price.replace('€', ''));
   
-  // Check if group discount applies
+  // Calculate group total
+  const subtotalGroup = pricePerPerson * participants;
+  
+  // Check if group discount applies (5% off for 6+ people)
   const groupDiscount = participants >= 6 ? 0.05 : 0;
-  const totalWithDiscount = Math.round(packPrice * (1 - groupDiscount));
-  const pricePerPerson = Math.round(totalWithDiscount / participants);
+  const discountAmount = Math.round(subtotalGroup * groupDiscount);
+  const totalWithDiscount = subtotalGroup - discountAmount;
+  
+  // Compare with individual activity prices
+  const individualSubtotal = activities.reduce((sum, [_, s]) => sum + s.activity.priceValue, 0);
+  const savingsPerPerson = individualSubtotal - pricePerPerson;
 
   return (
     <motion.div
@@ -112,27 +118,33 @@ export function PackStep4Summary({
         
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Subtotal actividades:</span>
-            <span className="text-foreground">{subtotal}€</span>
+            <span className="text-muted-foreground">Precio por persona:</span>
+            <span className="text-foreground">{pricePerPerson}€</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Descuento pack:</span>
-            <span className="text-primary">-{discount}€</span>
+            <span className="text-muted-foreground">Participantes:</span>
+            <span className="text-foreground">×{participants}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Subtotal grupo:</span>
+            <span className="text-foreground">{subtotalGroup}€</span>
           </div>
           {groupDiscount > 0 && (
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Descuento grupo (+6):</span>
-              <span className="text-primary">-{Math.round(packPrice * groupDiscount)}€</span>
+              <span className="text-muted-foreground">Descuento grupo (+6 pers.):</span>
+              <span className="text-primary">-{discountAmount}€</span>
             </div>
           )}
           <div className="border-t border-border pt-2 flex justify-between text-lg font-bold">
-            <span className="text-foreground">TOTAL:</span>
+            <span className="text-foreground">TOTAL A PAGAR:</span>
             <span className="text-foreground">{totalWithDiscount}€</span>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Precio por persona (÷{participants}):</span>
-            <span className="text-foreground font-medium">{pricePerPerson}€</span>
-          </div>
+          {savingsPerPerson > 0 && (
+            <div className="flex justify-between text-xs pt-1">
+              <span className="text-muted-foreground">Ahorro total vs. individual:</span>
+              <span className="text-primary font-medium">{savingsPerPerson * participants}€</span>
+            </div>
+          )}
         </div>
       </div>
 

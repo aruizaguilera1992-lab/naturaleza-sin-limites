@@ -159,8 +159,11 @@ export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerMo
       })
       .join('\n');
 
+    // Price per person, then calculate group total with discount
+    const subtotalGroup = packPrice * state.participants;
     const groupDiscount = state.participants >= 6 ? 0.05 : 0;
-    const totalPrice = Math.round(packPrice * (1 - groupDiscount));
+    const discountAmount = Math.round(subtotalGroup * groupDiscount);
+    const totalPrice = subtotalGroup - discountAmount;
 
     const message = `🎒 *RESERVA PACK ${pack.name}*
 
@@ -168,7 +171,8 @@ export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerMo
 ${activities}
 
 👥 *Participantes:* ${state.participants} personas
-💰 *Total:* ${totalPrice}€ (${Math.round(totalPrice / state.participants)}€/persona)
+💰 *Precio por persona:* ${packPrice}€
+${groupDiscount > 0 ? `🎉 *Descuento grupo (+6):* -${discountAmount}€\n` : ''}💵 *TOTAL GRUPO:* ${totalPrice}€
 
 👤 *Coordinador:*
 ${state.coordinator.name}
