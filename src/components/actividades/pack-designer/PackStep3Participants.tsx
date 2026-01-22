@@ -125,7 +125,7 @@ export function PackStep3Participants({
               placeholder="Tu nombre completo"
               value={coordinator.name}
               onChange={(e) => onUpdateCoordinator({ ...coordinator, name: e.target.value })}
-              className="text-black placeholder:text-gray-500"
+              className="bg-background text-foreground placeholder:text-muted-foreground"
             />
           </div>
           
@@ -137,7 +137,7 @@ export function PackStep3Participants({
               placeholder="tu@email.com"
               value={coordinator.email}
               onChange={(e) => onUpdateCoordinator({ ...coordinator, email: e.target.value })}
-              className="text-black placeholder:text-gray-500"
+              className="bg-background text-foreground placeholder:text-muted-foreground"
             />
           </div>
           
@@ -149,7 +149,7 @@ export function PackStep3Participants({
               placeholder="+34 600 000 000"
               value={coordinator.phone}
               onChange={(e) => onUpdateCoordinator({ ...coordinator, phone: e.target.value })}
-              className="text-black placeholder:text-gray-500"
+              className="bg-background text-foreground placeholder:text-muted-foreground"
             />
           </div>
         </div>
