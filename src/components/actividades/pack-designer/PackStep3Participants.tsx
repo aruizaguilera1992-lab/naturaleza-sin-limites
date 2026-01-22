@@ -26,13 +26,18 @@ export function PackStep3Participants({
   onContinue,
   onBack,
 }: PackStep3ParticipantsProps) {
-  const pricePerPerson = Math.round(packPrice / participants);
+  // packPrice is the price PER PERSON
+  const pricePerPerson = packPrice;
   const minParticipants = pack.minGroupSize || 1;
   const maxParticipants = 20;
   
-  // Check if group discount applies
+  // Calculate group total
+  const subtotalGroup = pricePerPerson * participants;
+  
+  // Check if group discount applies (5% off for 6+ people)
   const groupDiscount = participants >= 6 ? 0.05 : 0;
-  const totalWithDiscount = Math.round(packPrice * (1 - groupDiscount));
+  const discountAmount = Math.round(subtotalGroup * groupDiscount);
+  const totalWithDiscount = subtotalGroup - discountAmount;
   
   const isValid = 
     coordinator.name.trim().length >= 2 &&
@@ -92,14 +97,14 @@ export function PackStep3Participants({
           <p className="text-sm text-muted-foreground">
             Precio por persona: <span className="text-foreground font-semibold">{pricePerPerson}€</span>
           </p>
+          {groupDiscount > 0 && (
+            <p className="text-sm text-primary">
+              ✓ Descuento grupo (+6 personas): -{discountAmount}€
+            </p>
+          )}
           <p className="text-lg font-bold text-foreground">
             Total grupo ({participants} personas): {totalWithDiscount}€
           </p>
-          {groupDiscount > 0 && (
-            <p className="text-sm text-primary">
-              ✓ Descuento grupo aplicado: -{Math.round(packPrice * groupDiscount)}€
-            </p>
-          )}
         </div>
       </div>
 
