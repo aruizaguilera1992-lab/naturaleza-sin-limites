@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, Mountain, Zap, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { PackDesignerModal } from './pack-designer/PackDesignerModal';
 
 interface Pack {
   id: string;
@@ -82,6 +84,8 @@ const packs: Pack[] = [
 ];
 
 export function ActivitiesPacks() {
+  const [selectedPackId, setSelectedPackId] = useState<string | null>(null);
+
   return (
     <section className="py-16 sm:py-24 bg-muted/50">
       <div className="container mx-auto px-4">
@@ -169,15 +173,9 @@ export function ActivitiesPacks() {
                 <Button 
                   variant="hero" 
                   className="w-full"
-                  asChild
+                  onClick={() => setSelectedPackId(pack.id)}
                 >
-                  <a 
-                    href={`https://wa.me/34685609542?text=${encodeURIComponent(`¡Hola! Me interesa el pack ${pack.name}. ¿Podéis darme más información?`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ver Pack
-                  </a>
+                  Ver Pack
                 </Button>
               </div>
             </motion.div>
@@ -207,6 +205,13 @@ export function ActivitiesPacks() {
           </Button>
         </motion.div>
       </div>
+
+      {/* Pack Designer Modal */}
+      <PackDesignerModal
+        open={!!selectedPackId}
+        onOpenChange={(open) => !open && setSelectedPackId(null)}
+        packId={selectedPackId || ''}
+      />
     </section>
   );
 }
