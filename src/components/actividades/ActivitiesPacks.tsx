@@ -4,6 +4,7 @@ import { Check, Sparkles, Mountain, Zap, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PackDesignerModal } from './pack-designer/PackDesignerModal';
+import { CustomPackDesignerModal } from './pack-designer/CustomPackDesignerModal';
 
 interface Pack {
   id: string;
@@ -85,6 +86,7 @@ const packs: Pack[] = [
 
 export function ActivitiesPacks() {
   const [selectedPackId, setSelectedPackId] = useState<string | null>(null);
+  const [customPackOpen, setCustomPackOpen] = useState(false);
 
   return (
     <section className="py-16 sm:py-24 bg-muted/50">
@@ -193,15 +195,13 @@ export function ActivitiesPacks() {
           <p className="text-muted-foreground mb-4">
             ¿Necesitas un pack personalizado para tu grupo?
           </p>
-          <Button variant="outline" size="lg" asChild>
-            <a 
-              href="https://wa.me/34685609542?text=¡Hola!%20Quiero%20crear%20un%20pack%20personalizado%20para%20mi%20grupo."
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Zap className="h-4 w-4 mr-2" />
-              Crear Pack Personalizado
-            </a>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            onClick={() => setCustomPackOpen(true)}
+          >
+            <Zap className="h-4 w-4 mr-2" />
+            Crear Pack Personalizado
           </Button>
         </motion.div>
       </div>
@@ -211,6 +211,12 @@ export function ActivitiesPacks() {
         open={!!selectedPackId}
         onOpenChange={(open) => !open && setSelectedPackId(null)}
         packId={selectedPackId || ''}
+      />
+
+      {/* Custom Pack Designer Modal */}
+      <CustomPackDesignerModal
+        open={customPackOpen}
+        onOpenChange={setCustomPackOpen}
       />
     </section>
   );
