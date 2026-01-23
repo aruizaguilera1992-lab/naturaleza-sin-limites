@@ -12,6 +12,7 @@ import ViasFerratas from "./pages/ViasFerratas";
 import VertigoSapiensPage from "./pages/VertigoSapiensPage";
 import QuienesSomos from "./pages/QuienesSomos";
 import Contacto from "./pages/Contacto";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/vertigo-sapiens" element={<VertigoSapiensPage />} />
           <Route path="/quienes-somos" element={<QuienesSomos />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
