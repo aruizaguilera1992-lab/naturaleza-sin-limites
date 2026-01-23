@@ -4,6 +4,7 @@ import { Send, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -61,32 +62,29 @@ export function ContactFormSection() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('https://formspree.io/f/xnjjzrvd', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Save to Supabase
+      const { error: supabaseError } = await supabase
+        .from('contact_submissions')
+        .insert({
           nombre: data.nombre,
           contacto: data.contacto,
           interes: interestOptions.find(o => o.value === data.interes)?.label || data.interes,
-          personas: data.personas || 'No especificado',
-          mensaje: data.mensaje || 'Sin mensaje adicional',
-          _subject: `Nuevo contacto: ${data.nombre} - ${interestOptions.find(o => o.value === data.interes)?.label}`,
-        }),
-      });
-
-      if (response.ok) {
-        setIsSubmitted(true);
-        toast({
-          title: '¡Mensaje enviado!',
-          description: 'Te responderé en menos de 24 horas.',
+          personas: data.personas || null,
+          mensaje: data.mensaje || null,
         });
-        form.reset();
-      } else {
-        throw new Error('Error al enviar');
+
+      if (supabaseError) {
+        throw supabaseError;
       }
+
+      setIsSubmitted(true);
+      toast({
+        title: '¡Mensaje enviado!',
+        description: 'Te responderé en menos de 24 horas.',
+      });
+      form.reset();
     } catch (error) {
+      console.error('Error submitting form:', error);
       toast({
         title: 'Error al enviar',
         description: 'Por favor, inténtalo de nuevo o contacta por WhatsApp.',
