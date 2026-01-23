@@ -21,9 +21,9 @@ const navLinks = [{
   label: 'Quiénes Somos',
   isRoute: true
 }, {
-  href: '#contacto',
+  href: '/contacto',
   label: 'Contacto',
-  isRoute: false
+  isRoute: true
 }];
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
