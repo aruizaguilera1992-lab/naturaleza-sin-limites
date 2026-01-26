@@ -12,7 +12,8 @@ const pathways = [
     description: 'Ideal si buscas una salida de barranquismo, cuevas, vía ferrata u otra actividad puntual para ti, tu pareja, tus amigos o tu familia.',
     image: activityCanyoning,
     icon: Users,
-    cta: 'Quiero una propuesta de aventura',
+    ctaShort: 'Propuesta de aventura',
+    ctaLong: 'Quiero una propuesta de aventura',
     whatsappMessage: 'Hola, me interesa una experiencia de aventura. ¿Podrías darme más información?',
     gradient: 'from-emerald-500/20 to-teal-500/20',
     iconBg: 'bg-emerald-500/10 text-emerald-500',
@@ -23,7 +24,8 @@ const pathways = [
     description: 'Pensado si quieres dar un salto de nivel, entrenar con estructura y aprovechar la experiencia y resultados en competición para avanzar con seguridad.',
     image: activityFerrata,
     icon: Target,
-    cta: 'Quiero hablar sobre entrenamiento',
+    ctaShort: 'Hablar de entrenamiento',
+    ctaLong: 'Quiero hablar sobre entrenamiento',
     whatsappMessage: 'Hola, quiero mejorar mi rendimiento en montaña. ¿Podemos hablar sobre el programa Vértigo Sapiens?',
     gradient: 'from-amber-500/20 to-orange-500/20',
     iconBg: 'bg-amber-500/10 text-amber-500',
@@ -97,7 +99,8 @@ export function ContactPathsSection() {
                     className="w-full gap-2 text-sm sm:text-base"
                     onClick={() => handleWhatsApp(pathway.whatsappMessage)}
                   >
-                    {pathway.cta}
+                    <span className="sm:hidden">{pathway.ctaShort}</span>
+                    <span className="hidden sm:inline">{pathway.ctaLong}</span>
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </CardContent>
