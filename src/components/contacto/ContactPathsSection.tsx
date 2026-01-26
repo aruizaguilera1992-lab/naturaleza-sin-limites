@@ -56,7 +56,7 @@ export function ContactPathsSection() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto px-2 sm:px-0">
           {pathways.map((pathway, index) => (
             <motion.div
               key={pathway.id}
@@ -64,36 +64,37 @@ export function ContactPathsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
+              className="w-full"
             >
               <Card className="h-full overflow-hidden group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30">
                 {/* Image */}
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-40 sm:h-48 lg:h-52 overflow-hidden">
                   <img 
                     src={pathway.image} 
                     alt={pathway.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${pathway.gradient} to-transparent`} />
-                  <div className={`absolute top-4 left-4 p-3 rounded-full ${pathway.iconBg}`}>
-                    <pathway.icon className="w-6 h-6" />
+                  <div className={`absolute top-3 left-3 sm:top-4 sm:left-4 p-2 sm:p-3 rounded-full ${pathway.iconBg}`}>
+                    <pathway.icon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                 </div>
 
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xl md:text-2xl leading-tight">
+                <CardHeader className="pb-2 px-4 sm:px-6">
+                  <CardTitle className="text-lg sm:text-xl md:text-2xl leading-tight">
                     {pathway.title}
                   </CardTitle>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
-                  <p className="text-muted-foreground">
+                <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6">
+                  <p className="text-sm sm:text-base text-muted-foreground">
                     {pathway.description}
                   </p>
 
                   <Button 
                     variant="hero" 
                     size="lg" 
-                    className="w-full gap-2"
+                    className="w-full gap-2 text-sm sm:text-base"
                     onClick={() => handleWhatsApp(pathway.whatsappMessage)}
                   >
                     {pathway.cta}
