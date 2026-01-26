@@ -17,6 +17,10 @@ const navLinks = [{
   label: 'Vértigo Sapiens',
   isRoute: true
 }, {
+  href: '/blog',
+  label: 'Blog',
+  isRoute: true
+}, {
   href: '/quienes-somos',
   label: 'Quiénes Somos',
   isRoute: true
