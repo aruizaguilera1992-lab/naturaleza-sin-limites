@@ -274,12 +274,14 @@ export function ContactFormSection() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Enviando...
+                      <span className="sm:hidden">Enviando...</span>
+                      <span className="hidden sm:inline">Enviando...</span>
                     </>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      Enviar y te respondo pronto
+                      <span className="sm:hidden">Enviar mensaje</span>
+                      <span className="hidden sm:inline">Enviar y te respondo pronto</span>
                     </>
                   )}
                 </Button>
