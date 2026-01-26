@@ -5,6 +5,7 @@ import logo from '@/assets/logo.png';
 const navLinks = [
   { href: '/#actividades', label: 'Actividades' },
   { href: '/vertigo-sapiens', label: 'Vértigo Sapiens' },
+  { href: '/blog', label: 'Blog' },
   { href: '/#nosotros', label: 'Sobre Nosotros' },
   { href: '/#contacto', label: 'Contacto' },
 ];
@@ -101,6 +102,7 @@ export function Footer() {
                   ) : (
                     <Link
                       to={link.href}
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                       className="text-muted-foreground hover:text-primary transition-colors text-sm"
                     >
                       {link.label}
