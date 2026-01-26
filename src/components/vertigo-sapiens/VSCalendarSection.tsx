@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format, addMonths, subMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -45,10 +45,10 @@ const activitiesByMonth: Record<string, CalendarActivity[]> = {
   ],
 };
 
-const getTypeColor = (type: 'ferrata' | 'barranco') => {
+const getTypeStyles = (type: 'ferrata' | 'barranco') => {
   return type === 'ferrata' 
-    ? 'bg-[#4DB8A5]' 
-    : 'bg-[#2C4356]';
+    ? 'bg-primary text-primary-foreground' 
+    : 'bg-accent text-accent-foreground';
 };
 
 export function VSCalendarSection() {
@@ -60,15 +60,14 @@ export function VSCalendarSection() {
   const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
 
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden">
-      {/* Background with mountain image overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070')`,
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/70" />
+    <section className="py-16 md:py-24 relative overflow-hidden bg-background">
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 bg-gradient-dark" />
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.3) 0%, transparent 50%)`
+        }} />
+      </div>
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
@@ -79,42 +78,47 @@ export function VSCalendarSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-10 md:mb-14"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white tracking-wider mb-3">
-            CALENDARIO
-          </h2>
-          <p 
-            className="text-4xl md:text-5xl lg:text-6xl italic"
-            style={{ 
-              fontFamily: 'Georgia, "Times New Roman", serif',
-              color: '#F4B942'
-            }}
-          >
-            {capitalizedMonth}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Calendar className="h-8 w-8 text-primary" />
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground tracking-wide">
+              Calendario de <span className="text-gradient">Actividades</span>
+            </h2>
+          </div>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Próximas salidas programadas
           </p>
         </motion.div>
 
         {/* Month Navigation */}
-        <div className="flex items-center justify-center gap-4 mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex items-center justify-center gap-4 mb-8"
+        >
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-            className="text-white hover:bg-white/20 h-10 w-10"
+            className="border-border hover:bg-primary hover:text-primary-foreground hover:border-primary h-10 w-10 transition-all duration-300"
           >
-            <ChevronLeft className="h-6 w-6" />
+            <ChevronLeft className="h-5 w-5" />
           </Button>
-          <span className="text-white font-medium text-lg min-w-[140px] text-center">
-            {format(currentMonth, 'MMMM yyyy', { locale: es }).replace(/^\w/, c => c.toUpperCase())}
-          </span>
+          <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl px-6 py-3 min-w-[180px] text-center">
+            <span className="text-foreground font-heading font-semibold text-lg capitalize">
+              {capitalizedMonth} {format(currentMonth, 'yyyy')}
+            </span>
+          </div>
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-            className="text-white hover:bg-white/20 h-10 w-10"
+            className="border-border hover:bg-primary hover:text-primary-foreground hover:border-primary h-10 w-10 transition-all duration-300"
           >
-            <ChevronRight className="h-6 w-6" />
+            <ChevronRight className="h-5 w-5" />
           </Button>
-        </div>
+        </motion.div>
 
         {/* Activities List */}
         <motion.div
@@ -122,7 +126,7 @@ export function VSCalendarSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-2xl mx-auto space-y-4"
+          className="max-w-2xl mx-auto space-y-3"
         >
           {activities.length > 0 ? (
             activities.map((activity, index) => (
@@ -132,30 +136,51 @@ export function VSCalendarSection() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 rounded-xl p-4 shadow-md"
-                style={{ backgroundColor: '#F5E6D3' }}
+                whileHover={{ scale: 1.02, x: 5 }}
+                className="group flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-4 shadow-card hover:border-primary/50 transition-all duration-300 cursor-pointer"
               >
                 {/* Date Badge */}
                 <div
-                  className={`${getTypeColor(activity.type)} text-white text-center px-6 py-3 rounded-full font-medium text-sm sm:text-base min-w-[140px] shrink-0`}
+                  className={`${getTypeStyles(activity.type)} text-center px-5 py-2.5 rounded-full font-medium text-sm min-w-[130px] shrink-0 transition-all duration-300 group-hover:shadow-glow`}
                 >
                   {activity.day}
                 </div>
                 
                 {/* Activity Name */}
-                <div 
-                  className="flex-1 text-center sm:text-left italic text-lg sm:text-xl"
-                  style={{ color: '#8B4223' }}
-                >
-                  {activity.activity}
+                <div className="flex-1 text-center sm:text-left">
+                  <span className="text-foreground font-medium text-base sm:text-lg group-hover:text-primary transition-colors duration-300">
+                    {activity.activity}
+                  </span>
                 </div>
+
+                {/* Arrow indicator */}
+                <ChevronRight className="hidden sm:block h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
               </motion.div>
             ))
           ) : (
-            <div className="text-center py-12 text-white/70">
-              <p className="text-lg">No hay actividades programadas para este mes</p>
+            <div className="text-center py-12 bg-card/30 rounded-xl border border-border">
+              <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <p className="text-muted-foreground text-lg">No hay actividades programadas para este mes</p>
             </div>
           )}
+        </motion.div>
+
+        {/* Legend */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex flex-wrap justify-center gap-6 mt-8 pt-6 border-t border-border/50"
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-primary" />
+            <span className="text-sm text-muted-foreground">Vías Ferratas</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-accent" />
+            <span className="text-sm text-muted-foreground">Barranquismo</span>
+          </div>
         </motion.div>
       </div>
     </section>
