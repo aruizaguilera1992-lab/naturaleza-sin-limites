@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Check, AlertTriangle, Euro, Clock, Gift, MessageCircle } from 'lucide-react';
+import { ChevronDown, Check, Euro, Clock, Gift, MessageCircle, Sparkles } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 
@@ -12,6 +12,7 @@ interface PricingOption {
   sessions: string;
   total: string;
   price: string;
+  note?: string;
 }
 
 interface PlanDetailSheetProps {
@@ -21,7 +22,7 @@ interface PlanDetailSheetProps {
   commitment: string;
   discount: string;
   benefits: string[];
-  solves: string[];
+  motivationalQuote: string;
   isPopular?: boolean;
   ctaLabel: string;
   planName: string;
@@ -36,7 +37,7 @@ export function PlanDetailSheet({
   commitment,
   discount,
   benefits,
-  solves,
+  motivationalQuote,
   isPopular = false,
   ctaLabel,
   planName,
@@ -76,13 +77,16 @@ export function PlanDetailSheet({
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="pt-4 space-y-5"
+              className="pt-4 space-y-4"
             >
-              {/* Profile */}
-              <div className="bg-muted/30 rounded-lg p-4">
-                <p className="text-sm text-muted-foreground italic">
-                  "{profile}"
-                </p>
+              {/* Motivational Quote */}
+              <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-foreground font-medium italic">
+                    "{motivationalQuote}"
+                  </p>
+                </div>
               </div>
 
               {/* Components */}
@@ -93,7 +97,9 @@ export function PlanDetailSheet({
                 <ul className="space-y-2">
                   {components.map((component, index) => (
                     <li key={index} className="flex items-start gap-3 text-sm text-foreground">
-                      <component.icon className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <div className="p-1.5 bg-primary/10 rounded-lg flex-shrink-0">
+                        <component.icon className="h-3.5 w-3.5 text-primary" />
+                      </div>
                       <span>{component.text}</span>
                     </li>
                   ))}
@@ -104,23 +110,26 @@ export function PlanDetailSheet({
               <div>
                 <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                   <Euro className="h-4 w-4" />
-                  Opciones de precio
+                  Precios
                 </h5>
                 <div className="space-y-2">
                   {pricingOptions.map((option, index) => (
                     <div
                       key={index}
-                      className={`flex items-center justify-between p-3 rounded-lg ${
+                      className={`p-3 rounded-lg ${
                         index === 0 && isPopular 
                           ? 'bg-primary/10 border border-primary/30' 
                           : 'bg-muted/20'
                       }`}
                     >
-                      <div>
+                      <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium text-foreground">{option.sessions}</span>
-                        <span className="text-xs text-muted-foreground ml-2">({option.total})</span>
+                        <span className="text-sm font-bold text-primary">{option.price}</span>
                       </div>
-                      <span className="text-sm font-bold text-primary">{option.price}</span>
+                      <p className="text-xs text-muted-foreground">{option.total}</p>
+                      {option.note && (
+                        <p className="text-xs text-muted-foreground/80 italic mt-1">{option.note}</p>
+                      )}
                     </div>
                   ))}
                 </div>
