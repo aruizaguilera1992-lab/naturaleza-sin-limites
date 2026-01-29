@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, X, Star, Users, Video, Mountain, BookOpen, MessageCircle, Dumbbell, Apple, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -162,11 +163,10 @@ const renderValue = (value: boolean | string) => {
 };
 
 export function VSPlansSection() {
-  const handlePlanSelect = (planName: string) => {
-    const message = encodeURIComponent(
-      `¡Hola! Estoy interesado en el plan "${planName}" de Vértigo Sapiens. ¿Podrían darme más información?`
-    );
-    window.open(`https://wa.me/34685609542?text=${message}`, '_blank');
+  const [openPlanIndex, setOpenPlanIndex] = useState<number | null>(null);
+
+  const togglePlan = (index: number) => {
+    setOpenPlanIndex(openPlanIndex === index ? null : index);
   };
 
   return (
@@ -228,15 +228,6 @@ export function VSPlansSection() {
                 <p className="text-sm text-muted-foreground">{plan.description}</p>
               </div>
 
-              <Button
-                variant={plan.popular ? 'hero' : 'outline'}
-                size="lg"
-                className="w-full"
-                onClick={() => handlePlanSelect(plan.name)}
-              >
-                {plan.cta}
-              </Button>
-
               <PlanDetailSheet
                 profile={plan.profile}
                 components={plan.components}
@@ -246,6 +237,10 @@ export function VSPlansSection() {
                 benefits={plan.benefits}
                 solves={plan.solves}
                 isPopular={plan.popular}
+                ctaLabel={plan.cta}
+                planName={plan.name}
+                isOpen={openPlanIndex === index}
+                onToggle={() => togglePlan(index)}
               />
             </motion.div>
           ))}
@@ -312,28 +307,12 @@ export function VSPlansSection() {
               </div>
             ))}
 
-            {/* CTA Row */}
-            <div className="grid grid-cols-4 border-t border-border bg-background/30">
-              <div className="p-6" />
-              {plans.map((plan) => (
-                <div key={plan.name} className={`p-6 ${plan.popular ? 'bg-primary/5' : ''}`}>
-                  <Button
-                    variant={plan.popular ? 'hero' : 'outline'}
-                    className="w-full"
-                    onClick={() => handlePlanSelect(plan.name)}
-                  >
-                    {plan.cta}
-                  </Button>
-                </div>
-              ))}
-            </div>
-
-            {/* Expandable Details Row */}
+            {/* CTA Row with Expandable Details */}
             <div className="grid grid-cols-4 border-t border-border">
-              <div className="p-4 bg-background/30">
-                <span className="text-sm font-medium text-foreground">Detalles completos</span>
+              <div className="p-6 bg-background/30">
+                <span className="text-sm font-medium text-foreground">Reservar</span>
               </div>
-              {plans.map((plan) => (
+              {plans.map((plan, index) => (
                 <div key={plan.name} className={`p-4 ${plan.popular ? 'bg-primary/5' : ''}`}>
                   <PlanDetailSheet
                     profile={plan.profile}
@@ -344,6 +323,10 @@ export function VSPlansSection() {
                     benefits={plan.benefits}
                     solves={plan.solves}
                     isPopular={plan.popular}
+                    ctaLabel={plan.cta}
+                    planName={plan.name}
+                    isOpen={openPlanIndex === index}
+                    onToggle={() => togglePlan(index)}
                   />
                 </div>
               ))}
