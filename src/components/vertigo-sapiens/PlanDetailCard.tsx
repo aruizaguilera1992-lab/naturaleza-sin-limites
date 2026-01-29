@@ -156,22 +156,6 @@ export function PlanDetailCard({
             </ul>
           </div>
 
-          {/* Problems Solved */}
-          <div>
-            <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-accent" />
-              Problemas que resuelve
-            </h5>
-            <ul className="space-y-2">
-              {solves.map((problem, index) => (
-                <li key={index} className="flex items-start gap-2 text-sm text-foreground/80">
-                  <span className="text-accent">✓</span>
-                  <span>{problem}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* WhatsApp CTA */}
           <Button
             variant="hero"
