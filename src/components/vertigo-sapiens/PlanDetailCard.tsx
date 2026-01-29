@@ -11,6 +11,7 @@ interface PricingOption {
   sessions: string;
   total: string;
   price: string;
+  note?: string;
 }
 
 interface PlanDetailCardProps {
@@ -97,17 +98,22 @@ export function PlanDetailCard({
               {pricingOptions.map((option, index) => (
                 <div
                   key={index}
-                  className={`flex items-center justify-between p-3 rounded-lg ${
+                  className={`p-3 rounded-lg ${
                     index === 0 && isPopular 
                       ? 'bg-primary/10 border border-primary/30' 
                       : 'bg-muted/20'
                   }`}
                 >
-                  <div>
-                    <span className="text-sm font-medium text-foreground">{option.sessions}</span>
-                    <span className="text-xs text-muted-foreground ml-2">({option.total})</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <div>
+                      <span className="text-sm font-medium text-foreground">{option.sessions}</span>
+                      <span className="text-xs text-muted-foreground ml-2">({option.total})</span>
+                    </div>
+                    <span className="text-sm font-bold text-primary">{option.price}</span>
                   </div>
-                  <span className="text-sm font-bold text-primary">{option.price}</span>
+                  {option.note && (
+                    <p className="text-xs text-muted-foreground italic">{option.note}</p>
+                  )}
                 </div>
               ))}
             </div>
