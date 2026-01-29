@@ -5,35 +5,41 @@ import { Button } from '@/components/ui/button';
 const plans = [
   {
     name: 'Aventurero Activo',
-    price: 99,
-    period: '/mes',
+    pricePerSession: 12,
+    monthlyPrice: 99,
+    period: '/sesión',
     description: 'Perfecto para empezar tu transformación',
     popular: false,
     cta: 'Elegir Plan',
+    sessionsInfo: '~8 sesiones/mes',
   },
   {
     name: 'Entrenador Personal',
-    price: 298,
-    period: '/mes',
+    pricePerSession: 19,
+    monthlyPrice: 298,
+    period: '/sesión',
     description: 'Atención personalizada y resultados garantizados',
     popular: true,
     cta: 'Transformación Total',
+    sessionsInfo: '~16 sesiones/mes',
   },
   {
     name: 'Outdoor Experiencial',
-    price: 180,
-    period: '',
+    pricePerSession: 45,
+    monthlyPrice: 180,
+    period: '/actividad',
     subtitle: 'Paquete 4 actividades',
     description: 'Sin compromiso mensual, solo aventuras',
     popular: false,
     cta: 'Comprar Paquete',
+    sessionsInfo: '4 salidas programadas',
   },
 ];
 
 const features = [
   { 
-    name: 'Precio/mes', 
-    values: ['99€', '298€', '180€ (paquete)'] 
+    name: 'Precio por sesión', 
+    values: ['Desde 12€', 'Desde 19€', 'Desde 45€'] 
   },
   { 
     name: 'Sesiones presenciales', 
@@ -135,9 +141,13 @@ export function VSPlansSection() {
                 {plan.subtitle && (
                   <p className="text-xs text-muted-foreground mb-2">{plan.subtitle}</p>
                 )}
-                <div className="flex items-end justify-center gap-1 mb-2">
-                  <span className="text-4xl font-heading font-bold text-gradient">{plan.price}€</span>
-                  <span className="text-muted-foreground text-sm pb-1">{plan.period}</span>
+                <div className="flex flex-col items-center gap-1 mb-2">
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Desde</span>
+                  <div className="flex items-end justify-center gap-1">
+                    <span className="text-4xl font-heading font-bold text-gradient">{plan.pricePerSession}€</span>
+                    <span className="text-muted-foreground text-sm pb-1">{plan.period}</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{plan.sessionsInfo}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">{plan.description}</p>
               </div>
@@ -184,9 +194,13 @@ export function VSPlansSection() {
                   {plan.subtitle && (
                     <p className="text-xs text-muted-foreground">{plan.subtitle}</p>
                   )}
-                  <div className="flex items-end justify-center gap-1 mt-2">
-                    <span className="text-3xl font-heading font-bold text-gradient">{plan.price}€</span>
-                    <span className="text-muted-foreground text-sm pb-1">{plan.period}</span>
+                  <div className="flex flex-col items-center gap-0.5 mt-2">
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Desde</span>
+                    <div className="flex items-end justify-center gap-1">
+                      <span className="text-3xl font-heading font-bold text-gradient">{plan.pricePerSession}€</span>
+                      <span className="text-muted-foreground text-sm pb-1">{plan.period}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{plan.sessionsInfo}</span>
                   </div>
                 </div>
               ))}
