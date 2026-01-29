@@ -15,6 +15,7 @@ const plans = [{
   cta: 'Ver detalles',
   sessionsInfo: '4-8 sesiones/mes',
   profile: 'Entrenamiento funcional para deportes de aventura, con comunidad online incluida.',
+  motivationalQuote: 'El gimnasio tradicional te aburre. La montaña te llama. Aquí preparamos tu cuerpo para responder.',
   components: [{
     icon: Dumbbell,
     text: 'Sesiones presenciales en grupos reducidos (4-6 personas) para atención muy personalizada'
@@ -40,7 +41,6 @@ const plans = [{
   commitmentNote: 'para garantizar resultados reales',
   discount: '10-15% prepago 6 meses',
   benefits: ['Programa guiado específico para escalada, barrancos y montaña', 'Grupos pequeños (4-6) para atención muy personalizada', 'Acceso 24/7 a contenido formativo y comunidad privada', 'Progresa con aventureros que comparten tus mismos intereses'],
-  solves: ['Falta de preparación física específica para deportes de aventura', 'Aburrimiento del gimnasio tradicional sin resultados en montaña', 'Soledad en el entrenamiento y falta de motivación']
 }, {
   name: 'Entrenador Personal',
   subtitle: 'Integración total: presencial + online + planificación personalizada',
@@ -52,6 +52,7 @@ const plans = [{
   cta: 'Ver detalles',
   sessionsInfo: '10 sesiones/mes',
   profile: 'Integración total: sesiones presenciales, asesoramiento online y planificación 100% personalizada para tus objetivos.',
+  motivationalQuote: 'Tu tiempo es oro. Nosotros unimos entrenamiento, nutrición y técnica para que tú solo tengas que dar lo mejor.',
   components: [{
     icon: Dumbbell,
     text: '2 sesiones presenciales por semana (8 al mes) para entrenar contigo y corregir la técnica en directo'
@@ -86,7 +87,6 @@ const plans = [{
   commitmentNote: 'para garantizar resultados y un proceso bien estructurado',
   discount: '15% con 6 meses prepago',
   benefits: ['Sistema completo: entrenamiento + técnica + nutrición en uno', 'Seguimiento continuo sin coordinar varios profesionales', 'Plan 100% adaptado a tus objetivos y agenda', 'Análisis de video para corrección técnica y prevención de lesiones', 'Motivación alta con sesiones online personalizadas'],
-  solves: ['Falta de tiempo para gestionar múltiples servicios y coaches', 'Miedo a lesiones por falta de asesoramiento especializado', 'Coste elevado de contratar varios profesionales por separado', 'Falta de feedback claro y continuo sobre tu progreso']
 }, {
   name: 'Outdoor Experiencial',
   subtitle: 'Aventura sin suscripción ni compromiso mensual',
@@ -98,6 +98,7 @@ const plans = [{
   cta: 'Ver detalles',
   sessionsInfo: 'Paga solo lo que usas',
   profile: 'Actividades de aventura de fin de semana para vivir la montaña sin suscripción ni compromiso mensual.',
+  motivationalQuote: 'La aventura no espera. Elige tu próxima salida y deja que la montaña haga el resto.',
   components: [{
     icon: Mountain,
     text: 'Actividades outdoor con 3 niveles de dificultad (iniciación, intermedio y avanzado) para que siempre encuentres un reto a tu medida'
@@ -128,7 +129,6 @@ const plans = [{
   commitmentNote: 'pagas solo por las salidas que realizas',
   discount: 'Hasta 15% en paquetes',
   benefits: ['Salidas guiadas cada fin de semana con seguridad garantizada', '3 niveles de dificultad para encontrar tu reto perfecto', 'Aplica lo que entrenas en un entorno real de montaña', 'Flexibilidad total: sin cuotas, sin compromiso mensual'],
-  solves: ['Falta de equipo técnico para empezar actividades de aventura', 'Dificultad para encontrar compañeros y organizar salidas', 'Inseguridad para practicar deportes de montaña sin guía experto']
 }];
 const features = [{
   name: 'Precio por sesión',
@@ -229,7 +229,7 @@ export function VSPlansSection() {
                 <p className="text-sm text-muted-foreground">{plan.description}</p>
               </div>
 
-              <PlanDetailSheet profile={plan.profile} components={plan.components} pricingOptions={plan.pricingOptions} commitment={plan.commitment} discount={plan.discount} benefits={plan.benefits} solves={plan.solves} isPopular={plan.popular} ctaLabel={plan.cta} planName={plan.name} isOpen={openPlanIndex === index} onToggle={() => togglePlan(index)} />
+              <PlanDetailSheet profile={plan.profile} components={plan.components} pricingOptions={plan.pricingOptions} commitment={plan.commitment} discount={plan.discount} benefits={plan.benefits} motivationalQuote={plan.motivationalQuote} isPopular={plan.popular} ctaLabel={plan.cta} planName={plan.name} isOpen={openPlanIndex === index} onToggle={() => togglePlan(index)} />
             </motion.div>)}
         </div>
         {/* Comparison Table for Desktop */}
@@ -294,7 +294,7 @@ export function VSPlansSection() {
 
           {/* Independent Expandable Detail Card */}
           <AnimatePresence>
-            {openPlanIndex !== null && <PlanDetailCard profile={plans[openPlanIndex].profile} components={plans[openPlanIndex].components} pricingOptions={plans[openPlanIndex].pricingOptions} commitment={plans[openPlanIndex].commitment} discount={plans[openPlanIndex].discount} benefits={plans[openPlanIndex].benefits} solves={plans[openPlanIndex].solves} isPopular={plans[openPlanIndex].popular} planName={plans[openPlanIndex].name} onClose={() => setOpenPlanIndex(null)} />}
+            {openPlanIndex !== null && <PlanDetailCard profile={plans[openPlanIndex].profile} components={plans[openPlanIndex].components} pricingOptions={plans[openPlanIndex].pricingOptions} commitment={plans[openPlanIndex].commitment} discount={plans[openPlanIndex].discount} benefits={plans[openPlanIndex].benefits} motivationalQuote={plans[openPlanIndex].motivationalQuote} isPopular={plans[openPlanIndex].popular} planName={plans[openPlanIndex].name} onClose={() => setOpenPlanIndex(null)} />}
           </AnimatePresence>
         </motion.div>
       </div>
