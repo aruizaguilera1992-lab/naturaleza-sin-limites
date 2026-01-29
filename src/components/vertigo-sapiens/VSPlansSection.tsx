@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import { Check, X, Star } from 'lucide-react';
+import { Check, X, Star, Users, Video, Mountain, BookOpen, MessageCircle, Dumbbell, Apple, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
+import { PlanDetailSheet } from './PlanDetailSheet';
 const plans = [
   {
     name: 'Aventurero Activo',
@@ -12,6 +12,29 @@ const plans = [
     popular: false,
     cta: 'Elegir Plan',
     sessionsInfo: '~8 sesiones/mes',
+    profile: 'Cliente que quiere entrenamiento presencial + acceso a comunidad online',
+    components: [
+      { icon: Dumbbell, text: 'Sesiones presenciales en grupos pequeños (4-6 max)' },
+      { icon: MessageCircle, text: 'Acceso a comunidad cerrada digital' },
+      { icon: BookOpen, text: 'Acceso a biblioteca online de cursos' },
+    ],
+    pricingOptions: [
+      { sessions: '1 sesión/semana', total: '4 sesiones/mes', price: '119€/mes' },
+      { sessions: '2 sesiones/semana', total: '8 sesiones/mes', price: '189€/mes' },
+    ],
+    commitment: '3 meses mínimo',
+    discount: '10-15% si 6 meses prepago',
+    benefits: [
+      'Entrenamiento funcional especializado para deportes de aventura',
+      'Grupos pequeños para atención personalizada',
+      'Acceso 24/7 a contenido formativo',
+      'Comunidad de aventureros con intereses comunes',
+    ],
+    solves: [
+      'Falta de preparación física específica',
+      'Aburrimiento del gimnasio tradicional',
+      'Soledad en el entrenamiento',
+    ],
   },
   {
     name: 'Entrenador Personal',
@@ -22,6 +45,35 @@ const plans = [
     popular: true,
     cta: 'Transformación Total',
     sessionsInfo: '~16 sesiones/mes',
+    profile: 'Cliente que quiere integración completa presencial + online + personalización',
+    components: [
+      { icon: Dumbbell, text: '2 sesiones presenciales/semana (8 sesiones/mes)' },
+      { icon: Video, text: '2 sesiones asesoramiento online 1-a-1/mes (Zoom)' },
+      { icon: MessageCircle, text: 'Acceso ilimitado a comunidad cerrada' },
+      { icon: BookOpen, text: 'Acceso ilimitado a biblioteca online' },
+      { icon: Activity, text: 'Plan de entrenamiento personalizado (actualizado mensualmente)' },
+      { icon: Apple, text: 'Plan nutricional personalizado (1 revisión/mes)' },
+      { icon: Video, text: 'Análisis de movimiento en video (2 análisis/mes)' },
+    ],
+    pricingOptions: [
+      { sessions: 'Plan completo', total: '10 sesiones/mes', price: '329€/mes' },
+      { sessions: '6 meses prepago', total: 'Ahorro 15%', price: '285€/mes' },
+    ],
+    commitment: '3 meses mínimo',
+    discount: 'Ahorro 15% si 6 meses prepago = 285€/mes',
+    benefits: [
+      'Asesoramiento online personalizado (entrenamiento + nutrición + rehabilitación)',
+      'Análisis de video para corrección técnica',
+      'Plan 100% adaptado a tus objetivos',
+      'Seguimiento continuo de tu progreso',
+      'Todo en uno: gym + técnica + nutrición',
+    ],
+    solves: [
+      'Falta de tiempo para gestionar múltiples servicios',
+      'Miedo a lesiones por falta de asesoramiento',
+      'Coste elevado de contratar múltiples coaches',
+      'Falta de feedback claro sobre progreso',
+    ],
   },
   {
     name: 'Outdoor Experiencial',
@@ -33,6 +85,30 @@ const plans = [
     popular: false,
     cta: 'Comprar Paquete',
     sessionsInfo: '4 salidas programadas',
+    profile: 'Cliente que compra solo actividades outdoor sin membresía',
+    components: [
+      { icon: Mountain, text: 'Actividades outdoor en 3 niveles de dificultad' },
+      { icon: Users, text: 'Grupos reducidos con guía especializado' },
+      { icon: Activity, text: 'Material técnico incluido' },
+    ],
+    pricingOptions: [
+      { sessions: 'Actividad suelta', total: 'Según nivel', price: '59-79€' },
+      { sessions: 'Paquete 4 actividades', total: 'Ahorro 10%', price: '215€' },
+      { sessions: 'Paquete 8 actividades', total: 'Ahorro 15%', price: '380€' },
+    ],
+    commitment: 'Sin suscripción mensual',
+    discount: 'Hasta 15% en paquetes',
+    benefits: [
+      'Salidas programadas cada fin de semana',
+      'Grupos de nivel 1, 2 y 3',
+      'Aplica lo entrenado en entorno real',
+      'Flexibilidad total sin compromiso',
+    ],
+    solves: [
+      'Desconocimiento sobre ejercicios específicos',
+      'Falta de compañeros para actividades',
+      'Dificultad para organizar salidas',
+    ],
   },
 ];
 
@@ -77,7 +153,7 @@ const features = [
 
 const renderValue = (value: boolean | string) => {
   if (value === true) {
-    return <Check className="h-5 w-5 text-green-500 mx-auto" />;
+    return <Check className="h-5 w-5 text-primary mx-auto" />;
   }
   if (value === false) {
     return <X className="h-5 w-5 text-muted-foreground/50 mx-auto" />;
@@ -160,10 +236,20 @@ export function VSPlansSection() {
               >
                 {plan.cta}
               </Button>
+
+              <PlanDetailSheet
+                profile={plan.profile}
+                components={plan.components}
+                pricingOptions={plan.pricingOptions}
+                commitment={plan.commitment}
+                discount={plan.discount}
+                benefits={plan.benefits}
+                solves={plan.solves}
+                isPopular={plan.popular}
+              />
             </motion.div>
           ))}
         </div>
-
         {/* Comparison Table for Desktop */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -238,6 +324,27 @@ export function VSPlansSection() {
                   >
                     {plan.cta}
                   </Button>
+                </div>
+              ))}
+            </div>
+
+            {/* Expandable Details Row */}
+            <div className="grid grid-cols-4 border-t border-border">
+              <div className="p-4 bg-background/30">
+                <span className="text-sm font-medium text-foreground">Detalles completos</span>
+              </div>
+              {plans.map((plan) => (
+                <div key={plan.name} className={`p-4 ${plan.popular ? 'bg-primary/5' : ''}`}>
+                  <PlanDetailSheet
+                    profile={plan.profile}
+                    components={plan.components}
+                    pricingOptions={plan.pricingOptions}
+                    commitment={plan.commitment}
+                    discount={plan.discount}
+                    benefits={plan.benefits}
+                    solves={plan.solves}
+                    isPopular={plan.popular}
+                  />
                 </div>
               ))}
             </div>
