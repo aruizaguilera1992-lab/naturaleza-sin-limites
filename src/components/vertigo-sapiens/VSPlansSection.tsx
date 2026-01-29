@@ -7,35 +7,38 @@ import { PlanDetailSheet } from './PlanDetailSheet';
 const plans = [
   {
     name: 'Aventurero Activo',
-    pricePerSession: 12,
-    monthlyPrice: 99,
+    subtitle: 'Entrenamiento funcional para deportes de aventura',
+    pricePerSession: 15,
+    monthlyPrice: 119,
     period: '/sesión',
-    description: 'Perfecto para empezar tu transformación',
+    description: 'Prepárate físicamente para escalar, hacer barrancos y montaña con un programa guiado, en grupos pequeños y con acceso 24/7 a contenido formativo y comunidad privada.',
     popular: false,
-    cta: 'Elegir Plan',
-    sessionsInfo: '~8 sesiones/mes',
-    profile: 'Cliente que quiere entrenamiento presencial + acceso a comunidad online',
+    cta: 'Quiero empezar mi entrenamiento',
+    ctaSubtext: 'Reserva directa por WhatsApp',
+    sessionsInfo: '4-8 sesiones/mes',
+    profile: 'Entrenamiento funcional para deportes de aventura, con comunidad online incluida.',
     components: [
-      { icon: Dumbbell, text: 'Sesiones presenciales en grupos pequeños (4-6 max)' },
-      { icon: MessageCircle, text: 'Acceso a comunidad cerrada digital' },
-      { icon: BookOpen, text: 'Acceso a biblioteca online de cursos' },
+      { icon: Dumbbell, text: 'Sesiones presenciales en grupos reducidos (4-6 personas) para atención muy personalizada' },
+      { icon: MessageCircle, text: 'Acceso a comunidad digital cerrada de aventureros con tus mismos intereses' },
+      { icon: BookOpen, text: 'Biblioteca online de cursos para seguir mejorando fuera del gimnasio' },
     ],
     pricingOptions: [
-      { sessions: '1 sesión/semana', total: '4 sesiones/mes', price: '119€/mes' },
-      { sessions: '2 sesiones/semana', total: '8 sesiones/mes', price: '189€/mes' },
+      { sessions: '1 sesión/semana', total: '4 al mes', price: '119€/mes', note: 'Ideal si ya haces algo de actividad por tu cuenta' },
+      { sessions: '2 sesiones/semana', total: '8 al mes', price: '189€/mes', note: 'Para progresar rápido y ganar confianza' },
     ],
     commitment: '3 meses mínimo',
-    discount: '10-15% si 6 meses prepago',
+    commitmentNote: 'para garantizar resultados reales',
+    discount: '10-15% prepago 6 meses',
     benefits: [
-      'Entrenamiento funcional especializado para deportes de aventura',
-      'Grupos pequeños para atención personalizada',
-      'Acceso 24/7 a contenido formativo',
-      'Comunidad de aventureros con intereses comunes',
+      'Programa guiado específico para escalada, barrancos y montaña',
+      'Grupos pequeños (4-6) para atención muy personalizada',
+      'Acceso 24/7 a contenido formativo y comunidad privada',
+      'Progresa con aventureros que comparten tus mismos intereses',
     ],
     solves: [
-      'Falta de preparación física específica',
-      'Aburrimiento del gimnasio tradicional',
-      'Soledad en el entrenamiento',
+      'Falta de preparación física específica para deportes de aventura',
+      'Aburrimiento del gimnasio tradicional sin resultados en montaña',
+      'Soledad en el entrenamiento y falta de motivación',
     ],
   },
   {
@@ -317,10 +320,13 @@ export function VSPlansSection() {
                 <div key={plan.name} className={`p-4 ${plan.popular ? 'bg-primary/5' : ''}`}>
                   <Button
                     variant={plan.popular ? 'hero' : 'outline'}
-                    className={`w-full transition-all duration-300 ${openPlanIndex === index ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
+                    className={`w-full transition-all duration-300 flex-col h-auto py-3 ${openPlanIndex === index ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
                     onClick={() => togglePlan(index)}
                   >
-                    {plan.cta}
+                    <span className="text-sm">{plan.cta}</span>
+                    {plan.ctaSubtext && (
+                      <span className="text-xs opacity-70 font-normal">{plan.ctaSubtext}</span>
+                    )}
                   </Button>
                 </div>
               ))}
