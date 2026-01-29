@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Check, AlertTriangle, Euro, Clock, Gift } from 'lucide-react';
+import { ChevronDown, Check, AlertTriangle, Euro, Clock, Gift, MessageCircle } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Button } from '@/components/ui/button';
 
 interface PlanComponent {
   icon: React.ComponentType<{ className?: string }>;
@@ -23,6 +23,10 @@ interface PlanDetailSheetProps {
   benefits: string[];
   solves: string[];
   isPopular?: boolean;
+  ctaLabel: string;
+  planName: string;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
 export function PlanDetailSheet({
@@ -34,19 +38,34 @@ export function PlanDetailSheet({
   benefits,
   solves,
   isPopular = false,
+  ctaLabel,
+  planName,
+  isOpen,
+  onToggle,
 }: PlanDetailSheetProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const handleWhatsApp = () => {
+    const message = encodeURIComponent(
+      `¡Hola! Estoy interesado en el plan "${planName}" de Vértigo Sapiens. ¿Podrían darme más información?`
+    );
+    window.open(`https://wa.me/34685609542?text=${message}`, '_blank');
+  };
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full mt-4">
-      <CollapsibleTrigger className="w-full flex items-center justify-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors py-2">
-        <span>{isOpen ? 'Ocultar detalles' : 'Ver todos los detalles'}</span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
+    <Collapsible open={isOpen} onOpenChange={onToggle} className="w-full">
+      <CollapsibleTrigger asChild>
+        <Button
+          variant={isPopular ? 'hero' : 'outline'}
+          size="lg"
+          className="w-full gap-2"
         >
-          <ChevronDown className="h-4 w-4" />
-        </motion.div>
+          <span>{ctaLabel}</span>
+          <motion.div
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ChevronDown className="h-4 w-4" />
+          </motion.div>
+        </Button>
       </CollapsibleTrigger>
 
       <CollapsibleContent className="overflow-hidden">
@@ -156,6 +175,16 @@ export function PlanDetailSheet({
                   ))}
                 </ul>
               </div>
+              {/* WhatsApp CTA */}
+              <Button
+                variant="hero"
+                size="lg"
+                className="w-full gap-2 mt-2"
+                onClick={handleWhatsApp}
+              >
+                <MessageCircle className="h-5 w-5" />
+                Reservar por WhatsApp
+              </Button>
             </motion.div>
           )}
         </AnimatePresence>
