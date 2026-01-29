@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, Star, Users, Video, Mountain, BookOpen, MessageCircle, Dumbbell, Apple, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PlanDetailCard } from './PlanDetailCard';
 import { PlanDetailSheet } from './PlanDetailSheet';
 const plans = [
   {
@@ -307,31 +308,42 @@ export function VSPlansSection() {
               </div>
             ))}
 
-            {/* CTA Row with Expandable Details */}
+            {/* CTA Row */}
             <div className="grid grid-cols-4 border-t border-border">
               <div className="p-6 bg-background/30">
                 <span className="text-sm font-medium text-foreground">Reservar</span>
               </div>
               {plans.map((plan, index) => (
                 <div key={plan.name} className={`p-4 ${plan.popular ? 'bg-primary/5' : ''}`}>
-                  <PlanDetailSheet
-                    profile={plan.profile}
-                    components={plan.components}
-                    pricingOptions={plan.pricingOptions}
-                    commitment={plan.commitment}
-                    discount={plan.discount}
-                    benefits={plan.benefits}
-                    solves={plan.solves}
-                    isPopular={plan.popular}
-                    ctaLabel={plan.cta}
-                    planName={plan.name}
-                    isOpen={openPlanIndex === index}
-                    onToggle={() => togglePlan(index)}
-                  />
+                  <Button
+                    variant={plan.popular ? 'hero' : 'outline'}
+                    className={`w-full transition-all duration-300 ${openPlanIndex === index ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
+                    onClick={() => togglePlan(index)}
+                  >
+                    {plan.cta}
+                  </Button>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Independent Expandable Detail Card */}
+          <AnimatePresence>
+            {openPlanIndex !== null && (
+              <PlanDetailCard
+                profile={plans[openPlanIndex].profile}
+                components={plans[openPlanIndex].components}
+                pricingOptions={plans[openPlanIndex].pricingOptions}
+                commitment={plans[openPlanIndex].commitment}
+                discount={plans[openPlanIndex].discount}
+                benefits={plans[openPlanIndex].benefits}
+                solves={plans[openPlanIndex].solves}
+                isPopular={plans[openPlanIndex].popular}
+                planName={plans[openPlanIndex].name}
+                onClose={() => setOpenPlanIndex(null)}
+              />
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>
