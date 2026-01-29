@@ -12,8 +12,7 @@ const plans = [{
   period: '/sesión',
   description: 'Prepárate físicamente para escalar, hacer barrancos y montaña con un programa guiado, en grupos pequeños y con acceso 24/7 a contenido formativo y comunidad privada.',
   popular: false,
-  cta: 'Quiero empezar mi entrenamiento',
-  ctaSubtext: 'Reserva directa por WhatsApp',
+  cta: 'Ver detalles',
   sessionsInfo: '4-8 sesiones/mes',
   profile: 'Entrenamiento funcional para deportes de aventura, con comunidad online incluida.',
   components: [{
@@ -50,8 +49,7 @@ const plans = [{
   period: '/sesión',
   description: 'Consigue resultados visibles con un sistema completo que une entrenamiento, técnica, nutrición y seguimiento continuo, sin tener que coordinar varios profesionales.',
   popular: true,
-  cta: 'Quiero mi plan personal',
-  ctaSubtext: 'Reserva directa por WhatsApp',
+  cta: 'Ver detalles',
   sessionsInfo: '10 sesiones/mes',
   profile: 'Integración total: sesiones presenciales, asesoramiento online y planificación 100% personalizada para tus objetivos.',
   components: [{
@@ -97,8 +95,7 @@ const plans = [{
   period: '/actividad',
   description: 'Disfruta de salidas outdoor guiadas, con todo el material técnico incluido y grupos por niveles, para aplicar lo que entrenas en un entorno real con total seguridad.',
   popular: false,
-  cta: 'Reservar mi próxima aventura',
-  ctaSubtext: 'Reserva por WhatsApp en 1 minuto',
+  cta: 'Ver detalles',
   sessionsInfo: 'Paga solo lo que usas',
   profile: 'Actividades de aventura de fin de semana para vivir la montaña sin suscripción ni compromiso mensual.',
   components: [{
@@ -288,9 +285,8 @@ export function VSPlansSection() {
                 <span className="text-sm font-medium text-foreground">Reservar</span>
               </div>
               {plans.map((plan, index) => <div key={plan.name} className={`p-4 ${plan.popular ? 'bg-primary/5' : ''}`}>
-                  <Button variant={plan.popular ? 'hero' : 'outline'} className={`w-full transition-all duration-300 flex-col h-auto py-3 ${openPlanIndex === index ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`} onClick={() => togglePlan(index)}>
-                    <span className="text-sm">{plan.cta}</span>
-                    {plan.ctaSubtext}
+                  <Button variant={plan.popular ? 'hero' : 'outline'} className={`w-full transition-all duration-300 ${openPlanIndex === index ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`} onClick={() => togglePlan(index)}>
+                    {plan.cta}
                   </Button>
                 </div>)}
             </div>
