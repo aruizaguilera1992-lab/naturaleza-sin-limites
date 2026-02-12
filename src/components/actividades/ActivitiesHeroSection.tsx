@@ -31,7 +31,7 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-16 text-center">
+      <div className="relative z-10 container mx-auto px-4 pt-44 md:pt-40 pb-16 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
