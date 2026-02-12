@@ -12,7 +12,7 @@ const QuienesSomos = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="pt-20">
+      <main className="pt-36 md:pt-28 lg:pt-20">
         <QSHeroSection />
         <QSPathsSection />
         <QSValuesSection />
