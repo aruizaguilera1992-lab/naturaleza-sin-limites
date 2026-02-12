@@ -93,7 +93,7 @@ export default function Espeleologia() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center pt-44 md:pt-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

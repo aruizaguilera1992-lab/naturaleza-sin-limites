@@ -88,8 +88,11 @@ export function QSPathsSection() {
                     ))}
                   </ul>
 
-                  <Button asChild variant="default" className="w-full">
-                    <Link to={path.link}>{path.cta}</Link>
+                  <Button asChild variant="default" className="w-full text-sm sm:text-base">
+                    <Link to={path.link}>
+                      <span className="hidden sm:inline">{path.cta}</span>
+                      <span className="sm:hidden">{path.title === 'Experiencias de aventura' ? 'Ver experiencias' : 'Ver entrenamiento'}</span>
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>

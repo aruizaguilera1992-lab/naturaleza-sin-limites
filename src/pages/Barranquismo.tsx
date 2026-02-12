@@ -91,7 +91,7 @@ const Barranquismo = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
         
         {/* Content */}
-        <div className="container mx-auto px-4 relative z-10 text-center pt-24">
+        <div className="container mx-auto px-4 relative z-10 text-center pt-44 md:pt-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
