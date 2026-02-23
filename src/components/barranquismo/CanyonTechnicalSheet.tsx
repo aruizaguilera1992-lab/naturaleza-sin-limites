@@ -1,4 +1,4 @@
-import { Clock, Ruler, ArrowDown, Droplets, Sun, Users, Backpack, Car } from 'lucide-react';
+import { Clock, Ruler, ArrowDown, Droplets, Sun, Users, Backpack, Car, Hash, Route, Shield } from 'lucide-react';
 import type { Barranco } from '@/data/barrancos';
 
 interface CanyonTechnicalSheetProps {
@@ -20,6 +20,11 @@ const accesoLabels: Record<string, string> = {
 export function CanyonTechnicalSheet({ barranco }: CanyonTechnicalSheetProps) {
   const technicalData = [
     {
+      icon: Shield,
+      label: 'Clasificación',
+      value: barranco.clasificacionTecnica,
+    },
+    {
       icon: Clock,
       label: 'Duración',
       value: barranco.duracion,
@@ -28,6 +33,16 @@ export function CanyonTechnicalSheet({ barranco }: CanyonTechnicalSheetProps) {
       icon: Ruler,
       label: 'Desnivel',
       value: barranco.desnivel,
+    },
+    {
+      icon: Route,
+      label: 'Longitud',
+      value: barranco.longitud,
+    },
+    {
+      icon: Hash,
+      label: 'Nº Rápeles',
+      value: `${barranco.numRapeles}`,
     },
     {
       icon: ArrowDown,
