@@ -98,7 +98,7 @@ export function CanyonDetailModal({ barranco, isOpen, onClose, userLevel }: Cany
                   </DialogTitle>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4 text-primary" />
-                    <span>{barranco.provincia}</span>
+                    <span>{barranco.poblacion}, {barranco.provincia}</span>
                   </div>
                 </div>
                 <Badge className={`${nivelColors[barranco.nivel]} border font-bold text-base px-3 py-1`}>
