@@ -10,7 +10,6 @@ import { Pack, SelectedActivity, PackDesignerState } from './types';
 interface PackStep4SummaryProps {
   pack: Pack;
   selectedActivities: {
-    espeleologia?: SelectedActivity;
     barranquismo?: SelectedActivity;
     escalada?: SelectedActivity;
     ferratas?: SelectedActivity;
@@ -24,7 +23,6 @@ interface PackStep4SummaryProps {
 }
 
 const activityEmojis: Record<string, string> = {
-  espeleologia: '🕳️',
   barranquismo: '🌊',
   escalada: '🧗',
   ferratas: '🪜',
@@ -41,7 +39,7 @@ export function PackStep4Summary({
   onConfirm,
 }: PackStep4SummaryProps) {
   const activities = Object.entries(selectedActivities).filter(([_, v]) => v?.activity) as [
-    'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas',
+    'barranquismo' | 'escalada' | 'ferratas',
     SelectedActivity
   ][];
   

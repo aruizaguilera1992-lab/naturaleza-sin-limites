@@ -14,7 +14,7 @@ import { ActivitiesCalendar } from '@/components/actividades/ActivitiesCalendar'
 import { ActivitiesPacks } from '@/components/actividades/ActivitiesPacks';
 import { useActivitiesData, UnifiedActivity } from '@/hooks/useActivitiesData';
 
-export type ActivityType = 'todas' | 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas' | 'calendario';
+export type ActivityType = 'todas' | 'barranquismo' | 'escalada' | 'ferratas' | 'calendario';
 export type ViewMode = 'grid' | 'list' | 'map';
 export type SortOption = 'recomendados' | 'precio-asc' | 'precio-desc' | 'duracion' | 'popularidad' | 'nivel';
 

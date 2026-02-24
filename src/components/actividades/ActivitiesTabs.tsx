@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Mountain, Waves, CircleDot, GitBranch, Calendar } from 'lucide-react';
+import { Mountain, Waves, GitBranch, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ActivityType } from '@/pages/Actividades';
 
@@ -11,7 +11,6 @@ interface ActivitiesTabsProps {
 
 const tabs: { id: ActivityType; label: string; icon: React.ElementType; emoji: string }[] = [
   { id: 'todas', label: 'Todas', icon: Mountain, emoji: '🎯' },
-  { id: 'espeleologia', label: 'Espeleología', icon: CircleDot, emoji: '🕳️' },
   { id: 'barranquismo', label: 'Barranquismo', icon: Waves, emoji: '🌊' },
   { id: 'escalada', label: 'Escalada', icon: Mountain, emoji: '🧗' },
   { id: 'ferratas', label: 'Ferratas', icon: GitBranch, emoji: '🪜' },

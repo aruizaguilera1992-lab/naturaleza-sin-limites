@@ -15,7 +15,6 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { UnifiedActivity } from '@/hooks/useActivitiesData';
 import type { Barranco } from '@/data/barrancos';
-import type { Cueva } from '@/data/caves';
 import type { Crag } from '@/data/crags';
 import type { Ferrata } from '@/data/ferratas';
 
@@ -26,7 +25,6 @@ interface ActivityDetailModalProps {
 }
 
 const activityTypeConfig: Record<string, { label: string; color: string; emoji: string }> = {
-  espeleologia: { label: 'Espeleología', color: 'bg-amber-500/20 text-amber-400 border-amber-500/30', emoji: '🕳️' },
   barranquismo: { label: 'Barranquismo', color: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30', emoji: '🌊' },
   escalada: { label: 'Escalada', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', emoji: '🧗' },
   ferratas: { label: 'Vías Ferratas', color: 'bg-purple-500/20 text-purple-400 border-purple-500/30', emoji: '🪜' },
@@ -48,11 +46,7 @@ const accesoLabels: Record<string, string> = {
   difícil: 'Difícil',
 };
 
-const tiposCueva: Record<string, string> = {
-  'cueva-horizontal': 'Horizontal',
-  'sima-vertical': 'Vertical',
-  'cavidad-mixta': 'Mixta',
-};
+// (removed tiposCueva - espeleología no longer in catalog)
 
 function getBarrancoTechnicalData(barranco: Barranco) {
   return [
@@ -64,19 +58,6 @@ function getBarrancoTechnicalData(barranco: Barranco) {
     { icon: Users, label: 'Grupo mínimo', value: `${barranco.grupoMinimo} personas` },
     { icon: Backpack, label: 'Material incluido', value: barranco.materialIncluido ? 'Sí' : 'No' },
     { icon: Car, label: 'Acceso', value: accesoLabels[barranco.acceso] },
-  ];
-}
-
-function getCuevaTechnicalData(cueva: Cueva) {
-  return [
-    { icon: Clock, label: 'Duración', value: cueva.duracion },
-    { icon: Ruler, label: 'Desarrollo', value: cueva.desarrollo },
-    { icon: ArrowDown, label: 'Desnivel', value: cueva.desnivel },
-    { icon: Mountain, label: 'Tipo', value: tiposCueva[cueva.tipo] || cueva.tipo },
-    { icon: Sun, label: 'Mejor época', value: cueva.mejorEpoca },
-    { icon: Users, label: 'Grupo mínimo', value: `${cueva.grupoMinimo} personas` },
-    { icon: Backpack, label: 'Material incluido', value: cueva.materialIncluido ? 'Sí' : 'No' },
-    { icon: Car, label: 'Acceso', value: accesoLabels[cueva.acceso] || cueva.acceso },
   ];
 }
 
@@ -121,8 +102,6 @@ export function ActivityDetailModal({ activity, isOpen, onClose }: ActivityDetai
   
   if (activity.activityType === 'barranquismo') {
     technicalData = getBarrancoTechnicalData(activity.originalData as Barranco);
-  } else if (activity.activityType === 'espeleologia') {
-    technicalData = getCuevaTechnicalData(activity.originalData as Cueva);
   } else if (activity.activityType === 'escalada') {
     technicalData = getCragTechnicalData(activity.originalData as Crag);
   } else if (activity.activityType === 'ferratas') {

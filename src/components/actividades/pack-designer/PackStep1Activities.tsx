@@ -10,12 +10,11 @@ interface PackStep1ActivitiesProps {
   pack: Pack;
   activities: UnifiedActivity[];
   selectedActivities: {
-    espeleologia?: SelectedActivity;
     barranquismo?: SelectedActivity;
     escalada?: SelectedActivity;
     ferratas?: SelectedActivity;
   };
-  onSelectActivity: (type: 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas', activity: UnifiedActivity) => void;
+  onSelectActivity: (type: 'barranquismo' | 'escalada' | 'ferratas', activity: UnifiedActivity) => void;
   onContinue: () => void;
 }
 
@@ -37,7 +36,7 @@ export function PackStep1Activities({
     type => selectedActivities[type]?.activity
   );
 
-  const getActivitiesByType = (type: 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas') => {
+  const getActivitiesByType = (type: 'barranquismo' | 'escalada' | 'ferratas') => {
     return activities.filter(a => a.activityType === type);
   };
 

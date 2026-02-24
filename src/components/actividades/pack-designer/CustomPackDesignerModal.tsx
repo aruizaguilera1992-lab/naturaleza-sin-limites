@@ -50,7 +50,6 @@ const initialState: CustomPackState = {
 };
 
 const activityTypeConfig: Record<string, { icon: React.ElementType; label: string; emoji: string; color: string }> = {
-  espeleologia: { icon: Mountain, label: 'Espeleología', emoji: '🕳️', color: 'bg-amber-500' },
   barranquismo: { icon: Waves, label: 'Barranquismo', emoji: '🌊', color: 'bg-blue-500' },
   escalada: { icon: Pickaxe, label: 'Escalada', emoji: '🧗', color: 'bg-emerald-500' },
   ferratas: { icon: Route, label: 'Vía Ferrata', emoji: '🪜', color: 'bg-purple-500' },

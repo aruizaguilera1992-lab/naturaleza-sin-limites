@@ -20,12 +20,12 @@ const packConfigs: Omit<Pack, 'icon'>[] = [
     id: 'aventura-completa',
     name: 'AVENTURA COMPLETA',
     subtitle: 'La experiencia definitiva',
-    description: '4 actividades diferentes para descubrir todas las disciplinas verticales',
-    activities: 4,
-    types: ['Espeleología', 'Barranquismo', 'Escalada', 'Vía Ferrata'],
-    price: '180€',
-    originalPrice: '220€',
-    savings: '40€',
+    description: '3 actividades diferentes para descubrir todas las disciplinas verticales',
+    activities: 3,
+    types: ['Barranquismo', 'Escalada', 'Vía Ferrata'],
+    price: '145€',
+    originalPrice: '175€',
+    savings: '30€',
     color: 'from-primary to-primary/60',
     features: [
       '1 salida de cada actividad',
@@ -35,41 +35,40 @@ const packConfigs: Omit<Pack, 'icon'>[] = [
       'Válido 6 meses',
     ],
     validityMonths: 6,
-    requiredActivityTypes: ['espeleologia', 'barranquismo', 'escalada', 'ferratas'],
+    requiredActivityTypes: ['barranquismo', 'escalada', 'ferratas'],
     levelRestriction: 'any',
   },
   {
     id: 'vertical-integral',
     name: 'VERTICAL INTEGRAL',
     subtitle: 'Para amantes de la altura',
-    description: '3 actividades verticales para dominar la progresión en altura',
-    activities: 3,
-    types: ['Espeleología Vertical', 'Escalada', 'Vía Ferrata'],
-    price: '165€',
-    originalPrice: '195€',
-    savings: '30€',
+    description: '2 actividades verticales para dominar la progresión en altura',
+    activities: 2,
+    types: ['Escalada', 'Vía Ferrata'],
+    price: '120€',
+    originalPrice: '145€',
+    savings: '25€',
     color: 'from-emerald-500 to-emerald-500/60',
     features: [
-      '1 sima vertical',
       '1 jornada de escalada',
       '1 vía ferrata técnica',
       'Curso de progresión incluido',
       'Válido 4 meses',
     ],
     validityMonths: 4,
-    requiredActivityTypes: ['espeleologia', 'escalada', 'ferratas'],
+    requiredActivityTypes: ['escalada', 'ferratas'],
     levelRestriction: 'any',
   },
   {
     id: 'experto-total',
     name: 'EXPERTO TOTAL',
     subtitle: 'El desafío máximo',
-    description: '5 actividades de nivel alto para los más experimentados',
-    activities: 4,
-    types: ['Espeleología Avanzada', 'Barranquismo Técnico', 'Escalada Deportiva', 'Ferratas K4+'],
-    price: '240€',
-    originalPrice: '290€',
-    savings: '50€',
+    description: '3 actividades de nivel alto para los más experimentados',
+    activities: 3,
+    types: ['Barranquismo Técnico', 'Escalada Deportiva', 'Ferratas K4+'],
+    price: '195€',
+    originalPrice: '235€',
+    savings: '40€',
     color: 'from-amber-500 to-amber-500/60',
     features: [
       'Solo actividades nivel alto',
@@ -79,7 +78,7 @@ const packConfigs: Omit<Pack, 'icon'>[] = [
       'Válido 12 meses',
     ],
     validityMonths: 12,
-    requiredActivityTypes: ['espeleologia', 'barranquismo', 'escalada', 'ferratas'],
+    requiredActivityTypes: ['barranquismo', 'escalada', 'ferratas'],
     levelRestriction: 'high',
     minGroupSize: 2,
   },
@@ -123,7 +122,7 @@ export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerMo
 
   // Handlers
   const handleSelectActivity = (
-    type: 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas',
+    type: 'barranquismo' | 'escalada' | 'ferratas',
     activity: UnifiedActivity
   ) => {
     setState(prev => ({
@@ -136,7 +135,7 @@ export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerMo
   };
 
   const handleUpdateActivity = (
-    type: 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas',
+    type: 'barranquismo' | 'escalada' | 'ferratas',
     updates: Partial<SelectedActivity>
   ) => {
     setState(prev => ({

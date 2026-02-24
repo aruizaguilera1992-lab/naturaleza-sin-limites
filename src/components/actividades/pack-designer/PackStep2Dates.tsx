@@ -11,13 +11,12 @@ import { Pack, SelectedActivity } from './types';
 interface PackStep2DatesProps {
   pack: Pack;
   selectedActivities: {
-    espeleologia?: SelectedActivity;
     barranquismo?: SelectedActivity;
     escalada?: SelectedActivity;
     ferratas?: SelectedActivity;
   };
   onUpdateActivity: (
-    type: 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas',
+    type: 'barranquismo' | 'escalada' | 'ferratas',
     updates: Partial<SelectedActivity>
   ) => void;
   onContinue: () => void;
@@ -25,7 +24,6 @@ interface PackStep2DatesProps {
 }
 
 const activityEmojis: Record<string, string> = {
-  espeleologia: '🕳️',
   barranquismo: '🌊',
   escalada: '🧗',
   ferratas: '🪜',
@@ -39,7 +37,7 @@ export function PackStep2Dates({
   onBack,
 }: PackStep2DatesProps) {
   const activities = Object.entries(selectedActivities).filter(([_, v]) => v?.activity) as [
-    'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas',
+    'barranquismo' | 'escalada' | 'ferratas',
     SelectedActivity
   ][];
   

@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
 import { barrancos, Barranco } from '@/data/barrancos';
-import { cuevas, Cueva } from '@/data/caves';
 import { crags, Crag } from '@/data/crags';
 import { ferratas, Ferrata } from '@/data/ferratas';
 
 export interface UnifiedActivity {
   id: string;
   name: string;
-  activityType: 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas';
+  activityType: 'barranquismo' | 'escalada' | 'ferratas';
   province: string;
   zone: string;
   level: string;
@@ -37,7 +36,7 @@ export interface UnifiedActivity {
     previousExperience: boolean;
   };
   // Type-specific data
-  originalData: Barranco | Cueva | Crag | Ferrata;
+  originalData: Barranco | Crag | Ferrata;
 }
 
 function parsePrice(price: string): number {
@@ -151,45 +150,6 @@ export function useActivitiesData() {
       });
     });
     
-    // Map cuevas
-    cuevas.forEach(c => {
-      const levelInfo = mapCuevaLevel(c.nivelTecnico);
-      unified.push({
-        id: `cueva-${c.id}`,
-        name: c.nombre,
-        activityType: 'espeleologia',
-        province: c.provincia,
-        zone: c.zona,
-        level: c.nivelTecnico,
-        levelLabel: levelInfo.label,
-        levelOrder: levelInfo.order,
-        duration: c.duracion,
-        durationHours: parseDuration(c.duracion),
-        price: c.precio,
-        priceValue: parsePrice(c.precio),
-        shortDescription: c.descripcionCorta,
-        longDescription: c.descripcionLarga,
-        image: c.imagen,
-        imageLarge: c.imagenGrande,
-        characteristics: c.caracteristicas,
-        bestSeason: c.mejorEpoca,
-        minGroup: c.grupoMinimo,
-        materialIncluded: c.materialIncluido,
-        access: c.acceso,
-        externalUrl: c.urlInfo,
-        externalSource: 'catfae.com',
-        coordinates: c.coordenadas,
-        includes: c.incluye,
-        highlights: c.destacados,
-        requirements: {
-          minAge: c.requisitos.edadMinima,
-          physicalCondition: c.requisitos.condicionFisica,
-          previousExperience: c.requisitos.experienciaPrevia,
-        },
-        originalData: c,
-      });
-    });
-    
     // Map crags
     crags.forEach(c => {
       const levelInfo = mapCragLevel(c.gradoMinimo);
@@ -273,7 +233,6 @@ export function useActivitiesData() {
   
   const counts = useMemo(() => ({
     todas: activities.length,
-    espeleologia: activities.filter(a => a.activityType === 'espeleologia').length,
     barranquismo: activities.filter(a => a.activityType === 'barranquismo').length,
     escalada: activities.filter(a => a.activityType === 'escalada').length,
     ferratas: activities.filter(a => a.activityType === 'ferratas').length,
