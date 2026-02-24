@@ -130,13 +130,6 @@ export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilt
       {/* Type of Activity */}
       <FilterSection title="Tipo de Actividad">
         <CheckboxItem
-          id="type-espeleologia"
-          label="Espeleología"
-          count={counts.espeleologia}
-          checked={filters.types.includes('espeleologia')}
-          onCheckedChange={(checked) => handleTypeChange('espeleologia', checked)}
-        />
-        <CheckboxItem
           id="type-barranquismo"
           label="Barranquismo"
           count={counts.barranquismo}

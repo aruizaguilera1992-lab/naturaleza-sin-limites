@@ -18,7 +18,6 @@ interface ActivitiesGridProps {
 }
 
 const activityTypeLabels: Record<string, { label: string; color: string; emoji: string; route: string }> = {
-  espeleologia: { label: 'Espeleología', color: 'bg-amber-500/20 text-amber-400 border-amber-500/30', emoji: '🕳️', route: '/espeleologia' },
   barranquismo: { label: 'Barranquismo', color: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30', emoji: '🌊', route: '/barranquismo' },
   escalada: { label: 'Escalada', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', emoji: '🧗', route: '/escalada' },
   ferratas: { label: 'Vías Ferratas', color: 'bg-purple-500/20 text-purple-400 border-purple-500/30', emoji: '🪜', route: '/vias-ferratas' },

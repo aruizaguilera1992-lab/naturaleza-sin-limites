@@ -14,7 +14,7 @@ export interface Pack {
   color: string;
   features: string[];
   validityMonths: number;
-  requiredActivityTypes: ('espeleologia' | 'barranquismo' | 'escalada' | 'ferratas')[];
+  requiredActivityTypes: ('barranquismo' | 'escalada' | 'ferratas')[];
   levelRestriction?: 'high' | 'any';
   minGroupSize?: number;
 }
@@ -29,7 +29,6 @@ export interface PackDesignerState {
   step: number;
   pack: Pack | null;
   selectedActivities: {
-    espeleologia?: SelectedActivity;
     barranquismo?: SelectedActivity;
     escalada?: SelectedActivity;
     ferratas?: SelectedActivity;

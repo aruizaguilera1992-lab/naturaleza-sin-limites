@@ -8,7 +8,7 @@ import { UnifiedActivity } from '@/hooks/useActivitiesData';
 import { SelectedActivity } from './types';
 
 interface PackActivitySelectorProps {
-  activityType: 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas';
+  activityType: 'barranquismo' | 'escalada' | 'ferratas';
   activities: UnifiedActivity[];
   selected?: SelectedActivity;
   onSelect: (activity: UnifiedActivity) => void;
@@ -16,11 +16,6 @@ interface PackActivitySelectorProps {
 }
 
 const activityTypeConfig = {
-  espeleologia: {
-    icon: Mountain,
-    label: 'ESPELEOLOGÍA',
-    emoji: '🕳️',
-  },
   barranquismo: {
     icon: Waves,
     label: 'BARRANQUISMO',
