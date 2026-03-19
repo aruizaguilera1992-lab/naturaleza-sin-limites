@@ -33,7 +33,7 @@ export function HeroSection() {
           duration: 0.5
         }} className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-2 mb-8">
             <Mountain className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-foreground/90">Deportes de Montaña en Málaga</span>
+            <span className="text-sm font-medium text-foreground/90">Deportes de Aventura en Málaga</span>
           </motion.div>
 
           {/* Main Heading */}
@@ -64,8 +64,8 @@ export function HeroSection() {
           delay: 0.5,
           duration: 0.6
         }} className="text-hero-sub text-foreground/80 max-w-2xl mx-auto mb-10">
-            Guiado y entrenamiento en deportes de montaña.
-            Espeleología, barranquismo, escalada y vías ferratas en los mejores escenarios de Andalucía.
+            Guiado y entrenamiento en deportes de aventura.
+            Barranquismo, escalada y vías ferratas en los mejores escenarios de Andalucía.
           </motion.p>
 
           {/* CTA Buttons */}

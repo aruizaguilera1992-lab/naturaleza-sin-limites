@@ -67,7 +67,7 @@ export function Footer() {
               <img src={logo} alt="Naturaleza Sin Límites" className="h-24 w-auto" />
             </button>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-              Proyecto de guiado y entrenamiento en deportes de montaña en Málaga. 
+              Proyecto de guiado y entrenamiento en deportes de aventura en Málaga. 
               Pasión por la aventura, compromiso con la seguridad.
             </p>
             <div className="flex gap-4">
