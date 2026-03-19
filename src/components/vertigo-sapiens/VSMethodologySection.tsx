@@ -124,23 +124,45 @@ export function VSMethodologySection() {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {tab.content.map((item, index) => (
-                      <motion.div
-                        key={item.title}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex gap-4 p-4 bg-background/50 rounded-xl"
-                      >
-                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <div>
-                          <h4 className="font-semibold text-foreground mb-1">{item.title}</h4>
-                          <p className="text-sm text-muted-foreground">{item.desc}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                  {tab.type === 'pillars' && tab.pillars ? (
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                      {tab.pillars.map((pillar, index) => (
+                        <motion.div
+                          key={pillar.title}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.08 }}
+                          className="flex gap-4 p-5 bg-background/40 border border-border/50 rounded-xl hover:border-accent/40 transition-colors duration-300"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-primary/15 rounded-lg flex items-center justify-center mt-0.5">
+                            <pillar.icon className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <h4 className="font-heading font-semibold text-foreground text-sm mb-1">{pillar.title}</h4>
+                            <p className="text-sm text-muted-foreground leading-relaxed">{pillar.desc}</p>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : tab.content ? (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {tab.content.map((item, index) => (
+                        <motion.div
+                          key={item.title}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="flex gap-4 p-4 bg-background/50 rounded-xl"
+                        >
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                          <div>
+                            <h4 className="font-semibold text-foreground mb-1">{item.title}</h4>
+                            <p className="text-sm text-muted-foreground">{item.desc}</p>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : null}
                 </motion.div>
               </TabsContent>
             ))}
