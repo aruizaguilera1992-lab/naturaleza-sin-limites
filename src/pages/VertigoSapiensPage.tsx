@@ -27,7 +27,6 @@ const VertigoSapiensPage = () => {
       <main>
         <VSHeroSection />
         <VSWhatIsSection />
-        <VSFunctionalStrengthCard />
         <VSMethodologySection />
         <VSComponentsSection />
         <VSPlansSection />
