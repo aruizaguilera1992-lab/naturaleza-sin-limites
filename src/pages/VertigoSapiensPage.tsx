@@ -5,6 +5,7 @@ import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { VSHeroSection } from '@/components/vertigo-sapiens/VSHeroSection';
 import { VSWhatIsSection } from '@/components/vertigo-sapiens/VSWhatIsSection';
+import { VSFunctionalStrengthCard } from '@/components/vertigo-sapiens/VSFunctionalStrengthCard';
 import { VSMethodologySection } from '@/components/vertigo-sapiens/VSMethodologySection';
 import { VSComponentsSection } from '@/components/vertigo-sapiens/VSComponentsSection';
 import { VSPlansSection } from '@/components/vertigo-sapiens/VSPlansSection';
@@ -27,6 +28,7 @@ const VertigoSapiensPage = () => {
       <main>
         <VSHeroSection />
         <VSWhatIsSection />
+        <VSFunctionalStrengthCard />
         <VSMethodologySection />
         <VSComponentsSection />
         <VSPlansSection />
