@@ -91,11 +91,9 @@ export function VSWhatIsSection() {
           <div className="flex flex-wrap justify-center gap-4">
             {[
               'Escalada Deportiva',
-              'Boulder',
               'Barranquismo',
               'Espeleología',
               'Vías Ferratas',
-              'Alta Montaña',
             ].map((sport) => (
               <span
                 key={sport}
