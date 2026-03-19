@@ -6,9 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const methodologyTabs = [
   {
     id: 'fuerza',
-    label: 'Fuerza Específica',
+    label: 'Fuerza Funcional',
     icon: Dumbbell,
-    title: 'Fuerza Específica para Aventura',
+    title: 'Fuerza Funcional para Aventura',
     description: 'Desarrollamos la fuerza que realmente necesitas en la pared, el cañón o la cueva.',
     content: [
       { title: 'Fuerza de dedos', desc: 'Entrenamiento específico con hangboard y campus para mejorar tu agarre en escalada.' },

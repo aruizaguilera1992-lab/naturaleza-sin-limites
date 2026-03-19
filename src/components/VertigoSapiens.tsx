@@ -6,7 +6,7 @@ const pillars = [
   {
     icon: Dumbbell,
     title: 'Entrenamiento Presencial',
-    features: ['Grupos pequeños (4-6 máx)', 'Fuerza específica para aventura', '2-3 sesiones/semana de 90 min'],
+    features: ['Grupos pequeños (4-6 máx)', 'Fuerza funcional para aventura', '2-3 sesiones/semana de 90 min'],
   },
   {
     icon: Video,
