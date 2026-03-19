@@ -279,7 +279,7 @@ Andalucía ofrece un abanico de posibilidades para disfrutar de las vías ferrat
     content: `
 ## El Arte del Descenso Controlado
 
-El rappel, o rápel, es una técnica fundamental en el mundo de los deportes de montaña. Ya sea para espeleología, barranquismo, escalada o rescate, dominar esta habilidad te abrirá las puertas a un sinfín de aventuras.
+El rappel, o rápel, es una técnica fundamental en el mundo de los deportes de aventura. Ya sea para espeleología, barranquismo, escalada o rescate, dominar esta habilidad te abrirá las puertas a un sinfín de aventuras.
 
 ## Fundamentos del Rappel
 

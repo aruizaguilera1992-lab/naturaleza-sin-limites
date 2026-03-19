@@ -32,7 +32,7 @@ export function BlogHero() {
           </h1>
           
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Descubre el mundo de los deportes de montaña a través de nuestras experiencias. 
+            Descubre el mundo de los deportes de aventura a través de nuestras experiencias. 
             Guías prácticas, rutas recomendadas y todo lo que necesitas saber para vivir la aventura.
           </p>
         </motion.div>

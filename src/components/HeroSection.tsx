@@ -64,8 +64,8 @@ export function HeroSection() {
           delay: 0.5,
           duration: 0.6
         }} className="text-hero-sub text-foreground/80 max-w-2xl mx-auto mb-10">
-            Guiado y entrenamiento en deportes de montaña.
-            Espeleología, barranquismo, escalada y vías ferratas en los mejores escenarios de Andalucía.
+            Guiado y entrenamiento en deportes de aventura.
+            Barranquismo, escalada y vías ferratas en los mejores escenarios de Andalucía.
           </motion.p>
 
           {/* CTA Buttons */}
