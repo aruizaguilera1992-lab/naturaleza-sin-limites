@@ -7,25 +7,25 @@ const facilities = [
   {
     id: 1,
     title: 'Zona de Boulder y Campus Board',
-    image: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=1200&q=85',
     description: 'Muro de boulder con problemas desde 4a hasta 8a, más campus board profesional para entrenamiento de fuerza de dedos.',
   },
   {
     id: 2,
     title: 'Área de TRX y Anillas',
-    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=85',
     description: 'Estaciones de suspensión para entrenamiento funcional específico de escalada y deportes verticales.',
   },
   {
     id: 3,
     title: 'Espacio de Movilidad',
-    image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=85',
     description: 'Zona dedicada a estiramientos, yoga y trabajo de movilidad articular.',
   },
   {
     id: 4,
     title: 'Material Técnico Profesional',
-    image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=85',
     description: 'Equipamiento completo: bloqueadores, descendedores, poleas y material de progresión vertical para práctica.',
   },
 ];
