@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Phone, MapPin, Instagram, Facebook, Youtube } from 'lucide-react';
 import logo from '@/assets/logo.png';
+import { useCookieConsent } from '@/context/CookieConsentContext';
 
 const navLinks = [
   { href: '/#actividades', label: 'Actividades' },
@@ -26,6 +27,7 @@ const socialLinks = [
 export function Footer() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { openPreferences } = useCookieConsent();
 
   const handleNavClick = (href: string) => {
     if (href.startsWith('/#')) {
@@ -171,7 +173,7 @@ export function Footer() {
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <Link to="/privacidad" className="hover:text-primary transition-colors">Política de Privacidad</Link>
               <Link to="/terminos" className="hover:text-primary transition-colors">Términos y Condiciones</Link>
-              <Link to="/cookies" className="hover:text-primary transition-colors">Cookies</Link>
+              <button onClick={openPreferences} className="hover:text-primary transition-colors">Configurar cookies</button>
             </div>
           </div>
         </div>
