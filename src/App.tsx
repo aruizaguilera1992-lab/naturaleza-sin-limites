@@ -19,6 +19,8 @@ import QuienesSomos from "./pages/QuienesSomos";
 import Contacto from "./pages/Contacto";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Privacidad from "./pages/Privacidad";
+import Terminos from "./pages/Terminos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
