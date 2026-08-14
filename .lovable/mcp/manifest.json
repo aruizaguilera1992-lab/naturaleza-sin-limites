@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.2",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://aefoevrwckdifmzkrgrm.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "naturaleza-sin-limites",
+      "version": "0.1.0",
+      "title": "Naturaleza Sin Limites"
+    },
+    "tools": [
+      {
+        "name": "list_activities",
+        "title": "Listar actividades",
+        "description": "Lista el catálogo de actividades de aventura (barranquismo, escalada y vías ferratas) con filtros opcionales por tipo, provincia, texto y precio máximo.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "barranquismo",
+                "escalada",
+                "ferrata"
+              ],
+              "description": "Tipo de actividad a filtrar."
+            },
+            "province": {
+              "type": "string",
+              "description": "Provincia, p. ej. 'Málaga'."
+            },
+            "search": {
+              "type": "string",
+              "description": "Texto libre a buscar en nombre, zona o descripción."
+            },
+            "maxPrice": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Precio máximo por persona en euros."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "description": "Número máximo de resultados."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_activity",
+        "title": "Detalle de actividad",
+        "description": "Devuelve la ficha técnica completa de una actividad del catálogo a partir de su identificador.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Identificador de la actividad, obtenido con list_activities."
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_blog_posts",
+        "title": "Listar artículos del blog",
+        "description": "Lista los artículos del blog con filtros opcionales por categoría y texto de búsqueda.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "Categoría del artículo."
+            },
+            "search": {
+              "type": "string",
+              "description": "Texto a buscar en título, extracto o etiquetas."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "description": "Número máximo de resultados."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_blog_post",
+        "title": "Leer artículo del blog",
+        "description": "Devuelve el contenido completo de un artículo del blog a partir de su slug.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "slug": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Slug del artículo, obtenido con list_blog_posts."
+            }
+          },
+          "required": [
+            "slug"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
