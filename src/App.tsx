@@ -21,7 +21,10 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Privacidad from "./pages/Privacidad";
 import Terminos from "./pages/Terminos";
+import Login from "./pages/Login";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
+
 
 const queryClient = new QueryClient();
 
@@ -50,7 +53,9 @@ const App = () => (
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/privacidad" element={<Privacidad />} />
             <Route path="/terminos" element={<Terminos />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+
             <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
