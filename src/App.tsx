@@ -21,7 +21,10 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Privacidad from "./pages/Privacidad";
 import Terminos from "./pages/Terminos";
+import Login from "./pages/Login";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
+
 
 const queryClient = new QueryClient();
 
