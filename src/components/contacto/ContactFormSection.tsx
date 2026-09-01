@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Checkbox } from '@/components/ui/checkbox';
 import { motion } from 'framer-motion';
 import { Send, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -262,6 +264,43 @@ export function ContactFormSection() {
                           {...field}
                         />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Consentimiento RGPD */}
+                <FormField
+                  control={form.control}
+                  name="rgpd"
+                  render={({ field }) => (
+                    <FormItem className="rounded-lg border border-border bg-background/50 p-4">
+                      <div className="flex items-start gap-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className="mt-0.5"
+                          />
+                        </FormControl>
+                        <FormLabel className="text-xs font-normal leading-relaxed text-muted-foreground">
+                          He leído y acepto la{' '}
+                          <Link to="/privacidad" className="text-primary hover:underline">
+                            Política de Privacidad
+                          </Link>
+                          . Responsable: Naturaleza Sin Límites. Finalidad: responder a tu consulta y
+                          gestionar tu reserva. Legitimación: tu consentimiento. No cedemos tus datos
+                          a terceros salvo obligación legal. Puedes ejercer tus derechos de acceso,
+                          rectificación y supresión escribiendo a{' '}
+                          <a
+                            href="mailto:naturaleza.s.limites@gmail.com"
+                            className="text-primary hover:underline"
+                          >
+                            naturaleza.s.limites@gmail.com
+                          </a>
+                          .
+                        </FormLabel>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
