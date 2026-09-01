@@ -139,16 +139,17 @@ const ViasFerratas = () => {
       <section id="cuestionario" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           {!showResults ? (
-            <FerrataQuestionnaire onComplete={handleQuestionnaireComplete} onReset={handleReset} />
-            <div className="mt-6 text-center">
-              <button
-                onClick={handleShowAll}
-                className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors duration-300 active:scale-95"
-              >
-                Prefiero ver todas las vías ferratas
-              </button>
-            </div>
-
+            <>
+              <FerrataQuestionnaire onComplete={handleQuestionnaireComplete} onReset={handleReset} />
+              <div className="mt-6 text-center">
+                <button
+                  onClick={handleShowAll}
+                  className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors duration-300 active:scale-95"
+                >
+                  Prefiero ver todas las vías ferratas
+                </button>
+              </div>
+            </>
           ) : null}
         </div>
       </section>
