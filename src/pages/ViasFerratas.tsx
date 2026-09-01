@@ -42,7 +42,7 @@ const ViasFerratas = () => {
 
 
   const handleShowAll = () => {
-    setFilters(None);
+    setFilters({ nivel: null, vertigo: null, duracion: null, elemento: null });
     setShowResults(true);
     setTimeout(() => {
       document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });

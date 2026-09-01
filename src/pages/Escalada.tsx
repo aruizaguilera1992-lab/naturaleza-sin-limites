@@ -46,7 +46,7 @@ export default function Escalada() {
 
 
   const handleShowAll = () => {
-    setFilters(None);
+    setFilters({ nivel: '', tipo: '', duracion: '', provincia: '' });
     setShowResults(true);
     setTimeout(() => {
       document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });
