@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CanyonTechnicalSheet } from './CanyonTechnicalSheet';
 import type { Barranco } from '@/data/barrancos';
+import { PracticalInfo } from '@/components/shared/PracticalInfo';
 
 interface CanyonDetailModalProps {
   barranco: Barranco | null;
@@ -201,6 +202,9 @@ export function CanyonDetailModal({ barranco, isOpen, onClose, userLevel }: Cany
                 )}
               </ul>
             </div>
+
+            {/* Información práctica */}
+            <PracticalInfo />
 
             {/* CTA Footer */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border">
