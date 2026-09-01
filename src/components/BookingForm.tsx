@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -36,6 +38,9 @@ const bookingSchema = z.object({
       return emailRegex.test(val) || phoneRegex.test(val);
     }, { message: 'Introduce un email o teléfono válido' }),
   message: z.string().max(500, { message: 'El mensaje no puede superar los 500 caracteres' }).optional(),
+  rgpd: z.boolean().refine((v) => v === true, {
+    message: 'Debes aceptar la Política de Privacidad para enviar el formulario',
+  }),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
