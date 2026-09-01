@@ -37,9 +37,9 @@ const App = () => (
           <Toaster />
           <Sonner />
           <AnalyticsLoader />
-          <CookieBanner />
-          <CookiePreferencesModal />
           <BrowserRouter>
+            <CookieBanner />
+            <CookiePreferencesModal />
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/actividades" element={<Actividades />} />
