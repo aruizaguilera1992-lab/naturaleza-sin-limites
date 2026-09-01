@@ -8,11 +8,10 @@ const navLinks = [
   { href: '/vertigo-sapiens', label: 'Vértigo Sapiens' },
   { href: '/blog', label: 'Blog' },
   { href: '/#nosotros', label: 'Sobre Nosotros' },
-  { href: '/#contacto', label: 'Contacto' },
+  { href: '/contacto', label: 'Contacto' },
 ];
 
 const activities = [
-  { href: '/espeleologia', label: 'Espeleología' },
   { href: '/barranquismo', label: 'Barranquismo' },
   { href: '/escalada', label: 'Escalada' },
   { href: '/vias-ferratas', label: 'Vías Ferratas' },

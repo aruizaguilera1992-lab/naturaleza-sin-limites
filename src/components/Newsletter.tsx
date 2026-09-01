@@ -15,7 +15,7 @@ export function Newsletter() {
   };
 
   return (
-    <section id="contacto" className="py-24 relative overflow-hidden">
+    <section id="newsletter" className="py-24 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-adventure-dark to-adventure-dark" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
