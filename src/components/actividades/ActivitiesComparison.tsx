@@ -14,7 +14,6 @@ interface ActivitiesComparisonProps {
 }
 
 const activityTypeLabels: Record<string, { label: string; emoji: string }> = {
-  espeleologia: { label: 'Espeleología', emoji: '🕳️' },
   barranquismo: { label: 'Barranquismo', emoji: '🌊' },
   escalada: { label: 'Escalada', emoji: '🧗' },
   ferratas: { label: 'Vías Ferratas', emoji: '🪜' },
