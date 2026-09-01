@@ -31,6 +31,9 @@ const contactSchema = z.object({
   interes: z.string().min(1, 'Selecciona qué buscas'),
   personas: z.string().optional(),
   mensaje: z.string().trim().max(1000, 'Máximo 1000 caracteres').optional(),
+  rgpd: z.boolean().refine((v) => v === true, {
+    message: 'Debes aceptar la Política de Privacidad para enviar el formulario',
+  }),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
@@ -54,6 +57,7 @@ export function ContactFormSection() {
       interes: '',
       personas: '',
       mensaje: '',
+      rgpd: false,
     },
   });
 
