@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -36,6 +38,9 @@ const bookingSchema = z.object({
       return emailRegex.test(val) || phoneRegex.test(val);
     }, { message: 'Introduce un email o teléfono válido' }),
   message: z.string().max(500, { message: 'El mensaje no puede superar los 500 caracteres' }).optional(),
+  rgpd: z.boolean().refine((v) => v === true, {
+    message: 'Debes aceptar la Política de Privacidad para enviar el formulario',
+  }),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -66,6 +71,7 @@ export const BookingForm = () => {
       experienceLevel: '',
       contactMethod: '',
       message: '',
+      rgpd: false,
     },
   });
 
@@ -284,6 +290,43 @@ export const BookingForm = () => {
                           {...field}
                         />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Consentimiento RGPD */}
+                <FormField
+                  control={form.control}
+                  name="rgpd"
+                  render={({ field }) => (
+                    <FormItem className="rounded-lg border border-border bg-background/40 p-4">
+                      <div className="flex items-start gap-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className="mt-0.5"
+                          />
+                        </FormControl>
+                        <FormLabel className="text-xs font-normal leading-relaxed text-muted-foreground">
+                          He leído y acepto la{' '}
+                          <Link to="/privacidad" className="text-primary hover:underline">
+                            Política de Privacidad
+                          </Link>
+                          . Responsable: Naturaleza Sin Límites. Finalidad: gestionar tu solicitud de
+                          reserva y responderte. Legitimación: tu consentimiento. No cedemos tus
+                          datos a terceros salvo obligación legal. Derechos: acceso, rectificación y
+                          supresión en{' '}
+                          <a
+                            href="mailto:naturaleza.s.limites@gmail.com"
+                            className="text-primary hover:underline"
+                          >
+                            naturaleza.s.limites@gmail.com
+                          </a>
+                          .
+                        </FormLabel>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}

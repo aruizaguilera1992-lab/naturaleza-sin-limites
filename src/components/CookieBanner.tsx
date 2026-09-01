@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useCookieConsent } from '@/context/CookieConsentContext';
 import { Button } from '@/components/ui/button';
 import { Cookie } from 'lucide-react';
@@ -17,7 +18,10 @@ export function CookieBanner() {
             <p className="text-muted-foreground text-xs leading-relaxed">
               Utilizamos cookies propias y de terceros para analizar el uso del sitio, personalizar
               contenido y mostrarte publicidad relevante. Puedes aceptar, rechazar o configurar tus
-              preferencias en cualquier momento.
+              preferencias en cualquier momento. Más información en la{' '}
+              <Link to="/cookies" className="text-primary hover:underline">Política de Cookies</Link>{' '}
+              y la{' '}
+              <Link to="/privacidad" className="text-primary hover:underline">Política de Privacidad</Link>.
             </p>
           </div>
         </div>

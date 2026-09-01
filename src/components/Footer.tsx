@@ -173,6 +173,7 @@ export function Footer() {
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <Link to="/privacidad" className="hover:text-primary transition-colors">Política de Privacidad</Link>
               <Link to="/terminos" className="hover:text-primary transition-colors">Términos y Condiciones</Link>
+              <Link to="/cookies" className="hover:text-primary transition-colors">Política de Cookies</Link>
               <button onClick={openPreferences} className="hover:text-primary transition-colors">Configurar cookies</button>
             </div>
           </div>
