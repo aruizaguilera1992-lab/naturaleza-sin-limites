@@ -44,6 +44,15 @@ export default function Escalada() {
     }, 100);
   };
 
+
+  const handleShowAll = () => {
+    setFilters(None);
+    setShowResults(true);
+    setTimeout(() => {
+      document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
   const handleReset = () => {
     setFilters({ nivel: '', tipo: '', duracion: '', provincia: '' });
     setShowResults(false);
@@ -148,6 +157,15 @@ export default function Escalada() {
               onComplete={handleQuestionnaireComplete}
               onReset={handleReset}
             />
+            <div className="mt-6 text-center">
+              <button
+                onClick={handleShowAll}
+                className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors duration-300 active:scale-95"
+              >
+                Prefiero ver todas las escuelas
+              </button>
+            </div>
+
           </div>
         </section>
       )}
