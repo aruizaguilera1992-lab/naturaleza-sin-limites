@@ -71,12 +71,10 @@ export function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden lg:flex items-center gap-4">
-            <Button variant="hero" size="default" onClick={() => {
-            document.getElementById('contacto')?.scrollIntoView({
-              behavior: 'smooth'
-            });
-          }}>
-              ¡Reserva Ahora!
+            <Button variant="hero" size="default" asChild>
+              <Link to="/contacto" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                ¡Reserva Ahora!
+              </Link>
             </Button>
           </div>
 
@@ -112,13 +110,10 @@ export function Navbar() {
                   </li>)}
               </ul>
               <div className="mt-6 pt-6 border-t border-border">
-                <Button variant="hero" size="lg" className="w-full" onClick={() => {
-              setIsMobileMenuOpen(false);
-              document.getElementById('contacto')?.scrollIntoView({
-                behavior: 'smooth'
-              });
-            }}>
-                  ¡Reserva Ahora!
+                <Button variant="hero" size="lg" className="w-full" asChild>
+                  <Link to="/contacto" onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                    ¡Reserva Ahora!
+                  </Link>
                 </Button>
               </div>
             </div>

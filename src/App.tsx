@@ -12,7 +12,6 @@ import Index from "./pages/Index";
 import Actividades from "./pages/Actividades";
 import Barranquismo from "./pages/Barranquismo";
 import Escalada from "./pages/Escalada";
-import Espeleologia from "./pages/Espeleologia";
 import ViasFerratas from "./pages/ViasFerratas";
 import VertigoSapiensPage from "./pages/VertigoSapiensPage";
 import QuienesSomos from "./pages/QuienesSomos";
@@ -45,7 +44,6 @@ const App = () => (
             <Route path="/actividades" element={<Actividades />} />
             <Route path="/barranquismo" element={<Barranquismo />} />
             <Route path="/escalada" element={<Escalada />} />
-            <Route path="/espeleologia" element={<Espeleologia />} />
             <Route path="/vias-ferratas" element={<ViasFerratas />} />
             <Route path="/vertigo-sapiens" element={<VertigoSapiensPage />} />
             <Route path="/blog" element={<Blog />} />

@@ -1,22 +1,11 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import activitySpeleology from '@/assets/activity-speleology.jpg';
 import activityCanyoning from '@/assets/activity-canyoning.jpg';
 import activityClimbing from '@/assets/activity-climbing.jpg';
 import activityFerrata from '@/assets/activity-ferrata.jpg';
 
 const activities = [
-  {
-    id: 'espeleologia',
-    title: 'Espeleología',
-    subtitle: 'Explora el Mundo Subterráneo',
-    description: 'Descubre cuevas fascinantes con técnicas de progresión vertical. Desde iniciación hasta nivel avanzado.',
-    price: 45,
-    image: activitySpeleology,
-    cta: 'Ver Cuevas',
-    link: '/espeleologia',
-  },
   {
     id: 'barranquismo',
     title: 'Barranquismo',

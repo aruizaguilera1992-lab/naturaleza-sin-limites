@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 interface ScheduledActivity {
   id: string;
   date: Date;
-  type: 'espeleologia' | 'barranquismo' | 'escalada' | 'ferratas';
+  type: 'barranquismo' | 'escalada' | 'ferratas';
   title: string;
   time: string;
   location: string;
@@ -17,7 +17,6 @@ interface ScheduledActivity {
 }
 
 const activityIcons: Record<string, { emoji: string; color: string }> = {
-  espeleologia: { emoji: '🕳️', color: 'bg-amber-500' },
   barranquismo: { emoji: '🌊', color: 'bg-cyan-500' },
   escalada: { emoji: '🧗', color: 'bg-emerald-500' },
   ferratas: { emoji: '🪜', color: 'bg-purple-500' },
@@ -33,11 +32,9 @@ const generateSampleActivities = (): ScheduledActivity[] => {
   // Generate some sample activities for the current and next month
   const sampleData = [
     { day: 1, type: 'barranquismo' as const, title: 'Río Verde', time: '09:00', location: 'Granada', spots: 4, price: '55€' },
-    { day: 8, type: 'espeleologia' as const, title: 'Cueva de Nerja', time: '10:00', location: 'Málaga', spots: 3, price: '45€' },
     { day: 8, type: 'escalada' as const, title: 'El Chorro - Frontales', time: '09:00', location: 'Málaga', spots: 2, price: '49€' },
     { day: 15, type: 'barranquismo' as const, title: 'Río Guadalmina', time: '10:00', location: 'Málaga', spots: 5, price: '50€' },
     { day: 15, type: 'ferratas' as const, title: 'Caminito del Rey', time: '08:00', location: 'Málaga', spots: 6, price: '50€' },
-    { day: 22, type: 'espeleologia' as const, title: 'Cueva del Gato', time: '09:30', location: 'Málaga', spots: 4, price: '55€' },
     { day: 22, type: 'escalada' as const, title: 'Torcal de Antequera', time: '10:00', location: 'Málaga', spots: 3, price: '45€' },
     { day: 29, type: 'barranquismo' as const, title: 'Río Chillar', time: '09:00', location: 'Málaga', spots: 6, price: '45€' },
   ];
@@ -232,7 +229,6 @@ export function ActivitiesCalendar() {
         
         {/* Legend */}
         <div className="px-4 sm:px-6 pb-4 flex flex-wrap gap-3 sm:gap-4 justify-center text-xs sm:text-sm text-muted-foreground border-t border-border pt-4">
-          <span className="flex items-center gap-1">🕳️ Espeleología</span>
           <span className="flex items-center gap-1">🌊 Barranquismo</span>
           <span className="flex items-center gap-1">🧗 Escalada</span>
           <span className="flex items-center gap-1">🪜 Ferratas</span>

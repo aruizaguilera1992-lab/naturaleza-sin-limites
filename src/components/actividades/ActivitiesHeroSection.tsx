@@ -45,7 +45,7 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
             Descubre tu Próxima Aventura
           </p>
           <p className="text-sm sm:text-base text-white/70 mb-8">
-            Espeleología · Barranquismo · Escalada · Vías Ferratas
+            Barranquismo · Escalada · Vías Ferratas
           </p>
 
           {/* Search Bar */}
