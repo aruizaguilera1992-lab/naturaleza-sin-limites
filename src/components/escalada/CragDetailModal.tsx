@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CragTechnicalSheet } from './CragTechnicalSheet';
 import type { Crag } from '@/data/crags';
+import { PracticalInfo } from '@/components/shared/PracticalInfo';
 
 interface CragDetailModalProps {
   crag: Crag | null;
@@ -184,6 +185,12 @@ export function CragDetailModal({ crag, isOpen, onClose, userLevel }: CragDetail
                 </div>
               </div>
             </div>
+
+            {/* Información práctica */}
+            <PracticalInfo
+              totalDuration="Jornada aproximada de 4-6 h incluyendo aproximación y regreso"
+              whatToBring={[ 'Ropa deportiva cómoda', 'Calzado deportivo (pies de gato incluidos)', 'Agua, comida ligera y gorra', 'Protección solar' ]}
+            />
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border">

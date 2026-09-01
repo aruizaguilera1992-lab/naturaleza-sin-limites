@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FerrataTechnicalSheet } from './FerrataTechnicalSheet';
 import type { Ferrata } from '@/data/ferratas';
+import { PracticalInfo } from '@/components/shared/PracticalInfo';
 
 interface FerrataDetailModalProps {
   ferrata: Ferrata | null;
@@ -296,6 +297,12 @@ export function FerrataDetailModal({ ferrata, isOpen, onClose, userLevel }: Ferr
                 </div>
               </div>
             )}
+
+            {/* Información práctica */}
+            <PracticalInfo
+              totalDuration="Jornada aproximada de 4-6 h incluyendo aproximación y regreso"
+              whatToBring={[ 'Calzado de montaña o trekking', 'Ropa cómoda y guantes finos', 'Mochila pequeña con agua y comida', 'Protección solar y gorra' ]}
+            />
 
             {/* CTA Footer */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border">

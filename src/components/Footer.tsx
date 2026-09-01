@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Mail, Phone, MapPin, Instagram, Facebook, Youtube } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import { useCookieConsent } from '@/context/CookieConsentContext';
 
@@ -18,9 +18,12 @@ const activities = [
 ];
 
 const socialLinks = [
-  { href: 'https://instagram.com', icon: Instagram, label: 'Instagram' },
-  { href: 'https://facebook.com', icon: Facebook, label: 'Facebook' },
-  { href: 'https://youtube.com', icon: Youtube, label: 'YouTube' },
+  {
+    href: 'https://wa.me/34685609542?text=%C2%A1Hola!%20Quiero%20informaci%C3%B3n%20sobre%20vuestras%20actividades.',
+    icon: MessageCircle,
+    label: 'WhatsApp',
+  },
+  { href: 'mailto:info@naturalezasinlimites.com', icon: Mail, label: 'Email' },
 ];
 
 export function Footer() {

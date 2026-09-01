@@ -17,6 +17,7 @@ import type { UnifiedActivity } from '@/hooks/useActivitiesData';
 import type { Barranco } from '@/data/barrancos';
 import type { Crag } from '@/data/crags';
 import type { Ferrata } from '@/data/ferratas';
+import { PracticalInfo } from '@/components/shared/PracticalInfo';
 
 interface ActivityDetailModalProps {
   activity: UnifiedActivity | null;
@@ -266,6 +267,9 @@ export function ActivityDetailModal({ activity, isOpen, onClose }: ActivityDetai
                 )}
               </ul>
             </div>
+
+            {/* Información práctica */}
+            <PracticalInfo />
 
             {/* CTA Footer */}
             <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t border-border">

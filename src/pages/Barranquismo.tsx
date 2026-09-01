@@ -47,6 +47,15 @@ const Barranquismo = () => {
     }, 100);
   };
 
+
+  const handleShowAll = () => {
+    setFilters({ nivel: null, duracion: null, caracteristica: null, provincia: null });
+    setShowResults(true);
+    setTimeout(() => {
+      document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
   const handleReset = () => {
     setShowResults(false);
     setFilters({
@@ -148,6 +157,15 @@ const Barranquismo = () => {
                 onComplete={handleQuestionnaireComplete}
                 onReset={handleReset}
               />
+            <div className="mt-6 text-center">
+              <button
+                onClick={handleShowAll}
+                className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors duration-300 active:scale-95"
+              >
+                Prefiero ver todos los barrancos
+              </button>
+            </div>
+
             </>
           ) : null}
         </div>
