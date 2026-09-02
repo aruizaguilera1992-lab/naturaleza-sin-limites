@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.grant_admin_to_owner_emails() FROM PUBLIC, anon, authenticated;
