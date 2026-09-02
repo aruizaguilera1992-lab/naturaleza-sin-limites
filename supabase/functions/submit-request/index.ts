@@ -178,5 +178,10 @@ Deno.serve(async (req) => {
     `Personas: ${data.personas ?? '-'}`,
     `Mensaje: ${data.mensaje ?? '-'}`,
   ]);
+  await sendClientConfirmation(data.contacto, data.nombre, `Resumen de tu mensaje`, [
+    `Interés: ${data.interes}`,
+    `Personas: ${data.personas ?? 'por concretar'}`,
+  ]);
   return json({ ok: true });
+
 });
