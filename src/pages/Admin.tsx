@@ -171,6 +171,26 @@ export default function Admin() {
     toast({ title: "Estado actualizado" });
   };
 
+  const updateNotes = async (
+    table: "bookings" | "contact_submissions",
+    id: string,
+    admin_notes: string,
+  ) => {
+    const value = admin_notes.trim() ? admin_notes : null;
+    const { error } = await supabase.from(table).update({ admin_notes: value }).eq("id", id);
+    if (error) {
+      toast({ title: "No se pudo guardar la nota", description: error.message, variant: "destructive" });
+      return;
+    }
+    if (table === "bookings") {
+      setBookings((prev) => prev.map((r) => (r.id === id ? { ...r, admin_notes: value } : r)));
+    } else {
+      setContacts((prev) => prev.map((r) => (r.id === id ? { ...r, admin_notes: value } : r)));
+    }
+    toast({ title: "Nota guardada" });
+  };
+
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
