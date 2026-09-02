@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const bookingSchema = z.object({
   activity: z.string().min(1, { message: 'Selecciona una actividad' }),
