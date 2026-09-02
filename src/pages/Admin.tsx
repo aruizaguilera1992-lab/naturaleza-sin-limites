@@ -24,6 +24,7 @@ type Booking = {
   name: string | null;
   message: string | null;
   status: string;
+  admin_notes: string | null;
   created_at: string;
 };
 
@@ -35,10 +36,12 @@ type Contact = {
   personas: string | null;
   mensaje: string | null;
   status: string;
+  admin_notes: string | null;
   created_at: string;
 };
 
 const STATUSES = ["nueva", "contactada", "confirmada", "cancelada"] as const;
+
 
 const statusVariant = (status: string) => {
   switch (status) {
