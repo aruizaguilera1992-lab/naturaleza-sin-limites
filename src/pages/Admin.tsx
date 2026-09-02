@@ -302,6 +302,11 @@ export default function Admin() {
                     <span>Nivel: {b.experience_level ?? "-"}</span>
                   </div>
                   {b.message && <p className="mt-3 text-sm text-foreground">{b.message}</p>}
+                  <NotesField
+                    value={b.admin_notes}
+                    onSave={(n) => updateNotes("bookings", b.id, n)}
+                  />
+
                 </div>
               ))
             ))}
