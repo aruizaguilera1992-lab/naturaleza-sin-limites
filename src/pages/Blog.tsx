@@ -58,7 +58,7 @@ export default function Blog() {
         <title>Blog de Aventuras | Naturaleza Sin Límites</title>
         <meta
           name="description"
-          content="Descubre guías, técnicas, rutas recomendadas y consejos para tus aventuras de montaña. Blog de espeleología, barranquismo, escalada y vías ferratas."
+          content="Descubre guías, técnicas, rutas recomendadas y consejos para tus aventuras de montaña. Blog de barranquismo, escalada y vías ferratas."
         />
         <meta property="og:title" content="Blog de Aventuras | Naturaleza Sin Límites" />
         <meta
