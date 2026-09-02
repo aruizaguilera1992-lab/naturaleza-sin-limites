@@ -78,30 +78,26 @@ export const BookingForm = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('https://formspree.io/f/xnjjzrvd', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const { error } = await supabase.functions.invoke('submit-request', {
+        body: {
+          type: 'booking',
+          activity: activities.find(a => a.value === data.activity)?.label || data.activity,
+          preferredDate: data.preferredDate,
+          numberOfPeople: data.numberOfPeople,
+          experienceLevel: experienceLevels.find(l => l.value === data.experienceLevel)?.label || data.experienceLevel,
+          contact: data.contactMethod,
+          message: data.message || null,
+          rgpd: true,
         },
-        body: JSON.stringify({
-          actividad: activities.find(a => a.value === data.activity)?.label || data.activity,
-          fecha_preferente: data.preferredDate,
-          numero_personas: data.numberOfPeople,
-          nivel_experiencia: experienceLevels.find(l => l.value === data.experienceLevel)?.label || data.experienceLevel,
-          contacto: data.contactMethod,
-          mensaje: data.message || 'Sin mensaje adicional',
-        }),
       });
 
-      if (response.ok) {
-        toast({
-          title: '¡Solicitud enviada!',
-          description: 'Nos pondremos en contacto contigo lo antes posible.',
-        });
-        form.reset();
-      } else {
-        throw new Error('Error al enviar');
-      }
+      if (error) throw error;
+
+      toast({
+        title: '¡Solicitud enviada!',
+        description: 'Nos pondremos en contacto contigo lo antes posible.',
+      });
+      form.reset();
     } catch (error) {
       toast({
         title: 'Error al enviar',
