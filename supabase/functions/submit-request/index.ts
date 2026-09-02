@@ -32,15 +32,18 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 
-async function sendNotification(subject: string, lines: string[]) {
+const escapeHtml = (value: string) =>
+  value.replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string,
+  );
+
+const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+
+async function sendEmail(to: string[], subject: string, html: string) {
   const apiKey = Deno.env.get('RESEND_API_KEY');
-  const toList = (Deno.env.get('NOTIFICATION_EMAIL') ?? '')
-    .split(',')
-    .map((e) => e.trim())
-    .filter(Boolean);
   const from = Deno.env.get('NOTIFICATION_FROM') ?? 'onboarding@resend.dev';
-  if (!apiKey || toList.length === 0) {
-    console.log('Email notification skipped (missing RESEND_API_KEY/NOTIFICATION_EMAIL)');
+  if (!apiKey || to.length === 0) {
+    console.log('Email skipped (missing RESEND_API_KEY or recipients)');
     return;
   }
   try {
@@ -49,9 +52,9 @@ async function sendNotification(subject: string, lines: string[]) {
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: `Naturaleza Sin Límites <${from}>`,
-        to: toList,
+        to,
         subject,
-        html: `<h2>${subject}</h2><ul>${lines.map((l) => `<li>${l}</li>`).join('')}</ul>`,
+        html,
       }),
     });
     if (!res.ok) console.error('Resend error', res.status, await res.text());
@@ -59,6 +62,45 @@ async function sendNotification(subject: string, lines: string[]) {
     console.error('Resend exception', e);
   }
 }
+
+async function sendNotification(subject: string, lines: string[]) {
+  const toList = (Deno.env.get('NOTIFICATION_EMAIL') ?? '')
+    .split(',')
+    .map((e) => e.trim())
+    .filter(Boolean);
+  await sendEmail(
+    toList,
+    subject,
+    `<h2>${escapeHtml(subject)}</h2><ul>${lines
+      .map((l) => `<li>${escapeHtml(l)}</li>`)
+      .join('')}</ul>`,
+  );
+}
+
+async function sendClientConfirmation(
+  contact: string,
+  name: string | null | undefined,
+  title: string,
+  lines: string[],
+) {
+  if (!isEmail(contact)) return;
+  const greeting = name ? `Hola ${escapeHtml(name)},` : 'Hola,';
+  const html = `
+    <div style="font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;line-height:1.6">
+      <h2 style="color:#FF6B35;margin-bottom:8px">Hemos recibido tu solicitud</h2>
+      <p>${greeting}</p>
+      <p>Gracias por contactar con <strong>Naturaleza Sin Límites</strong>. Hemos registrado tu solicitud y te responderemos en menos de 24 horas laborables.</p>
+      <h3 style="margin-bottom:4px">${escapeHtml(title)}</h3>
+      <ul>${lines.map((l) => `<li>${escapeHtml(l)}</li>`).join('')}</ul>
+      <p>Si necesitas una respuesta más rápida, escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
+      <p style="margin-top:24px;font-size:13px;color:#666">
+        Naturaleza Sin Límites · Deportes de aventura en Málaga<br/>
+        Este mensaje es una confirmación automática, no es una reserva confirmada hasta que la validemos contigo.
+      </p>
+    </div>`;
+  await sendEmail([contact.trim()], 'Hemos recibido tu solicitud · Naturaleza Sin Límites', html);
+}
+
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
