@@ -1,1 +1,10 @@
 project_id = "aefoevrwckdifmzkrgrm"
+
+[functions.create-payment-link]
+verify_jwt = false
+
+[functions.get-payment]
+verify_jwt = false
+
+[functions.payments-webhook]
+verify_jwt = false

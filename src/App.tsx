@@ -24,6 +24,7 @@ import Cookies from "./pages/Cookies";
 import Login from "./pages/Login";
 import OAuthConsent from "./pages/OAuthConsent";
 import Admin from "./pages/Admin";
+import Pago from "./pages/Pago";
 import NotFound from "./pages/NotFound";
 
 
@@ -56,6 +57,7 @@ const App = () => (
             <Route path="/cookies" element={<Cookies />} />
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/pago/:token" element={<Pago />} />
             <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
 
             <Route path="*" element={<NotFound />} />
