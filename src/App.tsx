@@ -55,6 +55,7 @@ const App = () => (
             <Route path="/terminos" element={<Terminos />} />
             <Route path="/cookies" element={<Cookies />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
 
             <Route path="*" element={<NotFound />} />
