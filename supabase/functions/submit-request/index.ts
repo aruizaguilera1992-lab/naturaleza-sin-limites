@@ -34,9 +34,12 @@ const json = (body: unknown, status = 200) =>
 
 async function sendNotification(subject: string, lines: string[]) {
   const apiKey = Deno.env.get('RESEND_API_KEY');
-  const to = Deno.env.get('NOTIFICATION_EMAIL');
+  const toList = (Deno.env.get('NOTIFICATION_EMAIL') ?? '')
+    .split(',')
+    .map((e) => e.trim())
+    .filter(Boolean);
   const from = Deno.env.get('NOTIFICATION_FROM') ?? 'onboarding@resend.dev';
-  if (!apiKey || !to) {
+  if (!apiKey || toList.length === 0) {
     console.log('Email notification skipped (missing RESEND_API_KEY/NOTIFICATION_EMAIL)');
     return;
   }
@@ -46,7 +49,7 @@ async function sendNotification(subject: string, lines: string[]) {
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: `Naturaleza Sin Límites <${from}>`,
-        to: [to],
+        to: toList,
         subject,
         html: `<h2>${subject}</h2><ul>${lines.map((l) => `<li>${l}</li>`).join('')}</ul>`,
       }),
