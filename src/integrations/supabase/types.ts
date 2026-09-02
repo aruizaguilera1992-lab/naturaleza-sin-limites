@@ -17,6 +17,7 @@ export type Database = {
       bookings: {
         Row: {
           activity: string
+          admin_notes: string | null
           contact: string
           created_at: string
           experience_level: string | null
@@ -31,6 +32,7 @@ export type Database = {
         }
         Insert: {
           activity: string
+          admin_notes?: string | null
           contact: string
           created_at?: string
           experience_level?: string | null
@@ -45,6 +47,7 @@ export type Database = {
         }
         Update: {
           activity?: string
+          admin_notes?: string | null
           contact?: string
           created_at?: string
           experience_level?: string | null
@@ -61,6 +64,7 @@ export type Database = {
       }
       contact_submissions: {
         Row: {
+          admin_notes: string | null
           contacto: string
           created_at: string
           id: string
@@ -73,6 +77,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          admin_notes?: string | null
           contacto: string
           created_at?: string
           id?: string
@@ -85,6 +90,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          admin_notes?: string | null
           contacto?: string
           created_at?: string
           id?: string
