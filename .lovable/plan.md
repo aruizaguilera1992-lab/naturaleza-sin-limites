@@ -1,30 +1,35 @@
-# Prioridad para la versión comercial 1
+# Estado del proyecto y plan hacia la versión comercial 1
 
-La línea con más prioridad es **el embudo de reserva y captación de leads de extremo a extremo**. Todo lo demás (contenido, catálogos, diseño) ya está muy avanzado; lo que hoy limita facturar es que una petición de reserva depende de un formulario externo (Formspree) sin registro, sin confirmación al cliente y sin panel para gestionarla.
+## Estado actual
 
-## Orden recomendado
+- Backend (Lovable Cloud): activo y respondiendo correctamente.
+- Tabla `bookings` creada con RLS y grants.
+- Función de servidor `submit-request` desplegada y conectada a Resend; envía aviso al negocio.
+- Panel `/admin` protegido por login y rol `admin`.
+- Emails de administrador configurados: `naturaleza.s.limites@gmail.com` y `a.ruizaguilera.1992@gmail.com`.
+- Formularios de contacto y reserva ya envían datos al backend en lugar de Formspree.
+- Consentimiento de cookies y páginas legales implementados.
 
-### 1. Reservas y leads sobre backend propio (bloqueante)
-- Tabla `bookings` y `leads` en el backend, con RLS y grants.
-- Los dos formularios actuales (`BookingForm` y `ContactFormSection`) guardan en base de datos en vez de Formspree.
-- Función de servidor que envía email de aviso al negocio y email de confirmación al cliente.
-- Panel privado `/admin` con login para ver y cambiar el estado de cada solicitud (nueva, contactada, confirmada, cancelada).
+## Lo que falta para la versión comercial 1
 
-### 2. Coherencia comercial del catálogo (rápido, alto impacto)
-- Espeleología sigue apareciendo en la meta descripción del `index.html`, en `ValueProposition`, en el formulario de prueba de Vértigo Sapiens, en el calendario y en el blog, aunque no es actividad comercial. Depurar todas esas apariciones fuera del contexto formativo de Vértigo Sapiens.
-- Revisar que cada actividad muestre precio o rango y CTA visible en la ficha.
+### 1. Cierre del embudo de reservas (bloqueante)
+- Email de confirmación automático al cliente tras enviar una solicitud.
+- Estados de solicitud en el panel admin: nueva, contactada, confirmada, cancelada.
+- Posibilidad de añadir notas internas en cada reserva.
 
-### 3. SEO local y confianza (para que llegue tráfico)
-- Metadatos por página, JSON-LD de `LocalBusiness` y de actividades, sitemap y canonicals.
-- Testimonios reales y datos fiscales/legales visibles.
+### 2. Coherencia comercial del catálogo
+- Revisar que no queden referencias comerciales a espeleología fuera de Vértigo Sapiens.
+- Verificar que cada actividad muestre precio/rango y CTA visible.
+
+### 3. SEO local y confianza
+- Metadatos por página, JSON-LD de `LocalBusiness` y actividades.
+- Sitemap y canonicals.
+- Datos fiscales/legales visibles.
 
 ### 4. Analítica activa
-- `AnalyticsLoader` está listo pero con el ID de medición de ejemplo `G-XXXXXXX`; hay que poner el real y marcar eventos de conversión (envío de formulario, clic WhatsApp).
+- Configurar ID real de Google Analytics en `AnalyticsLoader`.
+- Marcar eventos de conversión: envío de formulario, clic WhatsApp.
 
-## Detalles técnicos
-- Backend: Lovable Cloud (base de datos + funciones + auth por email para el panel).
-- Emails: función de servidor con proveedor de email; hace falta dominio verificado o se usa remitente de pruebas al inicio.
-- Los formularios conservan el consentimiento RGPD actual y se almacena la marca temporal del consentimiento.
+## Propuesta de siguiente paso
 
-## Qué haría primero
-Empezar por el punto 1 (reservas en base de datos + emails + panel) y el punto 2 en la misma tanda, porque juntos convierten la web de folleto a canal de venta.
+Terminar el punto 1 (confirmación al cliente + gestión de estados en admin) para que el flujo de reserva sea completo y operativo.
