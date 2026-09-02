@@ -59,10 +59,10 @@ export function CookiePreferencesModal() {
 
   return (
     <Dialog open={isPreferencesOpen} onOpenChange={(open) => !open && closePreferences()}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Configurar cookies</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="z-[70] w-[calc(100vw-2rem)] sm:max-w-lg max-h-[85vh] overflow-y-auto bg-card border-border text-foreground shadow-2xl">
+        <DialogHeader className="text-left">
+          <DialogTitle className="font-heading text-foreground">Configurar cookies</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             Elige qué categorías de cookies deseas permitir. Las cookies necesarias no se pueden
             desactivar porque son imprescindibles para el funcionamiento del sitio.
           </DialogDescription>
@@ -72,23 +72,24 @@ export function CookiePreferencesModal() {
           {categories.map((cat) => (
             <div
               key={cat.key}
-              className="flex items-start justify-between gap-4 rounded-lg border border-border p-3"
+              className="flex items-start justify-between gap-3 rounded-lg border border-border bg-background/50 p-3"
             >
               <div className="flex-1 min-w-0">
-                <Label className="font-medium text-sm">{cat.label}</Label>
-                <p className="text-xs text-muted-foreground mt-0.5">{cat.description}</p>
+                <Label className="font-medium text-sm text-foreground">{cat.label}</Label>
+                <p className="text-xs text-muted-foreground mt-0.5 break-words">{cat.description}</p>
               </div>
               <Switch
                 checked={local[cat.key]}
                 disabled={cat.required}
                 onCheckedChange={() => toggle(cat.key)}
                 aria-label={cat.label}
+                className="mt-0.5 shrink-0"
               />
             </div>
           ))}
         </div>
 
-        <DialogFooter className="flex-col gap-2 sm:flex-row">
+        <DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-end">
           <Button variant="outline" size="sm" onClick={rejectAll} className="w-full sm:w-auto">
             Rechazar todas
           </Button>
