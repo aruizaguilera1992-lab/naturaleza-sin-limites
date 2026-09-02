@@ -25,6 +25,9 @@ export type Database = {
           message: string | null
           name: string | null
           number_of_people: string | null
+          paid_amount_cents: number | null
+          paid_at: string | null
+          payment_reference: string | null
           preferred_date: string | null
           rgpd_accepted_at: string | null
           status: string
@@ -40,6 +43,9 @@ export type Database = {
           message?: string | null
           name?: string | null
           number_of_people?: string | null
+          paid_amount_cents?: number | null
+          paid_at?: string | null
+          payment_reference?: string | null
           preferred_date?: string | null
           rgpd_accepted_at?: string | null
           status?: string
@@ -55,6 +61,9 @@ export type Database = {
           message?: string | null
           name?: string | null
           number_of_people?: string | null
+          paid_amount_cents?: number | null
+          paid_at?: string | null
+          payment_reference?: string | null
           preferred_date?: string | null
           rgpd_accepted_at?: string | null
           status?: string
@@ -71,6 +80,9 @@ export type Database = {
           interes: string
           mensaje: string | null
           nombre: string
+          paid_amount_cents: number | null
+          paid_at: string | null
+          payment_reference: string | null
           personas: string | null
           rgpd_accepted_at: string | null
           status: string
@@ -84,6 +96,9 @@ export type Database = {
           interes: string
           mensaje?: string | null
           nombre: string
+          paid_amount_cents?: number | null
+          paid_at?: string | null
+          payment_reference?: string | null
           personas?: string | null
           rgpd_accepted_at?: string | null
           status?: string
@@ -97,12 +112,87 @@ export type Database = {
           interes?: string
           mensaje?: string | null
           nombre?: string
+          paid_amount_cents?: number | null
+          paid_at?: string | null
+          payment_reference?: string | null
           personas?: string | null
           rgpd_accepted_at?: string | null
           status?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      payment_requests: {
+        Row: {
+          amount_cents: number
+          booking_id: string | null
+          concept: string
+          contact_id: string | null
+          created_at: string
+          currency: string
+          customer_email: string | null
+          environment: string
+          expires_at: string
+          id: string
+          paid_at: string | null
+          payment_reference: string | null
+          status: string
+          stripe_session_id: string | null
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          booking_id?: string | null
+          concept: string
+          contact_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          environment?: string
+          expires_at?: string
+          id?: string
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+          stripe_session_id?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          booking_id?: string | null
+          concept?: string
+          contact_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          environment?: string
+          expires_at?: string
+          id?: string
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+          stripe_session_id?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_requests_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_requests_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contact_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

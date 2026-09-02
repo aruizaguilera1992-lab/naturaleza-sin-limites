@@ -9,7 +9,7 @@ const pathways = [
   {
     id: 'adventure',
     title: 'Quiero vivir una experiencia de aventura',
-    description: 'Ideal si buscas una salida de barranquismo, cuevas, vía ferrata u otra actividad puntual para ti, tu pareja, tus amigos o tu familia.',
+    description: 'Ideal si buscas una salida de barranquismo, escalada, vía ferrata u otra actividad puntual para ti, tu pareja, tus amigos o tu familia.',
     image: activityCanyoning,
     icon: Users,
     ctaShort: 'Propuesta de aventura',

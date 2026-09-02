@@ -55,7 +55,7 @@ export function ValueProposition() {
               </div>
               
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                Descubre cañones, cuevas y paredes con alguien que comparte tu pasión. Seguridad, sostenibilidad y emociones en cada salida.
+                Descubre cañones, ferratas y paredes con alguien que comparte tu pasión. Seguridad, sostenibilidad y emociones en cada salida.
               </p>
 
               <div className="grid grid-cols-2 gap-4 mb-8">

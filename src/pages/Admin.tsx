@@ -12,8 +12,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mountain, LogOut, RefreshCw, Save } from "lucide-react";
+import { getStripeEnvironment } from "@/lib/stripe";
+import {
+  Loader2,
+  Mountain,
+  LogOut,
+  RefreshCw,
+  Save,
+  CreditCard,
+  Copy,
+  Mail,
+  CheckCircle2,
+} from "lucide-react";
 
 type NotesFieldProps = {
   value: string | null;
@@ -58,6 +70,20 @@ function NotesField({ value, onSave }: NotesFieldProps) {
 
 
 
+type PaymentRequest = {
+  id: string;
+  booking_id: string | null;
+  contact_id: string | null;
+  token: string;
+  amount_cents: number;
+  currency: string;
+  concept: string;
+  status: string;
+  paid_at: string | null;
+  payment_reference: string | null;
+  created_at: string;
+};
+
 type Booking = {
   id: string;
   activity: string;
@@ -70,6 +96,9 @@ type Booking = {
   status: string;
   admin_notes: string | null;
   created_at: string;
+  paid_amount_cents: number | null;
+  paid_at: string | null;
+  payment_reference: string | null;
 };
 
 type Contact = {
@@ -82,9 +111,129 @@ type Contact = {
   status: string;
   admin_notes: string | null;
   created_at: string;
+  paid_amount_cents: number | null;
+  paid_at: string | null;
+  payment_reference: string | null;
 };
 
-const STATUSES = ["nueva", "contactada", "confirmada", "cancelada"] as const;
+const STATUSES = ["nueva", "contactada", "pendiente_pago", "confirmada", "cancelada"] as const;
+
+const formatAmount = (cents: number, currency = "eur") =>
+  new Intl.NumberFormat("es-ES", { style: "currency", currency: currency.toUpperCase() }).format(
+    cents / 100,
+  );
+
+type PaymentPanelProps = {
+  target: "booking" | "contact";
+  id: string;
+  defaultConcept: string;
+  payments: PaymentRequest[];
+  onCreated: () => void;
+};
+
+function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: PaymentPanelProps) {
+  const { toast } = useToast();
+  const [amount, setAmount] = useState("");
+  const [concept, setConcept] = useState(defaultConcept);
+  const [creating, setCreating] = useState(false);
+
+  const create = async (withEmail: boolean) => {
+    const value = Number(amount.replace(",", "."));
+    if (!Number.isFinite(value) || value < 0.5) {
+      toast({ title: "Importe no válido", description: "Introduce un importe mínimo de 0,50 €", variant: "destructive" });
+      return;
+    }
+    setCreating(true);
+    const { data, error } = await supabase.functions.invoke("create-payment-link", {
+      body: {
+        target,
+        id,
+        amountCents: Math.round(value * 100),
+        concept: concept.trim() || defaultConcept,
+        environment: getStripeEnvironment(),
+        sendEmail: withEmail,
+        baseUrl: window.location.origin,
+      },
+    });
+    setCreating(false);
+    if (error || !data?.url) {
+      toast({ title: "No se pudo generar el cobro", description: error?.message, variant: "destructive" });
+      return;
+    }
+    await navigator.clipboard.writeText(data.url).catch(() => undefined);
+    toast({
+      title: data.emailSent ? "Enlace enviado por email" : "Enlace creado y copiado",
+      description: data.url,
+    });
+    setAmount("");
+    onCreated();
+  };
+
+  return (
+    <div className="mt-4 border-t border-border pt-3">
+      <label className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+        <CreditCard className="h-3.5 w-3.5" /> Cobro
+      </label>
+
+      {payments.length > 0 && (
+        <div className="mt-2 space-y-2">
+          {payments.map((p) => (
+            <div
+              key={p.id}
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-background/60 px-3 py-2 text-sm"
+            >
+              <span className="flex items-center gap-2 text-foreground">
+                {p.status === "pagado" && <CheckCircle2 className="h-4 w-4 text-primary" />}
+                {formatAmount(p.amount_cents, p.currency)} · {p.concept}
+              </span>
+              <span className="flex items-center gap-2">
+                <Badge variant={p.status === "pagado" ? "default" : "outline"}>{p.status}</Badge>
+                {p.status !== "pagado" && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="gap-1"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/pago/${p.token}`);
+                      toast({ title: "Enlace copiado" });
+                    }}
+                  >
+                    <Copy className="h-3.5 w-3.5" /> Copiar enlace
+                  </Button>
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <Input
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          inputMode="decimal"
+          placeholder="Importe €"
+          className="w-28 text-foreground"
+        />
+        <Input
+          value={concept}
+          onChange={(e) => setConcept(e.target.value)}
+          placeholder="Concepto"
+          className="min-w-[180px] flex-1 text-foreground"
+        />
+        <Button size="sm" variant="outline" className="gap-2" disabled={creating} onClick={() => create(false)}>
+          {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
+          Generar enlace
+        </Button>
+        <Button size="sm" className="gap-2" disabled={creating} onClick={() => create(true)}>
+          <Mail className="h-4 w-4" /> Enviar por email
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+
 
 
 const statusVariant = (status: string) => {
@@ -114,15 +263,18 @@ export default function Admin() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [payments, setPayments] = useState<PaymentRequest[]>([]);
   const [tab, setTab] = useState<"bookings" | "contacts">("bookings");
 
   const loadData = useCallback(async () => {
-    const [b, c] = await Promise.all([
+    const [b, c, p] = await Promise.all([
       supabase.from("bookings").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_submissions").select("*").order("created_at", { ascending: false }),
+      supabase.from("payment_requests").select("*").order("created_at", { ascending: false }),
     ]);
     if (b.data) setBookings(b.data as Booking[]);
     if (c.data) setContacts(c.data as Contact[]);
+    if (p.data) setPayments(p.data as PaymentRequest[]);
   }, []);
 
   useEffect(() => {
@@ -146,7 +298,11 @@ export default function Admin() {
       setLoading(false);
     };
     init();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => init());
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      setTimeout(() => {
+        if (active) init();
+      }, 0);
+    });
     return () => {
       active = false;
       sub.subscription.unsubscribe();
@@ -306,8 +462,15 @@ export default function Admin() {
                     value={b.admin_notes}
                     onSave={(n) => updateNotes("bookings", b.id, n)}
                   />
-
+                  <PaymentPanel
+                    target="booking"
+                    id={b.id}
+                    defaultConcept={`Reserva ${b.activity}`}
+                    payments={payments.filter((p) => p.booking_id === b.id)}
+                    onCreated={loadData}
+                  />
                 </div>
+
               ))
             ))}
 
@@ -352,8 +515,15 @@ export default function Admin() {
                     value={c.admin_notes}
                     onSave={(n) => updateNotes("contact_submissions", c.id, n)}
                   />
-
+                  <PaymentPanel
+                    target="contact"
+                    id={c.id}
+                    defaultConcept={`Reserva ${c.interes}`}
+                    payments={payments.filter((p) => p.contact_id === c.id)}
+                    onCreated={loadData}
+                  />
                 </div>
+
               ))
             ))}
         </div>
