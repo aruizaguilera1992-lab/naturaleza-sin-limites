@@ -11,8 +11,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mountain, LogOut, RefreshCw } from "lucide-react";
+import { Loader2, Mountain, LogOut, RefreshCw, Save } from "lucide-react";
+
+type NotesFieldProps = {
+  value: string | null;
+  onSave: (notes: string) => Promise<void>;
+};
+
+function NotesField({ value, onSave }: NotesFieldProps) {
+  const [notes, setNotes] = useState(value ?? "");
+  const [saving, setSaving] = useState(false);
+  const dirty = notes !== (value ?? "");
+
+  return (
+    <div className="mt-4 border-t border-border pt-3">
+      <label className="text-xs uppercase tracking-wide text-muted-foreground">
+        Notas internas
+      </label>
+      <Textarea
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        placeholder="Seguimiento, llamadas, acuerdos..."
+        className="mt-2 min-h-[70px] text-sm text-foreground"
+      />
+      <div className="mt-2 flex justify-end">
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-2"
+          disabled={!dirty || saving}
+          onClick={async () => {
+            setSaving(true);
+            await onSave(notes);
+            setSaving(false);
+          }}
+        >
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          Guardar nota
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+
 
 type Booking = {
   id: string;
