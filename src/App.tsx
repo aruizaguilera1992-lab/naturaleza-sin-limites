@@ -23,6 +23,7 @@ import Terminos from "./pages/Terminos";
 import Cookies from "./pages/Cookies";
 import Login from "./pages/Login";
 import OAuthConsent from "./pages/OAuthConsent";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/terminos" element={<Terminos />} />
             <Route path="/cookies" element={<Cookies />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
 
             <Route path="*" element={<NotFound />} />

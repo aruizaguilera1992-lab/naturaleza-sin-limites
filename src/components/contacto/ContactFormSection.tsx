@@ -26,6 +26,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const contactSchema = z.object({
   nombre: z.string().trim().min(2, 'El nombre es obligatorio').max(100, 'Máximo 100 caracteres'),
@@ -67,31 +68,26 @@ export function ContactFormSection() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('https://formspree.io/f/xnjjzrvd', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const { error } = await supabase.functions.invoke('submit-request', {
+        body: {
+          type: 'contact',
           nombre: data.nombre,
           contacto: data.contacto,
           interes: interestOptions.find(o => o.value === data.interes)?.label || data.interes,
-          personas: data.personas || 'No especificado',
-          mensaje: data.mensaje || 'Sin mensaje adicional',
-          _subject: `Nuevo contacto: ${data.nombre} - ${interestOptions.find(o => o.value === data.interes)?.label}`,
-        }),
+          personas: data.personas || null,
+          mensaje: data.mensaje || null,
+          rgpd: true,
+        },
       });
 
-      if (response.ok) {
-        setIsSubmitted(true);
-        toast({
-          title: '¡Mensaje enviado!',
-          description: 'Te responderé en menos de 24 horas.',
-        });
-        form.reset();
-      } else {
-        throw new Error('Error al enviar');
-      }
+      if (error) throw error;
+
+      setIsSubmitted(true);
+      toast({
+        title: '¡Mensaje enviado!',
+        description: 'Te responderé en menos de 24 horas.',
+      });
+      form.reset();
     } catch (error) {
       toast({
         title: 'Error al enviar',
