@@ -23,6 +23,7 @@ import Terminos from "./pages/Terminos";
 import Cookies from "./pages/Cookies";
 import Login from "./pages/Login";
 import OAuthConsent from "./pages/OAuthConsent";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 
