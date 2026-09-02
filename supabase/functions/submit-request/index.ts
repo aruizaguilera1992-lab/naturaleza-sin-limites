@@ -149,7 +149,14 @@ Deno.serve(async (req) => {
       `Contacto: ${data.contact}`,
       `Mensaje: ${data.message ?? '-'}`,
     ]);
+    await sendClientConfirmation(data.contact, data.name, `Resumen de tu solicitud`, [
+      `Actividad: ${data.activity}`,
+      `Fecha preferente: ${data.preferredDate ?? 'por concretar'}`,
+      `Personas: ${data.numberOfPeople ?? 'por concretar'}`,
+      `Nivel: ${data.experienceLevel ?? 'por concretar'}`,
+    ]);
     return json({ ok: true });
+
   }
 
   const { error } = await supabase.from('contact_submissions').insert({
