@@ -343,6 +343,11 @@ export default function Admin() {
                     <span>Personas: {c.personas ?? "-"}</span>
                   </div>
                   {c.mensaje && <p className="mt-3 text-sm text-foreground">{c.mensaje}</p>}
+                  <NotesField
+                    value={c.admin_notes}
+                    onSave={(n) => updateNotes("contact_submissions", c.id, n)}
+                  />
+
                 </div>
               ))
             ))}
