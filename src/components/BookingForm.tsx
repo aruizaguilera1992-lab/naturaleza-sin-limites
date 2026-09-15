@@ -27,17 +27,20 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+export const MAX_STANDARD_GROUP = 6;
+
 const bookingSchema = z.object({
   activity: z.string().min(1, { message: 'Selecciona una actividad' }),
   preferredDate: z.string().min(1, { message: 'Indica una fecha preferente' }),
-  numberOfPeople: z.string().min(1, { message: 'Indica el número de personas' }),
+  numberOfPeople: z.string().min(1, { message: 'Indica el número de personas' })
+    .refine((v) => {
+      const n = Number(v);
+      return Number.isInteger(n) && n >= 1 && n <= MAX_STANDARD_GROUP;
+    }, { message: `Las reservas estándar son de 1 a ${MAX_STANDARD_GROUP} personas. Para grupos mayores, consúltanos.` }),
   experienceLevel: z.string().min(1, { message: 'Selecciona tu nivel de experiencia' }),
-  contactMethod: z.string().min(1, { message: 'Indica tu teléfono o email' })
-    .refine((val) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const phoneRegex = /^[+]?[\d\s()-]{9,}$/;
-      return emailRegex.test(val) || phoneRegex.test(val);
-    }, { message: 'Introduce un email o teléfono válido' }),
+  name: z.string().trim().min(2, { message: 'Indica tu nombre' }).max(120),
+  email: z.string().trim().email({ message: 'Introduce un email válido' }).max(150),
+  phone: z.string().trim().regex(/^[+]?[\d\s()./-]{9,20}$/, { message: 'Introduce un teléfono válido' }),
   message: z.string().max(500, { message: 'El mensaje no puede superar los 500 caracteres' }).optional(),
   rgpd: z.boolean().refine((v) => v === true, {
     message: 'Debes aceptar la Política de Privacidad para enviar el formulario',
