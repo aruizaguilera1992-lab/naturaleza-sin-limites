@@ -1,6 +1,13 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
-import { escapeHtml, formatAmount, layout, notifyBusiness, sendEmail } from "../_shared/email.ts";
+import {
+  businessRecipients,
+  escapeHtml,
+  formatAmount,
+  layout,
+  listLayout,
+  sendTrackedNotification,
+} from "../_shared/email.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
@@ -13,7 +20,8 @@ function getSupabase() {
   return _supabase;
 }
 
-async function fulfill(session: any) {
+// deno-lint-ignore no-explicit-any
+async function fulfill(session: any, env: StripeEnv) {
   const token = session?.metadata?.payment_request_token;
   if (!token) {
     console.log("Session without payment_request_token, ignoring");
@@ -21,76 +29,101 @@ async function fulfill(session: any) {
   }
   const supabase = getSupabase();
 
-  const { data: pr } = await supabase
-    .from("payment_requests")
-    .select("*")
-    .eq("token", token)
-    .maybeSingle();
-
-  if (!pr) {
-    console.error("Payment request not found for token");
-    return;
-  }
-  if (pr.status === "pagado") {
-    console.log("Payment already processed (idempotent)");
-    return;
-  }
-
-  const paidAt = new Date().toISOString();
   const reference: string = session.payment_intent ?? session.id;
-  const amountCents: number = session.amount_total ?? pr.amount_cents;
+  const paymentIntentId: string | null =
+    typeof session.payment_intent === "string" ? session.payment_intent : null;
+  const amountCents: number | null = typeof session.amount_total === "number"
+    ? session.amount_total
+    : null;
+  const currency: string = String(session.currency ?? "eur").toLowerCase();
 
-  await supabase
-    .from("payment_requests")
-    .update({
-      status: "pagado",
-      paid_at: paidAt,
-      payment_reference: reference,
-      stripe_session_id: session.id,
-    })
-    .eq("id", pr.id);
-
-  const table = pr.booking_id ? "bookings" : "contact_submissions";
-  const recordId = pr.booking_id ?? pr.contact_id;
-  await supabase
-    .from(table)
-    .update({
-      status: "confirmada",
-      paid_amount_cents: amountCents,
-      paid_at: paidAt,
-      payment_reference: reference,
-    })
-    .eq("id", recordId);
-
-  const amount = formatAmount(amountCents, pr.currency ?? "eur");
-  const customerEmail: string | null = pr.customer_email ?? session.customer_details?.email ?? null;
-
-  if (customerEmail) {
-    await sendEmail(
-      [customerEmail],
-      `Reserva confirmada · ${pr.concept}`,
-      layout("¡Tu reserva está confirmada!", `
-        <p>Hemos recibido tu pago correctamente y tu plaza queda <strong>confirmada</strong>.</p>
-        <p><strong>${escapeHtml(pr.concept)}</strong><br/>Importe pagado: <strong>${escapeHtml(amount)}</strong><br/>Referencia: ${escapeHtml(reference)}</p>
-        <p><strong>Antes de la actividad:</strong></p>
-        <ul>
-          <li>Te enviaremos el punto de encuentro y la hora exacta con antelación.</li>
-          <li>Lleva ropa deportiva, calzado adecuado, agua y algo de comida.</li>
-          <li>El material técnico y los seguros están incluidos.</li>
-          <li>Si la meteorología obliga a cancelar, reprogramamos o devolvemos el importe.</li>
-        </ul>
-        <p>Cualquier duda, respóndenos a este email o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
-      `),
-    );
+  if (amountCents === null) {
+    console.error("Session without amount_total, not confirming", session.id);
+    return;
   }
 
-  await notifyBusiness(`Pago recibido: ${pr.concept}`, [
-    `Concepto: ${pr.concept}`,
-    `Importe: ${amount}`,
-    `Cliente: ${customerEmail ?? "-"}`,
-    `Referencia: ${reference}`,
-    `Tipo: ${pr.booking_id ? "reserva" : "contacto"}`,
-  ]);
+  // Atomic + idempotent confirmation: validates environment, currency and
+  // amount, and updates payment_requests + booking/contact in one step.
+  const { data: result, error } = await supabase.rpc("confirm_payment_request", {
+    _token: token,
+    _reference: reference,
+    _payment_intent_id: paymentIntentId,
+    _amount_cents: amountCents,
+    _currency: currency,
+    _environment: env,
+  });
+
+  if (error) {
+    console.error("confirm_payment_request failed", error);
+    throw new Error("confirm_failed"); // Stripe will retry.
+  }
+
+  // deno-lint-ignore no-explicit-any
+  const outcome = result as any;
+  if (!outcome?.applied) {
+    console.log("Payment not applied:", outcome?.reason);
+    if (outcome?.reason && outcome.reason !== "already_paid") {
+      await supabase
+        .from("payment_requests")
+        .update({ last_error: `webhook: ${outcome.reason}` })
+        .eq("token", token);
+    }
+    // already_paid / mismatch: acknowledge without duplicating emails.
+    return;
+  }
+
+  const amount = formatAmount(amountCents, outcome.currency ?? currency);
+  const customerEmail: string | null =
+    outcome.customer_email ?? session.customer_details?.email ?? null;
+  const concept: string = outcome.concept ?? "Actividad";
+
+  // Email failures must NEVER undo a confirmed payment.
+  try {
+    if (customerEmail) {
+      await sendTrackedNotification(supabase, {
+        kind: "pago_confirmado_cliente",
+        dedupeKey: `payment_confirmed_customer:${outcome.payment_request_id}`,
+        recipients: [customerEmail],
+        subject: `Reserva confirmada · ${concept}`,
+        paymentRequestId: outcome.payment_request_id,
+        bookingId: outcome.booking_id,
+        contactId: outcome.contact_id,
+        html: layout("¡Tu reserva está confirmada!", `
+          <p>Hemos recibido tu pago correctamente y tu plaza queda <strong>confirmada</strong>.</p>
+          <p><strong>${escapeHtml(concept)}</strong><br/>Importe pagado: <strong>${escapeHtml(amount)}</strong><br/>Referencia: ${escapeHtml(reference)}</p>
+          <p><strong>Antes de la actividad:</strong></p>
+          <ul>
+            <li>Te enviaremos el punto de encuentro y la hora exacta con antelación.</li>
+            <li>Lleva ropa deportiva, calzado adecuado, agua y algo de comida.</li>
+            <li>El material técnico y los seguros están incluidos.</li>
+            <li>Si la meteorología obliga a cancelar, reprogramamos o devolvemos el importe.</li>
+          </ul>
+          <p>Cualquier duda, respóndenos a este email o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
+        `),
+      });
+    }
+
+    const subject = `Pago recibido: ${concept}`;
+    await sendTrackedNotification(supabase, {
+      kind: "pago_confirmado_negocio",
+      dedupeKey: `payment_confirmed_business:${outcome.payment_request_id}`,
+      recipients: businessRecipients(),
+      subject,
+      paymentRequestId: outcome.payment_request_id,
+      bookingId: outcome.booking_id,
+      contactId: outcome.contact_id,
+      html: listLayout(subject, [
+        `Concepto: ${concept}`,
+        `Importe: ${amount}`,
+        `Cliente: ${customerEmail ?? "-"}`,
+        `Referencia: ${reference}`,
+        `Entorno: ${env}`,
+        `Tipo: ${outcome.booking_id ? "reserva" : "contacto"}`,
+      ]),
+    });
+  } catch (e) {
+    console.error("Notification error after confirmed payment (payment kept)", e);
+  }
 }
 
 Deno.serve(async (req) => {
@@ -111,11 +144,11 @@ Deno.serve(async (req) => {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object;
-        if (session.payment_status !== "unpaid") await fulfill(session);
+        if (session.payment_status !== "unpaid") await fulfill(session, env);
         break;
       }
       case "checkout.session.async_payment_succeeded":
-        await fulfill(event.data.object);
+        await fulfill(event.data.object, env);
         break;
       case "checkout.session.async_payment_failed":
         console.log("Async payment failed for session", event.data.object?.id);
