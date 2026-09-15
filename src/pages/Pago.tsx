@@ -78,15 +78,20 @@ export default function Pago() {
       body: {
         token,
         action: "checkout",
-        environment: getStripeEnvironment(),
         returnUrl,
       },
     });
+    if (data?.error === "already_paid") {
+      await loadStatus();
+      throw new Error("Este pago ya se había completado. No se te ha cobrado de nuevo.");
+    }
     if (fnError || !data?.clientSecret) {
-      throw new Error("No se pudo iniciar el pago. Inténtalo de nuevo o escríbenos por WhatsApp.");
+      throw new Error(
+        "No se pudo iniciar el pago ahora mismo. Vuelve a intentarlo en unos minutos o escríbenos por WhatsApp.",
+      );
     }
     return data.clientSecret as string;
-  }, [token]);
+  }, [token, loadStatus]);
 
   const wrapper = (children: React.ReactNode) => (
     <div className="min-h-screen bg-background">
