@@ -57,7 +57,8 @@ export function ContactFormSection() {
     resolver: zodResolver(contactSchema),
     defaultValues: {
       nombre: '',
-      contacto: '',
+      email: '',
+      phone: '',
       interes: '',
       personas: '',
       mensaje: '',
@@ -73,7 +74,8 @@ export function ContactFormSection() {
         body: {
           type: 'contact',
           nombre: data.nombre,
-          contacto: data.contacto,
+          email: data.email,
+          phone: data.phone,
           interes: interestOptions.find(o => o.value === data.interes)?.label || data.interes,
           personas: data.personas || null,
           mensaje: data.mensaje || null,
