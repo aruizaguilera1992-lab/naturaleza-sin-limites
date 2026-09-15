@@ -53,6 +53,7 @@ const activities = [
   { value: 'canyoning', label: 'Barranquismo' },
   { value: 'climbing', label: 'Escalada' },
   { value: 'ferrata', label: 'Vía Ferrata' },
+  { value: 'caving', label: 'Espeleología' },
 ];
 
 const experienceLevels = [
