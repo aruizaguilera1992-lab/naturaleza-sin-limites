@@ -312,7 +312,14 @@ export default function Admin() {
       body: { id },
     });
     setRetrying(null);
-    if (error || data?.status !== "enviado") {
+    if (data?.status === "ya_enviado") {
+      toast({ title: "Ya estaba enviada", description: "No se duplica el aviso." });
+    } else if (data?.status === "reclamado_por_otro") {
+      toast({
+        title: "Envío en curso",
+        description: "Otro proceso está enviando este aviso. Inténtalo en unos minutos.",
+      });
+    } else if (error || data?.status !== "enviado") {
       toast({
         title: "El reenvío no se ha completado",
         description: data?.error ?? error?.message ?? "Revisa la configuración de correo.",
