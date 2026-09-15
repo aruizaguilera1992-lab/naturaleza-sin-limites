@@ -15,4 +15,4 @@
 - [x] Centralize image URLs and alt text
 - [x] Replace priority hero, activity, training, about, and testimonial imagery
 - [x] Add responsive loading and LCP behavior
-- [ ] Verify desktop and mobile rendering
+- [x] Verify desktop and mobile rendering
