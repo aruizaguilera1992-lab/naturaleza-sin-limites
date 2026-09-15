@@ -276,18 +276,44 @@ export default function Admin() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
-  const [tab, setTab] = useState<"bookings" | "contacts">("bookings");
+  const [notifications, setNotifications] = useState<NotificationRow[]>([]);
+  const [retrying, setRetrying] = useState<string | null>(null);
+  const [tab, setTab] = useState<"bookings" | "contacts" | "notifications">("bookings");
 
   const loadData = useCallback(async () => {
-    const [b, c, p] = await Promise.all([
+    const [b, c, p, n] = await Promise.all([
       supabase.from("bookings").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_submissions").select("*").order("created_at", { ascending: false }),
       supabase.from("payment_requests").select("*").order("created_at", { ascending: false }),
+      supabase
+        .from("notification_log")
+        .select("id, kind, recipient, subject, status, error, attempts, created_at")
+        .order("created_at", { ascending: false })
+        .limit(100),
     ]);
     if (b.data) setBookings(b.data as Booking[]);
     if (c.data) setContacts(c.data as Contact[]);
     if (p.data) setPayments(p.data as PaymentRequest[]);
+    if (n.data) setNotifications(n.data as NotificationRow[]);
   }, []);
+
+  const retryNotification = async (id: string) => {
+    setRetrying(id);
+    const { data, error } = await supabase.functions.invoke("retry-notification", {
+      body: { id },
+    });
+    setRetrying(null);
+    if (error || data?.status !== "enviado") {
+      toast({
+        title: "El reenvío no se ha completado",
+        description: data?.error ?? error?.message ?? "Revisa la configuración de correo.",
+        variant: "destructive",
+      });
+    } else {
+      toast({ title: "Notificación reenviada" });
+    }
+    await loadData();
+  };
 
   useEffect(() => {
     let active = true;
