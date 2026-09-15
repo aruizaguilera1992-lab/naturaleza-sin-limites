@@ -117,6 +117,7 @@ Deno.serve(async (req) => {
 
   // ---- Reuse an existing open session: never create two chargeable
   // sessions for the same payment request. ----
+  let expiredSessionId: string | null = null;
   if (pr.stripe_session_id) {
     try {
       const existing = await stripe.checkout.sessions.retrieve(pr.stripe_session_id);
@@ -126,12 +127,54 @@ Deno.serve(async (req) => {
       if (existing.status === "open" && existing.client_secret) {
         return json({ payment, clientSecret: existing.client_secret, reused: true });
       }
-      // status === "expired" -> fall through and create a new session.
+      if (existing.status !== "expired") {
+        // Unknown/intermediate state: do NOT create a second session.
+        return json({ payment, error: "checkout_unavailable" }, 409);
+      }
+      // Definitively expired: a new generation may be opened.
+      expiredSessionId = pr.stripe_session_id;
     } catch (e) {
       console.error("Could not retrieve existing checkout session", e);
       return json({ payment, error: "checkout_unavailable" }, 502);
     }
   }
+
+  // Atomically open/lock a checkout generation. Concurrent callers get the
+  // same generation, and therefore the same idempotency key.
+  const { data: gen, error: genError } = await supabase.rpc("begin_checkout_generation", {
+    _token: token,
+    _expired_session_id: expiredSessionId,
+  });
+  if (genError) {
+    console.error("begin_checkout_generation failed", genError);
+    return json({ payment, error: "server_error" }, 500);
+  }
+  if (!gen?.ok) return json({ payment, error: gen?.reason ?? "unavailable" }, 409);
+
+  // Another request already stored a session for this generation.
+  if (gen.session_id && gen.session_id !== expiredSessionId) {
+    try {
+      const concurrent = await stripe.checkout.sessions.retrieve(gen.session_id);
+      if (concurrent.status === "open" && concurrent.client_secret) {
+        return json({ payment, clientSecret: concurrent.client_secret, reused: true });
+      }
+    } catch (e) {
+      console.error("Could not retrieve concurrent session", e);
+    }
+    return json({ payment, error: "checkout_unavailable" }, 409);
+  }
+
+  const generation: number = gen.generation ?? 0;
+
+  // Stable, server-derived return URL: the caller only influences the origin,
+  // which is validated and folded into the idempotency key.
+  const origin = new URL(returnUrl).origin;
+  if (!/^https:\/\/|^http:\/\/localhost(:\d+)?$/.test(origin)) {
+    return json({ payment, error: "invalid_return_url" }, 400);
+  }
+  const canonicalReturnUrl = `${origin}/pago/${token}?session_id={CHECKOUT_SESSION_ID}`;
+  let originHash = 0;
+  for (const ch of origin) originHash = (originHash * 33 + ch.charCodeAt(0)) >>> 0;
 
   const sessionParams = {
     line_items: [
@@ -147,7 +190,7 @@ Deno.serve(async (req) => {
     ],
     mode: "payment",
     ui_mode: "embedded_page",
-    return_url: returnUrl,
+    return_url: canonicalReturnUrl,
     payment_intent_data: { description: pr.concept },
     ...(pr.customer_email ? { customer_email: pr.customer_email } : {}),
     automatic_tax: { enabled: true },
@@ -157,8 +200,11 @@ Deno.serve(async (req) => {
   let session;
   try {
     // No silent fallback: a tax configuration problem must surface.
+    // Key is stable per (request, generation, amount, currency, origin), so
+    // concurrent calls and retries resolve to ONE chargeable session.
     session = await stripe.checkout.sessions.create(sessionParams as never, {
-      idempotencyKey: `pr_${pr.id}_${pr.amount_cents}_${currency}`,
+      idempotencyKey:
+        `pr_${pr.id}_g${generation}_${pr.amount_cents}_${currency}_${originHash.toString(16)}`,
     });
   } catch (e) {
     const message = String((e as { message?: string })?.message ?? e).slice(0, 400);
@@ -170,18 +216,24 @@ Deno.serve(async (req) => {
     return json({ payment, error: "checkout_failed", detail: message }, 502);
   }
 
-  const { error: updateError } = await supabase
-    .from("payment_requests")
-    .update({
-      stripe_session_id: session.id,
-      checkout_created_at: new Date().toISOString(),
-      last_error: null,
-    })
-    .eq("id", pr.id);
+  const { data: recorded, error: recordError } = await supabase.rpc("record_checkout_session", {
+    _token: token,
+    _generation: generation,
+    _session_id: session.id,
+  });
 
-  if (updateError) {
-    console.error("Could not persist checkout session id", updateError);
+  if (recordError) {
+    console.error("Could not persist checkout session id", recordError);
     return json({ payment, error: "server_error" }, 500);
+  }
+  if (!recorded?.ok) {
+    // Someone else won the race; expire ours so only one session is payable.
+    try {
+      await stripe.checkout.sessions.expire(session.id);
+    } catch (e) {
+      console.error("Could not expire losing session", e);
+    }
+    return json({ payment, error: recorded?.reason ?? "checkout_unavailable" }, 409);
   }
 
   return json({ payment, clientSecret: session.client_secret });
