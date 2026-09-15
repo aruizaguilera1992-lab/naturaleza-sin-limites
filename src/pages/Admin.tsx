@@ -161,10 +161,22 @@ function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: Payme
       return;
     }
     await navigator.clipboard.writeText(data.url).catch(() => undefined);
-    toast({
-      title: data.emailSent ? "Enlace enviado por email" : "Enlace creado y copiado",
-      description: data.url,
-    });
+
+    const emailStatus: string | undefined = data.email?.status;
+    if (withEmail && emailStatus !== "enviado") {
+      toast({
+        title: "Enlace creado, pero el email NO se ha enviado",
+        description:
+          data.email?.error ??
+          "Revisa la configuración de correo. Puedes reintentarlo desde Notificaciones.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: withEmail ? "Enlace enviado por email" : "Enlace creado y copiado",
+        description: data.url,
+      });
+    }
     setAmount("");
     onCreated();
   };
