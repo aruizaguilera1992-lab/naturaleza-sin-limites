@@ -182,24 +182,50 @@ export function ContactFormSection() {
                   )}
                 />
 
-                {/* Email o Teléfono */}
-                <FormField
-                  control={form.control}
-                  name="contacto"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email o Teléfono *</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="correo@ejemplo.com o +34 600 000 000" 
-                          {...field}
-                          className="h-12"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Email y Teléfono */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email *</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            inputMode="email"
+                            autoComplete="email"
+                            placeholder="correo@ejemplo.com"
+                            {...field}
+                            className="h-12"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Teléfono *</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            inputMode="tel"
+                            autoComplete="tel"
+                            placeholder="+34 600 000 000"
+                            {...field}
+                            className="h-12"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 {/* ¿Qué buscas? */}
                 <FormField
