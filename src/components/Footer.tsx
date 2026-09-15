@@ -15,6 +15,7 @@ const activities = [
   { href: '/barranquismo', label: 'Barranquismo' },
   { href: '/escalada', label: 'Escalada' },
   { href: '/vias-ferratas', label: 'Vías Ferratas' },
+  { href: '/espeleologia', label: 'Espeleología' },
 ];
 
 const socialLinks = [

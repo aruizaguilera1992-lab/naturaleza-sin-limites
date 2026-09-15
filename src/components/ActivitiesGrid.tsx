@@ -34,6 +34,17 @@ const activities = [
     cta: 'Ver Ferratas',
     link: '/vias-ferratas',
   },
+  {
+    id: 'espeleologia',
+    title: 'Espeleología',
+    subtitle: 'El Mundo Subterráneo',
+    description: 'Exploración guiada de cavidades y galerías: iniciación, progresión vertical y salidas de exploración.',
+    price: null,
+    priceLabel: 'Consultar',
+    image: media.espeleologiaGrupo,
+    cta: 'Ver actividad',
+    link: '/espeleologia',
+  },
 ];
 
 export function ActivitiesGrid() {
