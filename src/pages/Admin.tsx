@@ -245,7 +245,16 @@ function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: Payme
   );
 }
 
-
+type NotificationRow = {
+  id: string;
+  kind: string;
+  recipient: string | null;
+  subject: string | null;
+  status: string;
+  error: string | null;
+  attempts: number;
+  created_at: string;
+};
 
 
 const statusVariant = (status: string) => {
