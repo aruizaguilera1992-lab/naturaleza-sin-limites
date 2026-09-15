@@ -467,6 +467,13 @@ export default function Admin() {
           >
             Contactos ({contacts.length})
           </Button>
+          <Button
+            variant={tab === "notifications" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setTab("notifications")}
+          >
+            Notificaciones ({notifications.filter((n) => n.status !== "enviado").length})
+          </Button>
         </div>
 
         <div className="space-y-4">
