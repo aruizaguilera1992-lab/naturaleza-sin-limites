@@ -8,6 +8,7 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { FerrataQuestionnaire } from "@/components/ferratas/FerrataQuestionnaire";
 import { FerrataResults } from "@/components/ferratas/FerrataResults";
 import type { NivelExperiencia, ToleranciaVertigo, DuracionPreferida, ElementoPreferido } from "@/data/ferratas";
+import { media } from "@/data/media";
 
 interface FilterAnswers {
   nivel: NivelExperiencia | null;
@@ -71,11 +72,12 @@ const ViasFerratas = () => {
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1522163182402-834f871fd851?w=1920')`,
-          }}
+        <img
+          src={media.ferrata.src}
+          alt={media.ferrata.alt}
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
         />
 
         {/* Overlay */}

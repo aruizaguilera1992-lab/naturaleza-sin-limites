@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, Shield, Clock, Wallet } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import activityCanyoning from '@/assets/activity-canyoning.jpg';
+import { media } from '@/data/media';
 
 interface ActivitiesHeroSectionProps {
   onSearch: (query: string) => void;
@@ -23,8 +23,10 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
       {/* Background Image */}
       <div className="absolute inset-0">
         <img 
-          src={activityCanyoning} 
-          alt="Aventuras en la naturaleza"
+          src={media.canyoning.src}
+          alt={media.canyoning.alt}
+          loading="eager"
+          decoding="async"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
