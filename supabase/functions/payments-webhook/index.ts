@@ -2,11 +2,13 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
 import {
   businessRecipients,
+  dispatchPendingForPayment,
   escapeHtml,
   formatAmount,
   layout,
   listLayout,
-  sendTrackedNotification,
+  type NotificationIntent,
+  toRpcNotification,
 } from "../_shared/email.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
@@ -20,6 +22,58 @@ function getSupabase() {
   return _supabase;
 }
 
+function buildIntents(opts: {
+  paymentRequestId: string;
+  concept: string;
+  amount: string;
+  reference: string;
+  customerEmail: string | null;
+  env: StripeEnv;
+  isBooking: boolean;
+}): NotificationIntent[] {
+  const intents: NotificationIntent[] = [];
+  const { concept, amount, reference } = opts;
+
+  if (opts.customerEmail) {
+    intents.push({
+      kind: "pago_confirmado_cliente",
+      dedupeKey: `payment_confirmed_customer:${opts.paymentRequestId}`,
+      recipients: [opts.customerEmail],
+      subject: `Reserva confirmada · ${concept}`,
+      html: layout("¡Tu reserva está confirmada!", `
+        <p>Hemos recibido tu pago correctamente y tu plaza queda <strong>confirmada</strong>.</p>
+        <p><strong>${escapeHtml(concept)}</strong><br/>Importe pagado: <strong>${escapeHtml(amount)}</strong><br/>Referencia: ${escapeHtml(reference)}</p>
+        <p><strong>Antes de la actividad:</strong></p>
+        <ul>
+          <li>Te enviaremos el punto de encuentro y la hora exacta con antelación.</li>
+          <li>Lleva ropa deportiva, calzado adecuado, agua y algo de comida.</li>
+          <li>El material técnico y los seguros están incluidos.</li>
+          <li>Si la meteorología obliga a cancelar, reprogramamos o devolvemos el importe.</li>
+        </ul>
+        <p>Cualquier duda, respóndenos a este email o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
+      `),
+    });
+  }
+
+  const subject = `Pago recibido: ${concept}`;
+  intents.push({
+    kind: "pago_confirmado_negocio",
+    dedupeKey: `payment_confirmed_business:${opts.paymentRequestId}`,
+    recipients: businessRecipients(),
+    subject,
+    html: listLayout(subject, [
+      `Concepto: ${concept}`,
+      `Importe: ${amount}`,
+      `Cliente: ${opts.customerEmail ?? "-"}`,
+      `Referencia: ${reference}`,
+      `Entorno: ${opts.env}`,
+      `Tipo: ${opts.isBooking ? "reserva" : "contacto"}`,
+    ]),
+  });
+
+  return intents;
+}
+
 // deno-lint-ignore no-explicit-any
 async function fulfill(session: any, env: StripeEnv) {
   const token = session?.metadata?.payment_request_token;
@@ -29,28 +83,70 @@ async function fulfill(session: any, env: StripeEnv) {
   }
   const supabase = getSupabase();
 
-  const reference: string = session.payment_intent ?? session.id;
+  const sessionId: string | null = typeof session.id === "string" ? session.id : null;
+  const paymentStatus: string | null = typeof session.payment_status === "string"
+    ? session.payment_status
+    : null;
   const paymentIntentId: string | null =
     typeof session.payment_intent === "string" ? session.payment_intent : null;
+  const reference: string = paymentIntentId ?? sessionId ?? "";
   const amountCents: number | null = typeof session.amount_total === "number"
     ? session.amount_total
     : null;
   const currency: string = String(session.currency ?? "eur").toLowerCase();
+  const livemode: boolean = session.livemode === true;
+  const customerEmail: string | null = session.customer_details?.email ?? null;
 
-  if (amountCents === null) {
-    console.error("Session without amount_total, not confirming", session.id);
+  if (!sessionId || amountCents === null || !paymentStatus) {
+    console.error("Session missing id/amount/payment_status, not confirming", session?.id);
+    return;
+  }
+  if (paymentStatus === "unpaid" || !["paid", "no_payment_required"].includes(paymentStatus)) {
+    console.log("Payment status not final, ignoring:", paymentStatus);
     return;
   }
 
-  // Atomic + idempotent confirmation: validates environment, currency and
-  // amount, and updates payment_requests + booking/contact in one step.
+  // Look up concept/target so notification intents can be created durably in
+  // the SAME transaction as the confirmation.
+  const { data: pr, error: prError } = await supabase
+    .from("payment_requests")
+    .select("id, concept, booking_id, customer_email")
+    .eq("token", token)
+    .maybeSingle();
+  if (prError) {
+    console.error("payment_requests read failed", prError);
+    throw new Error("read_failed"); // Stripe retries.
+  }
+  if (!pr) {
+    console.log("Unknown payment_request token");
+    return;
+  }
+
+  const intents = buildIntents({
+    paymentRequestId: pr.id as string,
+    concept: (pr.concept as string) ?? "Actividad",
+    amount: formatAmount(amountCents, currency),
+    reference,
+    customerEmail: (pr.customer_email as string | null) ?? customerEmail,
+    env,
+    isBooking: Boolean(pr.booking_id),
+  });
+
+  // Atomic confirmation: validates session, payment status, livemode,
+  // environment, currency and the EXACT amount, updates payment_requests +
+  // booking/contact, and persists the notification intents. Any failure rolls
+  // the whole thing back.
   const { data: result, error } = await supabase.rpc("confirm_payment_request", {
     _token: token,
-    _reference: reference,
+    _session_id: sessionId,
     _payment_intent_id: paymentIntentId,
     _amount_cents: amountCents,
     _currency: currency,
     _environment: env,
+    _payment_status: paymentStatus,
+    _livemode: livemode,
+    _customer_email: customerEmail,
+    _notifications: intents.map(toRpcNotification),
   });
 
   if (error) {
@@ -60,69 +156,27 @@ async function fulfill(session: any, env: StripeEnv) {
 
   // deno-lint-ignore no-explicit-any
   const outcome = result as any;
-  if (!outcome?.applied) {
-    console.log("Payment not applied:", outcome?.reason);
-    if (outcome?.reason && outcome.reason !== "already_paid") {
-      await supabase
-        .from("payment_requests")
-        .update({ last_error: `webhook: ${outcome.reason}` })
-        .eq("token", token);
-    }
-    // already_paid / mismatch: acknowledge without duplicating emails.
+  const reason: string | undefined = outcome?.reason;
+
+  if (!outcome?.applied && reason !== "already_paid") {
+    console.error("Payment not applied:", reason);
+    await supabase
+      .from("payment_requests")
+      .update({ last_error: `webhook: ${reason ?? "desconocido"}` })
+      .eq("token", token);
     return;
   }
 
-  const amount = formatAmount(amountCents, outcome.currency ?? currency);
-  const customerEmail: string | null =
-    outcome.customer_email ?? session.customer_details?.email ?? null;
-  const concept: string = outcome.concept ?? "Actividad";
-
-  // Email failures must NEVER undo a confirmed payment.
+  // Applied OR already_paid: intents are durable, so a repeated event repairs
+  // pending notifications without resending accepted ones.
+  const paymentRequestId: string = outcome.payment_request_id ?? pr.id;
   try {
-    if (customerEmail) {
-      await sendTrackedNotification(supabase, {
-        kind: "pago_confirmado_cliente",
-        dedupeKey: `payment_confirmed_customer:${outcome.payment_request_id}`,
-        recipients: [customerEmail],
-        subject: `Reserva confirmada · ${concept}`,
-        paymentRequestId: outcome.payment_request_id,
-        bookingId: outcome.booking_id,
-        contactId: outcome.contact_id,
-        html: layout("¡Tu reserva está confirmada!", `
-          <p>Hemos recibido tu pago correctamente y tu plaza queda <strong>confirmada</strong>.</p>
-          <p><strong>${escapeHtml(concept)}</strong><br/>Importe pagado: <strong>${escapeHtml(amount)}</strong><br/>Referencia: ${escapeHtml(reference)}</p>
-          <p><strong>Antes de la actividad:</strong></p>
-          <ul>
-            <li>Te enviaremos el punto de encuentro y la hora exacta con antelación.</li>
-            <li>Lleva ropa deportiva, calzado adecuado, agua y algo de comida.</li>
-            <li>El material técnico y los seguros están incluidos.</li>
-            <li>Si la meteorología obliga a cancelar, reprogramamos o devolvemos el importe.</li>
-          </ul>
-          <p>Cualquier duda, respóndenos a este email o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
-        `),
-      });
-    }
-
-    const subject = `Pago recibido: ${concept}`;
-    await sendTrackedNotification(supabase, {
-      kind: "pago_confirmado_negocio",
-      dedupeKey: `payment_confirmed_business:${outcome.payment_request_id}`,
-      recipients: businessRecipients(),
-      subject,
-      paymentRequestId: outcome.payment_request_id,
-      bookingId: outcome.booking_id,
-      contactId: outcome.contact_id,
-      html: listLayout(subject, [
-        `Concepto: ${concept}`,
-        `Importe: ${amount}`,
-        `Cliente: ${customerEmail ?? "-"}`,
-        `Referencia: ${reference}`,
-        `Entorno: ${env}`,
-        `Tipo: ${outcome.booking_id ? "reserva" : "contacto"}`,
-      ]),
-    });
+    const results = await dispatchPendingForPayment(supabase, paymentRequestId);
+    console.log("Notification dispatch", JSON.stringify(results));
   } catch (e) {
-    console.error("Notification error after confirmed payment (payment kept)", e);
+    // Payment stays confirmed; the intent stays pending and is retried by a
+    // later event or from the admin panel.
+    console.error("Notification dispatch failed (payment kept confirmed)", e);
   }
 }
 
@@ -142,11 +196,7 @@ Deno.serve(async (req) => {
   try {
     const event = await verifyWebhook(req, env);
     switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object;
-        if (session.payment_status !== "unpaid") await fulfill(session, env);
-        break;
-      }
+      case "checkout.session.completed":
       case "checkout.session.async_payment_succeeded":
         await fulfill(event.data.object, env);
         break;
