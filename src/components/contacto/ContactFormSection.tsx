@@ -270,6 +270,10 @@ export function ContactFormSection() {
                           className="h-12"
                         />
                       </FormControl>
+                      <p className="text-xs text-muted-foreground">
+                        Las reservas estándar son de 1 a 6 personas. Si sois más, indícalo aquí y
+                        te preparamos una propuesta de grupo.
+                      </p>
                       <FormMessage />
                     </FormItem>
                   )}
