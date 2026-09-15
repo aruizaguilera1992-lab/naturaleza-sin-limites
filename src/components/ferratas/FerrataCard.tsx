@@ -77,7 +77,9 @@ export function FerrataCard({ ferrata, index, userLevel, onOpenDetail }: Ferrata
       <div className="relative h-48 overflow-hidden">
         <img
           src={ferrata.imagen}
-          alt={ferrata.nombre}
+          alt={`Vía ferrata ${ferrata.nombre} en ${ferrata.zona}, ${ferrata.provincia}`}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

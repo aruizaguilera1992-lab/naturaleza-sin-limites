@@ -62,7 +62,9 @@ function ActivityCard({
           <div className="relative w-full sm:w-48 lg:w-64 h-48 sm:h-auto flex-shrink-0">
             <img
               src={activity.image}
-              alt={activity.name}
+              alt={`${typeInfo.label} en ${activity.zone}, ${activity.province}`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover"
             />
             <div className="absolute top-2 left-2">
@@ -156,7 +158,9 @@ function ActivityCard({
       <div className="relative h-44 sm:h-48 overflow-hidden">
         <img
           src={activity.image}
-          alt={activity.name}
+          alt={`${typeInfo.label} en ${activity.zone}, ${activity.province}`}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
