@@ -264,28 +264,78 @@ export const BookingForm = () => {
                   />
                 </div>
 
-                {/* Contact Method */}
-                <FormField
-                  control={form.control}
-                  name="contactMethod"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2 text-foreground">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <Mail className="h-4 w-4 text-primary" />
-                        Teléfono o Email
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Tu teléfono o correo electrónico"
-                          className="bg-background/50 border-border"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Nombre, email y teléfono */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2 text-foreground">
+                          <Users className="h-4 w-4 text-primary" />
+                          Nombre
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Tu nombre"
+                            autoComplete="name"
+                            className="bg-background/50 border-border"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2 text-foreground">
+                          <Mail className="h-4 w-4 text-primary" />
+                          Email
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            inputMode="email"
+                            autoComplete="email"
+                            placeholder="correo@ejemplo.com"
+                            className="bg-background/50 border-border"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2 text-foreground">
+                          <Phone className="h-4 w-4 text-primary" />
+                          Teléfono
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            inputMode="tel"
+                            autoComplete="tel"
+                            placeholder="+34 600 000 000"
+                            className="bg-background/50 border-border"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 {/* Message */}
                 <FormField
