@@ -148,9 +148,13 @@ export type Database = {
           error: string | null
           id: string
           kind: string
+          lease_expires_at: string | null
+          lease_id: string | null
+          next_attempt_at: string
           payload: Json | null
           payment_request_id: string | null
           provider_id: string | null
+          provider_idempotency_key: string | null
           recipient: string | null
           status: string
           subject: string
@@ -166,9 +170,13 @@ export type Database = {
           error?: string | null
           id?: string
           kind: string
+          lease_expires_at?: string | null
+          lease_id?: string | null
+          next_attempt_at?: string
           payload?: Json | null
           payment_request_id?: string | null
           provider_id?: string | null
+          provider_idempotency_key?: string | null
           recipient?: string | null
           status?: string
           subject: string
@@ -184,9 +192,13 @@ export type Database = {
           error?: string | null
           id?: string
           kind?: string
+          lease_expires_at?: string | null
+          lease_id?: string | null
+          next_attempt_at?: string
           payload?: Json | null
           payment_request_id?: string | null
           provider_id?: string | null
+          provider_idempotency_key?: string | null
           recipient?: string | null
           status?: string
           subject?: string
@@ -221,6 +233,8 @@ export type Database = {
           amount_cents: number
           booking_id: string | null
           checkout_created_at: string | null
+          checkout_generation: number
+          checkout_session_expired_at: string | null
           concept: string
           contact_id: string | null
           created_at: string
@@ -242,6 +256,8 @@ export type Database = {
           amount_cents: number
           booking_id?: string | null
           checkout_created_at?: string | null
+          checkout_generation?: number
+          checkout_session_expired_at?: string | null
           concept: string
           contact_id?: string | null
           created_at?: string
@@ -263,6 +279,8 @@ export type Database = {
           amount_cents?: number
           booking_id?: string | null
           checkout_created_at?: string | null
+          checkout_generation?: number
+          checkout_session_expired_at?: string | null
           concept?: string
           contact_id?: string | null
           created_at?: string
@@ -323,14 +341,37 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      begin_checkout_generation: {
+        Args: { _expired_session_id: string; _token: string }
+        Returns: Json
+      }
+      claim_notification: {
+        Args: { _id: string; _lease_seconds?: number }
+        Returns: Json
+      }
       confirm_payment_request: {
         Args: {
           _amount_cents: number
           _currency: string
+          _customer_email?: string
           _environment: string
+          _livemode: boolean
+          _notifications?: Json
           _payment_intent_id: string
-          _reference: string
+          _payment_status: string
+          _session_id: string
           _token: string
+        }
+        Returns: Json
+      }
+      finish_notification: {
+        Args: {
+          _error?: string
+          _id: string
+          _lease_id: string
+          _provider_id?: string
+          _retry_in_seconds?: number
+          _status: string
         }
         Returns: Json
       }
@@ -340,6 +381,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      record_checkout_session: {
+        Args: { _generation: number; _session_id: string; _token: string }
+        Returns: Json
       }
     }
     Enums: {
