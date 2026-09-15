@@ -68,7 +68,7 @@ export function Footer() {
           {/* Brand Column */}
           <div>
             <button onClick={handleLogoClick} className="inline-block mb-6 cursor-pointer">
-              <img src={logo} alt="Naturaleza Sin Límites" className="h-24 w-auto" />
+              <img src={logo} alt="Naturaleza Sin Límites" loading="lazy" decoding="async" className="h-24 w-auto" />
             </button>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
               Proyecto de guiado y entrenamiento en deportes de aventura en Málaga. 

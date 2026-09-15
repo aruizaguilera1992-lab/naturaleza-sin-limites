@@ -19,7 +19,7 @@ export function BlogAuthorBox({ author }: BlogAuthorBoxProps) {
           {/* Avatar */}
           <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-primary/10 flex-shrink-0 overflow-hidden flex items-center justify-center">
             {author.avatar && author.avatar !== '/placeholder.svg' ? (
-              <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
+              <img src={author.avatar} alt={author.name} loading="lazy" decoding="async" className="w-full h-full object-cover" />
             ) : (
               <User className="w-10 h-10 text-primary" />
             )}

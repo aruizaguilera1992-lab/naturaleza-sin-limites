@@ -1,3 +1,5 @@
+import { media } from '@/data/media';
+
 export interface BlogAuthor {
   name: string;
   avatar: string;
@@ -139,7 +141,7 @@ El barranquismo es una actividad que engancha desde el primer momento. La combin
 
 En Naturaleza Sin Límites te acompañamos en cada paso, garantizando una experiencia segura y memorable. ¿Te atreves a descubrir el mundo vertical?
     `,
-    featuredImage: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=1200',
+    featuredImage: media.canyoning.src,
     category: 'consejos-principiantes',
     tags: ['barranquismo', 'principiantes', 'málaga', 'guía'],
     author: defaultAuthor,
@@ -149,7 +151,7 @@ En Naturaleza Sin Límites te acompañamos en cada paso, garantizando una experi
     seo: {
       metaTitle: 'Guía Completa: Tu Primer Descenso de Barrancos en Málaga | Naturaleza Sin Límites',
       metaDescription: 'Todo lo que necesitas saber para tu primera experiencia de barranquismo en Málaga. Equipo, técnicas, mejores barrancos para principiantes y consejos de expertos.',
-      ogImage: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=1200',
+      ogImage: media.canyoning.src,
     },
   },
   {
@@ -258,7 +260,7 @@ Andalucía ofrece un abanico de posibilidades para disfrutar de las vías ferrat
 
 ¿Cuál será tu próxima aventura vertical?
     `,
-    featuredImage: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=1200',
+    featuredImage: media.ferrata.src,
     category: 'rutas-recomendadas',
     tags: ['vías ferratas', 'andalucía', 'rutas', 'aventura'],
     author: defaultAuthor,
@@ -268,7 +270,7 @@ Andalucía ofrece un abanico de posibilidades para disfrutar de las vías ferrat
     seo: {
       metaTitle: 'Las 5 Vías Ferratas más Espectaculares de Andalucía | Naturaleza Sin Límites',
       metaDescription: 'Descubre las mejores vías ferratas de Andalucía: Caminito del Rey, Tajo de Ronda, Atajate, El Chorro y Comares. Guía completa con dificultad, tiempos y consejos.',
-      ogImage: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=1200',
+      ogImage: media.ferrata.src,
     },
   },
   {
@@ -412,7 +414,7 @@ El rappel es una habilidad que se perfecciona con la práctica constante. Comien
 
 Recuerda: en la montaña, la prisa es enemiga de la seguridad. Tómate tu tiempo para hacer cada rappel de forma correcta.
     `,
-    featuredImage: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200',
+    featuredImage: media.ropeDetail.src,
     category: 'tecnicas-seguridad',
     tags: ['rappel', 'técnicas', 'seguridad', 'formación'],
     author: defaultAuthor,
@@ -422,7 +424,7 @@ Recuerda: en la montaña, la prisa es enemiga de la seguridad. Tómate tu tiempo
     seo: {
       metaTitle: 'Técnicas de Rappel: Del Básico al Avanzado | Naturaleza Sin Límites',
       metaDescription: 'Guía completa de técnicas de rappel para todos los niveles. Aprende posición correcta, errores comunes, y progresa desde rappel básico hasta extraplomo.',
-      ogImage: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200',
+      ogImage: media.ropeDetail.src,
     },
   },
 ];

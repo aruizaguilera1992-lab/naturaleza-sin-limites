@@ -2,15 +2,14 @@ import { motion } from 'framer-motion';
 import { Mountain, Trophy, Users, Target, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import activityCanyoning from '@/assets/activity-canyoning.jpg';
-import activityFerrata from '@/assets/activity-ferrata.jpg';
+import { media } from '@/data/media';
 
 const pathways = [
   {
     id: 'adventure',
     title: 'Quiero vivir una experiencia de aventura',
     description: 'Ideal si buscas una salida de barranquismo, escalada, vía ferrata u otra actividad puntual para ti, tu pareja, tus amigos o tu familia.',
-    image: activityCanyoning,
+    image: media.canyoning,
     icon: Users,
     ctaShort: 'Propuesta de aventura',
     ctaLong: 'Quiero una propuesta de aventura',
@@ -22,7 +21,7 @@ const pathways = [
     id: 'training',
     title: 'Quiero mejorar mi rendimiento en montaña',
     description: 'Pensado si quieres dar un salto de nivel, entrenar con estructura y aprovechar la experiencia y resultados en competición para avanzar con seguridad.',
-    image: activityFerrata,
+    image: media.functionalTraining,
     icon: Target,
     ctaShort: 'Hablar de entrenamiento',
     ctaLong: 'Quiero hablar sobre entrenamiento',
@@ -72,8 +71,10 @@ export function ContactPathsSection() {
                 {/* Image */}
                 <div className="relative h-40 sm:h-48 lg:h-52 overflow-hidden">
                   <img 
-                    src={pathway.image} 
-                    alt={pathway.title}
+                    src={pathway.image.src}
+                    alt={pathway.image.alt}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${pathway.gradient} to-transparent`} />

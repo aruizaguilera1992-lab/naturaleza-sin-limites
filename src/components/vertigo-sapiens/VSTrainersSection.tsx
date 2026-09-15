@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
-import founderImage from '@/assets/founder-antonio.png';
+import { media } from '@/data/media';
 
 const founder = {
   name: 'Antonio Ruiz Aguilera',
   role: 'Fundador & Coach Especialista en Fuerza, Biomecánica y Aventura',
-  image: founderImage,
+  image: media.functionalTraining,
   bio: `Entrenador personal con Máster en Entrenamiento Deportivo-Físico y más de 5 años de experiencia en centros de referencia, donde ha diseñado programas de fuerza, resistencia y readaptación para más de 100 clientes mensuales. Su trabajo integra biomecánica aplicada, prevención de lesiones y disciplinas como yoga y pilates para construir una base sólida antes de exigir al máximo el rendimiento.
 
 Como Técnico Deportivo en Espeleología TD2, ha coordinado y guiado decenas de expediciones y competiciones oficiales de espeleología y descenso de cañones en Andalucía, lo que le permite llevar el entrenamiento más allá del gimnasio y convertir la naturaleza en una herramienta de transformación personal. Su enfoque une ciencia del entrenamiento, experiencias de aventura y un acompañamiento cercano para que cada persona gane fuerza, confianza y autonomía dentro y fuera de la montaña.`,
@@ -43,8 +43,10 @@ export function VSTrainersSection() {
               {/* Photo */}
               <div className="relative aspect-[16/9] overflow-hidden">
                 <img
-                  src={founder.image}
-                  alt={founder.name}
+                  src={founder.image.src}
+                  alt={founder.image.alt}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />

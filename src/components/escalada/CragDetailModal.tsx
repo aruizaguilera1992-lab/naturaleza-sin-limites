@@ -48,7 +48,9 @@ export function CragDetailModal({ crag, isOpen, onClose, userLevel }: CragDetail
           <div className="relative h-64 md:h-80">
             <img
               src={crag.imagenGrande}
-              alt={crag.nombre}
+              alt={`Pared de escalada de ${crag.nombre} en ${crag.zona}, ${crag.provincia}`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

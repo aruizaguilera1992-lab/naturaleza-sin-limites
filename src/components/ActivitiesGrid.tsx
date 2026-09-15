@@ -1,9 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import activityCanyoning from '@/assets/activity-canyoning.jpg';
-import activityClimbing from '@/assets/activity-climbing.jpg';
-import activityFerrata from '@/assets/activity-ferrata.jpg';
+import { media } from '@/data/media';
 
 const activities = [
   {
@@ -12,7 +10,7 @@ const activities = [
     subtitle: 'Descensos de Vértigo',
     description: 'Experiencia completa: rapel, saltos, toboganes naturales. Aventura segura adaptada a todos los niveles.',
     price: 55,
-    image: activityCanyoning,
+    image: media.canyoning,
     cta: 'Ver Barrancos',
     link: '/barranquismo',
   },
@@ -22,7 +20,7 @@ const activities = [
     subtitle: 'Conquista la Vertical',
     description: 'Vías deportivas y clásicas en las mejores escuelas de Málaga. Salidas dirigidas cada fin de semana.',
     price: 49,
-    image: activityClimbing,
+    image: media.climbing,
     cta: 'Ver Escuelas',
     link: '/escalada',
   },
@@ -32,7 +30,7 @@ const activities = [
     subtitle: 'Adrenalina en las Alturas',
     description: 'Rutas equipadas con cables y clavijas. Vive la sensación de la pared con máxima seguridad.',
     price: 50,
-    image: activityFerrata,
+    image: media.ferrata,
     cta: 'Ver Ferratas',
     link: '/vias-ferratas',
   },
@@ -73,8 +71,10 @@ export function ActivitiesGrid() {
               {/* Background Image */}
               <div className="absolute inset-0">
                 <img
-                  src={activity.image}
-                  alt={activity.title}
+                  src={activity.image.src}
+                  alt={activity.image.alt}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="card-overlay group-hover:card-overlay-hover transition-all duration-500" />

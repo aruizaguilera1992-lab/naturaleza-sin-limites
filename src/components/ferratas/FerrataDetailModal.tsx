@@ -62,7 +62,9 @@ export function FerrataDetailModal({ ferrata, isOpen, onClose, userLevel }: Ferr
           <div className="relative h-64 sm:h-80 overflow-hidden">
             <img
               src={ferrata.imagenGrande}
-              alt={ferrata.nombre}
+              alt={`Recorrido equipado de la vía ferrata ${ferrata.nombre} en ${ferrata.zona}`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />

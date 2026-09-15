@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowDown, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import founderImage from '@/assets/founder-antonio.png';
-import heroBg from '@/assets/hero-canyoning.jpg';
+import { media } from '@/data/media';
 
 export function ContactHeroSection() {
   const scrollToPathways = () => {
@@ -14,8 +13,10 @@ export function ContactHeroSection() {
       {/* Background */}
       <div className="absolute inset-0">
         <img 
-          src={heroBg} 
-          alt="Montaña" 
+          src={media.caminito.src}
+          alt={media.caminito.alt}
+          loading="eager"
+          decoding="async"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background" />
@@ -54,8 +55,10 @@ export function ContactHeroSection() {
             <div className="relative">
               <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-primary/30 shadow-xl">
                 <img 
-                  src={founderImage} 
-                  alt="Antonio - Naturaleza Sin Límites" 
+                  src={media.ropeDetail.src}
+                  alt={media.ropeDetail.alt}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                 />
               </div>

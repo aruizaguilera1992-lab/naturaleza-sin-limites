@@ -11,8 +11,8 @@
 - [ ] Activar pagos reales (modo actual: sandbox)
 
 ## Visual image review
-- [ ] Inventory every image source and usage
-- [ ] Centralize image URLs and alt text
-- [ ] Replace priority hero, activity, training, about, and testimonial imagery
-- [ ] Add responsive loading and LCP behavior
-- [ ] Verify desktop and mobile rendering
+- [x] Inventory every image source and usage
+- [x] Centralize image URLs and alt text
+- [x] Replace priority hero, activity, training, about, and testimonial imagery
+- [x] Add responsive loading and LCP behavior
+- [x] Verify desktop and mobile rendering

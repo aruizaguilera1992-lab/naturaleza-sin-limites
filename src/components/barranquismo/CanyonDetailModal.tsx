@@ -67,7 +67,9 @@ export function CanyonDetailModal({ barranco, isOpen, onClose, userLevel }: Cany
           <div className="relative h-64 sm:h-80 overflow-hidden">
             <img
               src={barranco.imagenGrande}
-              alt={barranco.nombre}
+              alt={`Vista del barranco ${barranco.nombre} en ${barranco.poblacion}, ${barranco.provincia}`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />

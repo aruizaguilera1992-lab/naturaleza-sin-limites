@@ -8,6 +8,7 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { CanyoningQuestionnaire } from '@/components/barranquismo/CanyoningQuestionnaire';
 import { CanyonResults } from '@/components/barranquismo/CanyonResults';
 import type { NivelExperiencia, DuracionPreferida, Caracteristica, Provincia } from '@/data/barrancos';
+import { media } from '@/data/media';
 
 interface FilterAnswers {
   nivel: NivelExperiencia | null;
@@ -89,11 +90,12 @@ const Barranquismo = () => {
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=1920')`,
-          }}
+        <img
+          src={media.canyoning.src}
+          alt={media.canyoning.alt}
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         
         {/* Overlay */}

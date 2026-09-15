@@ -120,7 +120,9 @@ export function ActivityDetailModal({ activity, isOpen, onClose }: ActivityDetai
           <div className="relative h-56 sm:h-72 overflow-hidden">
             <img
               src={activity.imageLarge}
-              alt={activity.name}
+              alt={`${typeConfig.label} en ${activity.zone}, ${activity.province}`}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />

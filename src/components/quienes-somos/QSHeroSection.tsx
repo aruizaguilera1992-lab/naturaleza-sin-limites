@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { User, MessageCircle, Leaf } from 'lucide-react';
-import founderImage from '@/assets/founder-antonio.png';
+import { media } from '@/data/media';
 
 const bullets = [
   { icon: User, text: "Proyecto de autor, no una agencia masiva." },
@@ -68,8 +68,10 @@ export function QSHeroSection() {
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src={founderImage}
-                alt="Antonio Ruiz Aguilera - Fundador de Naturaleza Sin Límites"
+                src={media.ropeDetail.src}
+                alt={media.ropeDetail.alt}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto object-cover aspect-[4/5]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

@@ -17,6 +17,8 @@ export function BlogArticleHero({ post }: BlogArticleHeroProps) {
         <img
           src={post.featuredImage}
           alt={post.title}
+          loading="eager"
+          decoding="async"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
@@ -46,7 +48,7 @@ export function BlogArticleHero({ post }: BlogArticleHeroProps) {
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
                   {post.author.avatar ? (
-                    <img src={post.author.avatar} alt={post.author.name} className="w-full h-full object-cover" />
+                    <img src={post.author.avatar} alt={post.author.name} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   ) : (
                     <User className="w-5 h-5 text-primary" />
                   )}

@@ -2,30 +2,31 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Maximize2, X } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { media } from '@/data/media';
 
 const facilities = [
   {
     id: 1,
     title: 'Zona de Boulder y Campus Board',
-    image: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=1200&q=85',
+    image: media.climbing,
     description: 'Muro de boulder con problemas desde 4a hasta 8a, más campus board profesional para entrenamiento de fuerza de dedos.',
   },
   {
     id: 2,
     title: 'Área de TRX y Anillas',
-    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=85',
+    image: media.functionalTraining,
     description: 'Estaciones de suspensión para entrenamiento funcional específico de escalada y deportes verticales.',
   },
   {
     id: 3,
     title: 'Espacio de Movilidad',
-    image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1200&q=85',
+    image: media.elTorcal,
     description: 'Zona dedicada a estiramientos, yoga y trabajo de movilidad articular.',
   },
   {
     id: 4,
     title: 'Material Técnico Profesional',
-    image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=85',
+    image: media.ropeDetail,
     description: 'Equipamiento completo: bloqueadores, descendedores, poleas y material de progresión vertical para práctica.',
   },
 ];
@@ -75,8 +76,10 @@ export function VSFacilitiesSection() {
               onClick={() => setSelectedImage(facility)}
             >
               <img
-                src={facility.image}
-                alt={facility.title}
+                src={facility.image.src}
+                alt={facility.image.alt}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -132,8 +135,10 @@ export function VSFacilitiesSection() {
                   <X className="h-5 w-5 text-white" />
                 </button>
                 <img
-                  src={selectedImage.image}
-                  alt={selectedImage.title}
+                  src={selectedImage.image.src}
+                  alt={selectedImage.image.alt}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full aspect-video object-cover"
                 />
                 <div className="p-6">

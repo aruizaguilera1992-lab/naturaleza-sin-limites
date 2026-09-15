@@ -75,7 +75,9 @@ export function ActivitiesComparison({ activities, isOpen, onClose, onRemove }: 
                         <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-xl overflow-hidden mb-2">
                           <img 
                             src={activity.image} 
-                            alt={activity.name}
+                            alt={`${activity.name} en ${activity.zone}`}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover"
                           />
                         </div>

@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 import { ChevronDown, Mountain, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import heroBg from '@/assets/hero-canyoning.jpg';
+import { media } from '@/data/media';
 export function HeroSection() {
   return <section id="inicio" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <img src={heroBg} alt="Barranquismo en Málaga" className="w-full h-full object-cover" />
+        <img src={media.canyoning.src} alt={media.canyoning.alt} fetchPriority="high" decoding="async" className="w-full h-full object-cover" />
         <div className="hero-overlay" />
       </div>
 
