@@ -55,7 +55,7 @@ export function Navbar() {
             behavior: 'smooth'
           });
         }}>
-            <img src={logo} alt="Naturaleza Sin Límites" className="h-32 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110" />
+            <img src={logo} alt="Naturaleza Sin Límites" loading="eager" decoding="async" className="h-32 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110" />
           </Link>
 
           {/* Desktop Navigation */}

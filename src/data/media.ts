@@ -18,12 +18,12 @@ const pexelsLicense = 'https://www.pexels.com/license/';
  */
 export const media = {
   canyoning: {
-    src: '/__l5e/assets-v1/5cd603f5-9b1c-4f15-bfe7-ff63692aaa2c/canyoning-rappel-documentary.webp',
-    alt: 'Barranquista equipado con casco, neopreno y cuerda durante un rápel junto al agua',
-    sourceUrl: 'https://www.pexels.com/photo/active-man-rappelling-on-cliff-26976907/',
+    src: '/__l5e/assets-v1/b61b5914-4df2-4b52-8d6f-eb28433230d2/canyoning-equipped-documentary.webp',
+    alt: 'Barranquista equipado con casco, protección térmica, arnés y cuerda durante un rápel sobre el agua',
+    sourceUrl: 'https://www.pexels.com/photo/woman-with-rope-on-edge-11792447/',
     license: pexelsLicense,
     status: 'propia-pendiente',
-    replacementNote: 'Sustituir por una foto propia horizontal de un grupo en un barranco de Málaga, con rápel y agua.',
+    replacementNote: 'Sustituir por una foto propia horizontal de un grupo en un barranco de Málaga, con neopreno, rápel y agua.',
   },
   climbing: {
     src: '/__l5e/assets-v1/b3d3fef7-20bb-4974-b3b2-741cd8afefa3/limestone-climbing-documentary.webp',

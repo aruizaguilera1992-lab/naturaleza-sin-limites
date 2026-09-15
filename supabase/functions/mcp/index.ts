@@ -13,12 +13,12 @@ import { z } from "npm:zod@^3.25.76";
 var pexelsLicense = "https://www.pexels.com/license/";
 var media = {
   canyoning: {
-    src: "/__l5e/assets-v1/5cd603f5-9b1c-4f15-bfe7-ff63692aaa2c/canyoning-rappel-documentary.webp",
-    alt: "Barranquista equipado con casco, neopreno y cuerda durante un r\xE1pel junto al agua",
-    sourceUrl: "https://www.pexels.com/photo/active-man-rappelling-on-cliff-26976907/",
+    src: "/__l5e/assets-v1/b61b5914-4df2-4b52-8d6f-eb28433230d2/canyoning-equipped-documentary.webp",
+    alt: "Barranquista equipado con casco, protecci\xF3n t\xE9rmica, arn\xE9s y cuerda durante un r\xE1pel sobre el agua",
+    sourceUrl: "https://www.pexels.com/photo/woman-with-rope-on-edge-11792447/",
     license: pexelsLicense,
     status: "propia-pendiente",
-    replacementNote: "Sustituir por una foto propia horizontal de un grupo en un barranco de M\xE1laga, con r\xE1pel y agua."
+    replacementNote: "Sustituir por una foto propia horizontal de un grupo en un barranco de M\xE1laga, con neopreno, r\xE1pel y agua."
   },
   climbing: {
     src: "/__l5e/assets-v1/b3d3fef7-20bb-4974-b3b2-741cd8afefa3/limestone-climbing-documentary.webp",
