@@ -580,6 +580,47 @@ export default function Admin() {
 
               ))
             ))}
+
+          {tab === "notifications" &&
+            (notifications.length === 0 ? (
+              <p className="text-muted-foreground">Todavía no se ha enviado ninguna notificación.</p>
+            ) : (
+              notifications.map((n) => (
+                <div key={n.id} className="rounded-xl border border-border bg-card p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h2 className="font-heading font-semibold">{n.subject ?? n.kind}</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(n.created_at)} · {n.recipient ?? "sin destinatario"} · intentos:{" "}
+                        {n.attempts}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={n.status === "enviado" ? "default" : "destructive"}>
+                        {n.status}
+                      </Badge>
+                      {n.status !== "enviado" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-2"
+                          disabled={retrying === n.id}
+                          onClick={() => retryNotification(n.id)}
+                        >
+                          {retrying === n.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Mail className="h-4 w-4" />
+                          )}
+                          Reintentar
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  {n.error && <p className="mt-3 text-sm text-destructive">{n.error}</p>}
+                </div>
+              ))
+            ))}
         </div>
       </div>
     </div>
