@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
-import logo from '@/assets/logo.png';
+import logoAsset from '@/assets/naturaleza-sin-limites-logo.webp.asset.json';
 import { useCookieConsent } from '@/context/CookieConsentContext';
 
 const navLinks = [
@@ -68,7 +68,7 @@ export function Footer() {
           {/* Brand Column */}
           <div>
             <button onClick={handleLogoClick} className="inline-block mb-6 cursor-pointer">
-              <img src={logo} alt="Naturaleza Sin Límites" loading="lazy" decoding="async" className="h-24 w-auto" />
+              <img src={logoAsset.url} alt="Naturaleza Sin Límites" loading="lazy" decoding="async" className="h-24 w-auto" />
             </button>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
               Proyecto de guiado y entrenamiento en deportes de aventura en Málaga. 
