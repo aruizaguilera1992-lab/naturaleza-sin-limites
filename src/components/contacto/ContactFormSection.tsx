@@ -30,7 +30,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 const contactSchema = z.object({
   nombre: z.string().trim().min(2, 'El nombre es obligatorio').max(100, 'Máximo 100 caracteres'),
-  contacto: z.string().trim().min(5, 'Introduce un email o teléfono válido').max(100, 'Máximo 100 caracteres'),
+  email: z.string().trim().email('Introduce un email válido').max(150, 'Máximo 150 caracteres'),
+  phone: z.string().trim().regex(/^[+]?[\d\s()./-]{9,20}$/, 'Introduce un teléfono válido'),
   interes: z.string().min(1, 'Selecciona qué buscas'),
   personas: z.string().optional(),
   mensaje: z.string().trim().max(1000, 'Máximo 1000 caracteres').optional(),
@@ -56,7 +57,8 @@ export function ContactFormSection() {
     resolver: zodResolver(contactSchema),
     defaultValues: {
       nombre: '',
-      contacto: '',
+      email: '',
+      phone: '',
       interes: '',
       personas: '',
       mensaje: '',
@@ -72,7 +74,8 @@ export function ContactFormSection() {
         body: {
           type: 'contact',
           nombre: data.nombre,
-          contacto: data.contacto,
+          email: data.email,
+          phone: data.phone,
           interes: interestOptions.find(o => o.value === data.interes)?.label || data.interes,
           personas: data.personas || null,
           mensaje: data.mensaje || null,
@@ -179,24 +182,50 @@ export function ContactFormSection() {
                   )}
                 />
 
-                {/* Email o Teléfono */}
-                <FormField
-                  control={form.control}
-                  name="contacto"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email o Teléfono *</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="correo@ejemplo.com o +34 600 000 000" 
-                          {...field}
-                          className="h-12"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Email y Teléfono */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email *</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            inputMode="email"
+                            autoComplete="email"
+                            placeholder="correo@ejemplo.com"
+                            {...field}
+                            className="h-12"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Teléfono *</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            inputMode="tel"
+                            autoComplete="tel"
+                            placeholder="+34 600 000 000"
+                            {...field}
+                            className="h-12"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 {/* ¿Qué buscas? */}
                 <FormField
@@ -241,6 +270,10 @@ export function ContactFormSection() {
                           className="h-12"
                         />
                       </FormControl>
+                      <p className="text-xs text-muted-foreground">
+                        Las reservas estándar son de 1 a 6 personas. Si sois más, indícalo aquí y
+                        te preparamos una propuesta de grupo.
+                      </p>
                       <FormMessage />
                     </FormItem>
                   )}

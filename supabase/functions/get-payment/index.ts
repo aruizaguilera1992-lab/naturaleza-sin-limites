@@ -6,9 +6,10 @@ import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 const BodySchema = z.object({
   token: z.string().regex(/^[a-f0-9]{16,80}$/),
   action: z.enum(["status", "checkout"]).default("status"),
-  environment: z.enum(["sandbox", "live"]).optional(),
   returnUrl: z.string().url().max(400).optional(),
 });
+
+const ALLOWED_CURRENCIES = new Set(["eur"]);
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -35,15 +36,19 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  const { data: pr } = await supabase
+  const { data: pr, error: prError } = await supabase
     .from("payment_requests")
     .select("*")
     .eq("token", token)
     .maybeSingle();
 
+  if (prError) {
+    console.error("payment_requests read error", prError);
+    return json({ error: "server_error" }, 500);
+  }
   if (!pr) return json({ error: "not_found" }, 404);
 
-  // Resolve public details of the related request.
+  // Public details of the related request.
   let activity = pr.concept;
   let date: string | null = null;
   let people: string | null = null;
@@ -94,14 +99,45 @@ Deno.serve(async (req) => {
   if (status !== "pendiente") return json({ payment, error: "unavailable" }, 409);
   if (!returnUrl) return json({ error: "returnUrl requerido" }, 400);
 
-  const env = (pr.environment === "live" ? "live" : "sandbox") as StripeEnv;
+  // ---- Validation before any chargeable session is created ----
+  if (pr.environment !== "sandbox" && pr.environment !== "live") {
+    console.error("Invalid payment environment", pr.environment);
+    return json({ payment, error: "invalid_environment" }, 409);
+  }
+  const currency = String(pr.currency ?? "eur").toLowerCase();
+  if (!ALLOWED_CURRENCIES.has(currency)) {
+    return json({ payment, error: "invalid_currency" }, 409);
+  }
+  if (!Number.isInteger(pr.amount_cents) || pr.amount_cents < 50) {
+    return json({ payment, error: "invalid_amount" }, 409);
+  }
+
+  const env = pr.environment as StripeEnv;
   const stripe = createStripeClient(env);
 
-  const sessionParams: Record<string, unknown> = {
+  // ---- Reuse an existing open session: never create two chargeable
+  // sessions for the same payment request. ----
+  if (pr.stripe_session_id) {
+    try {
+      const existing = await stripe.checkout.sessions.retrieve(pr.stripe_session_id);
+      if (existing.status === "complete" || existing.payment_status === "paid") {
+        return json({ payment, error: "already_paid" }, 409);
+      }
+      if (existing.status === "open" && existing.client_secret) {
+        return json({ payment, clientSecret: existing.client_secret, reused: true });
+      }
+      // status === "expired" -> fall through and create a new session.
+    } catch (e) {
+      console.error("Could not retrieve existing checkout session", e);
+      return json({ payment, error: "checkout_unavailable" }, 502);
+    }
+  }
+
+  const sessionParams = {
     line_items: [
       {
         price_data: {
-          currency: pr.currency,
+          currency,
           product_data: { name: pr.concept },
           unit_amount: pr.amount_cents,
           tax_behavior: "inclusive",
@@ -114,24 +150,39 @@ Deno.serve(async (req) => {
     return_url: returnUrl,
     payment_intent_data: { description: pr.concept },
     ...(pr.customer_email ? { customer_email: pr.customer_email } : {}),
-    metadata: { payment_request_token: pr.token },
+    automatic_tax: { enabled: true },
+    metadata: { payment_request_token: pr.token, environment: env },
   };
 
   let session;
   try {
-    session = await stripe.checkout.sessions.create({
-      ...sessionParams,
-      automatic_tax: { enabled: true },
-    } as never);
+    // No silent fallback: a tax configuration problem must surface.
+    session = await stripe.checkout.sessions.create(sessionParams as never, {
+      idempotencyKey: `pr_${pr.id}_${pr.amount_cents}_${currency}`,
+    });
   } catch (e) {
-    console.error("automatic_tax session failed, retrying without it", e);
-    session = await stripe.checkout.sessions.create(sessionParams as never);
+    const message = String((e as { message?: string })?.message ?? e).slice(0, 400);
+    console.error("Checkout session creation failed", message);
+    await supabase
+      .from("payment_requests")
+      .update({ last_error: message })
+      .eq("id", pr.id);
+    return json({ payment, error: "checkout_failed", detail: message }, 502);
   }
 
-  await supabase
+  const { error: updateError } = await supabase
     .from("payment_requests")
-    .update({ stripe_session_id: session.id })
+    .update({
+      stripe_session_id: session.id,
+      checkout_created_at: new Date().toISOString(),
+      last_error: null,
+    })
     .eq("id", pr.id);
+
+  if (updateError) {
+    console.error("Could not persist checkout session id", updateError);
+    return json({ payment, error: "server_error" }, 500);
+  }
 
   return json({ payment, clientSecret: session.client_secret });
 });

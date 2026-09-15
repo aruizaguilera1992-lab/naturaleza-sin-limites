@@ -20,6 +20,7 @@ export type Database = {
           admin_notes: string | null
           contact: string
           created_at: string
+          email: string | null
           experience_level: string | null
           id: string
           message: string | null
@@ -27,7 +28,9 @@ export type Database = {
           number_of_people: string | null
           paid_amount_cents: number | null
           paid_at: string | null
+          payment_email: string | null
           payment_reference: string | null
+          phone: string | null
           preferred_date: string | null
           rgpd_accepted_at: string | null
           status: string
@@ -38,6 +41,7 @@ export type Database = {
           admin_notes?: string | null
           contact: string
           created_at?: string
+          email?: string | null
           experience_level?: string | null
           id?: string
           message?: string | null
@@ -45,7 +49,9 @@ export type Database = {
           number_of_people?: string | null
           paid_amount_cents?: number | null
           paid_at?: string | null
+          payment_email?: string | null
           payment_reference?: string | null
+          phone?: string | null
           preferred_date?: string | null
           rgpd_accepted_at?: string | null
           status?: string
@@ -56,6 +62,7 @@ export type Database = {
           admin_notes?: string | null
           contact?: string
           created_at?: string
+          email?: string | null
           experience_level?: string | null
           id?: string
           message?: string | null
@@ -63,7 +70,9 @@ export type Database = {
           number_of_people?: string | null
           paid_amount_cents?: number | null
           paid_at?: string | null
+          payment_email?: string | null
           payment_reference?: string | null
+          phone?: string | null
           preferred_date?: string | null
           rgpd_accepted_at?: string | null
           status?: string
@@ -76,6 +85,7 @@ export type Database = {
           admin_notes: string | null
           contacto: string
           created_at: string
+          email: string | null
           id: string
           interes: string
           mensaje: string | null
@@ -84,6 +94,7 @@ export type Database = {
           paid_at: string | null
           payment_reference: string | null
           personas: string | null
+          phone: string | null
           rgpd_accepted_at: string | null
           status: string
           updated_at: string
@@ -92,6 +103,7 @@ export type Database = {
           admin_notes?: string | null
           contacto: string
           created_at?: string
+          email?: string | null
           id?: string
           interes: string
           mensaje?: string | null
@@ -100,6 +112,7 @@ export type Database = {
           paid_at?: string | null
           payment_reference?: string | null
           personas?: string | null
+          phone?: string | null
           rgpd_accepted_at?: string | null
           status?: string
           updated_at?: string
@@ -108,6 +121,7 @@ export type Database = {
           admin_notes?: string | null
           contacto?: string
           created_at?: string
+          email?: string | null
           id?: string
           interes?: string
           mensaje?: string | null
@@ -116,16 +130,97 @@ export type Database = {
           paid_at?: string | null
           payment_reference?: string | null
           personas?: string | null
+          phone?: string | null
           rgpd_accepted_at?: string | null
           status?: string
           updated_at?: string
         }
         Relationships: []
       }
+      notification_log: {
+        Row: {
+          attempts: number
+          booking_id: string | null
+          channel: string
+          contact_id: string | null
+          created_at: string
+          dedupe_key: string
+          error: string | null
+          id: string
+          kind: string
+          payload: Json | null
+          payment_request_id: string | null
+          provider_id: string | null
+          recipient: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          booking_id?: string | null
+          channel?: string
+          contact_id?: string | null
+          created_at?: string
+          dedupe_key: string
+          error?: string | null
+          id?: string
+          kind: string
+          payload?: Json | null
+          payment_request_id?: string | null
+          provider_id?: string | null
+          recipient?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          booking_id?: string | null
+          channel?: string
+          contact_id?: string | null
+          created_at?: string
+          dedupe_key?: string
+          error?: string | null
+          id?: string
+          kind?: string
+          payload?: Json | null
+          payment_request_id?: string | null
+          provider_id?: string | null
+          recipient?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_log_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_log_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contact_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_log_payment_request_id_fkey"
+            columns: ["payment_request_id"]
+            isOneToOne: false
+            referencedRelation: "payment_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_requests: {
         Row: {
           amount_cents: number
           booking_id: string | null
+          checkout_created_at: string | null
           concept: string
           contact_id: string | null
           created_at: string
@@ -134,9 +229,11 @@ export type Database = {
           environment: string
           expires_at: string
           id: string
+          last_error: string | null
           paid_at: string | null
           payment_reference: string | null
           status: string
+          stripe_payment_intent_id: string | null
           stripe_session_id: string | null
           token: string
           updated_at: string
@@ -144,6 +241,7 @@ export type Database = {
         Insert: {
           amount_cents: number
           booking_id?: string | null
+          checkout_created_at?: string | null
           concept: string
           contact_id?: string | null
           created_at?: string
@@ -152,9 +250,11 @@ export type Database = {
           environment?: string
           expires_at?: string
           id?: string
+          last_error?: string | null
           paid_at?: string | null
           payment_reference?: string | null
           status?: string
+          stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           token?: string
           updated_at?: string
@@ -162,6 +262,7 @@ export type Database = {
         Update: {
           amount_cents?: number
           booking_id?: string | null
+          checkout_created_at?: string | null
           concept?: string
           contact_id?: string | null
           created_at?: string
@@ -170,9 +271,11 @@ export type Database = {
           environment?: string
           expires_at?: string
           id?: string
+          last_error?: string | null
           paid_at?: string | null
           payment_reference?: string | null
           status?: string
+          stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           token?: string
           updated_at?: string
@@ -220,6 +323,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      confirm_payment_request: {
+        Args: {
+          _amount_cents: number
+          _currency: string
+          _environment: string
+          _payment_intent_id: string
+          _reference: string
+          _token: string
+        }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

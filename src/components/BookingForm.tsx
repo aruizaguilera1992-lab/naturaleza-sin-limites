@@ -27,17 +27,20 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+export const MAX_STANDARD_GROUP = 6;
+
 const bookingSchema = z.object({
   activity: z.string().min(1, { message: 'Selecciona una actividad' }),
   preferredDate: z.string().min(1, { message: 'Indica una fecha preferente' }),
-  numberOfPeople: z.string().min(1, { message: 'Indica el número de personas' }),
+  numberOfPeople: z.string().min(1, { message: 'Indica el número de personas' })
+    .refine((v) => {
+      const n = Number(v);
+      return Number.isInteger(n) && n >= 1 && n <= MAX_STANDARD_GROUP;
+    }, { message: `Las reservas estándar son de 1 a ${MAX_STANDARD_GROUP} personas. Para grupos mayores, consúltanos.` }),
   experienceLevel: z.string().min(1, { message: 'Selecciona tu nivel de experiencia' }),
-  contactMethod: z.string().min(1, { message: 'Indica tu teléfono o email' })
-    .refine((val) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const phoneRegex = /^[+]?[\d\s()-]{9,}$/;
-      return emailRegex.test(val) || phoneRegex.test(val);
-    }, { message: 'Introduce un email o teléfono válido' }),
+  name: z.string().trim().min(2, { message: 'Indica tu nombre' }).max(120),
+  email: z.string().trim().email({ message: 'Introduce un email válido' }).max(150),
+  phone: z.string().trim().regex(/^[+]?[\d\s()./-]{9,20}$/, { message: 'Introduce un teléfono válido' }),
   message: z.string().max(500, { message: 'El mensaje no puede superar los 500 caracteres' }).optional(),
   rgpd: z.boolean().refine((v) => v === true, {
     message: 'Debes aceptar la Política de Privacidad para enviar el formulario',
@@ -69,7 +72,9 @@ export const BookingForm = () => {
       preferredDate: '',
       numberOfPeople: '',
       experienceLevel: '',
-      contactMethod: '',
+      name: '',
+      email: '',
+      phone: '',
       message: '',
       rgpd: false,
     },
@@ -84,9 +89,11 @@ export const BookingForm = () => {
           type: 'booking',
           activity: activities.find(a => a.value === data.activity)?.label || data.activity,
           preferredDate: data.preferredDate,
-          numberOfPeople: data.numberOfPeople,
+          numberOfPeople: Number(data.numberOfPeople),
           experienceLevel: experienceLevels.find(l => l.value === data.experienceLevel)?.label || data.experienceLevel,
-          contact: data.contactMethod,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
           message: data.message || null,
           rgpd: true,
         },
@@ -201,16 +208,27 @@ export const BookingForm = () => {
                           <Users className="h-4 w-4 text-primary" />
                           Nº de personas
                         </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min="1"
-                            max="20"
-                            placeholder="Ej: 4"
-                            className="bg-background/50 border-border"
-                            {...field}
-                          />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="bg-background/50 border-border">
+                              <SelectValue placeholder="Selecciona (1-6)" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Array.from({ length: MAX_STANDARD_GROUP }, (_, i) => String(i + 1)).map((n) => (
+                              <SelectItem key={n} value={n}>
+                                {n} {n === '1' ? 'persona' : 'personas'}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">
+                          ¿Sois más de {MAX_STANDARD_GROUP}?{' '}
+                          <Link to="/contacto" className="text-primary hover:underline">
+                            Consúltanos el grupo
+                          </Link>{' '}
+                          y te preparamos una propuesta a medida.
+                        </p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -246,28 +264,78 @@ export const BookingForm = () => {
                   />
                 </div>
 
-                {/* Contact Method */}
-                <FormField
-                  control={form.control}
-                  name="contactMethod"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2 text-foreground">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <Mail className="h-4 w-4 text-primary" />
-                        Teléfono o Email
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Tu teléfono o correo electrónico"
-                          className="bg-background/50 border-border"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Nombre, email y teléfono */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2 text-foreground">
+                          <Users className="h-4 w-4 text-primary" />
+                          Nombre
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Tu nombre"
+                            autoComplete="name"
+                            className="bg-background/50 border-border"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2 text-foreground">
+                          <Mail className="h-4 w-4 text-primary" />
+                          Email
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            inputMode="email"
+                            autoComplete="email"
+                            placeholder="correo@ejemplo.com"
+                            className="bg-background/50 border-border"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2 text-foreground">
+                          <Phone className="h-4 w-4 text-primary" />
+                          Teléfono
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            inputMode="tel"
+                            autoComplete="tel"
+                            placeholder="+34 600 000 000"
+                            className="bg-background/50 border-border"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 {/* Message */}
                 <FormField

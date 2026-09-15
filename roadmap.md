@@ -16,3 +16,11 @@
 - [x] Replace priority hero, activity, training, about, and testimonial imagery
 - [x] Add responsive loading and LCP behavior
 - [x] Verify desktop and mobile rendering
+
+## Bloque prioritario (fiabilidad de pagos, correo y formularios)
+- [x] Confirmación de pago atómica e idempotente (función de base de datos con bloqueo y validación de entorno, importe y moneda)
+- [x] Reutilización de la sesión de cobro para no crear cobros duplicados; sin reintento silencioso sin impuestos
+- [x] Estado real de los correos (enviado / fallido / omitido) y registro de avisos con reintento desde el panel
+- [x] Formularios con nombre, email y teléfono separados; reservas de 1 a 6 personas y consulta para grupos mayores
+- [x] Newsletter y promesa de descuento ocultas (código conservado)
+- [ ] Clave de Resend válida + remitente verificado (pendiente del usuario)

@@ -161,10 +161,22 @@ function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: Payme
       return;
     }
     await navigator.clipboard.writeText(data.url).catch(() => undefined);
-    toast({
-      title: data.emailSent ? "Enlace enviado por email" : "Enlace creado y copiado",
-      description: data.url,
-    });
+
+    const emailStatus: string | undefined = data.email?.status;
+    if (withEmail && emailStatus !== "enviado") {
+      toast({
+        title: "Enlace creado, pero el email NO se ha enviado",
+        description:
+          data.email?.error ??
+          "Revisa la configuración de correo. Puedes reintentarlo desde Notificaciones.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: withEmail ? "Enlace enviado por email" : "Enlace creado y copiado",
+        description: data.url,
+      });
+    }
     setAmount("");
     onCreated();
   };
@@ -233,7 +245,16 @@ function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: Payme
   );
 }
 
-
+type NotificationRow = {
+  id: string;
+  kind: string;
+  recipient: string | null;
+  subject: string | null;
+  status: string;
+  error: string | null;
+  attempts: number;
+  created_at: string;
+};
 
 
 const statusVariant = (status: string) => {
@@ -264,18 +285,44 @@ export default function Admin() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
-  const [tab, setTab] = useState<"bookings" | "contacts">("bookings");
+  const [notifications, setNotifications] = useState<NotificationRow[]>([]);
+  const [retrying, setRetrying] = useState<string | null>(null);
+  const [tab, setTab] = useState<"bookings" | "contacts" | "notifications">("bookings");
 
   const loadData = useCallback(async () => {
-    const [b, c, p] = await Promise.all([
+    const [b, c, p, n] = await Promise.all([
       supabase.from("bookings").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_submissions").select("*").order("created_at", { ascending: false }),
       supabase.from("payment_requests").select("*").order("created_at", { ascending: false }),
+      supabase
+        .from("notification_log")
+        .select("id, kind, recipient, subject, status, error, attempts, created_at")
+        .order("created_at", { ascending: false })
+        .limit(100),
     ]);
     if (b.data) setBookings(b.data as Booking[]);
     if (c.data) setContacts(c.data as Contact[]);
     if (p.data) setPayments(p.data as PaymentRequest[]);
+    if (n.data) setNotifications(n.data as NotificationRow[]);
   }, []);
+
+  const retryNotification = async (id: string) => {
+    setRetrying(id);
+    const { data, error } = await supabase.functions.invoke("retry-notification", {
+      body: { id },
+    });
+    setRetrying(null);
+    if (error || data?.status !== "enviado") {
+      toast({
+        title: "El reenvío no se ha completado",
+        description: data?.error ?? error?.message ?? "Revisa la configuración de correo.",
+        variant: "destructive",
+      });
+    } else {
+      toast({ title: "Notificación reenviada" });
+    }
+    await loadData();
+  };
 
   useEffect(() => {
     let active = true;
@@ -420,6 +467,13 @@ export default function Admin() {
           >
             Contactos ({contacts.length})
           </Button>
+          <Button
+            variant={tab === "notifications" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setTab("notifications")}
+          >
+            Notificaciones ({notifications.filter((n) => n.status !== "enviado").length})
+          </Button>
         </div>
 
         <div className="space-y-4">
@@ -524,6 +578,47 @@ export default function Admin() {
                   />
                 </div>
 
+              ))
+            ))}
+
+          {tab === "notifications" &&
+            (notifications.length === 0 ? (
+              <p className="text-muted-foreground">Todavía no se ha enviado ninguna notificación.</p>
+            ) : (
+              notifications.map((n) => (
+                <div key={n.id} className="rounded-xl border border-border bg-card p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h2 className="font-heading font-semibold">{n.subject ?? n.kind}</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(n.created_at)} · {n.recipient ?? "sin destinatario"} · intentos:{" "}
+                        {n.attempts}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={n.status === "enviado" ? "default" : "destructive"}>
+                        {n.status}
+                      </Badge>
+                      {n.status !== "enviado" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-2"
+                          disabled={retrying === n.id}
+                          onClick={() => retryNotification(n.id)}
+                        >
+                          {retrying === n.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Mail className="h-4 w-4" />
+                          )}
+                          Reintentar
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  {n.error && <p className="mt-3 text-sm text-destructive">{n.error}</p>}
+                </div>
               ))
             ))}
         </div>

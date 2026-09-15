@@ -5,7 +5,9 @@ import { ActivitiesGrid } from '@/components/ActivitiesGrid';
 import { VertigoSapiens } from '@/components/VertigoSapiens';
 import { WhyChooseUs } from '@/components/WhyChooseUs';
 import { BookingForm } from '@/components/BookingForm';
-import { Newsletter } from '@/components/Newsletter';
+// La newsletter permanece desactivada hasta que exista una suscripción real
+// (y una promesa de descuento que podamos cumplir). El componente se conserva.
+// import { Newsletter } from '@/components/Newsletter';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
@@ -21,7 +23,7 @@ const Index = () => {
         <VertigoSapiens />
         <WhyChooseUs />
         <BookingForm />
-        <Newsletter />
+        {/* <Newsletter /> desactivada temporalmente */}
       </main>
       <Footer />
       <WhatsAppButton />
