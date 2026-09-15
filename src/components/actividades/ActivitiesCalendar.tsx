@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 interface ScheduledActivity {
   id: string;
   date: Date;
-  type: 'barranquismo' | 'escalada' | 'ferratas';
+  type: 'barranquismo' | 'escalada' | 'ferratas' | 'espeleologia';
   title: string;
   time: string;
   location: string;
@@ -20,6 +20,7 @@ const activityIcons: Record<string, { emoji: string; color: string }> = {
   barranquismo: { emoji: '🌊', color: 'bg-cyan-500' },
   escalada: { emoji: '🧗', color: 'bg-emerald-500' },
   ferratas: { emoji: '🪜', color: 'bg-purple-500' },
+  espeleologia: { emoji: '🕯️', color: 'bg-amber-500' },
 };
 
 // Sample scheduled activities
@@ -232,6 +233,7 @@ export function ActivitiesCalendar() {
           <span className="flex items-center gap-1">🌊 Barranquismo</span>
           <span className="flex items-center gap-1">🧗 Escalada</span>
           <span className="flex items-center gap-1">🪜 Ferratas</span>
+          <span className="flex items-center gap-1">🕯️ Espeleología</span>
         </div>
       </motion.div>
       

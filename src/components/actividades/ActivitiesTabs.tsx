@@ -14,6 +14,7 @@ const tabs: { id: ActivityType; label: string; icon: React.ElementType; emoji: s
   { id: 'barranquismo', label: 'Barranquismo', icon: Waves, emoji: '🌊' },
   { id: 'escalada', label: 'Escalada', icon: Mountain, emoji: '🧗' },
   { id: 'ferratas', label: 'Ferratas', icon: GitBranch, emoji: '🪜' },
+  { id: 'espeleologia', label: 'Espeleología', icon: Mountain, emoji: '🕯️' },
   { id: 'calendario', label: 'Calendario', icon: Calendar, emoji: '📅' },
 ];
 

@@ -17,6 +17,7 @@ const activityTypeLabels: Record<string, { label: string; emoji: string }> = {
   barranquismo: { label: 'Barranquismo', emoji: '🌊' },
   escalada: { label: 'Escalada', emoji: '🧗' },
   ferratas: { label: 'Vías Ferratas', emoji: '🪜' },
+  espeleologia: { label: 'Espeleología', emoji: '🕯️' },
 };
 
 function DifficultyBar({ value, max = 5 }: { value: number; max?: number }) {

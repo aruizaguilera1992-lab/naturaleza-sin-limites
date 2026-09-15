@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox';
 import { motion } from 'framer-motion';
 import { Send, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
@@ -44,6 +44,7 @@ type ContactFormData = z.infer<typeof contactSchema>;
 
 const interestOptions = [
   { value: 'aventura', label: 'Experiencia de aventura' },
+  { value: 'espeleologia', label: 'Espeleología' },
   { value: 'entrenamiento', label: 'Entrenamiento en montaña' },
   { value: 'orientacion', label: 'No lo tengo claro, quiero orientación' },
 ];
@@ -52,6 +53,9 @@ export function ContactFormSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const presetInterest = searchParams.get('interes') || '';
+  const initialInterest = interestOptions.some((o) => o.value === presetInterest) ? presetInterest : '';
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -59,7 +63,7 @@ export function ContactFormSection() {
       nombre: '',
       email: '',
       phone: '',
-      interes: '',
+      interes: initialInterest,
       personas: '',
       mensaje: '',
       rgpd: false,

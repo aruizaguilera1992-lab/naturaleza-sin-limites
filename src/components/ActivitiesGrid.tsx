@@ -3,7 +3,19 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { media } from '@/data/media';
 
-const activities = [
+interface HomeActivity {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  price: number | null;
+  priceLabel?: string;
+  image: { src: string; alt: string };
+  cta: string;
+  link: string;
+}
+
+const activities: HomeActivity[] = [
   {
     id: 'barranquismo',
     title: 'Barranquismo',
@@ -33,6 +45,17 @@ const activities = [
     image: media.ferrata,
     cta: 'Ver Ferratas',
     link: '/vias-ferratas',
+  },
+  {
+    id: 'espeleologia',
+    title: 'Espeleología',
+    subtitle: 'El Mundo Subterráneo',
+    description: 'Exploración guiada de cavidades y galerías: iniciación, progresión vertical y salidas de exploración.',
+    price: null,
+    priceLabel: 'Consultar',
+    image: media.espeleologiaGrupo,
+    cta: 'Ver actividad',
+    link: '/espeleologia',
   },
 ];
 
@@ -84,7 +107,7 @@ export function ActivitiesGrid() {
               <div className="absolute inset-0 p-6 flex flex-col justify-end">
                 {/* Price Tag */}
                 <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
-                  Desde {activity.price}€
+                  {activity.price !== null ? `Desde ${activity.price}€` : activity.priceLabel}
                 </div>
 
                 {/* Title */}

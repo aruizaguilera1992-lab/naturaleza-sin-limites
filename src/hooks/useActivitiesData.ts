@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 import { barrancos, Barranco } from '@/data/barrancos';
 import { crags, Crag } from '@/data/crags';
 import { ferratas, Ferrata } from '@/data/ferratas';
+import { espeleologiaPublicada, ActividadEspeleologia } from '@/data/espeleologia';
 
 export interface UnifiedActivity {
   id: string;
   name: string;
-  activityType: 'barranquismo' | 'escalada' | 'ferratas';
+  activityType: 'barranquismo' | 'escalada' | 'ferratas' | 'espeleologia';
   province: string;
   zone: string;
   level: string;
@@ -36,7 +37,7 @@ export interface UnifiedActivity {
     previousExperience: boolean;
   };
   // Type-specific data
-  originalData: Barranco | Crag | Ferrata;
+  originalData: Barranco | Crag | Ferrata | ActividadEspeleologia;
 }
 
 function parsePrice(price: string): number {
@@ -228,6 +229,43 @@ export function useActivitiesData() {
       });
     });
     
+    // Map espeleología (catálogo público editable en src/data/espeleologia.ts)
+    espeleologiaPublicada().forEach(e => {
+      unified.push({
+        id: `espeleologia-${e.id}`,
+        name: e.nombre,
+        activityType: 'espeleologia',
+        province: e.provincia,
+        zone: e.zona,
+        level: e.nivel,
+        levelLabel: e.nivelLabel,
+        levelOrder: e.nivelOrden,
+        duration: e.duracion,
+        durationHours: e.duracionHoras,
+        price: e.precio,
+        priceValue: e.precioDesde,
+        shortDescription: e.descripcionCorta,
+        longDescription: e.descripcionLarga,
+        image: e.imagen,
+        imageLarge: e.imagenGrande,
+        characteristics: e.caracteristicas,
+        bestSeason: e.mejorEpoca,
+        minGroup: e.grupoMinimo,
+        materialIncluded: e.materialIncluido,
+        access: e.acceso,
+        externalUrl: '/espeleologia',
+        externalSource: 'naturalezasinlimites.es',
+        includes: e.incluye,
+        highlights: e.destacados,
+        requirements: {
+          minAge: e.requisitos.edadMinima,
+          physicalCondition: e.requisitos.condicionFisica,
+          previousExperience: e.requisitos.experienciaPrevia,
+        },
+        originalData: e,
+      });
+    });
+    
     return unified;
   }, []);
   
@@ -236,6 +274,7 @@ export function useActivitiesData() {
     barranquismo: activities.filter(a => a.activityType === 'barranquismo').length,
     escalada: activities.filter(a => a.activityType === 'escalada').length,
     ferratas: activities.filter(a => a.activityType === 'ferratas').length,
+    espeleologia: activities.filter(a => a.activityType === 'espeleologia').length,
   }), [activities]);
   
   return { activities, counts };

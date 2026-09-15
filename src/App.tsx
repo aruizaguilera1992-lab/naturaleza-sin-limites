@@ -13,6 +13,7 @@ import Actividades from "./pages/Actividades";
 import Barranquismo from "./pages/Barranquismo";
 import Escalada from "./pages/Escalada";
 import ViasFerratas from "./pages/ViasFerratas";
+import Espeleologia from "./pages/Espeleologia";
 import VertigoSapiensPage from "./pages/VertigoSapiensPage";
 import QuienesSomos from "./pages/QuienesSomos";
 import Contacto from "./pages/Contacto";
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/barranquismo" element={<Barranquismo />} />
             <Route path="/escalada" element={<Escalada />} />
             <Route path="/vias-ferratas" element={<ViasFerratas />} />
+            <Route path="/espeleologia" element={<Espeleologia />} />
             <Route path="/vertigo-sapiens" element={<VertigoSapiensPage />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
