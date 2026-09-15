@@ -208,16 +208,27 @@ export const BookingForm = () => {
                           <Users className="h-4 w-4 text-primary" />
                           Nº de personas
                         </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min="1"
-                            max="20"
-                            placeholder="Ej: 4"
-                            className="bg-background/50 border-border"
-                            {...field}
-                          />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="bg-background/50 border-border">
+                              <SelectValue placeholder="Selecciona (1-6)" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Array.from({ length: MAX_STANDARD_GROUP }, (_, i) => String(i + 1)).map((n) => (
+                              <SelectItem key={n} value={n}>
+                                {n} {n === '1' ? 'persona' : 'personas'}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">
+                          ¿Sois más de {MAX_STANDARD_GROUP}?{' '}
+                          <Link to="/contacto" className="text-primary hover:underline">
+                            Consúltanos el grupo
+                          </Link>{' '}
+                          y te preparamos una propuesta a medida.
+                        </p>
                         <FormMessage />
                       </FormItem>
                     )}
