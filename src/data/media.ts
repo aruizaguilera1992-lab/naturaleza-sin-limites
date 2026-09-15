@@ -73,4 +73,29 @@ export const media = {
     status: 'stock-provisional',
     replacementNote: 'Paisaje documental de Málaga para secciones generales y de contacto.',
   },
+  espeleologiaHero: {
+    src: '/__l5e/assets-v1/dc42c617-bd5b-4257-91be-aa7c0c201fe3/espeleologia-hero-documentary.webp',
+    alt: 'Persona con iluminación frontal explorando una gran sala subterránea de roca caliza con estalactitas y estalagmitas',
+    sourceUrl: 'https://www.pexels.com/photo/adventurer-exploring-a-majestic-cave-interior-31651851/',
+    license: pexelsLicense,
+    status: 'propia-pendiente',
+    replacementNote: 'Sustituir por una foto propia horizontal de una salida de espeleología con casco, frontal y mono técnico.',
+  },
+  espeleologiaVertical: {
+    src: '/__l5e/assets-v1/PLACEHOLDER_VERTICAL/espeleologia-vertical-documentary.webp',
+    alt: 'Espeleólogo descendiendo por cuerda en el pozo de entrada de una cavidad iluminada por luz natural',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:TraversitaM11.jpg',
+    license: 'CC BY-SA 3.0',
+    status: 'propia-pendiente',
+    replacementNote: 'Sustituir por una foto propia de progresión vertical con arnés, descensor y casco.',
+  },
+  espeleologiaGrupo: {
+    src: '/__l5e/assets-v1/PLACEHOLDER_GRUPO/espeleologia-grupo-documentary.webp',
+    alt: 'Grupo de espeleólogos con casco, frontal y mono técnico progresando por la entrada de una cueva',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Goikolau-11.jpg',
+    license: 'CC BY-SA 4.0',
+    status: 'propia-pendiente',
+    replacementNote: 'Sustituir por una foto propia de un grupo de iniciación con permiso de imagen.',
+  },
 } as const satisfies Record<string, MediaAsset>;
+
