@@ -30,7 +30,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 const contactSchema = z.object({
   nombre: z.string().trim().min(2, 'El nombre es obligatorio').max(100, 'Máximo 100 caracteres'),
-  contacto: z.string().trim().min(5, 'Introduce un email o teléfono válido').max(100, 'Máximo 100 caracteres'),
+  email: z.string().trim().email('Introduce un email válido').max(150, 'Máximo 150 caracteres'),
+  phone: z.string().trim().regex(/^[+]?[\d\s()./-]{9,20}$/, 'Introduce un teléfono válido'),
   interes: z.string().min(1, 'Selecciona qué buscas'),
   personas: z.string().optional(),
   mensaje: z.string().trim().max(1000, 'Máximo 1000 caracteres').optional(),
