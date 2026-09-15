@@ -3,7 +3,19 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { media } from '@/data/media';
 
-const activities = [
+interface HomeActivity {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  price: number | null;
+  priceLabel?: string;
+  image: { src: string; alt: string };
+  cta: string;
+  link: string;
+}
+
+const activities: HomeActivity[] = [
   {
     id: 'barranquismo',
     title: 'Barranquismo',
