@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import logo from '@/assets/logo.png';
+import logoAsset from '@/assets/naturaleza-sin-limites-logo.webp.asset.json';
 const navLinks = [{
   href: '/',
   label: 'Inicio',
@@ -55,7 +55,7 @@ export function Navbar() {
             behavior: 'smooth'
           });
         }}>
-            <img src={logo} alt="Naturaleza Sin Límites" loading="eager" decoding="async" className="h-32 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110" />
+            <img src={logoAsset.url} alt="Naturaleza Sin Límites" loading="eager" decoding="async" className="h-32 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110" />
           </Link>
 
           {/* Desktop Navigation */}
