@@ -150,6 +150,13 @@ export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilt
           checked={filters.types.includes('ferratas')}
           onCheckedChange={(checked) => handleTypeChange('ferratas', checked)}
         />
+        <CheckboxItem
+          id="type-espeleologia"
+          label="Espeleología"
+          count={counts.espeleologia}
+          checked={filters.types.includes('espeleologia')}
+          onCheckedChange={(checked) => handleTypeChange('espeleologia', checked)}
+        />
       </FilterSection>
       
       {/* Level */}
