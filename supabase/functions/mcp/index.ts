@@ -77,7 +77,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia horizontal de una salida de espeleolog\xEDa con casco, frontal y mono t\xE9cnico."
   },
   espeleologiaVertical: {
-    src: "/__l5e/assets-v1/PLACEHOLDER_VERTICAL/espeleologia-vertical-documentary.webp",
+    src: "/__l5e/assets-v1/139e2166-df17-46f6-bd06-9f2253c01a52/espeleologia-vertical-documentary.webp",
     alt: "Espele\xF3logo descendiendo por cuerda en el pozo de entrada de una cavidad iluminada por luz natural",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:TraversitaM11.jpg",
     license: "CC BY-SA 3.0",
@@ -85,7 +85,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia de progresi\xF3n vertical con arn\xE9s, descensor y casco."
   },
   espeleologiaGrupo: {
-    src: "/__l5e/assets-v1/PLACEHOLDER_GRUPO/espeleologia-grupo-documentary.webp",
+    src: "/__l5e/assets-v1/97d14609-fe70-41d7-92d9-617c65fa73bb/espeleologia-grupo-documentary.webp",
     alt: "Grupo de espele\xF3logos con casco, frontal y mono t\xE9cnico progresando por la entrada de una cueva",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Goikolau-11.jpg",
     license: "CC BY-SA 4.0",
