@@ -1,11 +1,10 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
-import { sendEmail } from "../_shared/email.ts";
+import { dispatchNotification } from "../_shared/email.ts";
 
 const BodySchema = z.object({
   id: z.string().uuid(),
-  recipientsOverride: z.array(z.string().email()).max(5).optional(),
 });
 
 const json = (body: unknown, status = 200) =>
@@ -44,43 +43,17 @@ Deno.serve(async (req) => {
   const parsed = BodySchema.safeParse(raw);
   if (!parsed.success) return json({ error: "Datos no válidos" }, 400);
 
-  const { data: entry, error } = await supabase
-    .from("notification_log")
-    .select("*")
-    .eq("id", parsed.data.id)
-    .maybeSingle();
-
-  if (error) {
-    console.error("notification_log read error", error);
-    return json({ error: "server_error" }, 500);
-  }
-  if (!entry) return json({ error: "not_found" }, 404);
-
-  // Never duplicate a confirmation the provider already accepted.
-  if (entry.status === "enviado") {
-    return json({ ok: true, status: "enviado", deduped: true });
-  }
-
-  const recipients: string[] = parsed.data.recipientsOverride ??
-    (entry.payload?.recipients ?? (entry.recipient ? entry.recipient.split(",") : []));
-  const html: string = entry.payload?.html ?? "";
-
-  if (!html) return json({ error: "sin_contenido" }, 409);
-
-  const result = await sendEmail(recipients, entry.subject, html);
-
-  const { error: updateError } = await supabase
-    .from("notification_log")
-    .update({
+  try {
+    // Claims the notification with a recoverable lease and reuses the stable
+    // provider idempotency key, so retries cannot duplicate an accepted email.
+    const result = await dispatchNotification(supabase, parsed.data.id);
+    return json({
+      ok: result.status === "enviado" || result.status === "ya_enviado",
       status: result.status,
-      provider_id: result.providerId ?? null,
-      error: result.error ?? null,
-      attempts: (entry.attempts ?? 0) + 1,
-      recipient: recipients.join(", ") || null,
-    })
-    .eq("id", entry.id);
-
-  if (updateError) console.error("notification_log update error", updateError);
-
-  return json({ ok: result.status === "enviado", status: result.status, error: result.error });
+      error: result.error,
+    });
+  } catch (e) {
+    console.error("retry-notification failed", e);
+    return json({ error: "server_error", detail: String(e).slice(0, 200) }, 500);
+  }
 });
