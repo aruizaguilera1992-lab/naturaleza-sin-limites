@@ -1,5 +1,11 @@
-// Shared email helpers.
-// sendEmail NEVER reports success unless the provider actually accepted the message.
+// Shared email + durable notification helpers.
+//
+// Invariants:
+//  - A notification is ALWAYS persisted before any provider call.
+//  - Work is claimed atomically with a recoverable lease (claim_notification).
+//  - The provider call carries a stable idempotency key, so a crash between
+//    "sent" and "persisted" cannot produce a duplicate email on retry.
+//  - Persistence errors propagate: we never report success we did not store.
 
 export const escapeHtml = (value: string) =>
   value.replace(/[&<>"']/g, (c) =>
@@ -25,22 +31,24 @@ export async function sendEmail(
   to: string[],
   subject: string,
   html: string,
+  idempotencyKey?: string,
 ): Promise<EmailResult> {
   const apiKey = Deno.env.get("RESEND_API_KEY");
   const from = Deno.env.get("NOTIFICATION_FROM") ?? "onboarding@resend.dev";
   const recipients = to.map((t) => t.trim()).filter((t) => isEmail(t));
 
-  if (!apiKey) {
-    return { status: "omitido", error: "RESEND_API_KEY no configurada" };
-  }
-  if (recipients.length === 0) {
-    return { status: "omitido", error: "Sin destinatarios válidos" };
-  }
+  if (!apiKey) return { status: "omitido", error: "RESEND_API_KEY no configurada" };
+  if (recipients.length === 0) return { status: "omitido", error: "Sin destinatarios válidos" };
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        // Stable key: the provider de-duplicates retries of the same intent.
+        ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey.slice(0, 256) } : {}),
+      },
       body: JSON.stringify({
         from: `Naturaleza Sin Límites <${from}>`,
         to: recipients,
@@ -89,7 +97,7 @@ export function listLayout(subject: string, lines: string[]) {
     .join("")}</ul>`;
 }
 
-export interface NotificationInput {
+export interface NotificationIntent {
   kind: string;
   dedupeKey: string;
   recipients: string[];
@@ -100,51 +108,135 @@ export interface NotificationInput {
   contactId?: string | null;
 }
 
-/**
- * Sends a notification and records the real outcome in notification_log.
- * If a notification with the same dedupeKey was already accepted by the
- * provider, it is not sent again (no duplicate confirmations).
- */
-export async function sendTrackedNotification(
-  // deno-lint-ignore no-explicit-any
-  supabase: any,
-  input: NotificationInput,
-): Promise<EmailResult & { deduped?: boolean }> {
-  const { data: existing } = await supabase
-    .from("notification_log")
-    .select("id, status, attempts, provider_id")
-    .eq("dedupe_key", input.dedupeKey)
-    .maybeSingle();
+/** Shape the confirmation RPC expects for durable intents. */
+export function toRpcNotification(intent: NotificationIntent) {
+  return {
+    kind: intent.kind,
+    dedupe_key: intent.dedupeKey,
+    recipients: intent.recipients,
+    subject: intent.subject,
+    html: intent.html,
+  };
+}
 
-  if (existing?.status === "enviado") {
-    return { status: "enviado", providerId: existing.provider_id ?? undefined, deduped: true };
-  }
+// deno-lint-ignore no-explicit-any
+type Db = any;
 
-  const result = await sendEmail(input.recipients, input.subject, input.html);
-
+/** Persists the intent first (idempotent on dedupe_key). Returns its id. */
+export async function enqueueNotification(supabase: Db, intent: NotificationIntent): Promise<string> {
   const row = {
-    kind: input.kind,
+    kind: intent.kind,
     channel: "email",
-    recipient: input.recipients.join(", ") || null,
-    subject: input.subject,
-    status: result.status,
-    provider_id: result.providerId ?? null,
-    error: result.error ?? null,
-    attempts: (existing?.attempts ?? 0) + 1,
-    dedupe_key: input.dedupeKey,
-    payload: { html: input.html, recipients: input.recipients },
-    payment_request_id: input.paymentRequestId ?? null,
-    booking_id: input.bookingId ?? null,
-    contact_id: input.contactId ?? null,
+    recipient: intent.recipients.join(", ") || null,
+    subject: intent.subject,
+    status: "pendiente",
+    dedupe_key: intent.dedupeKey,
+    provider_idempotency_key: intent.dedupeKey,
+    payload: { html: intent.html, recipients: intent.recipients },
+    payment_request_id: intent.paymentRequestId ?? null,
+    booking_id: intent.bookingId ?? null,
+    contact_id: intent.contactId ?? null,
   };
 
-  if (existing) {
-    const { error } = await supabase.from("notification_log").update(row).eq("id", existing.id);
-    if (error) console.error("notification_log update error", error);
-  } else {
-    const { error } = await supabase.from("notification_log").insert(row);
-    if (error) console.error("notification_log insert error", error);
+  const { error } = await supabase.from("notification_log").insert(row);
+  if (error && error.code !== "23505") {
+    // Persistence failures must propagate: no silent send.
+    throw new Error(`notification_persist_failed: ${error.message}`);
   }
 
-  return result;
+  const { data, error: readError } = await supabase
+    .from("notification_log")
+    .select("id")
+    .eq("dedupe_key", intent.dedupeKey)
+    .maybeSingle();
+  if (readError || !data?.id) {
+    throw new Error(`notification_persist_failed: ${readError?.message ?? "sin id"}`);
+  }
+  return data.id as string;
+}
+
+export interface DispatchResult {
+  id: string;
+  status: EmailStatus | "reclamado_por_otro" | "ya_enviado";
+  providerId?: string;
+  error?: string;
+}
+
+/**
+ * Claims a persisted notification and sends it exactly once.
+ * Never sends without a lease; never reports a status it could not store.
+ */
+export async function dispatchNotification(supabase: Db, id: string): Promise<DispatchResult> {
+  const { data: claim, error: claimError } = await supabase.rpc("claim_notification", {
+    _id: id,
+    _lease_seconds: 120,
+  });
+  if (claimError) throw new Error(`notification_claim_failed: ${claimError.message}`);
+
+  if (!claim?.claimed) {
+    if (claim?.reason === "already_sent") {
+      return { id, status: "ya_enviado", providerId: claim.provider_id ?? undefined };
+    }
+    return { id, status: "reclamado_por_otro", error: claim?.reason };
+  }
+
+  const recipients: string[] = claim.payload?.recipients ??
+    (claim.recipient ? String(claim.recipient).split(",") : []);
+  const html: string = claim.payload?.html ?? "";
+
+  const result = html
+    ? await sendEmail(recipients, claim.subject, html, claim.idempotency_key)
+    : ({ status: "fallido", error: "sin_contenido" } as EmailResult);
+
+  const { data: finish, error: finishError } = await supabase.rpc("finish_notification", {
+    _id: id,
+    _lease_id: claim.lease_id,
+    _status: result.status,
+    _provider_id: result.providerId ?? null,
+    _error: result.error ?? null,
+    _retry_in_seconds: 300,
+  });
+  if (finishError) throw new Error(`notification_finish_failed: ${finishError.message}`);
+  if (!finish?.ok) throw new Error(`notification_finish_failed: ${finish?.reason}`);
+
+  return { id, status: result.status, providerId: result.providerId, error: result.error };
+}
+
+/** Persist + dispatch in one call (non-payment flows). */
+export async function sendTrackedNotification(
+  supabase: Db,
+  intent: NotificationIntent,
+): Promise<DispatchResult> {
+  const id = await enqueueNotification(supabase, intent);
+  return await dispatchNotification(supabase, id);
+}
+
+/**
+ * Repairs every notification that is still pending (or whose lease expired)
+ * for a payment request. Already-accepted notifications are never resent.
+ */
+export async function dispatchPendingForPayment(
+  supabase: Db,
+  paymentRequestId: string,
+): Promise<DispatchResult[]> {
+  const { data, error } = await supabase
+    .from("notification_log")
+    .select("id, status, lease_expires_at, next_attempt_at")
+    .eq("payment_request_id", paymentRequestId)
+    .neq("status", "enviado");
+  if (error) throw new Error(`notification_scan_failed: ${error.message}`);
+
+  const now = Date.now();
+  const due = (data ?? []).filter((n: Record<string, string | null>) => {
+    if (n.status === "reclamado") {
+      return !n.lease_expires_at || new Date(n.lease_expires_at).getTime() <= now;
+    }
+    return !n.next_attempt_at || new Date(n.next_attempt_at).getTime() <= now;
+  });
+
+  const results: DispatchResult[] = [];
+  for (const n of due) {
+    results.push(await dispatchNotification(supabase, n.id as string));
+  }
+  return results;
 }
