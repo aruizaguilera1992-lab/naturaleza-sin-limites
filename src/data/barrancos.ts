@@ -1,3 +1,5 @@
+import { media } from '@/data/media';
+
 export interface BarrancoRequisitos {
   saberNadar: boolean;
   edadMinima: number;

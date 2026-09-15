@@ -1,3 +1,5 @@
+import { media } from '@/data/media';
+
 export type NivelExperiencia = 'ninguna' | 'iniciacion' | 'intermedio' | 'avanzado';
 export type ToleranciaVertigo = 'sin-problemas' | 'tolerable' | 'me-cuesta' | 'evitar';
 export type DuracionPreferida = 'corta' | 'media' | 'larga' | 'jornada-completa';

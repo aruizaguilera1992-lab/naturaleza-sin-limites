@@ -3927,6 +3927,67 @@ var get_activity_default = defineTool2({
 import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.26.2";
 import { z as z3 } from "npm:zod@^3.25.76";
 
+// src/data/media.ts
+var pexelsLicense = "https://www.pexels.com/license/";
+var media = {
+  canyoning: {
+    src: "/__l5e/assets-v1/5cd603f5-9b1c-4f15-bfe7-ff63692aaa2c/canyoning-rappel-documentary.webp",
+    alt: "Barranquista equipado con casco, neopreno y cuerda durante un r\xE1pel junto al agua",
+    sourceUrl: "https://www.pexels.com/photo/active-man-rappelling-on-cliff-26976907/",
+    license: pexelsLicense,
+    status: "propia-pendiente",
+    replacementNote: "Sustituir por una foto propia horizontal de un grupo en un barranco de M\xE1laga, con r\xE1pel y agua."
+  },
+  climbing: {
+    src: "/__l5e/assets-v1/b3d3fef7-20bb-4974-b3b2-741cd8afefa3/limestone-climbing-documentary.webp",
+    alt: "Escalador progresando con cuerda y material t\xE9cnico sobre una pared de roca caliza",
+    sourceUrl: "https://www.pexels.com/photo/rock-climber-ascending-limestone-cliff-in-damascus-37516088/",
+    license: pexelsLicense,
+    status: "propia-pendiente",
+    replacementNote: "Sustituir por una foto propia en caliza malague\xF1a que muestre tambi\xE9n al asegurador."
+  },
+  ferrata: {
+    src: "/__l5e/assets-v1/1bc836c9-ddfb-444a-ae92-e64acbbf1779/via-ferrata-documentary.webp",
+    alt: "Deportista con casco y arn\xE9s avanzando por un tramo de cable en una pared de monta\xF1a",
+    sourceUrl: "https://www.pexels.com/photo/man-climbing-on-rope-17661923/",
+    license: pexelsLicense,
+    status: "propia-pendiente",
+    replacementNote: "Sustituir por una foto propia en ferrata andaluza con disipador y anclaje claramente visibles."
+  },
+  functionalTraining: {
+    src: "/__l5e/assets-v1/569003b3-0e21-43cd-aaa8-ae6387d66bea/functional-training-documentary.webp",
+    alt: "Grupo realizando una sesi\xF3n real de entrenamiento funcional en un espacio abierto y sobrio",
+    sourceUrl: "https://www.pexels.com/photo/outdoor-crossfit-training-session-under-a-bamboo-roof-36400030/",
+    license: pexelsLicense,
+    status: "propia-pendiente",
+    replacementNote: "Sustituir por una foto propia de una sesi\xF3n de V\xE9rtigo Sapiens con permiso de imagen."
+  },
+  ropeDetail: {
+    src: "/__l5e/assets-v1/890c3cf4-e7ef-488a-a13f-7a1defef3d74/rope-detail-documentary.webp",
+    alt: "Detalle real de unas manos preparando la cuerda y el material de seguridad de escalada",
+    sourceUrl: "https://www.pexels.com/photo/a-person-holding-the-rope-from-the-harness-5916512/",
+    license: pexelsLicense,
+    status: "stock-provisional",
+    replacementNote: "Alternativa documental cuando no existe una fotograf\xEDa autorizada del equipo."
+  },
+  elTorcal: {
+    src: "/__l5e/assets-v1/3262feb8-6c9e-4452-accf-2f590daabd26/el-torcal-andalusia.webp",
+    alt: "Formaciones naturales de roca caliza en El Torcal de Antequera, M\xE1laga",
+    sourceUrl: "https://www.pexels.com/photo/scenic-rocky-landscape-of-el-torcal-in-andalusia-33117743/",
+    license: pexelsLicense,
+    status: "stock-provisional",
+    replacementNote: "Paisaje documental de M\xE1laga para evitar inventar retratos del equipo."
+  },
+  caminito: {
+    src: "/__l5e/assets-v1/9eafaa23-629f-4814-8686-f24d84181708/caminito-del-rey-malaga.webp",
+    alt: "Grupo recorriendo el desfiladero calizo del Caminito del Rey en M\xE1laga",
+    sourceUrl: "https://www.pexels.com/photo/group-of-people-walking-on-a-narrow-path-in-a-canyon-caminito-del-rey-malaga-spain-17941747/",
+    license: pexelsLicense,
+    status: "stock-provisional",
+    replacementNote: "Paisaje documental de M\xE1laga para secciones generales y de contacto."
+  }
+};
+
 // src/data/blogPosts.ts
 var defaultAuthor = {
   name: "Antonio Garc\xEDa",
@@ -4011,7 +4072,7 @@ El barranquismo es una actividad que engancha desde el primer momento. La combin
 
 En Naturaleza Sin L\xEDmites te acompa\xF1amos en cada paso, garantizando una experiencia segura y memorable. \xBFTe atreves a descubrir el mundo vertical?
     `,
-    featuredImage: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=1200",
+    featuredImage: media.canyoning.src,
     category: "consejos-principiantes",
     tags: ["barranquismo", "principiantes", "m\xE1laga", "gu\xEDa"],
     author: defaultAuthor,
@@ -4021,7 +4082,7 @@ En Naturaleza Sin L\xEDmites te acompa\xF1amos en cada paso, garantizando una ex
     seo: {
       metaTitle: "Gu\xEDa Completa: Tu Primer Descenso de Barrancos en M\xE1laga | Naturaleza Sin L\xEDmites",
       metaDescription: "Todo lo que necesitas saber para tu primera experiencia de barranquismo en M\xE1laga. Equipo, t\xE9cnicas, mejores barrancos para principiantes y consejos de expertos.",
-      ogImage: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=1200"
+      ogImage: media.canyoning.src
     }
   },
   {
@@ -4130,7 +4191,7 @@ Andaluc\xEDa ofrece un abanico de posibilidades para disfrutar de las v\xEDas fe
 
 \xBFCu\xE1l ser\xE1 tu pr\xF3xima aventura vertical?
     `,
-    featuredImage: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=1200",
+    featuredImage: media.ferrata.src,
     category: "rutas-recomendadas",
     tags: ["v\xEDas ferratas", "andaluc\xEDa", "rutas", "aventura"],
     author: defaultAuthor,
@@ -4140,7 +4201,7 @@ Andaluc\xEDa ofrece un abanico de posibilidades para disfrutar de las v\xEDas fe
     seo: {
       metaTitle: "Las 5 V\xEDas Ferratas m\xE1s Espectaculares de Andaluc\xEDa | Naturaleza Sin L\xEDmites",
       metaDescription: "Descubre las mejores v\xEDas ferratas de Andaluc\xEDa: Caminito del Rey, Tajo de Ronda, Atajate, El Chorro y Comares. Gu\xEDa completa con dificultad, tiempos y consejos.",
-      ogImage: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=1200"
+      ogImage: media.ferrata.src
     }
   },
   {
@@ -4284,7 +4345,7 @@ El rappel es una habilidad que se perfecciona con la pr\xE1ctica constante. Comi
 
 Recuerda: en la monta\xF1a, la prisa es enemiga de la seguridad. T\xF3mate tu tiempo para hacer cada rappel de forma correcta.
     `,
-    featuredImage: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200",
+    featuredImage: media.ropeDetail.src,
     category: "tecnicas-seguridad",
     tags: ["rappel", "t\xE9cnicas", "seguridad", "formaci\xF3n"],
     author: defaultAuthor,
@@ -4294,7 +4355,7 @@ Recuerda: en la monta\xF1a, la prisa es enemiga de la seguridad. T\xF3mate tu ti
     seo: {
       metaTitle: "T\xE9cnicas de Rappel: Del B\xE1sico al Avanzado | Naturaleza Sin L\xEDmites",
       metaDescription: "Gu\xEDa completa de t\xE9cnicas de rappel para todos los niveles. Aprende posici\xF3n correcta, errores comunes, y progresa desde rappel b\xE1sico hasta extraplomo.",
-      ogImage: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200"
+      ogImage: media.ropeDetail.src
     }
   }
 ];

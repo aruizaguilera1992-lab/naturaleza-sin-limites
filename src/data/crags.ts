@@ -1,3 +1,5 @@
+import { media } from '@/data/media';
+
 export interface CragRequisitos {
   experienciaPrevia: boolean;
   edadMinima: number;
