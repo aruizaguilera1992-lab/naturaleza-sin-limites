@@ -95,7 +95,7 @@ export function ActivitiesGrid() {
               <div className="absolute inset-0 p-6 flex flex-col justify-end">
                 {/* Price Tag */}
                 <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
-                  Desde {activity.price}€
+                  {activity.price !== null ? `Desde ${activity.price}€` : activity.priceLabel}
                 </div>
 
                 {/* Title */}

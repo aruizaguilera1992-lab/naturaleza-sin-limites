@@ -13,6 +13,7 @@ import Actividades from "./pages/Actividades";
 import Barranquismo from "./pages/Barranquismo";
 import Escalada from "./pages/Escalada";
 import ViasFerratas from "./pages/ViasFerratas";
+import Espeleologia from "./pages/Espeleologia";
 import VertigoSapiensPage from "./pages/VertigoSapiensPage";
 import QuienesSomos from "./pages/QuienesSomos";
 import Contacto from "./pages/Contacto";
