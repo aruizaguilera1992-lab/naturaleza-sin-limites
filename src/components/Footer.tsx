@@ -143,7 +143,7 @@ export function Footer() {
                 <Mail className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <a
                   href="mailto:naturaleza.s.limites@gmail.com"
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm min-w-0 [overflow-wrap:anywhere]"
                 >
                   naturaleza.s.limites@gmail.com
                 </a>
