@@ -56,11 +56,11 @@ function ActivityCard({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
-        className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-lg"
+        className="group h-full bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-lg"
       >
-        <div className="flex flex-col sm:flex-row">
+        <div className="flex h-full min-w-0 flex-col sm:flex-row">
           {/* Image */}
-          <div className="relative w-full sm:w-48 lg:w-64 h-48 sm:h-auto flex-shrink-0">
+          <div className="relative w-full aspect-[16/9] sm:aspect-auto sm:w-48 lg:w-64 sm:h-auto flex-shrink-0 overflow-hidden">
             <img
               src={activity.image}
               alt={`${typeInfo.label} en ${activity.zone}, ${activity.province}`}
