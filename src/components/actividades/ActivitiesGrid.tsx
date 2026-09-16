@@ -133,7 +133,7 @@ function ActivityCard({
               <button
                 onClick={onToggleFavorite}
                 className={cn(
-                  "p-2 rounded-lg transition-colors",
+                  "p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center rounded-lg transition-colors",
                   isFavorite ? "bg-red-500/20 text-red-500" : "bg-muted text-muted-foreground hover:text-foreground"
                 )}
                 title="Favorito"
