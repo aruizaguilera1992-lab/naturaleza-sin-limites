@@ -109,12 +109,12 @@ function ActivityCard({
               </Badge>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={onOpenDetail}>
+            <div className="mt-auto flex flex-wrap items-center gap-2">
+              <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-0" onClick={onOpenDetail}>
                 <Info className="h-4 w-4 mr-1" />
                 Más info
               </Button>
-              <Button variant="hero" size="sm" asChild>
+              <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="h-4 w-4 mr-1" />
                   Reservar
@@ -123,7 +123,7 @@ function ActivityCard({
               <button
                 onClick={onToggleCompare}
                 className={cn(
-                  "p-2 rounded-lg transition-colors",
+                  "p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center rounded-lg transition-colors",
                   isInCompareList ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
                 )}
                 title="Comparar"
