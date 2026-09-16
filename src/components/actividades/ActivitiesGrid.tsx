@@ -213,12 +213,12 @@ function ActivityCard({
       </div>
       
       {/* Content */}
-      <div className="p-4 sm:p-5">
-        <h3 className="text-lg font-heading font-bold text-foreground mb-1 line-clamp-1">
+      <div className="flex flex-1 min-w-0 flex-col p-4 sm:p-5">
+        <h3 className="text-lg font-heading font-bold text-foreground mb-1 line-clamp-2 [overflow-wrap:anywhere]">
           {activity.name}
         </h3>
         
-        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+        <p className="text-muted-foreground text-sm mb-3 line-clamp-3 [overflow-wrap:anywhere]">
           {activity.shortDescription}
         </p>
         
