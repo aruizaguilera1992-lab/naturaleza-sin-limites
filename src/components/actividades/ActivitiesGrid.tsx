@@ -341,10 +341,10 @@ export function ActivitiesGrid({
   return (
     <>
       <div className={cn(
-        "grid gap-4 sm:gap-6",
+        "grid items-stretch gap-4 sm:gap-5 lg:gap-6",
         viewMode === 'list' 
           ? "grid-cols-1" 
-          : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
+          : "grid-cols-[minmax(0,1fr)] md:grid-cols-[repeat(2,minmax(0,1fr))] xl:grid-cols-[repeat(3,minmax(0,1fr))]"
       )}>
         {activities.map((activity, index) => (
           <ActivityCard
