@@ -76,14 +76,14 @@ function ActivityCard({
           </div>
           
           {/* Content */}
-          <div className="flex-1 p-4 sm:p-5 flex flex-col">
+          <div className="flex-1 min-w-0 p-4 sm:p-5 flex flex-col">
             <div className="flex items-start justify-between gap-2 mb-2">
-              <div>
-                <h3 className="text-lg font-heading font-bold text-foreground group-hover:text-primary transition-colors">
+              <div className="min-w-0">
+                <h3 className="text-lg font-heading font-bold text-foreground group-hover:text-primary transition-colors [overflow-wrap:anywhere]">
                   {activity.name}
                 </h3>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                  <MapPin className="h-3 w-3" /> {activity.province} - {activity.zone}
+                <p className="text-sm text-muted-foreground flex items-center gap-1 [overflow-wrap:anywhere]">
+                  <MapPin className="h-3 w-3 flex-shrink-0" /> {activity.province} - {activity.zone}
                 </p>
               </div>
               <Badge className="bg-primary text-primary-foreground font-bold flex-shrink-0">
