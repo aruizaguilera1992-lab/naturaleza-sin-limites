@@ -199,6 +199,7 @@ export function ActivitiesPacks() {
             variant="outline" 
             size="lg" 
             onClick={() => setCustomPackOpen(true)}
+            className="max-w-full whitespace-normal h-auto min-h-[44px] py-3 text-center"
           >
             <Zap className="h-4 w-4 mr-2" />
             Crear Pack Personalizado

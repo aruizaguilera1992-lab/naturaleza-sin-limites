@@ -143,7 +143,7 @@ export function Footer() {
                 <Mail className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                 <a
                   href="mailto:naturaleza.s.limites@gmail.com"
-                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm min-w-0 [overflow-wrap:anywhere]"
                 >
                   naturaleza.s.limites@gmail.com
                 </a>
@@ -173,7 +173,7 @@ export function Footer() {
             <p className="text-muted-foreground text-sm">
               © 2026 Naturaleza Sin Límites - Proyecto personal
             </p>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <Link to="/privacidad" className="hover:text-primary transition-colors">Política de Privacidad</Link>
               <Link to="/terminos" className="hover:text-primary transition-colors">Términos y Condiciones</Link>
               <Link to="/cookies" className="hover:text-primary transition-colors">Política de Cookies</Link>

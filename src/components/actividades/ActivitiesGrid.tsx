@@ -56,11 +56,11 @@ function ActivityCard({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
-        className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-lg"
+        className="group h-full bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-lg"
       >
-        <div className="flex flex-col sm:flex-row">
+        <div className="flex h-full min-w-0 flex-col sm:flex-row">
           {/* Image */}
-          <div className="relative w-full sm:w-48 lg:w-64 h-48 sm:h-auto flex-shrink-0">
+          <div className="relative w-full aspect-[16/9] sm:aspect-auto sm:w-48 lg:w-64 sm:h-auto flex-shrink-0 overflow-hidden">
             <img
               src={activity.image}
               alt={`${typeInfo.label} en ${activity.zone}, ${activity.province}`}
@@ -76,14 +76,14 @@ function ActivityCard({
           </div>
           
           {/* Content */}
-          <div className="flex-1 p-4 sm:p-5 flex flex-col">
+          <div className="flex-1 min-w-0 p-4 sm:p-5 flex flex-col">
             <div className="flex items-start justify-between gap-2 mb-2">
-              <div>
-                <h3 className="text-lg font-heading font-bold text-foreground group-hover:text-primary transition-colors">
+              <div className="min-w-0">
+                <h3 className="text-lg font-heading font-bold text-foreground group-hover:text-primary transition-colors [overflow-wrap:anywhere]">
                   {activity.name}
                 </h3>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                  <MapPin className="h-3 w-3" /> {activity.province} - {activity.zone}
+                <p className="text-sm text-muted-foreground flex items-center gap-1 [overflow-wrap:anywhere]">
+                  <MapPin className="h-3 w-3 flex-shrink-0" /> {activity.province} - {activity.zone}
                 </p>
               </div>
               <Badge className="bg-primary text-primary-foreground font-bold flex-shrink-0">
@@ -109,12 +109,12 @@ function ActivityCard({
               </Badge>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={onOpenDetail}>
+            <div className="mt-auto flex flex-wrap items-center gap-2">
+              <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-0" onClick={onOpenDetail}>
                 <Info className="h-4 w-4 mr-1" />
                 Más info
               </Button>
-              <Button variant="hero" size="sm" asChild>
+              <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="h-4 w-4 mr-1" />
                   Reservar
@@ -123,7 +123,7 @@ function ActivityCard({
               <button
                 onClick={onToggleCompare}
                 className={cn(
-                  "p-2 rounded-lg transition-colors",
+                  "p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center rounded-lg transition-colors",
                   isInCompareList ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
                 )}
                 title="Comparar"
@@ -133,7 +133,7 @@ function ActivityCard({
               <button
                 onClick={onToggleFavorite}
                 className={cn(
-                  "p-2 rounded-lg transition-colors",
+                  "p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center rounded-lg transition-colors",
                   isFavorite ? "bg-red-500/20 text-red-500" : "bg-muted text-muted-foreground hover:text-foreground"
                 )}
                 title="Favorito"
@@ -153,10 +153,10 @@ function ActivityCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
+      className="group flex h-full min-w-0 flex-col bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
     >
       {/* Image */}
-      <div className="relative h-44 sm:h-48 overflow-hidden">
+      <div className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden">
         <img
           src={activity.image}
           alt={`${typeInfo.label} en ${activity.zone}, ${activity.province}`}
@@ -213,12 +213,12 @@ function ActivityCard({
       </div>
       
       {/* Content */}
-      <div className="p-4 sm:p-5">
-        <h3 className="text-lg font-heading font-bold text-foreground mb-1 line-clamp-1">
+      <div className="flex flex-1 min-w-0 flex-col p-4 sm:p-5">
+        <h3 className="text-lg font-heading font-bold text-foreground mb-1 line-clamp-2 [overflow-wrap:anywhere]">
           {activity.name}
         </h3>
         
-        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+        <p className="text-muted-foreground text-sm mb-3 line-clamp-3 [overflow-wrap:anywhere]">
           {activity.shortDescription}
         </p>
         
@@ -243,12 +243,12 @@ function ActivityCard({
         </div>
         
         {/* Actions */}
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1 text-xs sm:text-sm" onClick={onOpenDetail}>
+        <div className="mt-auto flex gap-2">
+          <Button variant="outline" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" onClick={onOpenDetail}>
             <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
             Más info
           </Button>
-          <Button variant="hero" size="sm" className="flex-1 text-xs sm:text-sm" asChild>
+          <Button variant="hero" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
               Reservar
@@ -341,10 +341,10 @@ export function ActivitiesGrid({
   return (
     <>
       <div className={cn(
-        "grid gap-4 sm:gap-6",
+        "grid items-stretch gap-4 sm:gap-5 lg:gap-6",
         viewMode === 'list' 
           ? "grid-cols-1" 
-          : "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
+          : "grid-cols-[minmax(0,1fr)] md:grid-cols-[repeat(2,minmax(0,1fr))] xl:grid-cols-[repeat(3,minmax(0,1fr))]"
       )}>
         {activities.map((activity, index) => (
           <ActivityCard
