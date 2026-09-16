@@ -1,14 +1,10 @@
 import { motion } from 'framer-motion';
 import { ChevronDown, Mountain, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { media } from '@/data/media';
 export function HeroSection() {
-  return <section id="inicio" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  return <section id="inicio" className="homepage-hero relative min-h-[620px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div className="absolute inset-0">
-        <img src={media.canyoning.src} alt={media.canyoning.alt} fetchPriority="high" decoding="async" className="w-full h-full object-cover" />
-        <div className="hero-overlay" />
-      </div>
+      <div className="homepage-hero-overlay absolute inset-0" />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 pt-44 md:pt-32 pb-20 text-center">

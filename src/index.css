@@ -154,6 +154,25 @@
     );
   }
 
+  .homepage-hero {
+    background-image: url('/__l5e/assets-v1/b7075e7a-8730-4653-99cd-b95f31f872a2/fondo-web-home.webp');
+    background-position: 68% center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .homepage-hero-overlay {
+    background:
+      radial-gradient(ellipse at center, hsl(0 0% 0% / 0.58) 0%, hsl(0 0% 0% / 0.3) 48%, hsl(0 0% 0% / 0.16) 78%),
+      linear-gradient(to bottom, hsl(0 0% 0% / 0.4) 0%, hsl(0 0% 0% / 0.12) 52%, hsl(0 0% 0% / 0.62) 100%);
+  }
+
+  @media (min-width: 768px) {
+    .homepage-hero {
+      background-position: center;
+    }
+  }
+
   .card-overlay {
     @apply absolute inset-0 transition-all duration-500;
     background: linear-gradient(
