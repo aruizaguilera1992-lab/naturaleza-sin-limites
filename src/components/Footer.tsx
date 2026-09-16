@@ -173,7 +173,7 @@ export function Footer() {
             <p className="text-muted-foreground text-sm">
               © 2026 Naturaleza Sin Límites - Proyecto personal
             </p>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <Link to="/privacidad" className="hover:text-primary transition-colors">Política de Privacidad</Link>
               <Link to="/terminos" className="hover:text-primary transition-colors">Términos y Condiciones</Link>
               <Link to="/cookies" className="hover:text-primary transition-colors">Política de Cookies</Link>
