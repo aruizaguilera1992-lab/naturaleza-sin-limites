@@ -12,6 +12,7 @@ interface PricingOption {
   total: string;
   price: string;
   note?: string;
+  priceId?: string;
 }
 
 interface PlanDetailCardProps {
