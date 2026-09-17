@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Check, Euro, Clock, Gift, MessageCircle, X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -120,6 +121,15 @@ export function PlanDetailCard({
                 <p className="text-xs text-muted-foreground">{option.total}</p>
                 {option.note && (
                   <p className="text-xs text-muted-foreground/80 italic mt-1">{option.note}</p>
+                )}
+                {option.priceId && (
+                  <Button
+                    asChild
+                    size="sm"
+                    className="w-full mt-3 transition-all duration-300 active:scale-95"
+                  >
+                    <Link to={`/contratar/${option.priceId}`}>Contratar ahora</Link>
+                  </Button>
                 )}
               </div>
             ))}
