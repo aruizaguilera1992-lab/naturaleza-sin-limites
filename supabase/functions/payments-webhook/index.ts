@@ -76,10 +76,121 @@ function buildIntents(opts: {
   return intents;
 }
 
+/**
+ * Plans and packs bought directly from the web. The order row already exists
+ * (created when the checkout opened); here it is confirmed and the customer
+ * gets the onboarding email.
+ */
+// deno-lint-ignore no-explicit-any
+async function fulfillPlanOrder(session: any, env: StripeEnv) {
+  const supabase = getSupabase();
+  const sessionId: string = session.id;
+  const priceId: string | undefined = session?.metadata?.plan_price_id;
+  const plan = priceId ? PLAN_CATALOG[priceId] : undefined;
+  const amountCents: number | null = typeof session.amount_total === "number"
+    ? session.amount_total
+    : null;
+  const currency = String(session.currency ?? "eur").toLowerCase();
+  const email: string | null = session.customer_details?.email ??
+    session?.metadata?.customer_email ?? null;
+  const name: string | null = session?.metadata?.customer_name ?? null;
+  const subscriptionId: string | null = typeof session.subscription === "string"
+    ? session.subscription
+    : null;
+
+  const { data: order, error } = await supabase
+    .from("plan_orders")
+    .update({
+      status: "pagado",
+      amount_cents: amountCents,
+      currency,
+      ...(subscriptionId ? { stripe_subscription_id: subscriptionId } : {}),
+      ...(email ? { customer_email: email } : {}),
+    })
+    .eq("stripe_session_id", sessionId)
+    .eq("environment", env)
+    .select("id, customer_email, customer_name, product_name, status")
+    .maybeSingle();
+
+  if (error) {
+    console.error("plan_orders update failed", error);
+    throw new Error("plan_order_update_failed"); // Stripe retries.
+  }
+  if (!order) {
+    console.log("No plan order for session", sessionId);
+    return;
+  }
+
+  const productName = (order.product_name as string) ?? plan?.name ?? "Tu plan";
+  const amount = amountCents !== null ? formatAmount(amountCents, currency) : "-";
+  const recipient = (order.customer_email as string | null) ?? email;
+  const greetName = (order.customer_name as string | null) ?? name;
+  const isSubscription = Boolean(subscriptionId);
+
+  if (recipient) {
+    await sendTrackedNotification(supabase, {
+      kind: "plan_confirmado_cliente",
+      dedupeKey: `plan_customer:${sessionId}`,
+      recipients: [recipient],
+      subject: `Alta confirmada · ${productName}`,
+      html: layout("¡Bienvenido a Vértigo Sapiens!", `
+        <p>${greetName ? `Hola ${escapeHtml(greetName)},` : "Hola,"}</p>
+        <p>Hemos recibido tu pago y tu alta queda <strong>confirmada</strong>.</p>
+        <p><strong>${escapeHtml(productName)}</strong><br/>Importe: <strong>${escapeHtml(amount)}</strong>${
+        isSubscription ? "<br/>Renovación: mensual, puedes cancelarla cuando quieras." : ""
+      }</p>
+        <p>${escapeHtml(plan?.onboarding ?? "En breve te escribimos con los siguientes pasos.")}</p>
+        <p>Cualquier duda, responde a este correo o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
+      `),
+    });
+  }
+
+  const subject = `Nueva alta: ${productName}`;
+  await sendTrackedNotification(supabase, {
+    kind: "plan_confirmado_negocio",
+    dedupeKey: `plan_business:${sessionId}`,
+    recipients: businessRecipients(),
+    subject,
+    html: listLayout(subject, [
+      `Producto: ${productName}`,
+      `Importe: ${amount}`,
+      `Tipo: ${isSubscription ? "suscripción" : "pago único"}`,
+      `Cliente: ${greetName ?? "-"}`,
+      `Email: ${recipient ?? "-"}`,
+      `Teléfono: ${session?.metadata?.customer_phone ?? "-"}`,
+      `Entorno: ${env}`,
+    ]),
+  });
+}
+
+// deno-lint-ignore no-explicit-any
+async function updateSubscription(subscription: any, env: StripeEnv, canceled = false) {
+  const item = subscription.items?.data?.[0];
+  const periodEnd = item?.current_period_end ?? subscription.current_period_end;
+  const { error } = await getSupabase()
+    .from("plan_orders")
+    .update({
+      status: canceled ? "cancelado" : String(subscription.status ?? "activo"),
+      cancel_at_period_end: subscription.cancel_at_period_end === true,
+      current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
+      ...(item?.price?.lookup_key ? { price_id: item.price.lookup_key } : {}),
+    })
+    .eq("stripe_subscription_id", subscription.id)
+    .eq("environment", env);
+  if (error) {
+    console.error("subscription update failed", error);
+    throw new Error("subscription_update_failed");
+  }
+}
+
 // deno-lint-ignore no-explicit-any
 async function fulfill(session: any, env: StripeEnv) {
   const token = session?.metadata?.payment_request_token;
   if (!token) {
+    if (session?.metadata?.plan_order === "1") {
+      await fulfillPlanOrder(session, env);
+      return;
+    }
     console.log("Session without payment_request_token, ignoring");
     return;
   }
