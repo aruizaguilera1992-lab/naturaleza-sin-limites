@@ -8,6 +8,13 @@
       "when": 1789670114189,
       "tag": "0000_tighten_public_grants_and_definer_execute",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789670922319,
+      "tag": "0001_create_plan_orders",
+      "breakpoints": true
     }
   ]
 }
