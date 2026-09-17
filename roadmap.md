@@ -10,6 +10,13 @@
 - [ ] Verificar dominio remitente en Resend
 - [ ] Activar pagos reales (modo actual: sandbox)
 
+## Fichas comerciales y SEO del catálogo
+- [x] Crear modelo editorial común para todas las actividades publicadas
+- [x] Crear rutas individuales y enlazarlas desde `/actividades`
+- [x] Añadir contenido de conversión, FAQ, ficha técnica y SEO local
+- [x] Marcar datos operativos no confirmados sin inventarlos
+- [ ] Sustituir campos pendientes cuando el negocio confirme ratios, encuentros, material y políticas
+
 ## Visual image review
 - [x] Inventory every image source and usage
 - [x] Centralize image URLs and alt text

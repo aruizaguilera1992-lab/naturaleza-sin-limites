@@ -177,7 +177,7 @@ function fromCrag(item: Crag): ActivityProfile {
 function fromFerrata(item: Ferrata): ActivityProfile {
   return buildEditorial({
     id: item.id, slug: item.id, category: 'vias-ferratas', categoryLabel: 'Vía ferrata', name: item.nombre,
-    type: item.tipo.replaceAll('-', ' '), province: item.provincia === 'cualquiera' ? 'Andalucía' : item.provincia,
+    type: item.tipo.replace(/-/g, ' '), province: item.provincia === 'cualquiera' ? 'Andalucía' : item.provincia,
     zone: item.zona, image: item.imagenGrande, imageAlt: `Vía ferrata ${item.nombre} en ${item.zona}`,
     price: item.precio || PENDING, priceValue: parsePrice(item.precio), totalDuration: item.duracion,
     effectiveDuration: item.desarrollo || PENDING, technicalLevel: `${item.clasificacion} · ${item.dificultad}`,
