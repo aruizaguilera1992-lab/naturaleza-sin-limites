@@ -315,6 +315,72 @@ export type Database = {
           },
         ]
       }
+      plan_orders: {
+        Row: {
+          admin_notes: string | null
+          amount_cents: number | null
+          cancel_at_period_end: boolean
+          created_at: string
+          currency: string
+          current_period_end: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          environment: string
+          id: string
+          mode: string
+          price_id: string
+          product_name: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_session_id: string
+          stripe_subscription_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount_cents?: number | null
+          cancel_at_period_end?: boolean
+          created_at?: string
+          currency?: string
+          current_period_end?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          environment?: string
+          id?: string
+          mode: string
+          price_id: string
+          product_name: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_session_id: string
+          stripe_subscription_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount_cents?: number | null
+          cancel_at_period_end?: boolean
+          created_at?: string
+          currency?: string
+          current_period_end?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          environment?: string
+          id?: string
+          mode?: string
+          price_id?: string
+          product_name?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_session_id?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

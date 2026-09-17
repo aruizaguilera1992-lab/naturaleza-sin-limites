@@ -30,11 +30,13 @@ const plans = [{
     sessions: '1 sesión/semana',
     total: '4 al mes',
     price: '119€/mes',
+    priceId: 'aventurero_1_semana_mensual',
     note: 'Ideal si ya haces algo de actividad por tu cuenta'
   }, {
     sessions: '2 sesiones/semana',
     total: '8 al mes',
     price: '189€/mes',
+    priceId: 'aventurero_2_semana_mensual',
     note: 'Para progresar rápido y ganar confianza'
   }],
   commitment: '3 meses mínimo',
@@ -76,11 +78,13 @@ const plans = [{
     sessions: 'Plan completo',
     total: '8 presenciales + 2 online',
     price: '329€/mes',
+    priceId: 'entrenador_personal_mensual',
     note: 'Todo incluido para resultados visibles'
   }, {
     sessions: '6 meses prepago',
     total: 'Ahorro 15%',
     price: '285€/mes',
+    priceId: 'entrenador_personal_prepago6',
     note: 'Ideal si ya tienes claro que quieres un cambio serio'
   }],
   commitment: '3 meses mínimo',
@@ -118,11 +122,13 @@ const plans = [{
     sessions: 'Paquete 4 actividades',
     total: 'Ahorro 10%',
     price: '215€',
+    priceId: 'outdoor_pack_4_actividades',
     note: 'Un mes lleno de aventuras'
   }, {
     sessions: 'Paquete 8 actividades',
     total: 'Ahorro 15%',
     price: '380€',
+    priceId: 'outdoor_pack_8_actividades',
     note: 'Ideal para comprometerte con tu progreso outdoor'
   }],
   commitment: 'Sin suscripción',

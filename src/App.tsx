@@ -26,6 +26,8 @@ import Login from "./pages/Login";
 import OAuthConsent from "./pages/OAuthConsent";
 import Admin from "./pages/Admin";
 import Pago from "./pages/Pago";
+import Contratar from "./pages/Contratar";
+import Gracias from "./pages/Gracias";
 import ActivityProfilePage from "./pages/ActivityProfilePage";
 import NotFound from "./pages/NotFound";
 
@@ -62,6 +64,8 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/pago/:token" element={<Pago />} />
+            <Route path="/contratar/:priceId" element={<Contratar />} />
+            <Route path="/gracias" element={<Gracias />} />
             <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
 
             <Route path="*" element={<NotFound />} />

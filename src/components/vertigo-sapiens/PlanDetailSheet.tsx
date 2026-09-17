@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, Euro, Clock, Gift, MessageCircle, Sparkles } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 interface PlanComponent {
@@ -13,6 +14,7 @@ interface PricingOption {
   total: string;
   price: string;
   note?: string;
+  priceId?: string;
 }
 
 interface PlanDetailSheetProps {
@@ -129,6 +131,15 @@ export function PlanDetailSheet({
                       <p className="text-xs text-muted-foreground">{option.total}</p>
                       {option.note && (
                         <p className="text-xs text-muted-foreground/80 italic mt-1">{option.note}</p>
+                      )}
+                      {option.priceId && (
+                        <Button
+                          asChild
+                          size="sm"
+                          className="w-full mt-3 transition-all duration-300 active:scale-95"
+                        >
+                          <Link to={`/contratar/${option.priceId}`}>Contratar ahora</Link>
+                        </Button>
                       )}
                     </div>
                   ))}
