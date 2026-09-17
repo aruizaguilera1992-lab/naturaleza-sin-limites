@@ -31,3 +31,7 @@
 - [x] Formularios con nombre, email y teléfono separados; reservas de 1 a 6 personas y consulta para grupos mayores
 - [x] Newsletter y promesa de descuento ocultas (código conservado)
 - [ ] Clave de Resend válida + remitente verificado (pendiente del usuario)
+
+## Fotografías de fichas
+- [ ] Fotos reales individuales y metadatos para las 69 actividades
+- [ ] Verificación visual responsive del catálogo y las fichas
