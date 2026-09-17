@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.payments-webhook]
 verify_jwt = false
+
+[functions.create-plan-checkout]
+verify_jwt = false
+
+[functions.create-deposit-checkout]
+verify_jwt = false
