@@ -13,7 +13,7 @@ import { z } from "npm:zod@^3.25.76";
 var pexelsLicense = "https://www.pexels.com/license/";
 var media = {
   canyoning: {
-    src: "/__l5e/assets-v1/b61b5914-4df2-4b52-8d6f-eb28433230d2/canyoning-equipped-documentary.webp",
+    src: "/images/barranquismo.webp",
     alt: "Barranquista equipado con casco, protecci\xF3n t\xE9rmica, arn\xE9s y cuerda durante un r\xE1pel sobre el agua",
     sourceUrl: "https://www.pexels.com/photo/woman-with-rope-on-edge-11792447/",
     license: pexelsLicense,
@@ -21,7 +21,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia horizontal de un grupo en un barranco de M\xE1laga, con neopreno, r\xE1pel y agua."
   },
   climbing: {
-    src: "/__l5e/assets-v1/b3d3fef7-20bb-4974-b3b2-741cd8afefa3/limestone-climbing-documentary.webp",
+    src: "/images/escalada.webp",
     alt: "Escalador progresando con cuerda y material t\xE9cnico sobre una pared de roca caliza",
     sourceUrl: "https://www.pexels.com/photo/rock-climber-ascending-limestone-cliff-in-damascus-37516088/",
     license: pexelsLicense,
@@ -29,7 +29,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia en caliza malague\xF1a que muestre tambi\xE9n al asegurador."
   },
   ferrata: {
-    src: "/__l5e/assets-v1/1bc836c9-ddfb-444a-ae92-e64acbbf1779/via-ferrata-documentary.webp",
+    src: "/images/vias-ferratas.webp",
     alt: "Deportista con casco y arn\xE9s avanzando por un tramo de cable en una pared de monta\xF1a",
     sourceUrl: "https://www.pexels.com/photo/man-climbing-on-rope-17661923/",
     license: pexelsLicense,
@@ -85,7 +85,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia de progresi\xF3n vertical con arn\xE9s, descensor y casco."
   },
   espeleologiaGrupo: {
-    src: "/__l5e/assets-v1/97d14609-fe70-41d7-92d9-617c65fa73bb/espeleologia-grupo-documentary.webp",
+    src: "/images/espeleologia.webp",
     alt: "Grupo de espele\xF3logos con casco, frontal y mono t\xE9cnico progresando por la entrada de una cueva",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Goikolau-11.jpg",
     license: "CC BY-SA 4.0",
