@@ -2,6 +2,7 @@ import { barrancos, type Barranco } from '@/data/barrancos';
 import { crags, type Crag } from '@/data/crags';
 import { ferratas, type Ferrata } from '@/data/ferratas';
 import { espeleologiaPublicada, type ActividadEspeleologia } from '@/data/espeleologia';
+import { getActivityMedia } from '@/data/activityMedia';
 
 export const PENDING = '[PENDIENTE DE CONFIRMAR]';
 
@@ -134,10 +135,11 @@ function buildEditorial(profile: Omit<ActivityProfile, 'commercialDescription' |
 
 function fromBarranco(item: Barranco): ActivityProfile {
   const included = item.incluye.length ? item.incluye : [PENDING];
+  const activityImage = getActivityMedia(item.id);
   return buildEditorial({
     id: `barranco-${item.id}`, slug: item.id, category: 'barranquismo', categoryLabel: 'Barranquismo',
     name: item.nombre, type: 'Descenso de barrancos', province: item.provincia, zone: item.poblacion,
-    image: item.imagenGrande, imageAlt: `Barranquismo en ${item.nombre}, ${item.poblacion}, ${item.provincia}`,
+    image: activityImage?.src ?? item.imagenGrande, imageAlt: activityImage?.alt ?? `Barranquismo en ${item.nombre}, ${item.poblacion}, ${item.provincia}`,
     price: item.precio || PENDING, priceValue: parsePrice(item.precio), totalDuration: item.duracion,
     effectiveDuration: PENDING, technicalLevel: `${item.clasificacionTecnica} (${item.nivel})`,
     physicalLevel: cap(item.requisitos.condicionFisica), minimumAge: `${item.requisitos.edadMinima} años`,
@@ -155,10 +157,11 @@ function fromBarranco(item: Barranco): ActivityProfile {
 }
 
 function fromCrag(item: Crag): ActivityProfile {
+  const activityImage = getActivityMedia(item.id);
   return buildEditorial({
     id: `crag-${item.id}`, slug: item.id, category: 'escalada', categoryLabel: 'Escalada', name: item.nombre,
-    type: item.tipo, province: item.provincia, zone: item.zona, image: item.imagenGrande,
-    imageAlt: `Escalada en ${item.nombre}, ${item.zona}, ${item.provincia}`, price: item.precio || PENDING,
+    type: item.tipo, province: item.provincia, zone: item.zona, image: activityImage?.src ?? item.imagenGrande,
+    imageAlt: activityImage?.alt ?? `Escalada en ${item.nombre}, ${item.zona}, ${item.provincia}`, price: item.precio || PENDING,
     priceValue: parsePrice(item.precio), totalDuration: item.duracion, effectiveDuration: PENDING,
     technicalLevel: `${item.gradoMinimo}–${item.gradoMaximo}`, physicalLevel: cap(item.requisitos.condicionFisica),
     minimumAge: `${item.requisitos.edadMinima} años`, season: item.mejorEpoca,
@@ -175,10 +178,11 @@ function fromCrag(item: Crag): ActivityProfile {
 }
 
 function fromFerrata(item: Ferrata): ActivityProfile {
+  const activityImage = getActivityMedia(item.id);
   return buildEditorial({
     id: item.id, slug: item.id, category: 'vias-ferratas', categoryLabel: 'Vía ferrata', name: item.nombre,
     type: item.tipo.replace(/-/g, ' '), province: item.provincia === 'cualquiera' ? 'Andalucía' : item.provincia,
-    zone: item.zona, image: item.imagenGrande, imageAlt: `Vía ferrata ${item.nombre} en ${item.zona}`,
+    zone: item.zona, image: activityImage?.src ?? item.imagenGrande, imageAlt: activityImage?.alt ?? `Vía ferrata ${item.nombre} en ${item.zona}`,
     price: item.precio || PENDING, priceValue: parsePrice(item.precio), totalDuration: item.duracion,
     effectiveDuration: item.desarrollo || PENDING, technicalLevel: `${item.clasificacion} · ${item.dificultad}`,
     physicalLevel: cap(item.requisitos.condicionFisica), minimumAge: `${item.requisitos.edadMinima} años`, season: item.mejorEpoca,
@@ -196,10 +200,11 @@ function fromFerrata(item: Ferrata): ActivityProfile {
 }
 
 function fromCave(item: ActividadEspeleologia): ActivityProfile {
+  const activityImage = getActivityMedia(item.id);
   return buildEditorial({
     id: `espeleologia-${item.id}`, slug: item.id, category: 'espeleologia', categoryLabel: 'Espeleología', name: item.nombre,
-    type: 'Actividad de espeleología', province: item.provincia, zone: item.zona, image: item.imagenGrande,
-    imageAlt: item.imagenAlt, price: item.precio, priceValue: item.precioDesde || undefined,
+    type: 'Actividad de espeleología', province: item.provincia, zone: item.zona, image: activityImage?.src ?? item.imagenGrande,
+    imageAlt: activityImage?.alt ?? item.imagenAlt, price: item.precio, priceValue: item.precioDesde || undefined,
     totalDuration: item.duracion, effectiveDuration: PENDING, technicalLevel: item.nivel,
     physicalLevel: cap(item.requisitos.condicionFisica), minimumAge: `${item.requisitos.edadMinima} años`, season: item.mejorEpoca,
     group: `Mínimo ${item.grupoMinimo}; máximo ${PENDING}`, guideRatio: PENDING, approachReturn: item.acceso,

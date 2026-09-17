@@ -1,4 +1,5 @@
 import { media } from '@/data/media';
+import { getActivityMedia } from '@/data/activityMedia';
 
 export interface CragRequisitos {
   experienciaPrevia: boolean;
@@ -876,6 +877,14 @@ export const crags: Crag[] = [
     ]
   }
 ];
+
+crags.forEach((crag) => {
+  const activityImage = getActivityMedia(crag.id);
+  if (activityImage) {
+    crag.imagen = activityImage.src;
+    crag.imagenGrande = activityImage.src;
+  }
+});
 
 export type NivelEscalada = 'principiante' | 'iniciacion' | 'intermedio' | 'avanzado' | 'experto';
 export type TipoEscalada = 'deportiva' | 'clásica' | 'mixta' | 'cualquiera';

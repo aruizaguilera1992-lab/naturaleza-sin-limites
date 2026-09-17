@@ -1,4 +1,5 @@
 import { media } from '@/data/media';
+import { getActivityMedia } from '@/data/activityMedia';
 
 export interface BarrancoRequisitos {
   saberNadar: boolean;
@@ -841,6 +842,14 @@ export const barrancos: Barranco[] = [
     ]
   },
 ];
+
+barrancos.forEach((barranco) => {
+  const activityImage = getActivityMedia(barranco.id);
+  if (activityImage) {
+    barranco.imagen = activityImage.src;
+    barranco.imagenGrande = activityImage.src;
+  }
+});
 
 export type NivelExperiencia = 'principiante' | 'intermedio' | 'avanzado' | 'experto';
 export type DuracionPreferida = 'medio-dia' | 'dia-completo' | 'jornada-larga';
