@@ -34,4 +34,4 @@
 
 ## Fotografías de fichas
 - [x] Fotos reales individuales y metadatos para las 68 actividades publicadas
-- [ ] Verificación visual responsive del catálogo y las fichas
+- [x] Verificación visual responsive del catálogo y las fichas
