@@ -54,6 +54,7 @@ export async function sendEmail(
         to: recipients,
         subject,
         html,
+        ...(replyTo ? { reply_to: [replyTo] } : {}),
       }),
     });
     const text = await res.text();
