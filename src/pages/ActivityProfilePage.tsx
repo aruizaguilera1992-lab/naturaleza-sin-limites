@@ -22,7 +22,9 @@ export default function ActivityProfilePage() {
   const { category, slug } = useParams<{ category: string; slug: string }>();
   const activity = getActivityProfile(category, slug);
 
-  useEffect(() => window.scrollTo({ top: 0, behavior: 'instant' }), [category, slug]);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [category, slug]);
 
   if (!activity) return <Navigate to="/actividades" replace />;
 
