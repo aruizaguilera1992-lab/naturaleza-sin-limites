@@ -1,10 +1,9 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, MapPin, Users, Heart, Scale, ExternalLink, MessageCircle, Info } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { ActivityDetailModal } from './ActivityDetailModal';
 import type { UnifiedActivity } from '@/hooks/useActivitiesData';
 import type { ViewMode } from '@/pages/Actividades';
 
@@ -31,7 +30,6 @@ function ActivityCard({
   isFavorite, 
   onToggleCompare, 
   onToggleFavorite,
-  onOpenDetail,
   viewMode
 }: { 
   activity: UnifiedActivity; 
@@ -40,10 +38,12 @@ function ActivityCard({
   isFavorite: boolean;
   onToggleCompare: () => void;
   onToggleFavorite: () => void;
-  onOpenDetail: () => void;
   viewMode: ViewMode;
 }) {
   const typeInfo = activityTypeLabels[activity.activityType];
+  const category = activity.activityType === 'ferratas' ? 'vias-ferratas' : activity.activityType;
+  const rawId = 'id' in activity.originalData ? activity.originalData.id : activity.id.replace(/^[^-]+-/, '');
+  const profileUrl = `/actividades/${category}/${rawId}`;
   
   const whatsappMessage = encodeURIComponent(
     `¡Hola! Me interesa la actividad ${activity.name} (${typeInfo.label}) en ${activity.province}. ¿Tenéis disponibilidad?`
@@ -110,9 +110,8 @@ function ActivityCard({
             </div>
             
             <div className="mt-auto flex flex-wrap items-center gap-2">
-              <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-0" onClick={onOpenDetail}>
-                <Info className="h-4 w-4 mr-1" />
-                Más info
+              <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
+                <Link to={profileUrl}><Info className="h-4 w-4 mr-1" />Más info</Link>
               </Button>
               <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
@@ -244,9 +243,8 @@ function ActivityCard({
         
         {/* Actions */}
         <div className="mt-auto flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" onClick={onOpenDetail}>
-            <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-            Más info
+          <Button variant="outline" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
+            <Link to={profileUrl}><Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />Más info</Link>
           </Button>
           <Button variant="hero" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
@@ -279,19 +277,6 @@ export function ActivitiesGrid({
   onToggleCompare, 
   onToggleFavorite 
 }: ActivitiesGridProps) {
-  const [selectedActivity, setSelectedActivity] = useState<UnifiedActivity | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenDetail = (activity: UnifiedActivity) => {
-    setSelectedActivity(activity);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedActivity(null);
-  };
-
   if (activities.length === 0) {
     return (
       <div className="text-center py-16">
@@ -339,8 +324,7 @@ export function ActivitiesGrid({
   }
   
   return (
-    <>
-      <div className={cn(
+    <div className={cn(
         "grid items-stretch gap-4 sm:gap-5 lg:gap-6",
         viewMode === 'list' 
           ? "grid-cols-1" 
@@ -355,17 +339,9 @@ export function ActivitiesGrid({
             isFavorite={favorites.includes(activity.id)}
             onToggleCompare={() => onToggleCompare(activity)}
             onToggleFavorite={() => onToggleFavorite(activity.id)}
-            onOpenDetail={() => handleOpenDetail(activity)}
             viewMode={viewMode}
           />
         ))}
-      </div>
-      
-      <ActivityDetailModal
-        activity={selectedActivity}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
-    </>
+    </div>
   );
 }

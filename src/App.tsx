@@ -26,6 +26,7 @@ import Login from "./pages/Login";
 import OAuthConsent from "./pages/OAuthConsent";
 import Admin from "./pages/Admin";
 import Pago from "./pages/Pago";
+import ActivityProfilePage from "./pages/ActivityProfilePage";
 import NotFound from "./pages/NotFound";
 
 
@@ -45,6 +46,7 @@ const App = () => (
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/actividades" element={<Actividades />} />
+            <Route path="/actividades/:category/:slug" element={<ActivityProfilePage />} />
             <Route path="/barranquismo" element={<Barranquismo />} />
             <Route path="/escalada" element={<Escalada />} />
             <Route path="/vias-ferratas" element={<ViasFerratas />} />
