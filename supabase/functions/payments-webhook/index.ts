@@ -8,8 +8,10 @@ import {
   layout,
   listLayout,
   type NotificationIntent,
+  sendTrackedNotification,
   toRpcNotification,
 } from "../_shared/email.ts";
+import { PLAN_CATALOG } from "../_shared/planCatalog.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
