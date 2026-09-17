@@ -320,6 +320,12 @@ Deno.serve(async (req) => {
       case "checkout.session.async_payment_failed":
         console.log("Async payment failed for session", event.data.object?.id);
         break;
+      case "customer.subscription.updated":
+        await updateSubscription(event.data.object, env);
+        break;
+      case "customer.subscription.deleted":
+        await updateSubscription(event.data.object, env, true);
+        break;
       default:
         console.log("Unhandled event:", event.type);
     }
