@@ -35,6 +35,8 @@ export async function sendEmail(
 ): Promise<EmailResult> {
   const apiKey = Deno.env.get("RESEND_API_KEY");
   const from = Deno.env.get("NOTIFICATION_FROM") ?? "onboarding@resend.dev";
+  const replyToRaw = (Deno.env.get("NOTIFICATION_REPLY_TO") ?? "").trim();
+  const replyTo = isEmail(replyToRaw) ? replyToRaw : "";
   const recipients = to.map((t) => t.trim()).filter((t) => isEmail(t));
 
   if (!apiKey) return { status: "omitido", error: "RESEND_API_KEY no configurada" };
