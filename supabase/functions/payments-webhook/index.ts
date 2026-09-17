@@ -83,6 +83,10 @@ function buildIntents(opts: {
  */
 // deno-lint-ignore no-explicit-any
 async function fulfillPlanOrder(session: any, env: StripeEnv) {
+  if (session?.payment_status === "unpaid") {
+    console.log("Plan session not settled yet", session?.id);
+    return;
+  }
   const supabase = getSupabase();
   const sessionId: string = session.id;
   const priceId: string | undefined = session?.metadata?.plan_price_id;
