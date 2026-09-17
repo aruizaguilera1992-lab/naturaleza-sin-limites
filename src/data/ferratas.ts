@@ -1,4 +1,5 @@
 import { media } from '@/data/media';
+import { getActivityMedia } from '@/data/activityMedia';
 
 export type NivelExperiencia = 'ninguna' | 'iniciacion' | 'intermedio' | 'avanzado';
 export type ToleranciaVertigo = 'sin-problemas' | 'tolerable' | 'me-cuesta' | 'evitar';
@@ -2188,3 +2189,11 @@ export const ferratas: Ferrata[] = [
     ],
   },
 ];
+
+ferratas.forEach((ferrata) => {
+  const activityImage = getActivityMedia(ferrata.id);
+  if (activityImage) {
+    ferrata.imagen = activityImage.src;
+    ferrata.imagenGrande = activityImage.src;
+  }
+});

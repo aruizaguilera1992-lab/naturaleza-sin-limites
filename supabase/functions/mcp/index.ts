@@ -94,6 +94,555 @@ var media = {
   }
 };
 
+// src/data/activityMedia.ts
+var activityMedia = {
+  "guadalmina": {
+    src: "/__l5e/assets-v1/4b26903e-7f98-464b-97a9-4ae928662981/guadalmina.webp",
+    alt: "R\xEDo Guadalmina: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Artazulgo_urjauzian_rapelatzen.jpg",
+    sourceTitle: "Artazulgo urjauzian rapelatzen.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "sima-diablo": {
+    src: "/__l5e/assets-v1/f6fb403e-f798-4683-86ea-89046f4fd381/sima-diablo.webp",
+    alt: "Sima del Diablo: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Bali_canyoning.jpg",
+    sourceTitle: "Bali canyoning.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "barranco-blanco": {
+    src: "/__l5e/assets-v1/8e3d6f87-115f-4744-9643-272c187a4e3b/barranco-blanco.webp",
+    alt: "Barranco Blanco: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Ba%C3%B1os_Ecuador717.jpg",
+    sourceTitle: "Ba\xF1os Ecuador717.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "almanchares": {
+    src: "/__l5e/assets-v1/08c1fd3b-6dca-414a-b106-db8167b659e2/almanchares.webp",
+    alt: "R\xEDo Almanchares: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Ba%C3%B1os_Ecuador718.jpg",
+    sourceTitle: "Ba\xF1os Ecuador718.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "jorox": {
+    src: "/__l5e/assets-v1/0fc7d5f9-84e8-4c4d-95a7-c5e672652f3d/jorox.webp",
+    alt: "Barranco de Jorox: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Canyoning_Bali_-_Adventure_%26_Spirit_-_2_Kalimudah_abseil_champuan_-_Bali_canyoning.JPG",
+    sourceTitle: "Canyoning Bali - Adventure & Spirit - 2 Kalimudah abseil champuan - Bali canyoning.JPG",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "moreno": {
+    src: "/__l5e/assets-v1/12dde962-5275-42a8-8526-da305b428835/moreno.webp",
+    alt: "Barranco Moreno: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Canyoning_Bali_-_Adventure_%26_Spirit_-_9_Kalimudah_abseil_-_bali_canyoning.JPG",
+    sourceTitle: "Canyoning Bali - Adventure & Spirit - 9 Kalimudah abseil - bali canyoning.JPG",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "arroyo-miel": {
+    src: "/__l5e/assets-v1/e5596b2d-a854-4567-99ba-6aca98ab4df6/arroyo-miel.webp",
+    alt: "Arroyo de la Miel: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Canyoning_Bali_-_Adventure_%26_Spirit_-_Aling_Gorge_The_Junction.png",
+    sourceTitle: "Canyoning Bali - Adventure & Spirit - Aling Gorge The Junction.png",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "cala": {
+    src: "/__l5e/assets-v1/e2c38cc5-6cfe-451f-989f-428e75358dfe/cala.webp",
+    alt: "Barranco de la Cala: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Canyoning_Bali_-_Adventure_%26_Spirit_-_Tamata_into_the_gorgel.jpg",
+    sourceTitle: "Canyoning Bali - Adventure & Spirit - Tamata into the gorgel.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "huma": {
+    src: "/__l5e/assets-v1/73434fff-c2c9-4764-959f-4e9e57930883/huma.webp",
+    alt: "Barranco de Huma: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Canyoning_Bali.jpg",
+    sourceTitle: "Canyoning Bali.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "zarzalones": {
+    src: "/__l5e/assets-v1/94b42d0a-91b7-4b20-89bd-b4ed7a71dbda/zarzalones.webp",
+    alt: "Barranco de Zarzalones: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Canyoning_in_Bruar_Water_-_geograph.org.uk_-_1988387.jpg",
+    sourceTitle: "Canyoning in Bruar Water - geograph.org.uk - 1988387.jpg",
+    license: "CC BY-SA 2.0",
+    status: "propia-pendiente"
+  },
+  "tajo-ronda": {
+    src: "/__l5e/assets-v1/f63fe4f2-7d74-4801-8327-8437b7eaffe4/tajo-ronda.webp",
+    alt: "Tajo de Ronda: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Canyoning_NP.jpg",
+    sourceTitle: "Canyoning NP.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "buitreras": {
+    src: "/__l5e/assets-v1/3937fa83-36d9-4788-9124-5d48e7e5479b/buitreras.webp",
+    alt: "Ca\xF1\xF3n de las Buitreras: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Canyoning3.JPG",
+    sourceTitle: "Canyoning3.JPG",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "rio-verde": {
+    src: "/__l5e/assets-v1/4bd13fa0-b683-476e-a82f-057f38253438/rio-verde.webp",
+    alt: "R\xEDo Verde: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Coiserette.jpg",
+    sourceTitle: "Coiserette.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "rio-lentegi": {
+    src: "/__l5e/assets-v1/3b2bc82d-07f9-4a67-8cf8-49f5b26b9b8e/rio-lentegi.webp",
+    alt: "R\xEDo Lenteg\xED: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Daluis_clue_amen_02.jpg",
+    sourceTitle: "Daluis clue amen 02.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "trevejo": {
+    src: "/__l5e/assets-v1/9c4a9b0e-d6b9-4680-8f6c-a9d1c7def65b/trevejo.webp",
+    alt: "Barranco del Trevejo: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Daluis_clue_amen_03.jpg",
+    sourceTitle: "Daluis clue amen 03.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "poqueira": {
+    src: "/__l5e/assets-v1/5debefb8-a913-49b2-b10d-7405efcfcac1/poqueira.webp",
+    alt: "R\xEDo Poqueira: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Daluis_gorges_du_var_01.jpg",
+    sourceTitle: "Daluis gorges du var 01.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "lanjaron": {
+    src: "/__l5e/assets-v1/da11b771-6f0d-432f-8c71-c1ec5a3e3492/lanjaron.webp",
+    alt: "R\xEDo Lanjar\xF3n: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Daluis_gorges_du_var_02.jpg",
+    sourceTitle: "Daluis gorges du var 02.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "garganta-verde": {
+    src: "/__l5e/assets-v1/660e06ef-563d-4ad7-aac6-ae16456b6cad/garganta-verde.webp",
+    alt: "Garganta Verde: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Daluis_gorges_du_var_03.jpg",
+    sourceTitle: "Daluis gorges du var 03.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "paterna": {
+    src: "/__l5e/assets-v1/4286a1d6-acaf-4035-9f82-dcc42947d732/paterna.webp",
+    alt: "R\xEDo Paterna: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Descenso_ca%C3%B1ones-rapel.jpg",
+    sourceTitle: "Descenso ca\xF1ones-rapel.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "majales": {
+    src: "/__l5e/assets-v1/e274d030-5227-4aa7-9674-b2d7f67d568b/majales.webp",
+    alt: "Los Majales: fotograf\xEDa documental de barranquismo en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:G0023427.jpg",
+    sourceTitle: "G0023427.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "chorro-frontales": {
+    src: "/__l5e/assets-v1/67458c22-a298-4f62-bca0-50d2eda25830/chorro-frontales.webp",
+    alt: "El Chorro - Sector Frontales: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Ba-ba_Blacksheep_(5.11cd)_-_Funmin_Canyon,_China.jpg",
+    sourceTitle: "Ba-ba Blacksheep (5.11cd) - Funmin Canyon, China.jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  },
+  "chorro-escalera-arabe": {
+    src: "/__l5e/assets-v1/a14451e6-ed41-4732-98bb-94a8c01a685a/chorro-escalera-arabe.webp",
+    alt: "El Chorro - Escalera \xC1rabe: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:BBA8283.jpg",
+    sourceTitle: "BBA8283.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "valle-abdalajis": {
+    src: "/__l5e/assets-v1/477d1f5f-cd9f-40cb-8559-afabff343344/valle-abdalajis.webp",
+    alt: "Valle de Abdalaj\xEDs: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Cascade_of_roofs.jpg",
+    sourceTitle: "Cascade of roofs.jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  },
+  "gaitanes": {
+    src: "/__l5e/assets-v1/dd949579-8806-4d48-bf01-66bdb4ee616b/gaitanes.webp",
+    alt: "Desfiladero de los Gaitanes: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Climbing_a_roof.jpg",
+    sourceTitle: "Climbing a roof.jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  },
+  "torcal-antequera": {
+    src: "/__l5e/assets-v1/3956c92c-a221-4006-8383-911e6e6c5169/torcal-antequera.webp",
+    alt: "El Torcal de Antequera: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Climbing_in_Gajum.jpg",
+    sourceTitle: "Climbing in Gajum.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "cahorros": {
+    src: "/__l5e/assets-v1/f8791ae1-e5dc-4ca5-97ce-4a8e4af1cab4/cahorros.webp",
+    alt: "Los Cahorros: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Climbing_in_Lei_Pi_Shan_-_Yangshuo,_China.jpg",
+    sourceTitle: "Climbing in Lei Pi Shan - Yangshuo, China.jpg",
+    license: "CC BY-SA 2.0",
+    status: "propia-pendiente"
+  },
+  "sierra-huetor": {
+    src: "/__l5e/assets-v1/31c49694-702b-4d91-b5f4-22bea85886ba/sierra-huetor.webp",
+    alt: "Sierra de Hu\xE9tor: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Climbing_in_St._Lorenz_-_Wachau,_Austria.jpg",
+    sourceTitle: "Climbing in St. Lorenz - Wachau, Austria.jpg",
+    license: "CC BY-SA 2.0",
+    status: "propia-pendiente"
+  },
+  "padul": {
+    src: "/__l5e/assets-v1/ae4c86a3-c2f2-4703-bfe5-795c406e97f4/padul.webp",
+    alt: "El Padul: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Fabio_Palma_in_the_amazing_route_E_NON_LA_VOGLIONO_CAPIRE,_Sardinia.jpg",
+    sourceTitle: "Fabio Palma in the amazing route E NON LA VOGLIONO CAPIRE, Sardinia.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "alfacar": {
+    src: "/__l5e/assets-v1/228ebd56-46e9-4310-9fdf-3c6793c5eccc/alfacar.webp",
+    alt: "Alfacar: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Fabio_Palma,_Zoia.jpg",
+    sourceTitle: "Fabio Palma, Zoia.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "loja": {
+    src: "/__l5e/assets-v1/0c3e1145-e302-482d-b14a-975bf2922829/loja.webp",
+    alt: "Loja - Infiernos: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Hulkosaure_8b_Verdon.jpg",
+    sourceTitle: "Hulkosaure 8b Verdon.jpg",
+    license: "CC BY 3.0",
+    status: "propia-pendiente"
+  },
+  "los-vados": {
+    src: "/__l5e/assets-v1/1793611a-3df7-4bf8-9b25-55d3a938d456/los-vados.webp",
+    alt: "Los Vados: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Iker_en_Margalef.jpg",
+    sourceTitle: "Iker en Margalef.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "cabra": {
+    src: "/__l5e/assets-v1/cf76beaf-db8f-445f-922a-6a04e6ece12c/cabra.webp",
+    alt: "Sierra de Cabra: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Le_cauchemared_de_l%27%C3%A9l%C3%A9phant_Buoux.jpg",
+    sourceTitle: "Le cauchemared de l'\xE9l\xE9phant Buoux.jpg",
+    license: "CC BY 3.0",
+    status: "propia-pendiente"
+  },
+  "zaframagon": {
+    src: "/__l5e/assets-v1/11cdfb87-d38c-4b61-97ce-9f5902f6f2ec/zaframagon.webp",
+    alt: "Pe\xF1\xF3n de Zaframag\xF3n: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Muriel_Rock_Climbing.jpg",
+    sourceTitle: "Muriel Rock Climbing.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "grazalema": {
+    src: "/__l5e/assets-v1/0d11aee4-e1d0-457b-9524-6b8113beb6a2/grazalema.webp",
+    alt: "Sierra de Grazalema: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Overhanging_rock_climbing.jpg",
+    sourceTitle: "Overhanging rock climbing.jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  },
+  "constantina": {
+    src: "/__l5e/assets-v1/b4ddcf71-da32-4868-92cd-9ed010b86537/constantina.webp",
+    alt: "Constantina: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Rey_Cascabel_(140648381).jpeg",
+    sourceTitle: "Rey Cascabel (140648381).jpeg",
+    license: "CC BY 3.0",
+    status: "propia-pendiente"
+  },
+  "despe\xF1aperros": {
+    src: "/__l5e/assets-v1/075a1f00-0905-4cae-9830-64d21b8d0097/despe\xF1aperros.webp",
+    alt: "Despe\xF1aperros: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Rock_climbing_festival_2019.jpg",
+    sourceTitle: "Rock climbing festival 2019.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "cazorla": {
+    src: "/__l5e/assets-v1/3016cebe-b18f-4099-9261-607ed6f6f8c3/cazorla.webp",
+    alt: "Sierra de Cazorla: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Spectrum514d.jpg",
+    sourceTitle: "Spectrum514d.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ardales": {
+    src: "/__l5e/assets-v1/76bea30c-a84a-49f4-86a9-e2663fa1c2f0/ardales.webp",
+    alt: "Ardales: fotograf\xEDa documental de escalada en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sport_Climb_Shipley_Upper_2.jpg",
+    sourceTitle: "Sport Climb Shipley Upper 2.jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-el-chorro": {
+    src: "/__l5e/assets-v1/f50defed-08b8-4501-972a-217d23b336e1/ferrata-el-chorro.webp",
+    alt: "V\xEDa Ferrata El Chorro (Caminito del Rey): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Above_the_clouds_on_Mt_Kinabalu.jpg",
+    sourceTitle: "Above the clouds on Mt Kinabalu.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-atajate": {
+    src: "/__l5e/assets-v1/22ed31fe-6d79-4cf8-b79c-d12028a43932/ferrata-atajate.webp",
+    alt: "V\xEDa Ferrata de Atajate: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:As_escadas_da_Pedra_do_Ba%C3%BA.jpg",
+    sourceTitle: "As escadas da Pedra do Ba\xFA.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-benadalid": {
+    src: "/__l5e/assets-v1/7aecb2e9-7554-4deb-a963-e88d6fd2c992/ferrata-benadalid.webp",
+    alt: "V\xEDa Ferrata de Benadalid (del Techo): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Blick_auf_Klettersteig_-_panoramio.jpg",
+    sourceTitle: "Blick auf Klettersteig - panoramio.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-benalauria": {
+    src: "/__l5e/assets-v1/eba5fd23-711c-45dc-8b7c-6764cc607cdc/ferrata-benalauria.webp",
+    alt: "V\xEDa Ferrata de Benalaur\xEDa (del Canal): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Bridge_on_via_ferrat_de_Planfoy_-_panoramio.jpg",
+    sourceTitle: "Bridge on via ferrat de Planfoy - panoramio.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-teba": {
+    src: "/__l5e/assets-v1/70010eb5-efa8-46e1-8378-0fe2eb661ffe/ferrata-teba.webp",
+    alt: "V\xEDa Ferrata San Crist\xF3bal (Teba): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Calmont-Klettersteig.jpg",
+    sourceTitle: "Calmont-Klettersteig.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-gaucin-castillo": {
+    src: "/__l5e/assets-v1/17daaafc-02ba-4736-8521-d0fafe681546/ferrata-gaucin-castillo.webp",
+    alt: "V\xEDa Ferrata Castillo del \xC1guila (Gauc\xEDn): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Calmont-Klettersteig2.jpg",
+    sourceTitle: "Calmont-Klettersteig2.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-gaucin-hacho": {
+    src: "/__l5e/assets-v1/4460737a-2b50-4697-9051-56c709a47249/ferrata-gaucin-hacho.webp",
+    alt: "V\xEDa Ferrata Sierra del Hacho (Gauc\xEDn): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Campanil_Basso,_cengia_Bocchette_Centrali.jpg",
+    sourceTitle: "Campanil Basso, cengia Bocchette Centrali.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-tajo-reloj": {
+    src: "/__l5e/assets-v1/53a8f516-a1cf-4df4-92f5-3e1f8e389210/ferrata-tajo-reloj.webp",
+    alt: "V\xEDa Ferrata Tajo del Reloj: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Cascade_Bellevaux_2.jpg",
+    sourceTitle: "Cascade Bellevaux 2.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-montejaque": {
+    src: "/__l5e/assets-v1/3dee11ab-84b6-4d7d-8dbf-334569b11f7a/ferrata-montejaque.webp",
+    alt: "V\xEDa Ferrata de Montejaque: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Cascade_Bellevaux_3.jpg",
+    sourceTitle: "Cascade Bellevaux 3.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-turrion-comares": {
+    src: "/__l5e/assets-v1/99d839ae-5df6-48f9-9dcb-fd5582840562/ferrata-turrion-comares.webp",
+    alt: "V\xEDa Ferrata El Turri\xF3n (Comares): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Cascades_de_Bellevaux.jpg",
+    sourceTitle: "Cascades de Bellevaux.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-bola-hondonero": {
+    src: "/__l5e/assets-v1/2c50994d-3a0e-4aa1-ba8d-75e64f01ba57/ferrata-bola-hondonero.webp",
+    alt: "V\xEDa Ferrata La Bola (Villanueva del Rosario): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Cengia_Stanchina_Bocchette_Centrali.jpg",
+    sourceTitle: "Cengia Stanchina Bocchette Centrali.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-pita-100canos": {
+    src: "/__l5e/assets-v1/2a88f338-43c9-453a-a350-a8e95bc537c4/ferrata-pita-100canos.webp",
+    alt: "V\xEDa Ferrata La Pita (100 Ca\xF1os): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Climber_on_fixed_rope_route_Piz_Mitgel_1.jpg",
+    sourceTitle: "Climber on fixed rope route Piz Mitgel 1.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-alfarnatura": {
+    src: "/__l5e/assets-v1/80df62bb-932d-44f6-bd10-ab6be6e9812c/ferrata-alfarnatura.webp",
+    alt: "V\xEDa Ferrata Alfarnatura: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Dangerous_remains_from_World_War_I_found_during_demining_on_Monte_Piano.jpg",
+    sourceTitle: "Dangerous remains from World War I found during demining on Monte Piano.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-archidona": {
+    src: "/__l5e/assets-v1/caa05275-2cf2-4268-832c-9977a7bb6ba0/ferrata-archidona.webp",
+    alt: "V\xEDa Ferrata de Archidona (Virgen de Gracia): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Drei-Seen-Blick_Lachenspitze.jpg",
+    sourceTitle: "Drei-Seen-Blick Lachenspitze.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-tajo-ronda-sevillana": {
+    src: "/__l5e/assets-v1/fafd915c-5fdd-4f2b-b93b-a95cebdb8654/ferrata-tajo-ronda-sevillana.webp",
+    alt: "V\xEDa Ferrata Tajo de Ronda I (La Sevillana): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Escadas_da_Pedra_do_Ba%C3%BA.jpg",
+    sourceTitle: "Escadas da Pedra do Ba\xFA.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-john-hogbin": {
+    src: "/__l5e/assets-v1/10beb1c3-3582-4804-a33a-85922a683f48/ferrata-john-hogbin.webp",
+    alt: "V\xEDa Ferrata John Hogbin (Zafarraya): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Escursionista_su_via_ferrata_sulla_Tofana_di_Rozes.jpg",
+    sourceTitle: "Escursionista su via ferrata sulla Tofana di Rozes.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-cueva-hora-loja": {
+    src: "/__l5e/assets-v1/edced56c-a068-49f5-82ca-cfc14fbd2f37/ferrata-cueva-hora-loja.webp",
+    alt: "V\xEDa Ferrata Cueva Hor\xE1 (Loja): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Gelbe-Wand_Klettersteig_mit_Gelber_Wandschrofen.jpg",
+    sourceTitle: "Gelbe-Wand Klettersteig mit Gelber Wandschrofen.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-colmena-quentar": {
+    src: "/__l5e/assets-v1/75710216-6541-48d7-9985-38f27bd20f57/ferrata-colmena-quentar.webp",
+    alt: "V\xEDa Ferrata La Colmena (Qu\xE9ntar): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Gryka_e_Rugoves,.jpg",
+    sourceTitle: "Gryka e Rugoves,.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-barranco-luna": {
+    src: "/__l5e/assets-v1/d8968d31-db8a-4f13-ab4e-bb132168bcee/ferrata-barranco-luna.webp",
+    alt: "V\xEDa Ferrata Barranco de la Luna (Saleres): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Indiana_National_Guard_(28563933415).jpg",
+    sourceTitle: "Indiana National Guard (28563933415).jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-tajo-vinas": {
+    src: "/__l5e/assets-v1/d0fb1d3e-de7d-4768-b46a-f0b8bc387ac8/ferrata-tajo-vinas.webp",
+    alt: "V\xEDa Ferrata Tajo de las Vi\xF1as (Lenteg\xED): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Inici_Via_Ferrada_Roc_d%27Esquers_(novembre_2011)_-_panoramio.jpg",
+    sourceTitle: "Inici Via Ferrada Roc d'Esquers (novembre 2011) - panoramio.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-benaojan": {
+    src: "/__l5e/assets-v1/84d4a4e0-4c47-4c41-8345-260635bf0cf6/ferrata-benaojan.webp",
+    alt: "V\xEDa Ferrata de Benaoj\xE1n: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Lachenspitze-Nordwand_Klettersteig.jpg",
+    sourceTitle: "Lachenspitze-Nordwand Klettersteig.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-zuheros": {
+    src: "/__l5e/assets-v1/55c63f8b-94ab-450d-9f97-5abdda14e6ec/ferrata-zuheros.webp",
+    alt: "V\xEDa Ferrata de Zuheros: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Above_the_clouds_on_Mt_Kinabalu.jpg",
+    sourceTitle: "Above the clouds on Mt Kinabalu.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-estrella-espiel": {
+    src: "/__l5e/assets-v1/c3065f3b-e211-4212-a68b-dc66ec8f8e29/ferrata-estrella-espiel.webp",
+    alt: "V\xEDa Ferrata La Estrella (Espiel): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:As_escadas_da_Pedra_do_Ba%C3%BA.jpg",
+    sourceTitle: "As escadas da Pedra do Ba\xFA.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-castala": {
+    src: "/__l5e/assets-v1/e5dd3232-e4f8-447d-afad-ec2a9525b7a4/ferrata-castala.webp",
+    alt: "V\xEDa Ferrata Castala (Berja): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Blick_auf_Klettersteig_-_panoramio.jpg",
+    sourceTitle: "Blick auf Klettersteig - panoramio.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-carcauz-vicar": {
+    src: "/__l5e/assets-v1/8727b786-c19b-4e70-8b74-3b275a26d581/ferrata-carcauz-vicar.webp",
+    alt: "V\xEDa Ferrata Barranco de Carcauz (V\xEDcar): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Bridge_on_via_ferrat_de_Planfoy_-_panoramio.jpg",
+    sourceTitle: "Bridge on via ferrat de Planfoy - panoramio.jpg",
+    license: "CC BY-SA 3.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-castillo-locubin": {
+    src: "/__l5e/assets-v1/dcdf8f31-0a96-4be5-b61d-0a84b2cc95a4/ferrata-castillo-locubin.webp",
+    alt: "V\xEDa Ferrata Castillo de Locub\xEDn: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Calmont-Klettersteig.jpg",
+    sourceTitle: "Calmont-Klettersteig.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "ferrata-monte-hacho": {
+    src: "/__l5e/assets-v1/d2a769cb-0be0-4cff-8c1d-8a7f13873750/ferrata-monte-hacho.webp",
+    alt: "V\xEDa Ferrata Monte Hacho (Lora de Estepa): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Calmont-Klettersteig2.jpg",
+    sourceTitle: "Calmont-Klettersteig2.jpg",
+    license: "CC BY-SA 4.0",
+    status: "propia-pendiente"
+  },
+  "iniciacion": {
+    src: "/__l5e/assets-v1/c49d8e25-0ca4-4f4c-a9fc-ada0281888b8/iniciacion.webp",
+    alt: "Espeleolog\xEDa de iniciaci\xF3n: fotograf\xEDa documental de espeleologia en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sp%C3%A9l%C3%A9ologie_(14205874680).jpg",
+    sourceTitle: "Sp\xE9l\xE9ologie (14205874680).jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  },
+  "progresion-vertical": {
+    src: "/__l5e/assets-v1/b5e12d3e-2c55-4497-86b5-fec830f8518c/progresion-vertical.webp",
+    alt: "Progresi\xF3n vertical en cavidad: fotograf\xEDa documental de espeleologia en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sp%C3%A9l%C3%A9ologie_(14205874680).jpg",
+    sourceTitle: "Sp\xE9l\xE9ologie (14205874680).jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  },
+  "exploracion": {
+    src: "/__l5e/assets-v1/1c3633ee-9670-4670-b3d7-869dc7797457/exploracion.webp",
+    alt: "Salida de exploraci\xF3n: fotograf\xEDa documental de espeleologia en entorno natural de monta\xF1a",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sp%C3%A9l%C3%A9ologie_(14205874680).jpg",
+    sourceTitle: "Sp\xE9l\xE9ologie (14205874680).jpg",
+    license: "CC BY 2.0",
+    status: "propia-pendiente"
+  }
+};
+var getActivityMedia = (id) => activityMedia[id];
+
 // src/data/barrancos.ts
 var barrancos = [
   // ==========================================
@@ -898,6 +1447,13 @@ var barrancos = [
     ]
   }
 ];
+barrancos.forEach((barranco) => {
+  const activityImage = getActivityMedia(barranco.id);
+  if (activityImage) {
+    barranco.imagen = activityImage.src;
+    barranco.imagenGrande = activityImage.src;
+  }
+});
 
 // src/data/crags.ts
 var crags = [
@@ -1734,6 +2290,13 @@ var crags = [
     ]
   }
 ];
+crags.forEach((crag) => {
+  const activityImage = getActivityMedia(crag.id);
+  if (activityImage) {
+    crag.imagen = activityImage.src;
+    crag.imagenGrande = activityImage.src;
+  }
+});
 
 // src/data/ferratas.ts
 var ferratas = [
@@ -3847,6 +4410,13 @@ var ferratas = [
     ]
   }
 ];
+ferratas.forEach((ferrata) => {
+  const activityImage = getActivityMedia(ferrata.id);
+  if (activityImage) {
+    ferrata.imagen = activityImage.src;
+    ferrata.imagenGrande = activityImage.src;
+  }
+});
 
 // src/lib/mcp/catalog.ts
 function fromBarranco(b) {

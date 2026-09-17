@@ -33,5 +33,5 @@
 - [ ] Clave de Resend válida + remitente verificado (pendiente del usuario)
 
 ## Fotografías de fichas
-- [ ] Fotos reales individuales y metadatos para las 69 actividades
+- [x] Fotos reales individuales y metadatos para las 68 actividades publicadas
 - [ ] Verificación visual responsive del catálogo y las fichas

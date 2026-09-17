@@ -1,4 +1,5 @@
 import { media } from './media';
+import { getActivityMedia } from './activityMedia';
 
 /**
  * Catálogo público de Espeleología.
@@ -171,6 +172,15 @@ export const actividadesEspeleologia: ActividadEspeleologia[] = [
     imagenAlt: media.espeleologiaHero.alt,
   },
 ];
+
+actividadesEspeleologia.forEach((actividad) => {
+  const activityImage = getActivityMedia(actividad.id);
+  if (activityImage) {
+    actividad.imagen = activityImage.src;
+    actividad.imagenGrande = activityImage.src;
+    actividad.imagenAlt = activityImage.alt;
+  }
+});
 
 export const espeleologiaPublicada = () =>
   actividadesEspeleologia.filter((a) => a.publicada).sort((a, b) => a.orden - b.orden);
