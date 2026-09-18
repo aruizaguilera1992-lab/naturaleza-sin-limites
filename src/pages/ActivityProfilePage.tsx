@@ -74,7 +74,7 @@ export default function ActivityProfilePage() {
     { icon: MapPin, label: 'Ubicación', value: `${activity.zone}, ${activity.province}` },
     { icon: CalendarDays, label: 'Temporada', value: activity.season },
   ];
-  const technicalRows = [
+  const technicalRows = ([
     ['Nombre comercial', activity.name], ['Tipo de actividad', activity.type], ['Ubicación', `${activity.zone}, ${activity.province}`],
     ['Precio desde', activity.price], ['Duración total', activity.totalDuration], ['Duración efectiva', activity.effectiveDuration],
     ['Nivel técnico', activity.technicalLevel], ['Nivel físico', activity.physicalLevel], ['Edad mínima', activity.minimumAge],
@@ -82,7 +82,8 @@ export default function ActivityProfilePage() {
     ['Aproximación y retorno', activity.approachReturn], ['Elementos técnicos', activity.technicalElements.join(', ')],
     ['Experiencia previa', activity.previousExperience], ['Punto de encuentro', activity.meetingPoint],
     ['Política meteorológica', activity.weatherPolicy], ['Política de cancelación', activity.cancellationPolicy],
-  ];
+  ] as [string, string][]).filter(([, value]) => Boolean(value && value.trim()));
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -121,6 +122,10 @@ export default function ActivityProfilePage() {
             ))}
           </div>
         </section>
+
+        <TrustBar />
+
+
 
         <div className="container mx-auto grid min-w-0 gap-10 px-4 py-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:py-16">
           <article className="min-w-0 space-y-14">
@@ -162,7 +167,10 @@ export default function ActivityProfilePage() {
                 <Button variant="outline" size="lg" className="min-h-12 w-full gap-2" asChild><a href={openGroupUrl} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-5 w-5" /> Consultar grupo abierto</a></Button>
                 <Button variant="outline" size="lg" className="min-h-12 w-full gap-2" asChild><a href={privateUrl} target="_blank" rel="noopener noreferrer"><Users className="h-5 w-5" /> Solicitar salida privada</a></Button>
               </div>
-              {(activity.price === PENDING || activity.meetingPoint === PENDING || activity.guideRatio === PENDING) && <p className="mt-5 border-t border-border pt-4 text-xs leading-5 text-muted-foreground">Los campos pendientes se confirmarán antes de aceptar la reserva.</p>}
+              <div className="mt-5 border-t border-border pt-4">
+                <TrustBar variant="compact" />
+              </div>
+
             </div>
           </aside>
         </div>
