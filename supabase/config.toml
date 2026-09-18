@@ -11,3 +11,12 @@ verify_jwt = false
 
 [functions.create-plan-checkout]
 verify_jwt = false
+
+[functions.create-activity-deposit]
+verify_jwt = false
+
+[functions.create-portal-session]
+verify_jwt = false
+
+[functions.get-plan-order]
+verify_jwt = false
