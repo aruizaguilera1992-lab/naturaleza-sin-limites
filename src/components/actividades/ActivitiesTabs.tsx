@@ -23,7 +23,12 @@ export function ActivitiesTabs({ activeTab, onTabChange, counts }: ActivitiesTab
     <div className="py-4 sm:py-6">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-          {tabs.map((tab) => {
+          {tabs
+            // Ocultamos una categoría del catálogo comercial mientras no tenga
+            // actividades con precio publicado (su dataset y su página se conservan).
+            .filter((tab) => tab.id === 'todas' || tab.id === 'calendario' || (counts[tab.id] || 0) > 0)
+            .map((tab) => {
+
             const isActive = activeTab === tab.id;
             const count = tab.id === 'calendario' ? null : counts[tab.id] || 0;
             
