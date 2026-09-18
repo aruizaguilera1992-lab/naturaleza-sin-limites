@@ -277,6 +277,25 @@ const formatDate = (value: string) =>
     year: "numeric",
   });
 
+type PlanOrder = {
+  id: string;
+  product_name: string;
+  price_id: string;
+  mode: string;
+  status: string;
+  amount_cents: number | null;
+  currency: string;
+  customer_name: string | null;
+  customer_email: string | null;
+  customer_phone: string | null;
+  environment: string;
+  cancel_at_period_end: boolean;
+  current_period_end: string | null;
+  last_invoice_status: string | null;
+  last_invoice_at: string | null;
+  created_at: string;
+};
+
 export default function Admin() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -286,11 +305,12 @@ export default function Admin() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
+  const [planOrders, setPlanOrders] = useState<PlanOrder[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
-  const [tab, setTab] = useState<"bookings" | "contacts" | "notifications">("bookings");
+  const [tab, setTab] = useState<"bookings" | "contacts" | "plans" | "notifications">("bookings");
 
   const loadData = useCallback(async () => {
-    const [b, c, p, n] = await Promise.all([
+    const [b, c, p, n, o] = await Promise.all([
       supabase.from("bookings").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_submissions").select("*").order("created_at", { ascending: false }),
       supabase.from("payment_requests").select("*").order("created_at", { ascending: false }),
@@ -299,11 +319,13 @@ export default function Admin() {
         .select("id, kind, recipient, subject, status, error, attempts, created_at")
         .order("created_at", { ascending: false })
         .limit(100),
+      supabase.from("plan_orders").select("*").order("created_at", { ascending: false }),
     ]);
     if (b.data) setBookings(b.data as Booking[]);
     if (c.data) setContacts(c.data as Contact[]);
     if (p.data) setPayments(p.data as PaymentRequest[]);
     if (n.data) setNotifications(n.data as NotificationRow[]);
+    if (o.data) setPlanOrders(o.data as unknown as PlanOrder[]);
   }, []);
 
   const retryNotification = async (id: string) => {
