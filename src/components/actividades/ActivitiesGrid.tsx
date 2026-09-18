@@ -129,10 +129,11 @@ function ActivityCard({
                 <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
                   <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="h-4 w-4 mr-1" />
+                    Consultar
+                  </a>
+                </Button>
+              )}
 
-                  Reservar
-                </a>
-              </Button>
               <button
                 onClick={onToggleCompare}
                 className={cn(
