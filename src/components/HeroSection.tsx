@@ -1,10 +1,39 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Mountain, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import heroVideoAsset from '@/assets/photography/naturaleza-sin-limites-hero.mp4.asset.json';
+
 export function HeroSection() {
+  const [reduceMotion, setReduceMotion] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+
+  useEffect(() => {
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updatePreference = () => setReduceMotion(motionPreference.matches);
+
+    motionPreference.addEventListener('change', updatePreference);
+    return () => motionPreference.removeEventListener('change', updatePreference);
+  }, []);
+
   return <section id="inicio" className="homepage-hero relative min-h-[620px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div className="homepage-hero-overlay absolute inset-0" />
+      {/* Animated background; the section background remains as the loading/reduced-motion poster. */}
+      {!reduceMotion && (
+        <video
+          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/__l5e/assets-v1/18d2a0f6-1ce5-4188-8343-5fa989142533/fondo-web-home-v2.webp"
+          aria-hidden="true"
+        >
+          <source src={heroVideoAsset.url} type="video/mp4" />
+        </video>
+      )}
+      <div className="homepage-hero-overlay absolute inset-0 z-[1]" />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 pt-44 md:pt-32 pb-20 text-center">
@@ -124,7 +153,7 @@ export function HeroSection() {
     }} transition={{
       delay: 1.2,
       duration: 0.6
-    }} className="absolute bottom-8 left-1/2 -translate-x-1/2 text-foreground/60 hover:text-primary transition-colors cursor-pointer">
+    }} className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-foreground/60 hover:text-primary transition-colors cursor-pointer">
         <motion.div animate={{
         y: [0, 10, 0]
       }} transition={{
