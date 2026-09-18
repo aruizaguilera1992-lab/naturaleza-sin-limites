@@ -267,14 +267,21 @@ function ActivityCard({
         {/* Actions */}
         <div className="mt-auto flex gap-2">
           <Button variant="outline" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
-            <Link to={profileUrl}><Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />Más info</Link>
+            <Link to={profileUrl}><Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />Ver experiencia</Link>
           </Button>
-          <Button variant="hero" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-              Reservar
-            </a>
-          </Button>
+          {hasRealPrice ? (
+            <Button variant="hero" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
+              <Link to={bookUrl}>Reservar</Link>
+            </Button>
+          ) : (
+            <Button variant="hero" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                Consultar
+              </a>
+            </Button>
+          )}
+
         </div>
         
         {/* External Source */}
