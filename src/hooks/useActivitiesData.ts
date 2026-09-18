@@ -266,8 +266,13 @@ export function useActivitiesData() {
       });
     });
     
-    return unified;
+    
+    // Catálogo comercial: solo se listan actividades con precio real publicado.
+    // Las que no lo tienen conservan su dataset y su ficha, pero no se venden
+    // desde el catálogo hasta confirmar precio y duración.
+    return unified.filter(a => a.priceValue > 0);
   }, []);
+
   
   const counts = useMemo(() => ({
     todas: activities.length,
