@@ -49,6 +49,13 @@ function ActivityCard({
     `¡Hola! Me interesa la actividad ${activity.name} (${typeInfo.label}) en ${activity.province}. ¿Tenéis disponibilidad?`
   );
   const whatsappUrl = `https://wa.me/34685609542?text=${whatsappMessage}`;
+
+  const hasRealPrice = activity.priceValue > 0;
+  const priceLabel = hasRealPrice ? `Desde ${activity.priceValue} € / persona` : 'Consultar precio';
+  const priceBadge = hasRealPrice ? `Desde ${activity.priceValue} €` : 'Consultar precio';
+  const bookUrl = `/reservar/${category}/${rawId}`;
+
+
   
   if (viewMode === 'list') {
     return (
@@ -86,9 +93,10 @@ function ActivityCard({
                   <MapPin className="h-3 w-3 flex-shrink-0" /> {activity.province} - {activity.zone}
                 </p>
               </div>
-              <Badge className="bg-primary text-primary-foreground font-bold flex-shrink-0">
-                {activity.price}
+              <Badge className="bg-primary text-primary-foreground font-bold flex-shrink-0 whitespace-nowrap">
+                {priceBadge}
               </Badge>
+
             </div>
             
             <p className="text-sm text-muted-foreground mb-3 line-clamp-2 flex-1">
@@ -102,23 +110,30 @@ function ActivityCard({
               </span>
               <span className="flex items-center gap-1">
                 <Users className="h-4 w-4 text-primary" />
-                Mín. {activity.minGroup}
+                Máx. 6 personas
               </span>
               <Badge variant="secondary" className="text-xs">
                 {activity.level}
               </Badge>
             </div>
-            
+
             <div className="mt-auto flex flex-wrap items-center gap-2">
               <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
-                <Link to={profileUrl}><Info className="h-4 w-4 mr-1" />Más info</Link>
+                <Link to={profileUrl}><Info className="h-4 w-4 mr-1" />Ver experiencia</Link>
               </Button>
-              <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="h-4 w-4 mr-1" />
-                  Reservar
-                </a>
-              </Button>
+              {hasRealPrice ? (
+                <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
+                  <Link to={bookUrl}>Reservar</Link>
+                </Button>
+              ) : (
+                <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Consultar
+                  </a>
+                </Button>
+              )}
+
               <button
                 onClick={onToggleCompare}
                 className={cn(
@@ -174,9 +189,10 @@ function ActivityCard({
         
         {/* Price Badge */}
         <div className="absolute top-3 right-3">
-          <Badge className="bg-primary text-primary-foreground font-bold">
-            {activity.price}
+          <Badge className="bg-primary text-primary-foreground font-bold whitespace-nowrap">
+            {priceBadge}
           </Badge>
+
         </div>
         
         {/* Quick Actions */}
@@ -227,10 +243,17 @@ function ActivityCard({
             <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
             {activity.duration}
           </span>
+          <span className="flex items-center gap-1">
+            <Users className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            Máx. 6
+          </span>
           <Badge variant="secondary" className="text-xs">
             {activity.level}
           </Badge>
         </div>
+
+        <p className="mb-3 text-sm font-semibold text-foreground">{priceLabel}</p>
+
         
         {/* Characteristics */}
         <div className="flex flex-wrap gap-1 mb-4">
@@ -244,14 +267,21 @@ function ActivityCard({
         {/* Actions */}
         <div className="mt-auto flex gap-2">
           <Button variant="outline" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
-            <Link to={profileUrl}><Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />Más info</Link>
+            <Link to={profileUrl}><Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />Ver experiencia</Link>
           </Button>
-          <Button variant="hero" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-              Reservar
-            </a>
-          </Button>
+          {hasRealPrice ? (
+            <Button variant="hero" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
+              <Link to={bookUrl}>Reservar</Link>
+            </Button>
+          ) : (
+            <Button variant="hero" size="sm" className="flex-1 min-w-0 min-h-[44px] sm:min-h-0 text-xs sm:text-sm" asChild>
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                Consultar
+              </a>
+            </Button>
+          )}
+
         </div>
         
         {/* External Source */}

@@ -130,8 +130,83 @@ function buildEditorial(profile: Omit<ActivityProfile, 'commercialDescription' |
     },
   ];
 
-  return { ...profile, commercialDescription, highlights, safetyRequirements, itinerary, faqs, localSeoSections };
+  return sanitizeProfile({ ...profile, commercialDescription, highlights, safetyRequirements, itinerary, faqs, localSeoSections });
 }
+
+/**
+ * Ningún placeholder interno debe llegar al cliente. Cada campo sin dato
+ * verificado se sustituye por una formulación comercial honesta, y los
+ * elementos de lista que solo contenían el placeholder se eliminan.
+ */
+const CONSULT = 'se confirma al reservar';
+const NO_PRICE = 'Consultar precio';
+
+const clean = (value: string) =>
+  value
+    .split(PENDING)
+    .join(CONSULT)
+    .replace(/\s{2,}/g, ' ')
+    .replace(/:\s*(?=[.;,])/g, '')
+    .trim();
+
+const cleanList = (values: string[], fallback?: string) => {
+  const cleaned = values
+    .map(clean)
+    .filter((item) => item.length > 0 && item.toLowerCase() !== CONSULT);
+  if (cleaned.length === 0 && fallback) return [fallback];
+  return cleaned;
+};
+
+/** True cuando la actividad tiene datos comerciales suficientes para venderse. */
+export const isSellable = (profile: ActivityProfile) =>
+  Boolean(profile.priceValue && profile.priceValue > 0);
+
+function sanitizeProfile(profile: ActivityProfile): ActivityProfile {
+  const hasPrice = Boolean(profile.priceValue && profile.priceValue > 0);
+  return {
+    ...profile,
+    price: hasPrice ? clean(profile.price) : NO_PRICE,
+    priceValue: hasPrice ? profile.priceValue : undefined,
+    totalDuration: clean(profile.totalDuration) || 'Consultar duración',
+    effectiveDuration: clean(profile.effectiveDuration) || CONSULT,
+    guideRatio: profile.guideRatio.includes(PENDING)
+      ? 'Grupos reducidos de máximo 6 personas'
+      : clean(profile.guideRatio),
+    group: clean(profile.group),
+    approachReturn: clean(profile.approachReturn),
+    meetingPoint: profile.meetingPoint.includes(PENDING)
+      ? 'Se confirma al reservar, en un punto accesible en coche cerca del inicio de la actividad'
+      : clean(profile.meetingPoint),
+    weatherPolicy: profile.weatherPolicy.includes(PENDING)
+      ? 'Si la meteorología o las condiciones del recorrido no son seguras, proponemos nueva fecha, otra actividad o la devolución del importe.'
+      : clean(profile.weatherPolicy),
+    cancellationPolicy: profile.cancellationPolicy.includes(PENDING)
+      ? 'Las condiciones de cancelación se facilitan por escrito antes de confirmar la reserva.'
+      : clean(profile.cancellationPolicy),
+    technicalLevel: clean(profile.technicalLevel),
+    physicalLevel: clean(profile.physicalLevel),
+    minimumAge: clean(profile.minimumAge),
+    season: clean(profile.season),
+    previousExperience: clean(profile.previousExperience),
+    technicalElements: cleanList(profile.technicalElements),
+    included: cleanList(profile.included, 'Material técnico homologado y guía titulado; el detalle se confirma al reservar'),
+    bring: cleanList(profile.bring, 'Te enviamos la lista de material personal al confirmar la reserva'),
+    insurancePermits: cleanList(profile.insurancePermits, 'Seguro de accidentes y responsabilidad civil para la actividad'),
+    highlights: cleanList(profile.highlights),
+    safetyRequirements: cleanList(profile.safetyRequirements),
+    itinerary: cleanList(profile.itinerary),
+    commercialDescription: clean(profile.commercialDescription),
+    shortDescription: clean(profile.shortDescription),
+    differentiator: clean(profile.differentiator),
+    sourceLabel: clean(profile.sourceLabel),
+    faqs: profile.faqs.map((faq) => ({ question: clean(faq.question), answer: clean(faq.answer) })),
+    localSeoSections: profile.localSeoSections.map((section) => ({
+      heading: clean(section.heading),
+      paragraphs: section.paragraphs.map(clean),
+    })),
+  };
+}
+
 
 function fromBarranco(item: Barranco): ActivityProfile {
   const included = item.incluye.length ? item.incluye : [PENDING];

@@ -42,3 +42,21 @@
 - [x] Portal de gestión para el cliente (/mi-suscripcion/:token) enlazado en el correo de alta
 - [x] Webhook registra renovaciones y cobros fallidos (invoice.paid / invoice.payment_failed)
 - [ ] Activar cobros reales (pendiente de completar verificación de la cuenta de pagos)
+
+## Sprint 1 (auditoría competitiva)
+- [x] Dominio canónico único https://naturalezasinlimites.es (src/lib/site.ts, sitemap.xml, robots.txt, index.html, fichas)
+- [x] Franja de confianza verificable (TrustBar: TD2, máx. 6 personas, material homologado, seguro RC) en Home, ficha y reserva
+- [x] Eliminados los textos "[PENDIENTE DE CONFIRMAR]" visibles (campos ocultos o "se confirma al reservar")
+- [x] Tarjetas de catálogo con precio visible, "Máx. 6 personas", CTA "Reservar" y "Ver experiencia"
+- [x] Catálogo comercial limitado a actividades con precio real (espeleología queda fuera del listado; su dataset y su ficha se conservan)
+- [ ] Publicar número de registro de turismo activo, número de póliza de RC y aseguradora (falta el dato real)
+- [ ] Confirmar precio y duración de las 3 propuestas de espeleología para devolverlas al catálogo
+
+### Estado de Stripe (interno, no mostrar al cliente)
+- Modo actual: SANDBOX/test. Checkout embebido, señal del 30 % calculada en servidor,
+  idempotencia por (solicitud, generación, importe, moneda, origen), `automatic_tax`
+  con `tax_code` txcd_20030000 y webhook idempotente: todo verificado y correcto.
+- Para pasar a producción falta: completar la verificación de la cuenta de pagos
+  (go-live), que genera STRIPE_LIVE_API_KEY, PAYMENTS_LIVE_WEBHOOK_SECRET y el token
+  público live. No requiere cambios de código: el entorno se deriva del prefijo del token.
+- También pendiente: clave de Resend válida y remitente verificado para los correos.
