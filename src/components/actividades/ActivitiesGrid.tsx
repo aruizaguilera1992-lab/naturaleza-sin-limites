@@ -93,9 +93,10 @@ function ActivityCard({
                   <MapPin className="h-3 w-3 flex-shrink-0" /> {activity.province} - {activity.zone}
                 </p>
               </div>
-              <Badge className="bg-primary text-primary-foreground font-bold flex-shrink-0">
-                {activity.price}
+              <Badge className="bg-primary text-primary-foreground font-bold flex-shrink-0 whitespace-nowrap">
+                {priceBadge}
               </Badge>
+
             </div>
             
             <p className="text-sm text-muted-foreground mb-3 line-clamp-2 flex-1">
@@ -109,20 +110,26 @@ function ActivityCard({
               </span>
               <span className="flex items-center gap-1">
                 <Users className="h-4 w-4 text-primary" />
-                Mín. {activity.minGroup}
+                Máx. 6 personas
               </span>
               <Badge variant="secondary" className="text-xs">
                 {activity.level}
               </Badge>
             </div>
-            
+
             <div className="mt-auto flex flex-wrap items-center gap-2">
               <Button variant="outline" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
-                <Link to={profileUrl}><Info className="h-4 w-4 mr-1" />Más info</Link>
+                <Link to={profileUrl}><Info className="h-4 w-4 mr-1" />Ver experiencia</Link>
               </Button>
-              <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="h-4 w-4 mr-1" />
+              {hasRealPrice ? (
+                <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
+                  <Link to={bookUrl}>Reservar</Link>
+                </Button>
+              ) : (
+                <Button variant="hero" size="sm" className="min-h-[44px] sm:min-h-0" asChild>
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="h-4 w-4 mr-1" />
+
                   Reservar
                 </a>
               </Button>
