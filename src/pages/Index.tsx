@@ -11,6 +11,8 @@ import { BookingForm } from '@/components/BookingForm';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
+import { TrustBar } from '@/components/TrustBar';
+
 
 const Index = () => {
   return (
@@ -18,6 +20,8 @@ const Index = () => {
       <Navbar />
       <main>
         <HeroSection />
+        <TrustBar />
+
         <ValueProposition />
         <ActivitiesGrid />
         <VertigoSapiens />
