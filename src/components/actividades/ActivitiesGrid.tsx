@@ -189,9 +189,10 @@ function ActivityCard({
         
         {/* Price Badge */}
         <div className="absolute top-3 right-3">
-          <Badge className="bg-primary text-primary-foreground font-bold">
-            {activity.price}
+          <Badge className="bg-primary text-primary-foreground font-bold whitespace-nowrap">
+            {priceBadge}
           </Badge>
+
         </div>
         
         {/* Quick Actions */}
@@ -242,10 +243,17 @@ function ActivityCard({
             <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
             {activity.duration}
           </span>
+          <span className="flex items-center gap-1">
+            <Users className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            Máx. 6
+          </span>
           <Badge variant="secondary" className="text-xs">
             {activity.level}
           </Badge>
         </div>
+
+        <p className="mb-3 text-sm font-semibold text-foreground">{priceLabel}</p>
+
         
         {/* Characteristics */}
         <div className="flex flex-wrap gap-1 mb-4">
