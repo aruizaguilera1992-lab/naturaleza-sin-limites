@@ -328,7 +328,11 @@ export type Database = {
           customer_phone: string | null
           environment: string
           id: string
+          last_invoice_amount_cents: number | null
+          last_invoice_at: string | null
+          last_invoice_status: string | null
           mode: string
+          portal_token: string
           price_id: string
           product_name: string
           status: string
@@ -349,7 +353,11 @@ export type Database = {
           customer_phone?: string | null
           environment?: string
           id?: string
+          last_invoice_amount_cents?: number | null
+          last_invoice_at?: string | null
+          last_invoice_status?: string | null
           mode: string
+          portal_token?: string
           price_id: string
           product_name: string
           status?: string
@@ -370,7 +378,11 @@ export type Database = {
           customer_phone?: string | null
           environment?: string
           id?: string
+          last_invoice_amount_cents?: number | null
+          last_invoice_at?: string | null
+          last_invoice_status?: string | null
           mode?: string
+          portal_token?: string
           price_id?: string
           product_name?: string
           status?: string
