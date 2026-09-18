@@ -60,7 +60,8 @@ export function ActivitiesTabs({ activeTab, onTabChange, counts }: ActivitiesTab
                 )}
               </motion.button>
             );
-          })}
+            })}
+
         </div>
       </div>
     </div>
