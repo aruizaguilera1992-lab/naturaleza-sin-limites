@@ -617,6 +617,50 @@ export default function Admin() {
               ))
             ))}
 
+          {tab === "plans" &&
+            (planOrders.length === 0 ? (
+              <p className="text-muted-foreground">Todavía no hay altas de planes ni packs.</p>
+            ) : (
+              planOrders.map((o) => (
+                <div key={o.id} className="rounded-xl border border-border bg-card p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h2 className="font-heading font-semibold text-lg">{o.product_name}</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(o.created_at)} ·{" "}
+                        {o.mode === "suscripcion" ? "Suscripción" : "Pago único"} ·{" "}
+                        {o.environment === "live" ? "real" : "pruebas"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={statusVariant(o.status)}>{o.status}</Badge>
+                      {o.cancel_at_period_end && <Badge variant="outline">cancela al vencer</Badge>}
+                    </div>
+                  </div>
+                  <div className="mt-3 grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">
+                    <span>Cliente: {o.customer_name ?? "-"}</span>
+                    <span>Email: {o.customer_email ?? "-"}</span>
+                    <span>Teléfono: {o.customer_phone ?? "-"}</span>
+                    <span>
+                      Importe: {o.amount_cents !== null ? formatAmount(o.amount_cents, o.currency) : "-"}
+                    </span>
+                    {o.mode === "suscripcion" && (
+                      <>
+                        <span>
+                          Renueva:{" "}
+                          {o.current_period_end ? formatDate(o.current_period_end) : "por confirmar"}
+                        </span>
+                        <span>
+                          Último cobro: {o.last_invoice_status ?? "-"}
+                          {o.last_invoice_at ? ` · ${formatDate(o.last_invoice_at)}` : ""}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))
+            ))}
+
           {tab === "notifications" &&
             (notifications.length === 0 ? (
               <p className="text-muted-foreground">Todavía no se ha enviado ninguna notificación.</p>
