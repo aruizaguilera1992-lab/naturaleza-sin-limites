@@ -181,7 +181,7 @@ Deno.serve(async (req) => {
       {
         price_data: {
           currency,
-          product_data: { name: pr.concept },
+          product_data: { name: pr.concept, tax_code: "txcd_20030000" },
           unit_amount: pr.amount_cents,
           tax_behavior: "inclusive",
         },
