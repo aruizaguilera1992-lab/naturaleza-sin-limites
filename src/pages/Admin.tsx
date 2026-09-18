@@ -497,6 +497,13 @@ export default function Admin() {
             Contactos ({contacts.length})
           </Button>
           <Button
+            variant={tab === "plans" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setTab("plans")}
+          >
+            Altas y planes ({planOrders.length})
+          </Button>
+          <Button
             variant={tab === "notifications" ? "default" : "outline"}
             size="sm"
             onClick={() => setTab("notifications")}
