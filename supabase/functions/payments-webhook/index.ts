@@ -113,7 +113,7 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
     })
     .eq("stripe_session_id", sessionId)
     .eq("environment", env)
-    .select("id, customer_email, customer_name, product_name, status")
+    .select("id, customer_email, customer_name, product_name, status, portal_token")
     .maybeSingle();
 
   if (error) {
@@ -131,6 +131,22 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
   const greetName = (order.customer_name as string | null) ?? name;
   const isSubscription = Boolean(subscriptionId);
 
+  // Self-service management link (billing portal) for subscriptions.
+  let portalBlock = "";
+  if (isSubscription && order.portal_token) {
+    let origin: string | null = null;
+    try {
+      origin = session?.return_url ? new URL(session.return_url).origin : null;
+    } catch {
+      origin = null;
+    }
+    if (origin) {
+      const portalUrl = `${origin}/mi-suscripcion/${order.portal_token}`;
+      portalBlock =
+        `<p>Puedes consultar tus facturas, cambiar la tarjeta o cancelar tu suscripción cuando quieras desde este enlace personal: <a href="${portalUrl}">gestionar mi suscripción</a>.</p>`;
+    }
+  }
+
   if (recipient) {
     await sendTrackedNotification(supabase, {
       kind: "plan_confirmado_cliente",
@@ -144,6 +160,7 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
         isSubscription ? "<br/>Renovación: mensual, puedes cancelarla cuando quieras." : ""
       }</p>
         <p>${escapeHtml(plan?.onboarding ?? "En breve te escribimos con los siguientes pasos.")}</p>
+        ${portalBlock}
         <p>Cualquier duda, responde a este correo o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
       `),
     });
