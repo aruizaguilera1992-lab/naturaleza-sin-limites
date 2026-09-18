@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getActivityProfile, PENDING } from "@/data/activityProfiles";
+import { TrustBar } from "@/components/TrustBar";
+
 
 const DEPOSIT_RATE = 0.3;
 const MAX_PEOPLE = 6;
@@ -133,7 +135,11 @@ export default function ReservarActividad() {
             El resto ({euros(total - deposit)}) se abona el día de la actividad. IVA incluido.
           </p>
         </div>
+        <div className="mt-6 border-t border-border pt-4">
+          <TrustBar variant="compact" />
+        </div>
       </div>
+
 
       <div className="rounded-xl border border-border bg-card p-6">
         <h2 className="mb-4 font-heading text-lg font-bold">Tu reserva</h2>
