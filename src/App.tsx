@@ -28,6 +28,8 @@ import Admin from "./pages/Admin";
 import Pago from "./pages/Pago";
 import Contratar from "./pages/Contratar";
 import Gracias from "./pages/Gracias";
+import ReservarActividad from "./pages/ReservarActividad";
+import MiSuscripcion from "./pages/MiSuscripcion";
 import ActivityProfilePage from "./pages/ActivityProfilePage";
 import NotFound from "./pages/NotFound";
 
@@ -66,6 +68,8 @@ const App = () => (
             <Route path="/pago/:token" element={<Pago />} />
             <Route path="/contratar/:priceId" element={<Contratar />} />
             <Route path="/gracias" element={<Gracias />} />
+            <Route path="/reservar/:category/:slug" element={<ReservarActividad />} />
+            <Route path="/mi-suscripcion/:token" element={<MiSuscripcion />} />
             <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
 
             <Route path="*" element={<NotFound />} />

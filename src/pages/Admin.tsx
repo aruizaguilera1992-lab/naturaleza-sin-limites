@@ -277,6 +277,25 @@ const formatDate = (value: string) =>
     year: "numeric",
   });
 
+type PlanOrder = {
+  id: string;
+  product_name: string;
+  price_id: string;
+  mode: string;
+  status: string;
+  amount_cents: number | null;
+  currency: string;
+  customer_name: string | null;
+  customer_email: string | null;
+  customer_phone: string | null;
+  environment: string;
+  cancel_at_period_end: boolean;
+  current_period_end: string | null;
+  last_invoice_status: string | null;
+  last_invoice_at: string | null;
+  created_at: string;
+};
+
 export default function Admin() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -286,11 +305,12 @@ export default function Admin() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
+  const [planOrders, setPlanOrders] = useState<PlanOrder[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
-  const [tab, setTab] = useState<"bookings" | "contacts" | "notifications">("bookings");
+  const [tab, setTab] = useState<"bookings" | "contacts" | "plans" | "notifications">("bookings");
 
   const loadData = useCallback(async () => {
-    const [b, c, p, n] = await Promise.all([
+    const [b, c, p, n, o] = await Promise.all([
       supabase.from("bookings").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_submissions").select("*").order("created_at", { ascending: false }),
       supabase.from("payment_requests").select("*").order("created_at", { ascending: false }),
@@ -299,11 +319,13 @@ export default function Admin() {
         .select("id, kind, recipient, subject, status, error, attempts, created_at")
         .order("created_at", { ascending: false })
         .limit(100),
+      supabase.from("plan_orders").select("*").order("created_at", { ascending: false }),
     ]);
     if (b.data) setBookings(b.data as Booking[]);
     if (c.data) setContacts(c.data as Contact[]);
     if (p.data) setPayments(p.data as PaymentRequest[]);
     if (n.data) setNotifications(n.data as NotificationRow[]);
+    if (o.data) setPlanOrders(o.data as unknown as PlanOrder[]);
   }, []);
 
   const retryNotification = async (id: string) => {
@@ -475,6 +497,13 @@ export default function Admin() {
             Contactos ({contacts.length})
           </Button>
           <Button
+            variant={tab === "plans" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setTab("plans")}
+          >
+            Altas y planes ({planOrders.length})
+          </Button>
+          <Button
             variant={tab === "notifications" ? "default" : "outline"}
             size="sm"
             onClick={() => setTab("notifications")}
@@ -585,6 +614,50 @@ export default function Admin() {
                   />
                 </div>
 
+              ))
+            ))}
+
+          {tab === "plans" &&
+            (planOrders.length === 0 ? (
+              <p className="text-muted-foreground">Todavía no hay altas de planes ni packs.</p>
+            ) : (
+              planOrders.map((o) => (
+                <div key={o.id} className="rounded-xl border border-border bg-card p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h2 className="font-heading font-semibold text-lg">{o.product_name}</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(o.created_at)} ·{" "}
+                        {o.mode === "suscripcion" ? "Suscripción" : "Pago único"} ·{" "}
+                        {o.environment === "live" ? "real" : "pruebas"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={statusVariant(o.status)}>{o.status}</Badge>
+                      {o.cancel_at_period_end && <Badge variant="outline">cancela al vencer</Badge>}
+                    </div>
+                  </div>
+                  <div className="mt-3 grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">
+                    <span>Cliente: {o.customer_name ?? "-"}</span>
+                    <span>Email: {o.customer_email ?? "-"}</span>
+                    <span>Teléfono: {o.customer_phone ?? "-"}</span>
+                    <span>
+                      Importe: {o.amount_cents !== null ? formatAmount(o.amount_cents, o.currency) : "-"}
+                    </span>
+                    {o.mode === "suscripcion" && (
+                      <>
+                        <span>
+                          Renueva:{" "}
+                          {o.current_period_end ? formatDate(o.current_period_end) : "por confirmar"}
+                        </span>
+                        <span>
+                          Último cobro: {o.last_invoice_status ?? "-"}
+                          {o.last_invoice_at ? ` · ${formatDate(o.last_invoice_at)}` : ""}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
               ))
             ))}
 

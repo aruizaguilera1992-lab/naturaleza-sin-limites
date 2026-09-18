@@ -35,3 +35,10 @@
 ## Fotografías de fichas
 - [x] Fotos reales individuales y metadatos para las 68 actividades publicadas
 - [x] Verificación visual responsive del catálogo y las fichas
+
+## Pagos y suscripciones (actualizado)
+- [x] Señal del 30% pagable online desde la ficha de actividad (/reservar/:categoria/:slug)
+- [x] Pestaña "Altas y planes" en el panel con estado de suscripciones y último cobro
+- [x] Portal de gestión para el cliente (/mi-suscripcion/:token) enlazado en el correo de alta
+- [x] Webhook registra renovaciones y cobros fallidos (invoice.paid / invoice.payment_failed)
+- [ ] Activar cobros reales (pendiente de completar verificación de la cuenta de pagos)

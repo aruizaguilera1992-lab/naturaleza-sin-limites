@@ -113,7 +113,7 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
     })
     .eq("stripe_session_id", sessionId)
     .eq("environment", env)
-    .select("id, customer_email, customer_name, product_name, status")
+    .select("id, customer_email, customer_name, product_name, status, portal_token")
     .maybeSingle();
 
   if (error) {
@@ -131,6 +131,22 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
   const greetName = (order.customer_name as string | null) ?? name;
   const isSubscription = Boolean(subscriptionId);
 
+  // Self-service management link (billing portal) for subscriptions.
+  let portalBlock = "";
+  if (isSubscription && order.portal_token) {
+    let origin: string | null = null;
+    try {
+      origin = session?.return_url ? new URL(session.return_url).origin : null;
+    } catch {
+      origin = null;
+    }
+    if (origin) {
+      const portalUrl = `${origin}/mi-suscripcion/${order.portal_token}`;
+      portalBlock =
+        `<p>Puedes consultar tus facturas, cambiar la tarjeta o cancelar tu suscripción cuando quieras desde este enlace personal: <a href="${portalUrl}">gestionar mi suscripción</a>.</p>`;
+    }
+  }
+
   if (recipient) {
     await sendTrackedNotification(supabase, {
       kind: "plan_confirmado_cliente",
@@ -144,6 +160,7 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
         isSubscription ? "<br/>Renovación: mensual, puedes cancelarla cuando quieras." : ""
       }</p>
         <p>${escapeHtml(plan?.onboarding ?? "En breve te escribimos con los siguientes pasos.")}</p>
+        ${portalBlock}
         <p>Cualquier duda, responde a este correo o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
       `),
     });
@@ -184,6 +201,61 @@ async function updateSubscription(subscription: any, env: StripeEnv, canceled = 
   if (error) {
     console.error("subscription update failed", error);
     throw new Error("subscription_update_failed");
+  }
+}
+
+/**
+ * Monthly renewals and failed charges. Keeps the order row truthful so the
+ * admin panel shows whether the plan is really being paid every month.
+ */
+// deno-lint-ignore no-explicit-any
+async function handleInvoice(invoice: any, env: StripeEnv, paid: boolean) {
+  const subscriptionId: string | null = typeof invoice.subscription === "string"
+    ? invoice.subscription
+    : invoice?.parent?.subscription_details?.subscription ?? null;
+  if (!subscriptionId) return;
+
+  const supabase = getSupabase();
+  const amountCents: number | null = typeof invoice.amount_paid === "number" && paid
+    ? invoice.amount_paid
+    : typeof invoice.amount_due === "number"
+    ? invoice.amount_due
+    : null;
+
+  const { data: order, error } = await supabase
+    .from("plan_orders")
+    .update({
+      last_invoice_status: paid ? "pagada" : "fallida",
+      last_invoice_at: new Date().toISOString(),
+      last_invoice_amount_cents: amountCents,
+      ...(paid ? {} : { status: "pago_fallido" }),
+    })
+    .eq("stripe_subscription_id", subscriptionId)
+    .eq("environment", env)
+    .select("id, product_name, customer_email")
+    .maybeSingle();
+
+  if (error) {
+    console.error("invoice update failed", error);
+    throw new Error("invoice_update_failed");
+  }
+  if (!order) return;
+
+  if (!paid) {
+    const subject = `Cobro fallido: ${order.product_name}`;
+    await sendTrackedNotification(supabase, {
+      kind: "cobro_fallido_negocio",
+      dedupeKey: `invoice_failed:${invoice.id}`,
+      recipients: businessRecipients(),
+      subject,
+      html: listLayout(subject, [
+        `Producto: ${order.product_name}`,
+        `Cliente: ${order.customer_email ?? "-"}`,
+        `Importe: ${amountCents !== null ? formatAmount(amountCents, String(invoice.currency ?? "eur")) : "-"}`,
+        `Entorno: ${env}`,
+        "El proveedor reintentará el cobro automáticamente.",
+      ]),
+    });
   }
 }
 
@@ -320,11 +392,18 @@ Deno.serve(async (req) => {
       case "checkout.session.async_payment_failed":
         console.log("Async payment failed for session", event.data.object?.id);
         break;
+      case "customer.subscription.created":
       case "customer.subscription.updated":
         await updateSubscription(event.data.object, env);
         break;
       case "customer.subscription.deleted":
         await updateSubscription(event.data.object, env, true);
+        break;
+      case "invoice.paid":
+        await handleInvoice(event.data.object, env, true);
+        break;
+      case "invoice.payment_failed":
+        await handleInvoice(event.data.object, env, false);
         break;
       default:
         console.log("Unhandled event:", event.type);
