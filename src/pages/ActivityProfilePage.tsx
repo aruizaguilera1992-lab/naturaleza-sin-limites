@@ -9,9 +9,10 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { getActivityProfile, getRelatedProfiles, PENDING } from '@/data/activityProfiles';
+import { getActivityProfile, getRelatedProfiles } from '@/data/activityProfiles';
+import { TrustBar } from '@/components/TrustBar';
+import { SITE_URL } from '@/lib/site';
 
-const SITE_URL = 'https://vertigo-adventures-hub.lovable.app';
 
 function shorten(value: string, max: number) {
   if (value.length <= max) return value;
