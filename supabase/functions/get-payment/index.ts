@@ -181,7 +181,7 @@ Deno.serve(async (req) => {
       {
         price_data: {
           currency,
-          product_data: { name: pr.concept },
+          product_data: { name: pr.concept, tax_code: "txcd_20030000" },
           unit_amount: pr.amount_cents,
           tax_behavior: "inclusive",
         },
@@ -202,9 +202,11 @@ Deno.serve(async (req) => {
     // No silent fallback: a tax configuration problem must surface.
     // Key is stable per (request, generation, amount, currency, origin), so
     // concurrent calls and retries resolve to ONE chargeable session.
+    // PARAMS_VERSION must be bumped whenever sessionParams change, or Stripe
+    // rejects the reused key with "same parameters" errors.
     session = await stripe.checkout.sessions.create(sessionParams as never, {
       idempotencyKey:
-        `pr_${pr.id}_g${generation}_${pr.amount_cents}_${currency}_${originHash.toString(16)}`,
+        `pr_${pr.id}_g${generation}_${pr.amount_cents}_${currency}_${originHash.toString(16)}_v2`,
     });
   } catch (e) {
     const message = String((e as { message?: string })?.message ?? e).slice(0, 400);
