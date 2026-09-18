@@ -49,6 +49,13 @@ function ActivityCard({
     `¡Hola! Me interesa la actividad ${activity.name} (${typeInfo.label}) en ${activity.province}. ¿Tenéis disponibilidad?`
   );
   const whatsappUrl = `https://wa.me/34685609542?text=${whatsappMessage}`;
+
+  const hasRealPrice = activity.priceValue > 0;
+  const priceLabel = hasRealPrice ? `Desde ${activity.priceValue} € / persona` : 'Consultar precio';
+  const priceBadge = hasRealPrice ? `Desde ${activity.priceValue} €` : 'Consultar precio';
+  const bookUrl = `/reservar/${category}/${rawId}`;
+
+
   
   if (viewMode === 'list') {
     return (
