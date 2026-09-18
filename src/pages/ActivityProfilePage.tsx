@@ -152,7 +152,13 @@ export default function ActivityProfilePage() {
               <p className="text-sm text-muted-foreground">Desde</p><p className="mt-1 text-3xl font-bold text-primary">{activity.price}</p>
               <p className="mt-3 text-sm text-muted-foreground">Confirma precio final, servicios y requisitos antes de reservar.</p>
               <div className="mt-6 space-y-3">
-                <Button variant="hero" size="lg" className="min-h-12 w-full gap-2" asChild><a href={openGroupUrl} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-5 w-5" /> Reservar grupo abierto</a></Button>
+                {activity.priceValue ? (
+                  <>
+                    <Button variant="hero" size="lg" className="min-h-12 w-full gap-2" asChild><Link to={`/reservar/${activity.category}/${activity.slug}`}>Reservar y pagar señal</Link></Button>
+                    <p className="text-center text-xs text-muted-foreground">Confirmas tu plaza pagando el 30% ahora; el resto, el día de la actividad.</p>
+                  </>
+                ) : null}
+                <Button variant="outline" size="lg" className="min-h-12 w-full gap-2" asChild><a href={openGroupUrl} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-5 w-5" /> Consultar grupo abierto</a></Button>
                 <Button variant="outline" size="lg" className="min-h-12 w-full gap-2" asChild><a href={privateUrl} target="_blank" rel="noopener noreferrer"><Users className="h-5 w-5" /> Solicitar salida privada</a></Button>
               </div>
               {(activity.price === PENDING || activity.meetingPoint === PENDING || activity.guideRatio === PENDING) && <p className="mt-5 border-t border-border pt-4 text-xs leading-5 text-muted-foreground">Los campos pendientes se confirmarán antes de aceptar la reserva.</p>}
