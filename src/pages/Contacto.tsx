@@ -1,3 +1,4 @@
+import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -11,6 +12,11 @@ import { ContactClosingSection } from '@/components/contacto/ContactClosingSecti
 export default function Contacto() {
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Contacto | Naturaleza Sin Límites"
+        description="Escríbenos para reservar barranquismo, escalada o vías ferratas en Málaga, o para resolver dudas sobre niveles, fechas y grupos."
+        path="/contacto"
+      />
       <ScrollToTop />
       <Navbar />
       <main>
