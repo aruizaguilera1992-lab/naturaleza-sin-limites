@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { absoluteUrl } from '@/lib/site';
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -134,7 +135,9 @@ export default function Cookies() {
           content="Qué cookies usamos, para qué sirven y cómo gestionar tu consentimiento."
         />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={absoluteUrl('/cookies')} />
         <meta name="twitter:card" content="summary" />
+        <link rel="canonical" href={absoluteUrl('/cookies')} />
       </Helmet>
 
       <div className="min-h-screen bg-background">

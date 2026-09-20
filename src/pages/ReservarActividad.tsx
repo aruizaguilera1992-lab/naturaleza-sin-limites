@@ -46,7 +46,7 @@ export default function ReservarActividad() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Reservar {activity?.name ?? "actividad"} | Naturaleza Sin Límites</title>
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex, follow" />
       </Helmet>
       <PaymentTestModeBanner />
       <div className="container mx-auto max-w-3xl px-4 pt-16 pb-20">
