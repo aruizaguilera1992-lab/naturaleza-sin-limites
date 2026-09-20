@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import { Shield, Award, Users, Heart, Star, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Shield, Award, Users, Heart } from 'lucide-react';
 
 const stats = [
   { value: '50+', label: 'Rutas Exploradas' },
@@ -32,37 +31,8 @@ const differentiators = [
   },
 ];
 
-const testimonials = [
-  {
-    name: 'María García',
-    role: 'Escaladora nivel intermedio',
-    text: 'Gracias a Vértigo Sapiens he mejorado muchísimo mi técnica. Los entrenamientos específicos y las salidas de fin de semana son increíbles.',
-    rating: 5,
-  },
-  {
-    name: 'Carlos Rodríguez',
-    role: 'Principiante en barranquismo',
-    text: 'Mi primera experiencia de barranquismo fue espectacular. Los guías transmiten una seguridad total y te hacen disfrutar cada momento.',
-    rating: 5,
-  },
-  {
-    name: 'Laura Martínez',
-    role: 'Deportista de aventura',
-    text: 'El programa de entrenamiento funcional es exactamente lo que necesitaba. He notado la diferencia en mis salidas a la montaña.',
-    rating: 5,
-  },
-];
 
 export function WhyChooseUs() {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section id="nosotros" className="py-24 bg-gradient-dark">
       <div className="container mx-auto px-4">
