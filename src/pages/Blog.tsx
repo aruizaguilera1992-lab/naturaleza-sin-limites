@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@/lib/site';
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -66,7 +67,8 @@ export default function Blog() {
           content="Descubre guías, técnicas, rutas recomendadas y consejos para tus aventuras de montaña."
         />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href="https://naturalezasinlimites.com/blog" />
+        <meta property="og:url" content={absoluteUrl('/blog')} />
+        <link rel="canonical" href={absoluteUrl('/blog')} />
       </Helmet>
 
       <div className="min-h-screen bg-background">

@@ -1,3 +1,4 @@
+import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -11,6 +12,11 @@ import { QSCTASection } from '@/components/quienes-somos/QSCTASection';
 const QuienesSomos = () => {
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Quiénes somos | Naturaleza Sin Límites"
+        description="Guía titulado TD2 con experiencia en barrancos, escalada y vías ferratas en Málaga. Grupos reducidos, material homologado y seguridad primero."
+        path="/quienes-somos"
+      />
       <Navbar />
       <main className="pt-36 md:pt-28 lg:pt-20">
         <QSHeroSection />

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mountain, ChevronDown, ShieldCheck } from "lucide-react";
+import { Seo } from "@/components/Seo";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
@@ -67,6 +68,11 @@ const ViasFerratas = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Vías ferratas en Málaga y Andalucía | Naturaleza Sin Límites"
+        description="Vías ferratas guiadas en Málaga y Andalucía por dificultad K1-K6, exposición y duración. Material homologado y grupos reducidos."
+        path="/vias-ferratas"
+      />
       <Navbar />
 
       {/* Hero Section */}

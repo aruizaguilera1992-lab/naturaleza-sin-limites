@@ -1,3 +1,4 @@
+import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
 import { ValueProposition } from '@/components/ValueProposition';
@@ -16,7 +17,12 @@ import { TrustBar } from '@/components/TrustBar';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-background">
+      <Seo
+        title="Naturaleza Sin Límites | Barranquismo y aventura en Málaga"
+        description="Barranquismo, escalada y vías ferratas guiadas en Málaga y Andalucía. Guía titulado TD2, grupos de máximo 6 personas y material homologado."
+        path="/"
+      />
       <Navbar />
       <main>
         <HeroSection />

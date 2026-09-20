@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Waves, ChevronDown } from 'lucide-react';
+import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -80,6 +81,12 @@ const Barranquismo = () => {
       exit="exit"
       variants={pageTransition}
     >
+      <Seo
+        title="Barranquismo en Málaga y Andalucía | Naturaleza Sin Límites"
+        description="Descensos de barrancos guiados en Málaga y Andalucía para todos los niveles. Encuentra tu barranco por nivel, duración y zona."
+        path="/barranquismo"
+      />
+
       <Navbar />
       <motion.main
         initial={{ opacity: 0 }}

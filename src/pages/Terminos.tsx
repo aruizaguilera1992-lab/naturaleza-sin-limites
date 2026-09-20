@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@/lib/site';
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -198,14 +199,14 @@ export default function Terminos() {
           content="Términos y Condiciones de Naturaleza Sin Límites. Reservas, cancelaciones, seguridad, responsabilidad y legislación aplicable."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://naturalezasinlimites.com/terminos" />
+        <meta property="og:url" content={absoluteUrl('/terminos')} />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="Términos y Condiciones | Naturaleza Sin Límites" />
         <meta
           name="twitter:description"
           content="Términos y Condiciones de Naturaleza Sin Límites. Reservas, cancelaciones, seguridad, responsabilidad y legislación aplicable."
         />
-        <link rel="canonical" href="https://naturalezasinlimites.com/terminos" />
+        <link rel="canonical" href={absoluteUrl('/terminos')} />
       </Helmet>
 
       <div className="min-h-screen bg-background">

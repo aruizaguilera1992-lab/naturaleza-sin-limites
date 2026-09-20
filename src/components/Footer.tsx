@@ -24,7 +24,7 @@ const socialLinks = [
     icon: MessageCircle,
     label: 'WhatsApp',
   },
-  { href: 'mailto:info@naturalezasinlimites.com', icon: Mail, label: 'Email' },
+  { href: 'mailto:naturaleza.s.limites@gmail.com', icon: Mail, label: 'Email' },
 ];
 
 export function Footer() {

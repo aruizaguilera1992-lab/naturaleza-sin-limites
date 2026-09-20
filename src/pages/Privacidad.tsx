@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@/lib/site';
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -209,14 +210,14 @@ export default function Privacidad() {
           content="Política de Privacidad de Naturaleza Sin Límites. Conoce cómo protegemos tus datos personales conforme al RGPD y la LOPDGDD."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://naturalezasinlimites.com/privacidad" />
+        <meta property="og:url" content={absoluteUrl('/privacidad')} />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="Política de Privacidad | Naturaleza Sin Límites" />
         <meta
           name="twitter:description"
           content="Política de Privacidad de Naturaleza Sin Límites. Conoce cómo protegemos tus datos personales conforme al RGPD y la LOPDGDD."
         />
-        <link rel="canonical" href="https://naturalezasinlimites.com/privacidad" />
+        <link rel="canonical" href={absoluteUrl('/privacidad')} />
       </Helmet>
 
       <div className="min-h-screen bg-background">

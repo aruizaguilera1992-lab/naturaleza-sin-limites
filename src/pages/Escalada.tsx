@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mountain, MessageCircle } from 'lucide-react';
+import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -70,6 +71,12 @@ export default function Escalada() {
       exit="exit"
       variants={pageTransition}
     >
+      <Seo
+        title="Escalada en roca en Málaga y Andalucía | Naturaleza Sin Límites"
+        description="Escuelas de escalada en roca en Málaga y Andalucía con guía titulado. Filtra por nivel, tipo de escalada, duración y provincia."
+        path="/escalada"
+      />
+
       <Navbar />
       <motion.main
         initial={{ opacity: 0 }}

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -9,7 +10,6 @@ import { VSMethodologySection } from '@/components/vertigo-sapiens/VSMethodology
 import { VSComponentsSection } from '@/components/vertigo-sapiens/VSComponentsSection';
 import { VSPlansSection } from '@/components/vertigo-sapiens/VSPlansSection';
 import { VSCalendarSection } from '@/components/vertigo-sapiens/VSCalendarSection';
-import { VSTestimonialsSection } from '@/components/vertigo-sapiens/VSTestimonialsSection';
 import { VSFacilitiesSection } from '@/components/vertigo-sapiens/VSFacilitiesSection';
 import { VSTrainersSection } from '@/components/vertigo-sapiens/VSTrainersSection';
 import { VSEnrollmentSection } from '@/components/vertigo-sapiens/VSEnrollmentSection';
@@ -23,6 +23,11 @@ const VertigoSapiensPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Vértigo Sapiens | Entrenamiento de fuerza funcional en Málaga"
+        description="Programa de entrenamiento de fuerza funcional para escalada, barrancos y montaña. Planes mensuales, sesiones dirigidas y salidas outdoor."
+        path="/vertigo-sapiens"
+      />
       <Navbar />
       <main>
         <VSHeroSection />
@@ -31,7 +36,6 @@ const VertigoSapiensPage = () => {
         <VSComponentsSection />
         <VSPlansSection />
         <VSCalendarSection />
-        <VSTestimonialsSection />
         <VSFacilitiesSection />
         <VSTrainersSection />
         <VSEnrollmentSection />

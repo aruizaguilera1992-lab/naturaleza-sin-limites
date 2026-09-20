@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@/lib/site';
 import { useParams, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/Navbar';
@@ -36,7 +37,7 @@ export default function BlogPost() {
       name: 'Naturaleza Sin Límites',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://naturalezasinlimites.com/logo.png',
+        url: absoluteUrl('/favicon.png'),
       },
     },
     datePublished: post.publishedAt,
@@ -54,7 +55,7 @@ export default function BlogPost() {
         <meta property="og:description" content={post.seo.metaDescription} />
         <meta property="og:image" content={post.seo.ogImage} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://naturalezasinlimites.com/blog/${post.slug}`} />
+        <meta property="og:url" content={absoluteUrl(`/blog/${post.slug}`)} />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -70,7 +71,7 @@ export default function BlogPost() {
           <meta key={tag} property="article:tag" content={tag} />
         ))}
         
-        <link rel="canonical" href={`https://naturalezasinlimites.com/blog/${post.slug}`} />
+        <link rel="canonical" href={absoluteUrl(`/blog/${post.slug}`)} />
         
         {/* Structured Data */}
         <script type="application/ld+json">
