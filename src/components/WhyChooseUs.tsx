@@ -129,7 +129,7 @@ export function WhyChooseUs() {
           ))}
         </div>
 
-        {/* Testimonials Carousel */}
+        {/* Reseñas: solo publicaremos opiniones reales y verificables */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -137,76 +137,18 @@ export function WhyChooseUs() {
           transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto"
         >
-          <div className="relative bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-8 md:p-12">
-            {/* Quote Mark */}
-            <div className="absolute top-6 left-8 text-6xl text-primary/20 font-serif">"</div>
-
-            {/* Testimonial Content */}
-            <div className="relative z-10">
-              <div className="flex justify-center gap-1 mb-6">
-                {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-primary fill-primary" />
-                ))}
-              </div>
-
-              <motion.p
-                key={currentTestimonial}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-                className="text-lg md:text-xl text-foreground/90 text-center mb-6 leading-relaxed"
-              >
-                {testimonials[currentTestimonial].text}
-              </motion.p>
-
-              <motion.div
-                key={`author-${currentTestimonial}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-center"
-              >
-                <p className="font-heading font-semibold text-foreground">
-                  {testimonials[currentTestimonial].name}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {testimonials[currentTestimonial].role}
-                </p>
-              </motion.div>
-            </div>
-
-            {/* Navigation */}
-            <div className="flex justify-center gap-4 mt-8">
-              <button
-                onClick={() => setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
-                className="p-2 rounded-full bg-muted hover:bg-primary/20 transition-colors"
-                aria-label="Testimonio anterior"
-              >
-                <ChevronLeft className="h-5 w-5 text-foreground" />
-              </button>
-              <div className="flex items-center gap-2">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentTestimonial(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      index === currentTestimonial ? 'bg-primary w-6' : 'bg-muted-foreground/30'
-                    }`}
-                    aria-label={`Ver testimonio ${index + 1}`}
-                  />
-                ))}
-              </div>
-              <button
-                onClick={() => setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)}
-                className="p-2 rounded-full bg-muted hover:bg-primary/20 transition-colors"
-                aria-label="Siguiente testimonio"
-              >
-                <ChevronRight className="h-5 w-5 text-foreground" />
-              </button>
-            </div>
+          <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-8 md:p-12 text-center">
+            <h4 className="font-heading text-xl font-bold text-foreground mb-3">
+              ¿Ya has salido con nosotros?
+            </h4>
+            <p className="text-muted-foreground leading-relaxed">
+              Publicamos únicamente opiniones reales y verificables de personas que han hecho
+              alguna de nuestras actividades. Si quieres contar tu experiencia, escríbenos por
+              WhatsApp y la añadiremos con tu nombre y la actividad realizada.
+            </p>
           </div>
         </motion.div>
+
 
         {/* Trust Badges */}
         <motion.div
