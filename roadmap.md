@@ -61,6 +61,10 @@
 - [x] Testimonios ficticios retirados (portada y sección de Vértigo Sapiens)
 - [x] Aviso de modo de prueba de pagos oculto en el dominio público
 - [x] Desborde horizontal de la portada en móvil corregido
+- [x] Eliminado el archivo de testimonios ficticios de Vértigo Sapiens
+- [x] Etiquetas duplicadas quitadas de `index.html` (manda el componente `Seo` de cada página)
+- [x] Dirección canónica en `/cookies`; `/reservar/...` marcada `noindex, follow`
+- [x] Fichas de espeleología fuera del mapa del sitio (se mantiene `/espeleologia`)
 - [ ] Registro de turismo activo, aseguradora y póliza de RC (falta el dato real)
 - [ ] Identificador real de Google Analytics (`src/components/AnalyticsLoader.tsx`)
 - [ ] Decidir espeleología: precio y duración, o retirarla también del mapa del sitio
