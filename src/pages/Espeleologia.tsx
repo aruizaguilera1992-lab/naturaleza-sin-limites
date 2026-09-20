@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Clock, Users, MapPin, ShieldCheck, Backpack, Sparkles, MessageCircle, ChevronRight,
 } from 'lucide-react';
+import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -24,14 +25,6 @@ const whatsappUrl =
 const Espeleologia = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-    document.title = 'Espeleología en Málaga y Andalucía | Naturaleza Sin Límites';
-    const desc = document.querySelector('meta[name="description"]');
-    if (desc) {
-      desc.setAttribute(
-        'content',
-        'Espeleología guiada en Málaga y Andalucía: iniciación, progresión vertical y salidas de exploración con guía titulado, material incluido y grupos reducidos.'
-      );
-    }
   }, []);
 
   const actividades = espeleologiaPublicada();
@@ -39,6 +32,11 @@ const Espeleologia = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Espeleología en Málaga y Andalucía | Naturaleza Sin Límites"
+        description="Espeleología guiada en Málaga y Andalucía: iniciación, progresión vertical y salidas de exploración con guía titulado, material incluido y grupos reducidos."
+        path="/espeleologia"
+      />
       <Navbar />
 
       <main>

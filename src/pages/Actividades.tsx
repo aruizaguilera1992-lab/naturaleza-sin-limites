@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -199,6 +200,12 @@ const Actividades = () => {
       exit="exit"
       variants={pageTransition}
     >
+      <Seo
+        title="Todas las actividades de aventura en Málaga | Naturaleza Sin Límites"
+        description="Catálogo de barranquismo, escalada y vías ferratas en Málaga y Andalucía con precio, nivel, duración y reserva online."
+        path="/actividades"
+      />
+
       <Navbar />
       <motion.main
         initial={{ opacity: 0 }}
