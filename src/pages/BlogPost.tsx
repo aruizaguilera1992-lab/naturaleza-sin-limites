@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@/lib/site';
 import { useParams, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/Navbar';
