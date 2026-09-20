@@ -52,6 +52,22 @@
 - [ ] Publicar número de registro de turismo activo, número de póliza de RC y aseguradora (falta el dato real)
 - [ ] Confirmar precio y duración de las 3 propuestas de espeleología para devolverlas al catálogo
 
+## Auditoría pre-publicación (20/09/2026)
+- [x] Dominio .com corregido en blog, artículos, privacidad y términos (`absoluteUrl`)
+- [x] Correo del pie corregido a naturaleza.s.limites@gmail.com
+- [x] Componente `src/components/Seo.tsx` y metadatos propios en portada, actividades,
+      contacto, quiénes somos, vértigo sapiens, barranquismo, escalada, ferratas y espeleología
+- [x] 404 en español, con enlaces útiles y marcada como no indexable
+- [x] Testimonios ficticios retirados (portada y sección de Vértigo Sapiens)
+- [x] Aviso de modo de prueba de pagos oculto en el dominio público
+- [x] Desborde horizontal de la portada en móvil corregido
+- [ ] Registro de turismo activo, aseguradora y póliza de RC (falta el dato real)
+- [ ] Identificador real de Google Analytics (`src/components/AnalyticsLoader.tsx`)
+- [ ] Decidir espeleología: precio y duración, o retirarla también del mapa del sitio
+- [ ] Camino "no veo mi fecha" en ficha y reserva
+- Nota: las imágenes del almacén de recursos (`/__l5e/assets-v1/...`) no se sirven en el
+  servidor de desarrollo local; en la vista previa y en producción responden correctamente.
+
 ### Estado de Stripe (interno, no mostrar al cliente)
 - Modo actual: SANDBOX/test. Checkout embebido, señal del 30 % calculada en servidor,
   idempotencia por (solicitud, generación, importe, moneda, origen), `automatic_tax`
