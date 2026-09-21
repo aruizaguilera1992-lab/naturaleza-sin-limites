@@ -28,8 +28,11 @@ const toDateInput = (date: Date) =>
 export default function ReservarActividad() {
   const { category = "", slug = "" } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const activity = useMemo(() => getActivityProfile(category, slug), [category, slug]);
+  const { events, loading: eventsLoading } = useActivityEvents({ category, slug });
 
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [form, setForm] = useState({
     participants: 2,
     date: "",
@@ -42,7 +45,23 @@ export default function ReservarActividad() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const unitPrice = activity?.priceValue ?? 0;
+  const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null;
+
+  // Preselect the outing coming from the calendar link, once it is loaded.
+  const requestedEventId = searchParams.get("evento");
+  useEffect(() => {
+    if (!requestedEventId) return;
+    const match = events.find((event) => event.id === requestedEventId && !event.isFull);
+    if (match) setSelectedEventId(match.id);
+  }, [requestedEventId, events]);
+
+  // A chosen outing fixes the date; free dates keep the manual field.
+  useEffect(() => {
+    if (selectedEvent) setForm((prev) => ({ ...prev, date: toDateInput(selectedEvent.startDate) }));
+  }, [selectedEvent]);
+
+  const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
+  const unitPrice = selectedEvent?.pricePerPerson ?? activity?.priceValue ?? 0;
   const total = unitPrice * form.participants;
   const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
 
