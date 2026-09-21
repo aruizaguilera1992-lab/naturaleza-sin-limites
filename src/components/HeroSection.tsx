@@ -103,8 +103,8 @@ export function HeroSection() {
         }} transition={{
           delay: 0.7,
           duration: 0.6
-        }} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="hero" size="xl" className="group" onClick={() => {
+          }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center w-full">
+            <Button variant="hero" size="xl" className="group w-full sm:w-auto" onClick={() => {
             document.getElementById('actividades')?.scrollIntoView({
               behavior: 'smooth'
             });
@@ -112,7 +112,7 @@ export function HeroSection() {
               <Mountain className="h-5 w-5 mr-2" />
               ¡Reserva tu Aventura!
             </Button>
-            <Button variant="heroOutline" size="xl" onClick={() => {
+            <Button variant="heroOutline" size="xl" className="w-full sm:w-auto" onClick={() => {
             window.location.href = '/vertigo-sapiens';
           }}>
               <Users className="h-5 w-5 mr-2" />
