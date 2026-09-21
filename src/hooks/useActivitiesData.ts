@@ -121,7 +121,7 @@ export function useActivitiesData() {
         name: b.nombre,
         activityType: 'barranquismo',
         province: b.provincia,
-        zone: b.provincia,
+        zone: b.poblacion,
         level: b.nivel,
         levelLabel: levelInfo.label,
         levelOrder: levelInfo.order,
