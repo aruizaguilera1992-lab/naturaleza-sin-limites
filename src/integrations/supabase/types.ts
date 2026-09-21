@@ -67,7 +67,10 @@ export type Database = {
           capacity_total: number
           category: string
           created_at: string
+          created_by: string | null
           ends_at: string | null
+          event_type: string
+          guide_name: string | null
           id: string
           latitude: number | null
           longitude: number | null
@@ -86,7 +89,10 @@ export type Database = {
           capacity_total?: number
           category: string
           created_at?: string
+          created_by?: string | null
           ends_at?: string | null
+          event_type?: string
+          guide_name?: string | null
           id?: string
           latitude?: number | null
           longitude?: number | null
@@ -105,7 +111,10 @@ export type Database = {
           capacity_total?: number
           category?: string
           created_at?: string
+          created_by?: string | null
           ends_at?: string | null
+          event_type?: string
+          guide_name?: string | null
           id?: string
           latitude?: number | null
           longitude?: number | null
@@ -582,6 +591,10 @@ export type Database = {
       }
       record_checkout_session: {
         Args: { _generation: number; _session_id: string; _token: string }
+        Returns: Json
+      }
+      release_event_seats: {
+        Args: { _booking_id: string; _reason?: string }
         Returns: Json
       }
       release_expired_event_holds: { Args: never; Returns: number }
