@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AlertTriangle, Mountain, ShieldCheck, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getActivityProfile, PENDING } from "@/data/activityProfiles";
 import { TrustBar } from "@/components/TrustBar";
+import { ActivityEventPicker } from "@/components/actividades/ActivityEventPicker";
+import { useActivityEvents } from "@/hooks/useActivityEvents";
 
 
 const DEPOSIT_RATE = 0.3;
@@ -20,6 +22,8 @@ const phoneRegex = /^[+]?[\d\s()./-]{9,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const euros = (value: number) =>
   new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(value);
+const toDateInput = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
 export default function ReservarActividad() {
   const { category = "", slug = "" } = useParams();
