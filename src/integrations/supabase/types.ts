@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_event_bookings: {
+        Row: {
+          booking_id: string
+          created_at: string
+          event_id: string
+          hold_expires_at: string | null
+          id: string
+          participants: number
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          event_id: string
+          hold_expires_at?: string | null
+          id?: string
+          participants: number
+          state?: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          event_id?: string
+          hold_expires_at?: string | null
+          id?: string
+          participants?: number
+          state?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_event_bookings_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_event_bookings_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "activity_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      activity_events: {
+        Row: {
+          capacity_total: number
+          category: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          meeting_point_private: string | null
+          meeting_point_public: string | null
+          notes: string | null
+          price_cents: number | null
+          seats_reserved: number
+          slug: string
+          starts_at: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          capacity_total?: number
+          category: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          meeting_point_private?: string | null
+          meeting_point_public?: string | null
+          notes?: string | null
+          price_cents?: number | null
+          seats_reserved?: number
+          slug: string
+          starts_at: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          capacity_total?: number
+          category?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          meeting_point_private?: string | null
+          meeting_point_public?: string | null
+          notes?: string | null
+          price_cents?: number | null
+          seats_reserved?: number
+          slug?: string
+          starts_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           activity: string
@@ -21,6 +129,7 @@ export type Database = {
           contact: string
           created_at: string
           email: string | null
+          event_id: string | null
           experience_level: string | null
           id: string
           message: string | null
@@ -42,6 +151,7 @@ export type Database = {
           contact: string
           created_at?: string
           email?: string | null
+          event_id?: string | null
           experience_level?: string | null
           id?: string
           message?: string | null
@@ -63,6 +173,7 @@ export type Database = {
           contact?: string
           created_at?: string
           email?: string | null
+          event_id?: string | null
           experience_level?: string | null
           id?: string
           message?: string | null
@@ -78,7 +189,15 @@ export type Database = {
           status?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bookings_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "activity_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       contact_submissions: {
         Row: {
