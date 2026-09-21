@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { EventCard } from "@/components/calendario/EventCard";
 import { EventMap } from "@/components/calendario/EventMap";
 import { useActivityEvents, type ActivityEvent } from "@/hooks/useActivityEvents";
-import { SITE_URL } from "@/lib/site";
 
 type ViewMode = "lista" | "mes";
 
@@ -44,7 +43,7 @@ export default function Calendario() {
       <Seo
         title="Calendario de salidas | Naturaleza Sin Límites"
         description="Próximas salidas guiadas de barranquismo, escalada y vías ferratas en Málaga y Andalucía, con plazas reales y grupos reducidos."
-        canonical={`${SITE_URL}/calendario`}
+        path="/calendario"
       />
       <Navbar />
 
