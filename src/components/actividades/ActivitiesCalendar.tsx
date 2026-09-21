@@ -1,78 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { EventCard } from '@/components/calendario/EventCard';
+import { useActivityEvents } from '@/hooks/useActivityEvents';
 
-interface ScheduledActivity {
-  id: string;
-  date: Date;
-  type: 'barranquismo' | 'escalada' | 'ferratas' | 'espeleologia';
-  title: string;
-  time: string;
-  location: string;
-  spotsAvailable: number;
-  price: string;
-}
-
-const activityIcons: Record<string, { emoji: string; color: string }> = {
-  barranquismo: { emoji: '🌊', color: 'bg-cyan-500' },
-  escalada: { emoji: '🧗', color: 'bg-emerald-500' },
-  ferratas: { emoji: '🪜', color: 'bg-purple-500' },
-  espeleologia: { emoji: '🕯️', color: 'bg-amber-500' },
-};
-
-// Sample scheduled activities
-const generateSampleActivities = (): ScheduledActivity[] => {
-  const activities: ScheduledActivity[] = [];
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
-  
-  // Generate some sample activities for the current and next month
-  const sampleData = [
-    { day: 1, type: 'barranquismo' as const, title: 'Río Verde', time: '09:00', location: 'Granada', spots: 4, price: '55€' },
-    { day: 8, type: 'escalada' as const, title: 'El Chorro - Frontales', time: '09:00', location: 'Málaga', spots: 2, price: '49€' },
-    { day: 15, type: 'barranquismo' as const, title: 'Río Guadalmina', time: '10:00', location: 'Málaga', spots: 5, price: '50€' },
-    { day: 15, type: 'ferratas' as const, title: 'Caminito del Rey', time: '08:00', location: 'Málaga', spots: 6, price: '50€' },
-    { day: 22, type: 'escalada' as const, title: 'Torcal de Antequera', time: '10:00', location: 'Málaga', spots: 3, price: '45€' },
-    { day: 29, type: 'barranquismo' as const, title: 'Río Chillar', time: '09:00', location: 'Málaga', spots: 6, price: '45€' },
-  ];
-  
-  sampleData.forEach((item, index) => {
-    const date = new Date(currentYear, currentMonth, item.day);
-    if (date >= now) {
-      activities.push({
-        id: `activity-${index}`,
-        date,
-        type: item.type,
-        title: item.title,
-        time: item.time,
-        location: item.location,
-        spotsAvailable: item.spots,
-        price: item.price,
-      });
-    }
-  });
-  
-  // Add some for next month
-  sampleData.slice(0, 5).forEach((item, index) => {
-    const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
-    const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
-    activities.push({
-      id: `activity-next-${index}`,
-      date: new Date(nextYear, nextMonth, item.day + 7),
-      type: item.type,
-      title: item.title,
-      time: item.time,
-      location: item.location,
-      spotsAvailable: item.spots,
-      price: item.price,
-    });
-  });
-  
-  return activities;
+const categoryDot: Record<string, string> = {
+  barranquismo: 'bg-cyan-500',
+  escalada: 'bg-emerald-500',
+  'vias-ferratas': 'bg-purple-500',
 };
 
 const WEEKDAYS = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
@@ -81,64 +19,49 @@ const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 
 export function ActivitiesCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  
-  const activities = useMemo(() => generateSampleActivities(), []);
-  
+  const { events, loading, error } = useActivityEvents();
+
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
-  
-  // Get days in month
+
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  // Adjust for Monday start (0 = Monday, 6 = Sunday)
   const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
-  
+
   const calendarDays = useMemo(() => {
     const days: (number | null)[] = [];
-    
-    // Add empty cells for days before the first of the month
-    for (let i = 0; i < adjustedFirstDay; i++) {
-      days.push(null);
-    }
-    
-    // Add the days of the month
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(i);
-    }
-    
+    for (let i = 0; i < adjustedFirstDay; i++) days.push(null);
+    for (let i = 1; i <= daysInMonth; i++) days.push(i);
     return days;
   }, [daysInMonth, adjustedFirstDay]);
-  
-  const getActivitiesForDay = (day: number) => {
-    return activities.filter(a => 
-      a.date.getDate() === day && 
-      a.date.getMonth() === currentMonth && 
-      a.date.getFullYear() === currentYear
+
+  const getEventsForDay = (day: number) =>
+    events.filter(
+      (event) =>
+        event.startDate.getDate() === day &&
+        event.startDate.getMonth() === currentMonth &&
+        event.startDate.getFullYear() === currentYear,
     );
-  };
-  
-  const selectedActivities = selectedDate 
-    ? activities.filter(a => 
-        a.date.getDate() === selectedDate.getDate() && 
-        a.date.getMonth() === selectedDate.getMonth() && 
-        a.date.getFullYear() === selectedDate.getFullYear()
+
+  const selectedEvents = selectedDate
+    ? events.filter(
+        (event) =>
+          event.startDate.getDate() === selectedDate.getDate() &&
+          event.startDate.getMonth() === selectedDate.getMonth() &&
+          event.startDate.getFullYear() === selectedDate.getFullYear(),
       )
     : [];
-  
+
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
     setSelectedDate(null);
   };
-  
+
   const goToNextMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
     setSelectedDate(null);
   };
-  
-  const handleDayClick = (day: number) => {
-    setSelectedDate(new Date(currentYear, currentMonth, day));
-  };
-  
+
   return (
     <div className="max-w-5xl mx-auto">
       <motion.div
@@ -146,79 +69,74 @@ export function ActivitiesCalendar() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-card border border-border rounded-2xl overflow-hidden"
       >
-        {/* Calendar Header */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border">
-          <Button variant="ghost" size="icon" onClick={goToPreviousMonth}>
+          <Button variant="ghost" size="icon" onClick={goToPreviousMonth} aria-label="Mes anterior">
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <h2 className="text-lg sm:text-xl font-heading font-bold text-foreground">
             {MONTHS[currentMonth]} {currentYear}
           </h2>
-          <Button variant="ghost" size="icon" onClick={goToNextMonth}>
+          <Button variant="ghost" size="icon" onClick={goToNextMonth} aria-label="Mes siguiente">
             <ChevronRight className="h-5 w-5" />
           </Button>
         </div>
-        
-        {/* Calendar Grid */}
+
         <div className="p-2 sm:p-4">
-          {/* Weekday Headers */}
           <div className="grid grid-cols-7 gap-1 mb-2">
             {WEEKDAYS.map((day) => (
-              <div 
-                key={day} 
-                className="text-center text-xs font-medium text-muted-foreground py-2"
-              >
+              <div key={day} className="text-center text-xs font-medium text-muted-foreground py-2">
                 {day}
               </div>
             ))}
           </div>
-          
-          {/* Days Grid */}
+
           <div className="grid grid-cols-7 gap-1">
             {calendarDays.map((day, index) => {
-              if (day === null) {
-                return <div key={`empty-${index}`} className="aspect-square" />;
-              }
-              
-              const dayActivities = getActivitiesForDay(day);
-              const isSelected = selectedDate?.getDate() === day && 
-                selectedDate?.getMonth() === currentMonth && 
+              if (day === null) return <div key={`empty-${index}`} className="aspect-square" />;
+
+              const dayEvents = getEventsForDay(day);
+              const isSelected =
+                selectedDate?.getDate() === day &&
+                selectedDate?.getMonth() === currentMonth &&
                 selectedDate?.getFullYear() === currentYear;
-              const isToday = new Date().getDate() === day && 
-                new Date().getMonth() === currentMonth && 
-                new Date().getFullYear() === currentYear;
-              
+              const today = new Date();
+              const isToday =
+                today.getDate() === day &&
+                today.getMonth() === currentMonth &&
+                today.getFullYear() === currentYear;
+
               return (
                 <motion.button
                   key={day}
-                  onClick={() => handleDayClick(day)}
+                  onClick={() => setSelectedDate(new Date(currentYear, currentMonth, day))}
                   className={cn(
-                    "aspect-square p-1 rounded-lg flex flex-col items-center justify-start relative transition-colors",
-                    isSelected && "bg-primary/10 ring-2 ring-primary",
-                    isToday && !isSelected && "bg-muted",
-                    !isSelected && !isToday && "hover:bg-muted/50"
+                    'aspect-square p-1 rounded-lg flex flex-col items-center justify-start relative transition-colors',
+                    isSelected && 'bg-primary/10 ring-2 ring-primary',
+                    isToday && !isSelected && 'bg-muted',
+                    !isSelected && !isToday && 'hover:bg-muted/50',
                   )}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <span className={cn(
-                    "text-xs sm:text-sm font-medium",
-                    isSelected ? "text-primary" : "text-foreground"
-                  )}>
+                  <span
+                    className={cn(
+                      'text-xs sm:text-sm font-medium',
+                      isSelected ? 'text-primary' : 'text-foreground',
+                    )}
+                  >
                     {day}
                   </span>
-                  
-                  {/* Activity indicators */}
-                  {dayActivities.length > 0 && (
-                    <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center">
-                      {dayActivities.slice(0, 3).map((activity, i) => (
-                        <span 
-                          key={i} 
-                          className="text-xs"
-                          title={activity.title}
-                        >
-                          {activityIcons[activity.type]?.emoji}
-                        </span>
+                  {dayEvents.length > 0 && (
+                    <div className="flex gap-0.5 mt-1 flex-wrap justify-center">
+                      {dayEvents.slice(0, 3).map((event) => (
+                        <span
+                          key={event.id}
+                          className={cn(
+                            'h-1.5 w-1.5 rounded-full',
+                            categoryDot[event.category] ?? 'bg-primary',
+                          )}
+                          title={event.title}
+                        />
                       ))}
                     </div>
                   )}
@@ -227,94 +145,71 @@ export function ActivitiesCalendar() {
             })}
           </div>
         </div>
-        
-        {/* Legend */}
+
         <div className="px-4 sm:px-6 pb-4 flex flex-wrap gap-3 sm:gap-4 justify-center text-xs sm:text-sm text-muted-foreground border-t border-border pt-4">
-          <span className="flex items-center gap-1">🌊 Barranquismo</span>
-          <span className="flex items-center gap-1">🧗 Escalada</span>
-          <span className="flex items-center gap-1">🪜 Ferratas</span>
-          <span className="flex items-center gap-1">🕯️ Espeleología</span>
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas
+          </span>
         </div>
       </motion.div>
-      
-      {/* Selected Day Activities */}
-      {selectedDate && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6"
-        >
-          <h3 className="text-lg font-heading font-bold text-foreground mb-4">
-            {selectedDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
-            {selectedActivities.length > 0 && (
-              <span className="text-muted-foreground font-normal ml-2">
-                - {selectedActivities.length} salida{selectedActivities.length > 1 ? 's' : ''} programada{selectedActivities.length > 1 ? 's' : ''}
-              </span>
-            )}
-          </h3>
-          
-          {selectedActivities.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              No hay salidas programadas para este día
+
+      <div className="mt-6">
+        {loading && <p className="text-muted-foreground text-center py-4">Cargando salidas…</p>}
+        {error && <p className="text-destructive text-center py-4">{error}</p>}
+
+        {!loading && !error && events.length === 0 && (
+          <div className="rounded-xl border border-border bg-card p-6 text-center">
+            <p className="text-foreground">Todavía no hay salidas publicadas.</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Elige cualquier experiencia del catálogo y proponnos tu fecha.
             </p>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {selectedActivities.map((activity) => {
-                const whatsappMessage = encodeURIComponent(
-                  `¡Hola! Me interesa la salida de ${activity.title} el ${selectedDate.toLocaleDateString('es-ES')} a las ${activity.time}. ¿Quedan plazas disponibles?`
-                );
-                const whatsappUrl = `https://wa.me/34685609542?text=${whatsappMessage}`;
-                
-                return (
-                  <div
-                    key={activity.id}
-                    className="bg-card border border-border rounded-xl p-4 flex items-start gap-4"
-                  >
-                    <div className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0",
-                      activityIcons[activity.type]?.color + '/20'
-                    )}>
-                      {activityIcons[activity.type]?.emoji}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-heading font-bold text-foreground">
-                        {activity.title}
-                      </h4>
-                      
-                      <div className="flex flex-wrap gap-2 mt-2 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {activity.time}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {activity.location}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Users className="h-3 w-3" />
-                          {activity.spotsAvailable} plazas libres
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center justify-between mt-3">
-                        <Badge className="bg-primary text-primary-foreground">
-                          {activity.price}
-                        </Badge>
-                        <Button variant="hero" size="sm" asChild>
-                          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                            Reservar
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                );
+          </div>
+        )}
+
+        {selectedDate && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <h3 className="text-lg font-heading font-bold text-foreground mb-4">
+              {selectedDate.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
               })}
-            </div>
-          )}
-        </motion.div>
-      )}
+              {selectedEvents.length > 0 && (
+                <span className="text-muted-foreground font-normal ml-2">
+                  - {selectedEvents.length} salida{selectedEvents.length > 1 ? 's' : ''} programada
+                  {selectedEvents.length > 1 ? 's' : ''}
+                </span>
+              )}
+            </h3>
+
+            {selectedEvents.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">
+                No hay salidas programadas para este día
+              </p>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {selectedEvents.map((event) => (
+                  <EventCard key={event.id} event={event} showDate={false} />
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {events.length > 0 && (
+          <div className="mt-6 text-center">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/calendario">Ver todas las salidas</Link>
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
