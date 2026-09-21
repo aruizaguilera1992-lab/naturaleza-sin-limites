@@ -171,6 +171,17 @@ export default function ReservarActividad() {
 
       <div className="rounded-xl border border-border bg-card p-6">
         <h2 className="mb-4 font-heading text-lg font-bold">Tu reserva</h2>
+
+        <div className="mb-5">
+          <Label className="mb-2 block">Salidas programadas</Label>
+          <ActivityEventPicker
+            events={events}
+            loading={eventsLoading}
+            selectedId={selectedEventId}
+            onSelect={setSelectedEventId}
+          />
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="date">Fecha deseada</Label>
@@ -179,8 +190,14 @@ export default function ReservarActividad() {
               type="date"
               className="mt-1 text-foreground"
               value={form.date}
+              disabled={Boolean(selectedEvent)}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
             />
+            {selectedEvent && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Fecha fijada por la salida programada que has elegido.
+              </p>
+            )}
           </div>
           <div>
             <Label htmlFor="participants">Participantes</Label>
@@ -188,16 +205,21 @@ export default function ReservarActividad() {
               id="participants"
               type="number"
               min={1}
-              max={MAX_PEOPLE}
+              max={maxPeople}
               className="mt-1 text-foreground"
               value={form.participants}
               onChange={(e) =>
                 setForm({
                   ...form,
-                  participants: Math.min(MAX_PEOPLE, Math.max(1, Number(e.target.value) || 1)),
+                  participants: Math.min(maxPeople, Math.max(1, Number(e.target.value) || 1)),
                 })
               }
             />
+            <p className="mt-1 text-xs text-muted-foreground">
+              {selectedEvent
+                ? `Quedan ${selectedEvent.freeSeats} plaza(s) en esta salida.`
+                : null}
+            </p>
             <p className="mt-1 text-xs text-muted-foreground">
               Para grupos de más de {MAX_PEOPLE} personas,{" "}
               <Link to="/contacto" className="text-primary underline">
