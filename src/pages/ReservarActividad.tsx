@@ -102,6 +102,8 @@ export default function ReservarActividad() {
     if (!form.date) return setError("Elige una fecha para la actividad.");
     if (new Date(form.date) < new Date(new Date().toDateString()))
       return setError("La fecha debe ser futura.");
+    if (selectedEvent && form.participants > selectedEvent.freeSeats)
+      return setError(`Esa salida solo tiene ${selectedEvent.freeSeats} plaza(s) libres.`);
     if (form.name.trim().length < 2) return setError("Escribe tu nombre completo.");
     if (!emailRegex.test(form.email.trim())) return setError("Revisa tu email.");
     if (!phoneRegex.test(form.phone.trim())) return setError("Revisa tu teléfono.");
@@ -115,6 +117,7 @@ export default function ReservarActividad() {
         slug,
         participants: form.participants,
         preferredDate: form.date,
+        eventId: selectedEventId,
         name: form.name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
@@ -128,7 +131,9 @@ export default function ReservarActividad() {
     setSubmitting(false);
     if (fnError || !data?.token) {
       setError(
-        "No hemos podido preparar el pago ahora mismo. Inténtalo en unos minutos o escríbenos por WhatsApp.",
+        selectedEventId
+          ? "No hemos podido bloquear la plaza en esa salida. Puede que acaben de ocuparse: prueba con otra fecha."
+          : "No hemos podido preparar el pago ahora mismo. Inténtalo en unos minutos o escríbenos por WhatsApp.",
       );
       return;
     }
