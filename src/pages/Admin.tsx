@@ -307,7 +307,9 @@ export default function Admin() {
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [planOrders, setPlanOrders] = useState<PlanOrder[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
-  const [tab, setTab] = useState<"bookings" | "contacts" | "plans" | "notifications">("bookings");
+  const [tab, setTab] = useState<
+    "bookings" | "contacts" | "plans" | "notifications" | "events"
+  >("bookings");
 
   const loadData = useCallback(async () => {
     const [b, c, p, n, o] = await Promise.all([
@@ -481,7 +483,7 @@ export default function Admin() {
           </div>
         </div>
 
-        <div className="flex gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-6">
           <Button
             variant={tab === "bookings" ? "default" : "outline"}
             size="sm"
@@ -504,6 +506,13 @@ export default function Admin() {
             Altas y planes ({planOrders.length})
           </Button>
           <Button
+            variant={tab === "events" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setTab("events")}
+          >
+            Salidas
+          </Button>
+          <Button
             variant={tab === "notifications" ? "default" : "outline"}
             size="sm"
             onClick={() => setTab("notifications")}
@@ -513,6 +522,7 @@ export default function Admin() {
         </div>
 
         <div className="space-y-4">
+          {tab === "events" && <EventsPanel />}
           {tab === "bookings" &&
             (bookings.length === 0 ? (
               <p className="text-muted-foreground">Todavía no hay reservas.</p>
