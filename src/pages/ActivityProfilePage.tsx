@@ -12,6 +12,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { getActivityProfile, getRelatedProfiles } from '@/data/activityProfiles';
 import { TrustBar } from '@/components/TrustBar';
 import { SITE_URL } from '@/lib/site';
+import { MobileBookingBar } from '@/components/actividades/MobileBookingBar';
 
 
 function shorten(value: string, max: number) {
@@ -70,9 +71,9 @@ export default function ActivityProfilePage() {
     { icon: CalendarDays, label: 'Precio desde', value: activity.price },
     { icon: Clock, label: 'Duración', value: activity.totalDuration },
     { icon: Mountain, label: 'Dificultad', value: activity.technicalLevel },
-    { icon: Users, label: 'Edad mínima', value: activity.minimumAge },
+    { icon: Users, label: 'Grupo', value: 'Máx. 6 personas' },
     { icon: MapPin, label: 'Ubicación', value: `${activity.zone}, ${activity.province}` },
-    { icon: CalendarDays, label: 'Temporada', value: activity.season },
+    { icon: CalendarDays, label: 'Modalidad', value: 'Salida bajo petición' },
   ];
   const technicalRows = ([
     ['Nombre comercial', activity.name], ['Tipo de actividad', activity.type], ['Ubicación', `${activity.zone}, ${activity.province}`],
@@ -86,7 +87,7 @@ export default function ActivityProfilePage() {
 
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background pb-20 text-foreground lg:pb-0">
       <Helmet>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
@@ -100,14 +101,15 @@ export default function ActivityProfilePage() {
       </Helmet>
       <Navbar />
       <main>
-        <section className="relative flex min-h-[620px] items-end overflow-hidden pt-44 sm:pt-48 lg:min-h-[70vh] lg:pt-40">
+        <section className="relative flex min-h-[620px] items-end overflow-hidden pt-44 sm:pt-48 lg:min-h-[72vh] lg:pt-40">
           <img src={activity.image} alt={activity.imageAlt} fetchPriority="high" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/25" />
-          <div className="container relative z-10 mx-auto px-4 pb-12 sm:pb-16">
+          <div className="container relative z-10 mx-auto px-4 pb-10 sm:pb-14">
             <Link to="/actividades" className="mb-6 inline-flex min-h-11 items-center gap-2 text-sm text-foreground/80 hover:text-primary"><ArrowLeft className="h-4 w-4" /> Volver al catálogo</Link>
             <Badge className="mb-4 border-primary/40 bg-primary/15 text-primary">{activity.categoryLabel}</Badge>
             <h1 className="max-w-4xl text-3xl font-heading font-extrabold leading-tight sm:text-5xl lg:text-6xl [overflow-wrap:anywhere]">{activity.name} en {activity.zone}</h1>
             <p className="mt-4 max-w-2xl text-base text-foreground/85 sm:text-xl">Una experiencia guiada para conocer {activity.zone} con un recorrido adaptado al nivel y a las condiciones del día.</p>
+            {activity.priceValue && <div className="mt-7 flex flex-col gap-4 border-l-2 border-primary pl-4 sm:flex-row sm:items-center sm:gap-6"><div><p className="text-xs uppercase text-foreground/70">Desde</p><p className="text-3xl font-extrabold text-primary">{activity.price} <span className="text-sm text-foreground/70">/ persona</span></p></div><Button variant="hero" size="default" className="min-h-12 self-start" asChild><Link to={`/reservar/${activity.category}/${activity.slug}`}>Reservar y pagar señal</Link></Button></div>}
           </div>
         </section>
 
@@ -156,7 +158,8 @@ export default function ActivityProfilePage() {
           <aside className="min-w-0 lg:sticky lg:top-32 lg:self-start">
             <div className="rounded-lg border border-border bg-card p-5 shadow-card">
               <p className="text-sm text-muted-foreground">Desde</p><p className="mt-1 text-3xl font-bold text-primary">{activity.price}</p>
-              <p className="mt-3 text-sm text-muted-foreground">Confirma precio final, servicios y requisitos antes de reservar.</p>
+               <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground"><CalendarDays className="h-4 w-4 text-primary" /> Salidas bajo petición</p>
+               <p className="mt-2 text-sm text-muted-foreground">Confirma fecha, servicios y requisitos antes de reservar.</p>
               <div className="mt-6 space-y-3">
                 {activity.priceValue ? (
                   <>
@@ -176,7 +179,8 @@ export default function ActivityProfilePage() {
         </div>
       </main>
       <Footer />
-      <WhatsAppButton />
+      {activity.priceValue && <MobileBookingBar price={activity.price} category={activity.category} slug={activity.slug} />}
+      <div className="hidden lg:block"><WhatsAppButton /></div>
       <ScrollToTop />
     </div>
   );

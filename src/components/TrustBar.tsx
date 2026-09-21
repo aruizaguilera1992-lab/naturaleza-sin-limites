@@ -12,13 +12,13 @@ import { cn } from '@/lib/utils';
 export const trustItems = [
   {
     icon: Award,
-    title: 'Guía con titulación TD2',
-    description: 'Técnico deportivo con formación específica en progresión vertical.',
+    title: 'Guía TD2',
+    description: 'Formación técnica en progresión vertical.',
   },
   {
     icon: Users,
-    title: 'Grupos de máximo 6 personas',
-    description: 'Atención personalizada y margen real para adaptar el ritmo.',
+    title: 'Máx. 6 personas',
+    description: 'Ritmo adaptado y atención directa.',
   },
   {
     icon: Wrench,
@@ -27,8 +27,8 @@ export const trustItems = [
   },
   {
     icon: ShieldCheck,
-    title: 'Seguro de accidentes y RC',
-    description: 'Cobertura de accidentes y responsabilidad civil en la actividad.',
+    title: 'Seguro accidentes + RC',
+    description: 'Cobertura incluida durante la actividad.',
   },
 ];
 
@@ -55,17 +55,17 @@ export function TrustBar({ className, variant = 'section' }: TrustBarProps) {
   return (
     <section
       aria-label="Garantías de seguridad"
-      className={cn('border-y border-border bg-card/60', className)}
+      className={cn('border-y border-border bg-secondary/40', className)}
     >
-      <div className="container mx-auto grid grid-cols-1 gap-6 px-4 py-8 sm:grid-cols-2 lg:grid-cols-4 lg:py-10">
+      <div className="container mx-auto grid grid-cols-2 gap-px bg-border lg:grid-cols-4">
         {trustItems.map(({ icon: Icon, title, description }) => (
-          <div key={title} className="flex items-start gap-3">
-            <div className="rounded-lg bg-primary/10 p-2">
+          <div key={title} className="flex items-start gap-3 bg-secondary px-4 py-5 sm:px-6 lg:py-6">
+            <div className="rounded-md border border-primary/20 bg-primary/10 p-2">
               <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <p className="font-heading text-sm font-bold text-foreground">{title}</p>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">{description}</p>
+              <p className="font-heading text-xs font-bold uppercase text-foreground sm:text-sm">{title}</p>
+              <p className="mt-1 hidden text-xs leading-5 text-muted-foreground sm:block">{description}</p>
             </div>
           </div>
         ))}

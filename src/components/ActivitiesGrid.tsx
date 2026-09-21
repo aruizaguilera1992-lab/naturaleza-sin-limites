@@ -1,164 +1,71 @@
 import { motion } from 'framer-motion';
+import { ArrowRight, Clock, MapPin, Mountain, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { media } from '@/data/media';
+import { activityProfiles } from '@/data/activityProfiles';
 
-interface HomeActivity {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  price: number | null;
-  priceLabel?: string;
-  image: { src: string; alt: string };
-  cta: string;
-  link: string;
-}
-
-const activities: HomeActivity[] = [
-  {
-    id: 'barranquismo',
-    title: 'Barranquismo',
-    subtitle: 'Descensos de Vértigo',
-    description: 'Experiencia completa: rapel, saltos, toboganes naturales. Aventura segura adaptada a todos los niveles.',
-    price: 55,
-    image: media.canyoning,
-    cta: 'Ver Barrancos',
-    link: '/barranquismo',
-  },
-  {
-    id: 'escalada',
-    title: 'Escalada',
-    subtitle: 'Conquista la Vertical',
-    description: 'Vías deportivas y clásicas en las mejores escuelas de Málaga. Salidas dirigidas cada fin de semana.',
-    price: 49,
-    image: media.climbing,
-    cta: 'Ver Escuelas',
-    link: '/escalada',
-  },
-  {
-    id: 'vias-ferratas',
-    title: 'Vías Ferratas',
-    subtitle: 'Adrenalina en las Alturas',
-    description: 'Rutas equipadas con cables y clavijas. Vive la sensación de la pared con máxima seguridad.',
-    price: 50,
-    image: media.ferrata,
-    cta: 'Ver Ferratas',
-    link: '/vias-ferratas',
-  },
-  {
-    id: 'espeleologia',
-    title: 'Espeleología',
-    subtitle: 'El Mundo Subterráneo',
-    description: 'Exploración guiada de cavidades y galerías: iniciación, progresión vertical y salidas de exploración.',
-    price: null,
-    priceLabel: 'Consultar',
-    image: media.espeleologiaGrupo,
-    cta: 'Ver actividad',
-    link: '/espeleologia',
-  },
+const featuredKeys = [
+  'barranquismo/guadalmina',
+  'escalada/chorro-frontales',
+  'vias-ferratas/ferrata-el-chorro',
+  'barranquismo/jorox',
 ];
+
+const featured = featuredKeys.flatMap((key) => {
+  const [category, slug] = key.split('/');
+  const match = activityProfiles.find((item) => item.category === category && item.slug === slug && item.priceValue);
+  return match ? [match] : [];
+});
 
 export function ActivitiesGrid() {
   return (
-    <section id="actividades" className="py-24 bg-background">
+    <section id="actividades" className="bg-background py-16 sm:py-24">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className="text-primary text-sm font-semibold uppercase tracking-widest mb-4 block">
-            Nuestras Actividades
-          </span>
-          <h2 className="text-section font-heading mb-4">
-            Vive la <span className="text-gradient">Aventura</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Experiencias únicas en los mejores escenarios naturales de Málaga y Andalucía
-          </p>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div className="max-w-2xl">
+            <span className="mb-3 block text-sm font-bold uppercase text-primary">Experiencias destacadas</span>
+            <h2 className="text-3xl font-extrabold sm:text-5xl">Elige tu próxima aventura</h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">Compara nivel, duración y precio antes de elegir. Todas las salidas se confirman según el perfil del grupo y las condiciones.</p>
+          </div>
+          <Button variant="outline" size="default" className="self-start md:self-auto" asChild><Link to="/actividades">Ver catálogo completo <ArrowRight /></Link></Button>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {activities.map((activity, index) => (
-            <motion.div
-              key={activity.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative overflow-hidden rounded-2xl aspect-[3/4] cursor-pointer"
-            >
-              {/* Background Image */}
-              <div className="absolute inset-0">
-                <img
-                  src={activity.image.src}
-                  alt={activity.image.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="card-overlay group-hover:card-overlay-hover transition-all duration-500" />
-              </div>
-
-              {/* Content */}
-              <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                {/* Price Tag */}
-                <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
-                  {activity.price !== null ? `Desde ${activity.price}€` : activity.priceLabel}
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {featured.map((activity, index) => (
+            <motion.article key={activity.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.06 }} className="group flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-card">
+              <Link to={`/actividades/${activity.category}/${activity.slug}`} className="relative block aspect-[4/3] overflow-hidden">
+                <img src={activity.image} alt={activity.imageAlt} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-transparent to-transparent" />
+                <span className="absolute bottom-3 left-3 text-xs font-bold uppercase text-foreground">{activity.categoryLabel}</span>
+                <span className="absolute right-3 top-3 rounded-md bg-background/90 px-2.5 py-1 text-xs font-bold text-primary backdrop-blur">Máx. 6</span>
+              </Link>
+              <div className="flex flex-1 flex-col p-4">
+                <p className="flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="h-3.5 w-3.5 text-primary" />{activity.zone}, {activity.province}</p>
+                <h3 className="mt-2 min-h-[3rem] text-lg font-bold leading-6 [overflow-wrap:anywhere]">{activity.name}</h3>
+                <div className="mt-3 grid grid-cols-2 gap-2 border-y border-border py-3 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5"><Mountain className="h-3.5 w-3.5 text-primary" />{activity.technicalLevel}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-primary" />{activity.totalDuration}</span>
                 </div>
-
-                {/* Title */}
-                <div className="transform transition-transform duration-500 group-hover:translate-y-[-10px]">
-                  <h3 className="text-2xl font-heading text-foreground mb-1">{activity.title}</h3>
-                  <p className="text-primary font-medium mb-3">{activity.subtitle}</p>
-                  
-                  {/* Description - Hidden by default, shows on hover */}
-                  <p className="text-foreground/80 text-sm mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 line-clamp-3">
-                    {activity.description}
-                  </p>
-
-                  {activity.link ? (
-                    <Button 
-                      variant="hero" 
-                      size="sm"
-                      className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0"
-                      asChild
-                    >
-                      <Link to={activity.link}>{activity.cta}</Link>
-                    </Button>
-                  ) : (
-                    <Button 
-                      variant="hero" 
-                      size="sm"
-                      className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0"
-                    >
-                      {activity.cta}
-                    </Button>
-                  )}
+                <div className="mt-4">
+                  <p className="text-xs text-muted-foreground">Desde</p>
+                  <p className="text-2xl font-extrabold text-primary">{activity.price} <span className="text-xs font-semibold text-muted-foreground">/ persona</span></p>
+                  <p className="mt-1 text-xs text-muted-foreground">Salidas bajo petición</p>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <Button variant="outline" size="sm" className="min-h-11 px-2" asChild><Link to={`/actividades/${activity.category}/${activity.slug}`}>Ver experiencia</Link></Button>
+                  <Button variant="hero" size="sm" className="min-h-11 px-2" asChild><Link to={`/reservar/${activity.category}/${activity.slug}`}>Reservar</Link></Button>
                 </div>
               </div>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <p className="text-muted-foreground mb-4">
-            ¿Quieres ver todas las actividades disponibles?
-          </p>
-          <Button variant="hero" size="lg" asChild>
-            <Link to="/actividades">Ver Todas las Actividades</Link>
-          </Button>
-        </motion.div>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 border-t border-border pt-7 text-sm text-muted-foreground">
+          <span className="font-semibold text-foreground">Explorar por disciplina:</span>
+          <Link to="/barranquismo" className="hover:text-primary">Barranquismo</Link>
+          <Link to="/escalada" className="hover:text-primary">Escalada</Link>
+          <Link to="/vias-ferratas" className="hover:text-primary">Vías ferratas</Link>
+        </div>
       </div>
     </section>
   );
