@@ -10,6 +10,7 @@ import { CookiePreferencesModal } from "./components/CookiePreferencesModal";
 import { AnalyticsLoader } from "./components/AnalyticsLoader";
 import Index from "./pages/Index";
 import Actividades from "./pages/Actividades";
+import Calendario from "./pages/Calendario";
 import Barranquismo from "./pages/Barranquismo";
 import Escalada from "./pages/Escalada";
 import ViasFerratas from "./pages/ViasFerratas";
@@ -50,6 +51,7 @@ const App = () => (
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/actividades" element={<Actividades />} />
+            <Route path="/calendario" element={<Calendario />} />
             <Route path="/actividades/:category/:slug" element={<ActivityProfilePage />} />
             <Route path="/barranquismo" element={<Barranquismo />} />
             <Route path="/escalada" element={<Escalada />} />
