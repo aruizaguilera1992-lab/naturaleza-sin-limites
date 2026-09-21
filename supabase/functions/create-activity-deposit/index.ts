@@ -87,6 +87,30 @@ Deno.serve(async (req) => {
     return json({ error: "No se pudo registrar la reserva" }, 500);
   }
 
+  // Scheduled outing: seats are held transactionally in the database before
+  // any payment is prepared, so two people cannot take the same last seat.
+  if (body.eventId) {
+    const { data: seatResult, error: seatError } = await supabase.rpc("reserve_event_seats", {
+      _event_id: body.eventId,
+      _booking_id: booking.id,
+      _participants: body.participants,
+      _hold_minutes: 30,
+    });
+
+    const seat = seatResult as { ok?: boolean; reason?: string; free_seats?: number } | null;
+    if (seatError || !seat?.ok) {
+      console.error("reserve_event_seats failed", seatError, seat);
+      await supabase.from("bookings").delete().eq("id", booking.id);
+      if (seat?.reason === "sin_plazas") {
+        return json(
+          { error: "Esa salida ya no tiene plazas suficientes", reason: "sin_plazas", freeSeats: seat.free_seats ?? 0 },
+          409,
+        );
+      }
+      return json({ error: "No se pudo bloquear la plaza en esa salida" }, 409);
+    }
+  }
+
   const concept = `Señal ${Math.round(DEPOSIT_RATE * 100)}% · ${activityLabel} · ${body.participants} pax`;
 
   const { data: request, error: requestError } = await supabase
