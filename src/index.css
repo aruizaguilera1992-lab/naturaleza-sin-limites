@@ -116,6 +116,13 @@
   a:focus-visible, button:focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
+
+  /* Comfortable touch targets for custom controls that do not use Button. */
+  @media (pointer: coarse) {
+    button:not([role="tab"]) {
+      min-height: 2.75rem;
+    }
+  }
 }
 
 @layer components {
