@@ -18,6 +18,7 @@ const BodySchema = z.object({
   slug: z.string().min(1).max(80),
   participants: z.number().int().min(1).max(MAX_STANDARD_GROUP),
   preferredDate: z.string().min(8).max(30),
+  eventId: z.string().uuid().optional().nullable(),
   name: z.string().min(2).max(120),
   email: z.string().email().max(150),
   phone: z.string().regex(phoneRegex).max(30),
