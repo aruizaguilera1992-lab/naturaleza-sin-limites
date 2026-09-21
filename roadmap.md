@@ -7,6 +7,7 @@
 - [x] Botones unificados con tamaños táctiles y comportamiento responsive en toda la web
 
 ## Pendiente
+- [ ] Rediseñar fichas individuales y añadir vídeos oficiales verificados al Blog (sin publicar)
 - [ ] Clave de Resend válida (los emails fallan: 'API key is invalid')
 - [ ] Verificar dominio remitente en Resend
 - [ ] Activar pagos reales (modo actual: sandbox)
