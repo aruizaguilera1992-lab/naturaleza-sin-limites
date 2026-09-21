@@ -546,6 +546,7 @@ export type Database = {
         Args: { _id: string; _lease_seconds?: number }
         Returns: Json
       }
+      confirm_event_seats: { Args: { _booking_id: string }; Returns: Json }
       confirm_payment_request: {
         Args: {
           _amount_cents: number
@@ -581,6 +582,16 @@ export type Database = {
       }
       record_checkout_session: {
         Args: { _generation: number; _session_id: string; _token: string }
+        Returns: Json
+      }
+      release_expired_event_holds: { Args: never; Returns: number }
+      reserve_event_seats: {
+        Args: {
+          _booking_id: string
+          _event_id: string
+          _hold_minutes?: number
+          _participants: number
+        }
         Returns: Json
       }
     }
