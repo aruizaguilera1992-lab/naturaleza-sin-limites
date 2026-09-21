@@ -13,6 +13,7 @@ import { getActivityProfile, getRelatedProfiles } from '@/data/activityProfiles'
 import { TrustBar } from '@/components/TrustBar';
 import { SITE_URL } from '@/lib/site';
 import { MobileBookingBar } from '@/components/actividades/MobileBookingBar';
+import { ActivityUpcomingEvents } from '@/components/actividades/ActivityUpcomingEvents';
 
 
 function shorten(value: string, max: number) {
@@ -126,6 +127,8 @@ export default function ActivityProfilePage() {
         </section>
 
         <TrustBar />
+
+        <ActivityUpcomingEvents category={activity.category} slug={activity.slug} />
 
 
 

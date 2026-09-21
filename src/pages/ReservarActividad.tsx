@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AlertTriangle, Mountain, ShieldCheck, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getActivityProfile, PENDING } from "@/data/activityProfiles";
 import { TrustBar } from "@/components/TrustBar";
+import { ActivityEventPicker } from "@/components/actividades/ActivityEventPicker";
+import { useActivityEvents } from "@/hooks/useActivityEvents";
 
 
 const DEPOSIT_RATE = 0.3;
@@ -20,12 +22,17 @@ const phoneRegex = /^[+]?[\d\s()./-]{9,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const euros = (value: number) =>
   new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(value);
+const toDateInput = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
 export default function ReservarActividad() {
   const { category = "", slug = "" } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const activity = useMemo(() => getActivityProfile(category, slug), [category, slug]);
+  const { events, loading: eventsLoading } = useActivityEvents({ category, slug });
 
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [form, setForm] = useState({
     participants: 2,
     date: "",
@@ -38,7 +45,23 @@ export default function ReservarActividad() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const unitPrice = activity?.priceValue ?? 0;
+  const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null;
+
+  // Preselect the outing coming from the calendar link, once it is loaded.
+  const requestedEventId = searchParams.get("evento");
+  useEffect(() => {
+    if (!requestedEventId) return;
+    const match = events.find((event) => event.id === requestedEventId && !event.isFull);
+    if (match) setSelectedEventId(match.id);
+  }, [requestedEventId, events]);
+
+  // A chosen outing fixes the date; free dates keep the manual field.
+  useEffect(() => {
+    if (selectedEvent) setForm((prev) => ({ ...prev, date: toDateInput(selectedEvent.startDate) }));
+  }, [selectedEvent]);
+
+  const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
+  const unitPrice = selectedEvent?.pricePerPerson ?? activity?.priceValue ?? 0;
   const total = unitPrice * form.participants;
   const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
 
@@ -79,6 +102,8 @@ export default function ReservarActividad() {
     if (!form.date) return setError("Elige una fecha para la actividad.");
     if (new Date(form.date) < new Date(new Date().toDateString()))
       return setError("La fecha debe ser futura.");
+    if (selectedEvent && form.participants > selectedEvent.freeSeats)
+      return setError(`Esa salida solo tiene ${selectedEvent.freeSeats} plaza(s) libres.`);
     if (form.name.trim().length < 2) return setError("Escribe tu nombre completo.");
     if (!emailRegex.test(form.email.trim())) return setError("Revisa tu email.");
     if (!phoneRegex.test(form.phone.trim())) return setError("Revisa tu teléfono.");
@@ -92,6 +117,7 @@ export default function ReservarActividad() {
         slug,
         participants: form.participants,
         preferredDate: form.date,
+        eventId: selectedEventId,
         name: form.name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
@@ -105,7 +131,9 @@ export default function ReservarActividad() {
     setSubmitting(false);
     if (fnError || !data?.token) {
       setError(
-        "No hemos podido preparar el pago ahora mismo. Inténtalo en unos minutos o escríbenos por WhatsApp.",
+        selectedEventId
+          ? "No hemos podido bloquear la plaza en esa salida. Puede que acaben de ocuparse: prueba con otra fecha."
+          : "No hemos podido preparar el pago ahora mismo. Inténtalo en unos minutos o escríbenos por WhatsApp.",
       );
       return;
     }
@@ -143,6 +171,17 @@ export default function ReservarActividad() {
 
       <div className="rounded-xl border border-border bg-card p-6">
         <h2 className="mb-4 font-heading text-lg font-bold">Tu reserva</h2>
+
+        <div className="mb-5">
+          <Label className="mb-2 block">Salidas programadas</Label>
+          <ActivityEventPicker
+            events={events}
+            loading={eventsLoading}
+            selectedId={selectedEventId}
+            onSelect={setSelectedEventId}
+          />
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="date">Fecha deseada</Label>
@@ -151,8 +190,14 @@ export default function ReservarActividad() {
               type="date"
               className="mt-1 text-foreground"
               value={form.date}
+              disabled={Boolean(selectedEvent)}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
             />
+            {selectedEvent && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Fecha fijada por la salida programada que has elegido.
+              </p>
+            )}
           </div>
           <div>
             <Label htmlFor="participants">Participantes</Label>
@@ -160,16 +205,21 @@ export default function ReservarActividad() {
               id="participants"
               type="number"
               min={1}
-              max={MAX_PEOPLE}
+              max={maxPeople}
               className="mt-1 text-foreground"
               value={form.participants}
               onChange={(e) =>
                 setForm({
                   ...form,
-                  participants: Math.min(MAX_PEOPLE, Math.max(1, Number(e.target.value) || 1)),
+                  participants: Math.min(maxPeople, Math.max(1, Number(e.target.value) || 1)),
                 })
               }
             />
+            <p className="mt-1 text-xs text-muted-foreground">
+              {selectedEvent
+                ? `Quedan ${selectedEvent.freeSeats} plaza(s) en esta salida.`
+                : null}
+            </p>
             <p className="mt-1 text-xs text-muted-foreground">
               Para grupos de más de {MAX_PEOPLE} personas,{" "}
               <Link to="/contacto" className="text-primary underline">

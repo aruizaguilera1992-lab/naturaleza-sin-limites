@@ -18,6 +18,7 @@ const BodySchema = z.object({
   slug: z.string().min(1).max(80),
   participants: z.number().int().min(1).max(MAX_STANDARD_GROUP),
   preferredDate: z.string().min(8).max(30),
+  eventId: z.string().uuid().optional().nullable(),
   name: z.string().min(2).max(120),
   email: z.string().email().max(150),
   phone: z.string().regex(phoneRegex).max(30),
@@ -84,6 +85,30 @@ Deno.serve(async (req) => {
   if (bookingError || !booking) {
     console.error("deposit booking insert failed", bookingError);
     return json({ error: "No se pudo registrar la reserva" }, 500);
+  }
+
+  // Scheduled outing: seats are held transactionally in the database before
+  // any payment is prepared, so two people cannot take the same last seat.
+  if (body.eventId) {
+    const { data: seatResult, error: seatError } = await supabase.rpc("reserve_event_seats", {
+      _event_id: body.eventId,
+      _booking_id: booking.id,
+      _participants: body.participants,
+      _hold_minutes: 30,
+    });
+
+    const seat = seatResult as { ok?: boolean; reason?: string; free_seats?: number } | null;
+    if (seatError || !seat?.ok) {
+      console.error("reserve_event_seats failed", seatError, seat);
+      await supabase.from("bookings").delete().eq("id", booking.id);
+      if (seat?.reason === "sin_plazas") {
+        return json(
+          { error: "Esa salida ya no tiene plazas suficientes", reason: "sin_plazas", freeSeats: seat.free_seats ?? 0 },
+          409,
+        );
+      }
+      return json({ error: "No se pudo bloquear la plaza en esa salida" }, 409);
+    }
   }
 
   const concept = `Señal ${Math.round(DEPOSIT_RATE * 100)}% · ${activityLabel} · ${body.participants} pax`;
