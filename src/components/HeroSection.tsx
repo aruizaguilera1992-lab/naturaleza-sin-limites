@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, Mountain, Users } from 'lucide-react';
+import { ArrowRight, Award, ChevronDown, MessageCircle, Mountain, ShieldCheck, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import heroVideoAsset from '@/assets/photography/naturaleza-sin-limites-hero.mp4.asset.json';
 
@@ -17,7 +18,7 @@ export function HeroSection() {
     return () => motionPreference.removeEventListener('change', updatePreference);
   }, []);
 
-  return <section id="inicio" className="homepage-hero relative min-h-[620px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
+  return <section id="inicio" className="homepage-hero relative min-h-[680px] lg:min-h-[78vh] flex items-center overflow-hidden">
       {/* Animated background; the section background remains as the loading/reduced-motion poster. */}
       {!reduceMotion && (
         <video
@@ -36,7 +37,7 @@ export function HeroSection() {
       <div className="homepage-hero-overlay absolute inset-0 z-[1]" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-44 md:pt-32 pb-20 text-center">
+      <div className="relative z-10 container mx-auto px-4 pt-44 md:pt-36 pb-20">
         <motion.div initial={{
         opacity: 0,
         y: 30
@@ -45,7 +46,7 @@ export function HeroSection() {
         y: 0
       }} transition={{
         duration: 0.8
-      }} className="max-w-4xl mx-auto my-[50px]">
+      }} className="max-w-4xl my-8 lg:my-12">
           {/* Badge */}
           <motion.div initial={{
           opacity: 0,
@@ -56,9 +57,9 @@ export function HeroSection() {
         }} transition={{
           delay: 0.2,
           duration: 0.5
-        }} className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-2 mb-8">
+        }} className="inline-flex items-center gap-2 bg-background/70 backdrop-blur-md border border-primary/40 rounded-full px-4 py-2 mb-7">
             <Mountain className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-foreground/90">Deportes de Aventura en Málaga</span>
+            <span className="text-sm font-semibold text-foreground/90">Turismo activo guiado · Málaga y Andalucía</span>
           </motion.div>
 
           {/* Main Heading */}
@@ -71,11 +72,9 @@ export function HeroSection() {
         }} transition={{
           delay: 0.3,
           duration: 0.6
-        }} className="text-hero font-heading mb-6">
-            Naturaleza Sin Límites
-            <span className="block text-gradient mt-2">
-              Vive la Aventura, Entrena Como un Pro
-            </span>
+        }} className="max-w-4xl text-4xl font-extrabold leading-[1.08] sm:text-5xl lg:text-7xl font-heading mb-6">
+            Aventura guiada con
+            <span className="block text-gradient mt-2">criterio técnico y grupos reducidos</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -88,9 +87,8 @@ export function HeroSection() {
         }} transition={{
           delay: 0.5,
           duration: 0.6
-        }} className="text-hero-sub text-foreground/80 max-w-2xl mx-auto mb-10">
-            Guiado y entrenamiento en deportes de aventura.
-            Barranquismo, escalada y vías ferratas en los mejores escenarios de Andalucía.
+        }} className="text-base leading-7 text-foreground/85 max-w-2xl mb-9 sm:text-xl sm:leading-8">
+            Barranquismo, escalada y vías ferratas en Málaga y Andalucía, con acompañamiento cercano y recorridos adaptados a tu nivel.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -103,20 +101,19 @@ export function HeroSection() {
         }} transition={{
           delay: 0.7,
           duration: 0.6
-        }} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="hero" size="xl" className="group" onClick={() => {
-            document.getElementById('actividades')?.scrollIntoView({
-              behavior: 'smooth'
-            });
-          }}>
+        }} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+            <Button variant="hero" size="lg" className="group min-h-14" asChild>
+              <Link to="/actividades">
               <Mountain className="h-5 w-5 mr-2" />
-              ¡Reserva tu Aventura!
+              Ver experiencias
+              <ArrowRight className="h-5 w-5 ml-1 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
-            <Button variant="heroOutline" size="xl" onClick={() => {
-            window.location.href = '/vertigo-sapiens';
-          }}>
-              <Users className="h-5 w-5 mr-2" />
-              Únete a Vértigo Sapiens
+            <Button variant="heroOutline" size="lg" className="min-h-14" asChild>
+              <a href="https://wa.me/34685609542?text=Hola%2C%20quiero%20consultar%20disponibilidad%20para%20una%20actividad%20de%20aventura." target="_blank" rel="noopener noreferrer">
+              <MessageCircle className="h-5 w-5 mr-2" />
+              Consultar disponibilidad
+              </a>
             </Button>
           </motion.div>
 
@@ -128,19 +125,10 @@ export function HeroSection() {
         }} transition={{
           delay: 1,
           duration: 0.6
-        }} className="mt-16 flex flex-wrap justify-center gap-8 text-foreground/60">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-accent rounded-full" />
-              <span className="text-sm">Formación técnica en montaña</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-primary rounded-full" />
-              <span className="text-sm">Pasión por la aventura</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-accent rounded-full" />
-              <span className="text-sm">Compromiso con la seguridad</span>
-            </div>
+        }} className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-foreground/80">
+            <div className="flex items-center gap-2"><Users className="h-4 w-4 text-primary" /><span className="text-sm font-semibold">Máx. 6 personas</span></div>
+            <div className="flex items-center gap-2"><Award className="h-4 w-4 text-primary" /><span className="text-sm font-semibold">Guía TD2</span></div>
+            <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /><span className="text-sm font-semibold">Material homologado</span></div>
           </motion.div>
         </motion.div>
       </div>

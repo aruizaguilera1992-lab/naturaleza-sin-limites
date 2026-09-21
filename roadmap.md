@@ -10,6 +10,14 @@
 - [ ] Verificar dominio remitente en Resend
 - [ ] Activar pagos reales (modo actual: sandbox)
 
+## Rediseño comercial visual (21/09/2026)
+- [x] Hero orientado a turismo activo guiado, grupos reducidos y CTA de catálogo/consulta
+- [ ] Experiencias reales destacadas en Home y acceso secundario por disciplinas
+- [ ] TrustBar premium y bloque de autoridad del guía con datos existentes
+- [ ] Tarjetas del catálogo con jerarquía comercial y salidas bajo petición
+- [ ] Cabecera y reserva móvil de las fichas
+- [ ] Verificación visual a 390, 1280 y 1440 px
+
 ## Fichas comerciales y SEO del catálogo
 - [x] Crear modelo editorial común para todas las actividades publicadas
 - [x] Crear rutas individuales y enlazarlas desde `/actividades`

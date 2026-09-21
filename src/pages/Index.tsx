@@ -1,8 +1,8 @@
 import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
-import { ValueProposition } from '@/components/ValueProposition';
 import { ActivitiesGrid } from '@/components/ActivitiesGrid';
+import { GuideAuthority } from '@/components/GuideAuthority';
 import { VertigoSapiens } from '@/components/VertigoSapiens';
 import { WhyChooseUs } from '@/components/WhyChooseUs';
 import { BookingForm } from '@/components/BookingForm';
@@ -26,12 +26,11 @@ const Index = () => {
       <Navbar />
       <main>
         <HeroSection />
-        <TrustBar />
-
-        <ValueProposition />
         <ActivitiesGrid />
-        <VertigoSapiens />
+        <TrustBar />
+        <GuideAuthority />
         <WhyChooseUs />
+        <VertigoSapiens />
         <BookingForm />
         {/* <Newsletter /> desactivada temporalmente */}
       </main>
