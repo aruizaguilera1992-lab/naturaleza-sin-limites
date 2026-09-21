@@ -125,7 +125,7 @@ export default function ActivityProfilePage() {
           </div>
         </section>
 
-        <TrustBar className="hidden sm:block" />
+        <TrustBar />
 
 
 
@@ -180,7 +180,7 @@ export default function ActivityProfilePage() {
       </main>
       <Footer />
       {activity.priceValue && <MobileBookingBar price={activity.price} category={activity.category} slug={activity.slug} />}
-      <WhatsAppButton />
+      <div className="hidden lg:block"><WhatsAppButton /></div>
       <ScrollToTop />
     </div>
   );

@@ -16,7 +16,7 @@
 - [x] TrustBar premium y bloque de autoridad del guía con datos existentes
 - [x] Tarjetas del catálogo con jerarquía comercial y salidas bajo petición
 - [x] Cabecera y reserva móvil de las fichas
-- [ ] Verificación visual a 390, 1280 y 1440 px
+- [x] Verificación visual a 390, 1280 y 1440 px
 
 ## Fichas comerciales y SEO del catálogo
 - [x] Crear modelo editorial común para todas las actividades publicadas

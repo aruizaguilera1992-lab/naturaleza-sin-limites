@@ -1,16 +1,16 @@
 import { Award, MessageCircle, ShieldCheck, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { media } from '@/data/media';
+import founderPhoto from '@/assets/founder-antonio.png';
 
 export function GuideAuthority() {
   return (
     <section className="bg-background py-16 sm:py-20" aria-labelledby="guide-heading">
       <div className="container mx-auto grid items-center gap-8 px-4 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
         <div className="relative min-h-[300px] overflow-hidden rounded-lg border border-border sm:min-h-[380px]">
-          <img src={media.ropeDetail.src} alt={media.ropeDetail.alt} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={founderPhoto} alt="Antonio Ruiz Aguilera, guía de Naturaleza Sin Límites" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/10 to-transparent" />
-          <p className="absolute bottom-4 left-4 right-4 text-sm font-semibold text-foreground">Preparación técnica y revisión del material antes de cada salida</p>
+          <p className="absolute bottom-4 left-4 right-4 text-sm font-semibold text-foreground">Antonio Ruiz Aguilera · guía y fundador</p>
         </div>
 
         <div>
