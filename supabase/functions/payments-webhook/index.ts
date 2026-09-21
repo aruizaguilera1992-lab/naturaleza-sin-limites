@@ -359,6 +359,19 @@ async function fulfill(session: any, env: StripeEnv) {
   // Applied OR already_paid: intents are durable, so a repeated event repairs
   // pending notifications without resending accepted ones.
   const paymentRequestId: string = outcome.payment_request_id ?? pr.id;
+
+  // Turn the temporary seat hold on a scheduled outing into a confirmed seat.
+  const confirmedBookingId: string | null = outcome.booking_id ?? pr.booking_id ?? null;
+  if (confirmedBookingId) {
+    const { data: seats, error: seatError } = await supabase.rpc("confirm_event_seats", {
+      _booking_id: confirmedBookingId,
+    });
+    if (seatError) {
+      console.error("confirm_event_seats failed (payment kept confirmed)", seatError);
+    } else {
+      console.log("confirm_event_seats", JSON.stringify(seats));
+    }
+  }
   try {
     const results = await dispatchPendingForPayment(supabase, paymentRequestId);
     console.log("Notification dispatch", JSON.stringify(results));
