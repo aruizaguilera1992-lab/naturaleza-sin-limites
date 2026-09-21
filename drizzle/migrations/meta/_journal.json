@@ -43,6 +43,13 @@
       "when": 1789972182795,
       "tag": "0005_activity_event_seat_rpcs",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789972682761,
+      "tag": "0006_events_phase1_hardening",
+      "breakpoints": true
     }
   ]
 }
