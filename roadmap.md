@@ -88,3 +88,20 @@
   (go-live), que genera STRIPE_LIVE_API_KEY, PAYMENTS_LIVE_WEBHOOK_SECRET y el token
   público live. No requiere cambios de código: el entorno se deriva del prefijo del token.
 - También pendiente: clave de Resend válida y remitente verificado para los correos.
+
+## Calendario real de salidas (fases 1-5)
+- [x] Fase 1: tablas `activity_events` y `activity_event_bookings`, `event_id` en reservas, permisos y RLS
+- [x] Fase 1: funciones de plazas `reserve_event_seats`, `confirm_event_seats`, `release_expired_event_holds` (solo service_role)
+- [x] Fase 1: pestaña "Salidas" en el panel admin (alta, zona pública, punto de encuentro privado, estados)
+- [x] Fase 2: página pública `/calendario` y calendario del catálogo con datos reales (sin datos de ejemplo)
+- [x] Fase 3: mapa de zona aproximada (sin punto exacto) con `VITE_GOOGLE_MAPS_API_KEY`
+- [x] Fase 4: selector de fechas reales en ficha y reserva, con enlace `?evento=<id>` desde el calendario
+- [x] Fase 5: bloqueo transaccional de plazas (retención de 30 min) y confirmación al cobrar la señal
+- [ ] Fase 6 (QA con datos reales): dar de alta salidas reales y probar el flujo completo de pago
+
+### Google Maps
+- Variable de entorno: `VITE_GOOGLE_MAPS_API_KEY` (no se guarda en el código).
+- Restricciones recomendadas en Google Cloud: restricción por referente HTTP a
+  `https://naturalezasinlimites.es/*`, `https://www.naturalezasinlimites.es/*` y el dominio de vista previa.
+- APIs a habilitar: Maps Embed API (y Maps JavaScript API si se amplía el mapa).
+- Sin clave o sin coordenadas cargadas por el admin, se muestra solo el nombre de la zona: nunca se inventan coordenadas.
