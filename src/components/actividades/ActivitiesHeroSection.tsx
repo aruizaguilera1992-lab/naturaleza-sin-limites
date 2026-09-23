@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Search, Shield, Clock, Wallet } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { media } from '@/data/media';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Search, Shield, Clock, Wallet } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { media } from "@/data/media";
 
 interface ActivitiesHeroSectionProps {
   onSearch: (query: string) => void;
-  onQuickFilter: (type: 'principiante' | 'media-jornada' | 'economico') => void;
+  onQuickFilter: (type: "principiante" | "media-jornada" | "economico") => void;
 }
 
 export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHeroSectionProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
     <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <img 
+        <img
           src={media.canyoning.src}
           alt={media.canyoning.alt}
           loading="eager"
@@ -43,25 +43,22 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-4">
             NUESTRAS <span className="text-gradient">ACTIVIDADES</span>
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-3">
-            Descubre tu Próxima Aventura
-          </p>
-          <p className="text-sm sm:text-base text-white/70 mb-8">
-            Barranquismo · Escalada · Vías Ferratas
-          </p>
+          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-3">Descubre tu Próxima Aventura</p>
+          <p className="text-sm sm:text-base text-white/70 mb-8">Barranquismo · Escalada · Vías Ferratas</p>
 
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
-                type="text"
+                type="search"
+                aria-label="Buscar actividades por nivel, zona, duración o tipo"
                 placeholder="Busca por nivel, zona, duración o tipo..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 pr-24 py-6 text-base sm:text-lg bg-white/95 backdrop-blur-sm border-0 rounded-full shadow-xl text-black placeholder:text-gray-500"
               />
-              <Button 
+              <Button
                 type="submit"
                 variant="hero"
                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full px-4 sm:px-6"
@@ -76,32 +73,32 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => onQuickFilter('principiante')}
+              aria-label="Filtrar actividades para principiantes"
+              onClick={() => onQuickFilter("principiante")}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-sm hover:bg-white/20 transition-colors"
             >
               <Shield className="h-4 w-4 text-green-400" />
-              <span className="hidden sm:inline">Principiante</span>
-              <span className="sm:hidden">🔰</span>
+              <span className="inline">Principiante</span>
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => onQuickFilter('media-jornada')}
+              aria-label="Filtrar actividades de media jornada"
+              onClick={() => onQuickFilter("media-jornada")}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-sm hover:bg-white/20 transition-colors"
             >
               <Clock className="h-4 w-4 text-yellow-400" />
-              <span className="hidden sm:inline">Media jornada</span>
-              <span className="sm:hidden">⚡</span>
+              <span className="inline">Media jornada</span>
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => onQuickFilter('economico')}
+              aria-label="Filtrar actividades de menos de 60 euros"
+              onClick={() => onQuickFilter("economico")}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-sm hover:bg-white/20 transition-colors"
             >
               <Wallet className="h-4 w-4 text-emerald-400" />
-              <span className="hidden sm:inline">&lt;60€</span>
-              <span className="sm:hidden">💰</span>
+              <span className="inline">&lt;60€</span>
             </motion.button>
           </div>
         </motion.div>
