@@ -1,20 +1,33 @@
-import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { EventCard } from '@/components/calendario/EventCard';
-import { useActivityEvents } from '@/hooks/useActivityEvents';
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { EventCard } from "@/components/calendario/EventCard";
+import { useActivityEvents } from "@/hooks/useActivityEvents";
 
 const categoryDot: Record<string, string> = {
-  barranquismo: 'bg-cyan-500',
-  escalada: 'bg-emerald-500',
-  'vias-ferratas': 'bg-purple-500',
+  barranquismo: "bg-cyan-500",
+  escalada: "bg-emerald-500",
+  "vias-ferratas": "bg-purple-500",
 };
 
-const WEEKDAYS = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
-const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const WEEKDAYS = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB", "DOM"];
+const MONTHS = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
 
 export function ActivitiesCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -101,28 +114,26 @@ export function ActivitiesCalendar() {
                 selectedDate?.getFullYear() === currentYear;
               const today = new Date();
               const isToday =
-                today.getDate() === day &&
-                today.getMonth() === currentMonth &&
-                today.getFullYear() === currentYear;
+                today.getDate() === day && today.getMonth() === currentMonth && today.getFullYear() === currentYear;
 
               return (
                 <motion.button
                   key={day}
+                  aria-label={`${day} de ${MONTHS[currentMonth]} de ${currentYear}: ${dayEvents.length} salidas`}
+                  aria-pressed={isSelected}
+                  aria-current={isToday ? "date" : undefined}
                   onClick={() => setSelectedDate(new Date(currentYear, currentMonth, day))}
                   className={cn(
-                    'aspect-square p-1 rounded-lg flex flex-col items-center justify-start relative transition-colors',
-                    isSelected && 'bg-primary/10 ring-2 ring-primary',
-                    isToday && !isSelected && 'bg-muted',
-                    !isSelected && !isToday && 'hover:bg-muted/50',
+                    "aspect-square p-1 rounded-lg flex flex-col items-center justify-start relative transition-colors",
+                    isSelected && "bg-primary/10 ring-2 ring-primary",
+                    isToday && !isSelected && "bg-muted",
+                    !isSelected && !isToday && "hover:bg-muted/50",
                   )}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <span
-                    className={cn(
-                      'text-xs sm:text-sm font-medium',
-                      isSelected ? 'text-primary' : 'text-foreground',
-                    )}
+                    className={cn("text-xs sm:text-sm font-medium", isSelected ? "text-primary" : "text-foreground")}
                   >
                     {day}
                   </span>
@@ -131,10 +142,7 @@ export function ActivitiesCalendar() {
                       {dayEvents.slice(0, 3).map((event) => (
                         <span
                           key={event.id}
-                          className={cn(
-                            'h-1.5 w-1.5 rounded-full',
-                            categoryDot[event.category] ?? 'bg-primary',
-                          )}
+                          className={cn("h-1.5 w-1.5 rounded-full", categoryDot[event.category] ?? "bg-primary")}
                           title={event.title}
                         />
                       ))}
@@ -175,23 +183,21 @@ export function ActivitiesCalendar() {
         {selectedDate && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h3 className="text-lg font-heading font-bold text-foreground mb-4">
-              {selectedDate.toLocaleDateString('es-ES', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
+              {selectedDate.toLocaleDateString("es-ES", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
               })}
               {selectedEvents.length > 0 && (
                 <span className="text-muted-foreground font-normal ml-2">
-                  - {selectedEvents.length} salida{selectedEvents.length > 1 ? 's' : ''} programada
-                  {selectedEvents.length > 1 ? 's' : ''}
+                  - {selectedEvents.length} salida{selectedEvents.length > 1 ? "s" : ""} programada
+                  {selectedEvents.length > 1 ? "s" : ""}
                 </span>
               )}
             </h3>
 
             {selectedEvents.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">
-                No hay salidas programadas para este día
-              </p>
+              <p className="text-muted-foreground text-center py-8">No hay salidas programadas para este día</p>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {selectedEvents.map((event) => (
