@@ -13,6 +13,8 @@ import { BlogAuthorBox } from '@/components/blog/BlogAuthorBox';
 import { BlogRelatedPosts } from '@/components/blog/BlogRelatedPosts';
 import { BlogCTA } from '@/components/blog/BlogCTA';
 import { getPostBySlug } from '@/data/blogPosts';
+import { getRelatedYoutubeVideo } from '@/data/youtubeVideos';
+import { YoutubeLitePlayer } from '@/components/YoutubeLitePlayer';
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -21,6 +23,7 @@ export default function BlogPost() {
   if (!post) {
     return <Navigate to="/blog" replace />;
   }
+  const relatedVideo = getRelatedYoutubeVideo(post.slug);
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -87,6 +90,12 @@ export default function BlogPost() {
           <BlogArticleHero post={post} />
           <BlogShareBar post={post} />
           <BlogArticleContent post={post} />
+          {relatedVideo && (
+            <section className="container mx-auto max-w-4xl px-4 pb-12" aria-labelledby="video-relacionado">
+              <h2 id="video-relacionado" className="mb-5 font-heading text-2xl font-bold text-foreground">Vídeo relacionado</h2>
+              <YoutubeLitePlayer video={relatedVideo} />
+            </section>
+          )}
           <BlogAuthorBox author={post.author} />
           <BlogRelatedPosts currentPost={post} />
           <BlogCTA />

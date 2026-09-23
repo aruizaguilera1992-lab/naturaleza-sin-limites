@@ -1,6 +1,13 @@
 import type { MediaAsset } from './media';
+import type { YoutubeVideo } from './youtubeVideos';
 
 export type ActivityMediaAsset = Omit<MediaAsset, 'replacementNote'> & { sourceTitle: string };
+export interface ActivityMediaCollection {
+  category: string;
+  slug: string;
+  images: ActivityMediaAsset[];
+  videos: YoutubeVideo[];
+}
 
 /** Fotografías documentales por actividad. Sustituye una entrada aquí al incorporar una foto propia. */
 export const activityMedia: Record<string, ActivityMediaAsset> = {
@@ -551,3 +558,24 @@ export const activityMedia: Record<string, ActivityMediaAsset> = {
 };
 
 export const getActivityMedia = (id: string) => activityMedia[id];
+
+const activityVideos: Record<string, YoutubeVideo[]> = {
+  'barranquismo/jorox': [{
+    youtubeId: 'xd9qKdM16xQ',
+    title: 'BARRANCO JOROX (Descenso acúatico) 01/03/26',
+    sourceUrl: 'https://www.youtube.com/watch?v=xd9qKdM16xQ',
+    channel: 'Naturaleza Sin Límites',
+  }],
+};
+
+/** Medios fiables por ficha. No completa galerías con imágenes de otras actividades. */
+export const getActivityMediaCollection = (
+  category: string,
+  slug: string,
+  fallback: ActivityMediaAsset,
+): ActivityMediaCollection => ({
+  category,
+  slug,
+  images: [activityMedia[slug] ?? fallback],
+  videos: activityVideos[`${category}/${slug}`] ?? [],
+});

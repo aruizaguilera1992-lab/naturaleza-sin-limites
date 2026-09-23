@@ -10,6 +10,7 @@ import { BlogHero } from '@/components/blog/BlogHero';
 import { BlogCard } from '@/components/blog/BlogCard';
 import { BlogFilters } from '@/components/blog/BlogFilters';
 import { BlogSidebar } from '@/components/blog/BlogSidebar';
+import { YoutubeVideosSection } from '@/components/blog/YoutubeVideosSection';
 import { blogPosts, BlogCategory, searchPosts } from '@/data/blogPosts';
 
 export default function Blog() {
@@ -76,6 +77,7 @@ export default function Blog() {
 
         <main>
           <BlogHero />
+          <YoutubeVideosSection />
 
           <section className="py-12 sm:py-16">
             <div className="container mx-auto px-4">
