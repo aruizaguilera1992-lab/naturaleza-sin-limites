@@ -2324,7 +2324,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Octubre - Mayo",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: true,
     acceso: "f\xE1cil",
@@ -2402,7 +2402,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Octubre - Mayo",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -2558,7 +2558,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -2586,12 +2586,7 @@ var ferratas = [
       "Seguro de accidentes y RC",
       "Reportaje fotogr\xE1fico"
     ],
-    destacados: [
-      "4 estrellas en rocjumper.com",
-      "Ideal para iniciarse",
-      "Serran\xEDa de Ronda",
-      "Apta para familias"
-    ],
+    destacados: ["4 estrellas en rocjumper.com", "Ideal para iniciarse", "Serran\xEDa de Ronda", "Apta para familias"],
     elementosDestacados: {
       puentes: 0,
       tirolinas: 0,
@@ -2607,10 +2602,7 @@ var ferratas = [
       exposicion: 3,
       tecnica: 2
     },
-    advertencias: [
-      "Exposici\xF3n moderada al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Exposici\xF3n moderada al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   },
   {
     id: "ferrata-teba",
@@ -2635,7 +2627,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Julio - Noviembre",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -2684,10 +2676,7 @@ var ferratas = [
       exposicion: 3,
       tecnica: 2
     },
-    advertencias: [
-      "Exposici\xF3n moderada al vac\xEDo",
-      "Seguir siempre instrucciones del gu\xEDa"
-    ],
+    advertencias: ["Exposici\xF3n moderada al vac\xEDo", "Seguir siempre instrucciones del gu\xEDa"],
     regulacion: "Cerrada del 1 de diciembre al 15 de junio"
   },
   {
@@ -2713,7 +2702,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Octubre - Mayo",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -2869,7 +2858,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Julio - Diciembre",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: true,
     acceso: "f\xE1cil",
@@ -2918,10 +2907,7 @@ var ferratas = [
       exposicion: 4,
       tecnica: 3
     },
-    advertencias: [
-      "Actividad con alta exposici\xF3n al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ],
+    advertencias: ["Actividad con alta exposici\xF3n al vac\xEDo", "Seguir instrucciones del gu\xEDa"],
     regulacion: "Cerrada del 1 de enero al 30 de junio"
   },
   {
@@ -3027,7 +3013,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o (evitar verano)",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -3076,10 +3062,7 @@ var ferratas = [
       exposicion: 4,
       tecnica: 3
     },
-    advertencias: [
-      "Actividad con alta exposici\xF3n al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Actividad con alta exposici\xF3n al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   },
   {
     id: "ferrata-bola-hondonero",
@@ -3104,7 +3087,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -3153,10 +3136,7 @@ var ferratas = [
       exposicion: 3,
       tecnica: 2
     },
-    advertencias: [
-      "Exposici\xF3n moderada al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Exposici\xF3n moderada al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   },
   {
     id: "ferrata-pita-100canos",
@@ -3259,7 +3239,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -3308,10 +3288,7 @@ var ferratas = [
       exposicion: 2,
       tecnica: 2
     },
-    advertencias: [
-      "Exposici\xF3n moderada al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Exposici\xF3n moderada al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   },
   {
     id: "ferrata-archidona",
@@ -3336,7 +3313,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Octubre - Mayo",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "medio",
@@ -3385,10 +3362,7 @@ var ferratas = [
       exposicion: 4,
       tecnica: 3
     },
-    advertencias: [
-      "Actividad con alta exposici\xF3n al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Actividad con alta exposici\xF3n al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   },
   {
     id: "ferrata-tajo-ronda-sevillana",
@@ -3413,7 +3387,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -3728,7 +3702,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -3777,10 +3751,7 @@ var ferratas = [
       exposicion: 3,
       tecnica: 2
     },
-    advertencias: [
-      "Recorrido largo: llevar agua",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Recorrido largo: llevar agua", "Seguir instrucciones del gu\xEDa"]
   },
   {
     id: "ferrata-tajo-vinas",
@@ -3805,7 +3776,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "medio",
@@ -3854,17 +3825,14 @@ var ferratas = [
       exposicion: 4,
       tecnica: 3
     },
-    advertencias: [
-      "Actividad con alta exposici\xF3n al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Actividad con alta exposici\xF3n al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   },
-  // ===================== CÁDIZ =====================
+  // ===================== MÁLAGA (BENAojÁN) =====================
   {
     id: "ferrata-benaojan",
     nombre: "V\xEDa Ferrata de Benaoj\xE1n",
     tipo: "via-ferrata",
-    provincia: "C\xE1diz",
+    provincia: "M\xE1laga",
     zona: "Benaoj\xE1n - Serran\xEDa de Ronda",
     clasificacion: "K3",
     dificultad: "Media",
@@ -3883,7 +3851,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Octubre - Mayo",
     grupoMinimo: 2,
-    grupoMaximo: 8,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -3962,7 +3930,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -4011,10 +3979,7 @@ var ferratas = [
       exposicion: 3,
       tecnica: 2
     },
-    advertencias: [
-      "Exposici\xF3n moderada al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Exposici\xF3n moderada al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   },
   {
     id: "ferrata-estrella-espiel",
@@ -4039,7 +4004,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Agosto - Diciembre",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "dif\xEDcil",
@@ -4088,10 +4053,7 @@ var ferratas = [
       exposicion: 2,
       tecnica: 2
     },
-    advertencias: [
-      "Aproximaci\xF3n larga (40 min)",
-      "Seguir instrucciones del gu\xEDa"
-    ],
+    advertencias: ["Aproximaci\xF3n larga (40 min)", "Seguir instrucciones del gu\xEDa"],
     regulacion: "Prohibida del 1 de enero al 15 de julio"
   },
   // ===================== ALMERÍA =====================
@@ -4277,7 +4239,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Todo el a\xF1o",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -4305,12 +4267,7 @@ var ferratas = [
       "Seguro de accidentes y RC",
       "Reportaje fotogr\xE1fico"
     ],
-    destacados: [
-      "Accesible para familias",
-      "Recorrido largo (90 min)",
-      "Sierra de Ja\xE9n",
-      "Acceso r\xE1pido (5 min)"
-    ],
+    destacados: ["Accesible para familias", "Recorrido largo (90 min)", "Sierra de Ja\xE9n", "Acceso r\xE1pido (5 min)"],
     elementosDestacados: {
       puentes: 0,
       tirolinas: 0,
@@ -4326,10 +4283,7 @@ var ferratas = [
       exposicion: 3,
       tecnica: 2
     },
-    advertencias: [
-      "Exposici\xF3n moderada al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Exposici\xF3n moderada al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   },
   // ===================== SEVILLA =====================
   {
@@ -4355,7 +4309,7 @@ var ferratas = [
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Octubre - Mayo",
     grupoMinimo: 2,
-    grupoMaximo: 10,
+    grupoMaximo: 6,
     materialIncluido: true,
     reservaObligatoria: false,
     acceso: "f\xE1cil",
@@ -4383,12 +4337,7 @@ var ferratas = [
       "Seguro de accidentes y RC",
       "Reportaje fotogr\xE1fico"
     ],
-    destacados: [
-      "Ferrata en Sevilla",
-      "Vistas a la campi\xF1a",
-      "Accesible para familias",
-      "Recorrido agradable"
-    ],
+    destacados: ["Ferrata en Sevilla", "Vistas a la campi\xF1a", "Accesible para familias", "Recorrido agradable"],
     elementosDestacados: {
       puentes: 0,
       tirolinas: 0,
@@ -4404,10 +4353,7 @@ var ferratas = [
       exposicion: 3,
       tecnica: 2
     },
-    advertencias: [
-      "Exposici\xF3n moderada al vac\xEDo",
-      "Seguir instrucciones del gu\xEDa"
-    ]
+    advertencias: ["Exposici\xF3n moderada al vac\xEDo", "Seguir instrucciones del gu\xEDa"]
   }
 ];
 ferratas.forEach((ferrata) => {
