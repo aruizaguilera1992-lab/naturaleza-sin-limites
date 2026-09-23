@@ -4584,12 +4584,11 @@ import { z as z3 } from "npm:zod@^3.25.76";
 
 // src/data/blogPosts.ts
 var defaultAuthor = {
-  name: "Antonio Garc\xEDa",
+  name: "Antonio Ruiz Aguilera",
   avatar: "/placeholder.svg",
-  bio: "Gu\xEDa profesional de monta\xF1a con m\xE1s de 15 a\xF1os de experiencia en espeleolog\xEDa, barranquismo y escalada. Fundador de Naturaleza Sin L\xEDmites y apasionado por compartir el conocimiento de los deportes de aventura.",
+  bio: "Fundador de Naturaleza Sin L\xEDmites y T\xE9cnico Deportivo TD2 en Espeleolog\xEDa. Comparte experiencias de aventura y formaci\xF3n con un enfoque cercano y responsable.",
   socialLinks: {
-    instagram: "https://instagram.com/naturalezasinlimites",
-    facebook: "https://facebook.com/naturalezasinlimites"
+    instagram: "https://instagram.com/naturaleza.sinlimites"
   }
 };
 var blogPosts = [
@@ -4647,11 +4646,11 @@ Durante la actividad, nuestros gu\xEDas te ense\xF1ar\xE1n las t\xE9cnicas funda
 
 ## Los Mejores Barrancos para Principiantes en M\xE1laga
 
-### Barranco de la Rej\xEDa
-Ubicado en El Chorro, es perfecto para iniciarse. Tiene rappeles cortos, saltos opcionales y toboganes divertidos. Duraci\xF3n aproximada de 3-4 horas.
+### R\xEDo Guadalmina
+En Benahav\xEDs, el cat\xE1logo ofrece una salida de iniciaci\xF3n de 2-3 horas. El gu\xEDa confirma la adecuaci\xF3n al grupo y las condiciones antes de la salida.
 
-### Barranco de las Buitreras (Nivel I)
-En la Serran\xEDa de Ronda, ofrece una experiencia m\xE1s completa pero accesible. Las vistas son espectaculares y el agua suele estar m\xE1s templada.
+### Sima del Diablo
+En J\xFAzcar, el cat\xE1logo ofrece una salida de iniciaci\xF3n de 2-3 horas con progresi\xF3n por cuerda. Consulta los requisitos de participaci\xF3n antes de reservar.
 
 ## Consejos Finales
 
@@ -4862,38 +4861,17 @@ El m\xE1s desafiante, donde la pared est\xE1 inclinada hacia ti:
 3. **Uso del cuerpo**: Gira ligeramente para ver d\xF3nde pisas
 4. **Paciencia**: Los movimientos deben ser m\xE1s lentos y controlados
 
-## T\xE9cnicas Avanzadas
+## Formaci\xF3n para maniobras avanzadas
 
-### Rappel Guiado
+Los bloqueos, las reuniones intermedias y las maniobras de rescate requieren formaci\xF3n pr\xE1ctica supervisada y procedimientos espec\xEDficos para cada descensor y cuerda. Este art\xEDculo es orientativo y no describe un montaje que permita soltarse de la cuerda ni realizar una maniobra por cuenta propia.
 
-Ideal para principiantes o situaciones de rescate:
-
-- Un segundo operador controla la cuerda desde abajo
-- A\xF1ade una capa extra de seguridad
-- Permite comunicaci\xF3n constante
-
-### Rappel Doble con Reuni\xF3n
-
-Para grandes paredes con m\xFAltiples largos:
-
-- Monta una reuni\xF3n intermedia
-- Recupera las cuerdas
-- Contin\xFAa hacia el siguiente anclaje
-
-### Auto-bloqueo de Emergencia
-
-Una t\xE9cnica crucial que todo rappelista debe dominar:
-
-1. Crea una gaza con la cuerda bajo el dispositivo
-2. P\xE1sala por el mosquet\xF3n de seguridad
-3. El sistema se bloquea al soltar las manos
-4. \xDAsalo si necesitas liberarte para cualquier maniobra
+Consulta las instrucciones del fabricante del equipo y aprende estas maniobras con un profesional cualificado antes de utilizarlas en el medio natural.
 
 ## Errores Comunes a Evitar
 
 ### Error 1: Soltar la mano de frenado
 **Consecuencia**: P\xE9rdida total de control
-**Soluci\xF3n**: Practica el bloqueo autom\xE1tico
+**Soluci\xF3n**: Mant\xE9n el control de la cuerda de frenado conforme a las instrucciones del fabricante y la supervisi\xF3n del gu\xEDa.
 
 ### Error 2: Velocidad excesiva
 **Consecuencia**: Quemaduras en la cuerda, p\xE9rdida de control
@@ -4913,8 +4891,8 @@ Antes de lanzarte a la monta\xF1a real:
 
 1. **Roc\xF3dromos**: Muchos tienen zonas de pr\xE1ctica de rappel
 2. **Cursos de iniciaci\xF3n**: Con profesionales que corrigen errores
-3. **Muros bajos**: Practica primero donde una ca\xEDda no sea grave
-4. **Simulaciones**: En casa puedes practicar los nudos y montajes
+3. **Pr\xE1ctica supervisada**: Utiliza instalaciones y sistemas de seguridad adecuados bajo supervisi\xF3n profesional.
+4. **Revisi\xF3n del equipo**: Consulta las instrucciones del fabricante antes de cada pr\xE1ctica.
 
 ## El Rappel en Diferentes Disciplinas
 

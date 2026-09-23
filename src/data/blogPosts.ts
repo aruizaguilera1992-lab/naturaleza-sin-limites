@@ -1,4 +1,4 @@
-import { media } from '@/data/media';
+import { media } from "@/data/media";
 
 export interface BlogAuthor {
   name: string;
@@ -31,48 +31,48 @@ export interface BlogPost {
   };
 }
 
-export type BlogCategory = 
-  | 'tecnicas-seguridad'
-  | 'rutas-recomendadas'
-  | 'equipo-material'
-  | 'formacion'
-  | 'historias-experiencias'
-  | 'consejos-principiantes';
+export type BlogCategory =
+  | "tecnicas-seguridad"
+  | "rutas-recomendadas"
+  | "equipo-material"
+  | "formacion"
+  | "historias-experiencias"
+  | "consejos-principiantes";
 
 export const categoryLabels: Record<BlogCategory, string> = {
-  'tecnicas-seguridad': 'Técnicas y Seguridad',
-  'rutas-recomendadas': 'Rutas Recomendadas',
-  'equipo-material': 'Equipo y Material',
-  'formacion': 'Formación',
-  'historias-experiencias': 'Historias y Experiencias',
-  'consejos-principiantes': 'Consejos para Principiantes',
+  "tecnicas-seguridad": "Técnicas y Seguridad",
+  "rutas-recomendadas": "Rutas Recomendadas",
+  "equipo-material": "Equipo y Material",
+  formacion: "Formación",
+  "historias-experiencias": "Historias y Experiencias",
+  "consejos-principiantes": "Consejos para Principiantes",
 };
 
 export const categoryColors: Record<BlogCategory, string> = {
-  'tecnicas-seguridad': 'bg-blue-500 text-white',
-  'rutas-recomendadas': 'bg-green-600 text-white',
-  'equipo-material': 'bg-adventure-orange text-white',
-  'formacion': 'bg-purple-600 text-white',
-  'historias-experiencias': 'bg-teal-500 text-white',
-  'consejos-principiantes': 'bg-amber-500 text-white',
+  "tecnicas-seguridad": "bg-blue-500 text-white",
+  "rutas-recomendadas": "bg-green-600 text-white",
+  "equipo-material": "bg-adventure-orange text-white",
+  formacion: "bg-purple-600 text-white",
+  "historias-experiencias": "bg-teal-500 text-white",
+  "consejos-principiantes": "bg-amber-500 text-white",
 };
 
 const defaultAuthor: BlogAuthor = {
-  name: 'Antonio García',
-  avatar: '/placeholder.svg',
-  bio: 'Guía profesional de montaña con más de 15 años de experiencia en espeleología, barranquismo y escalada. Fundador de Naturaleza Sin Límites y apasionado por compartir el conocimiento de los deportes de aventura.',
+  name: "Antonio Ruiz Aguilera",
+  avatar: "/placeholder.svg",
+  bio: "Fundador de Naturaleza Sin Límites y Técnico Deportivo TD2 en Espeleología. Comparte experiencias de aventura y formación con un enfoque cercano y responsable.",
   socialLinks: {
-    instagram: 'https://instagram.com/naturalezasinlimites',
-    facebook: 'https://facebook.com/naturalezasinlimites',
+    instagram: "https://instagram.com/naturaleza.sinlimites",
   },
 };
 
 export const blogPosts: BlogPost[] = [
   {
-    id: '1',
-    title: 'Guía Completa: Tu Primer Descenso de Barrancos en Málaga',
-    slug: 'guia-completa-primer-descenso-barrancos-malaga',
-    excerpt: 'Descubre todo lo que necesitas saber antes de lanzarte a tu primera aventura de barranquismo. Desde el equipo esencial hasta las técnicas básicas de rappel.',
+    id: "1",
+    title: "Guía Completa: Tu Primer Descenso de Barrancos en Málaga",
+    slug: "guia-completa-primer-descenso-barrancos-malaga",
+    excerpt:
+      "Descubre todo lo que necesitas saber antes de lanzarte a tu primera aventura de barranquismo. Desde el equipo esencial hasta las técnicas básicas de rappel.",
     content: `
 ## Introducción al Barranquismo
 
@@ -122,11 +122,11 @@ Durante la actividad, nuestros guías te enseñarán las técnicas fundamentales
 
 ## Los Mejores Barrancos para Principiantes en Málaga
 
-### Barranco de la Rejía
-Ubicado en El Chorro, es perfecto para iniciarse. Tiene rappeles cortos, saltos opcionales y toboganes divertidos. Duración aproximada de 3-4 horas.
+### Río Guadalmina
+En Benahavís, el catálogo ofrece una salida de iniciación de 2-3 horas. El guía confirma la adecuación al grupo y las condiciones antes de la salida.
 
-### Barranco de las Buitreras (Nivel I)
-En la Serranía de Ronda, ofrece una experiencia más completa pero accesible. Las vistas son espectaculares y el agua suele estar más templada.
+### Sima del Diablo
+En Júzcar, el catálogo ofrece una salida de iniciación de 2-3 horas con progresión por cuerda. Consulta los requisitos de participación antes de reservar.
 
 ## Consejos Finales
 
@@ -142,23 +142,25 @@ El barranquismo es una actividad que engancha desde el primer momento. La combin
 En Naturaleza Sin Límites te acompañamos en cada paso, garantizando una experiencia segura y memorable. ¿Te atreves a descubrir el mundo vertical?
     `,
     featuredImage: media.canyoning.src,
-    category: 'consejos-principiantes',
-    tags: ['barranquismo', 'principiantes', 'málaga', 'guía'],
+    category: "consejos-principiantes",
+    tags: ["barranquismo", "principiantes", "málaga", "guía"],
     author: defaultAuthor,
-    publishedAt: '2024-01-15',
+    publishedAt: "2024-01-15",
     readTime: 8,
     views: 1520,
     seo: {
-      metaTitle: 'Guía Completa: Tu Primer Descenso de Barrancos en Málaga | Naturaleza Sin Límites',
-      metaDescription: 'Todo lo que necesitas saber para tu primera experiencia de barranquismo en Málaga. Equipo, técnicas, mejores barrancos para principiantes y consejos de expertos.',
+      metaTitle: "Guía Completa: Tu Primer Descenso de Barrancos en Málaga | Naturaleza Sin Límites",
+      metaDescription:
+        "Todo lo que necesitas saber para tu primera experiencia de barranquismo en Málaga. Equipo, técnicas, mejores barrancos para principiantes y consejos de expertos.",
       ogImage: media.canyoning.src,
     },
   },
   {
-    id: '2',
-    title: 'Las 5 Vías Ferratas más Espectaculares de Andalucía',
-    slug: '5-vias-ferratas-mas-espectaculares-andalucia',
-    excerpt: 'Recorremos las vías ferratas más impresionantes del sur de España. Desde el mítico Caminito del Rey hasta joyas ocultas que solo conocen los locales.',
+    id: "2",
+    title: "Las 5 Vías Ferratas más Espectaculares de Andalucía",
+    slug: "5-vias-ferratas-mas-espectaculares-andalucia",
+    excerpt:
+      "Recorremos las vías ferratas más impresionantes del sur de España. Desde el mítico Caminito del Rey hasta joyas ocultas que solo conocen los locales.",
     content: `
 ## El Auge de las Vías Ferratas en Andalucía
 
@@ -261,23 +263,25 @@ Andalucía ofrece un abanico de posibilidades para disfrutar de las vías ferrat
 ¿Cuál será tu próxima aventura vertical?
     `,
     featuredImage: media.ferrata.src,
-    category: 'rutas-recomendadas',
-    tags: ['vías ferratas', 'andalucía', 'rutas', 'aventura'],
+    category: "rutas-recomendadas",
+    tags: ["vías ferratas", "andalucía", "rutas", "aventura"],
     author: defaultAuthor,
-    publishedAt: '2024-01-08',
+    publishedAt: "2024-01-08",
     readTime: 10,
     views: 2340,
     seo: {
-      metaTitle: 'Las 5 Vías Ferratas más Espectaculares de Andalucía | Naturaleza Sin Límites',
-      metaDescription: 'Descubre las mejores vías ferratas de Andalucía: Caminito del Rey, Tajo de Ronda, Atajate, El Chorro y Comares. Guía completa con dificultad, tiempos y consejos.',
+      metaTitle: "Las 5 Vías Ferratas más Espectaculares de Andalucía | Naturaleza Sin Límites",
+      metaDescription:
+        "Descubre las mejores vías ferratas de Andalucía: Caminito del Rey, Tajo de Ronda, Atajate, El Chorro y Comares. Guía completa con dificultad, tiempos y consejos.",
       ogImage: media.ferrata.src,
     },
   },
   {
-    id: '3',
-    title: 'Técnicas de Rappel: Del Básico al Avanzado',
-    slug: 'tecnicas-rappel-basico-avanzado',
-    excerpt: 'Dominar el rappel es fundamental para muchas actividades de montaña. Aprende las técnicas esenciales, errores comunes y cómo progresar hacia maniobras más complejas.',
+    id: "3",
+    title: "Técnicas de Rappel: Del Básico al Avanzado",
+    slug: "tecnicas-rappel-basico-avanzado",
+    excerpt:
+      "Dominar el rappel es fundamental para muchas actividades de montaña. Aprende las técnicas esenciales, errores comunes y cómo progresar hacia maniobras más complejas.",
     content: `
 ## El Arte del Descenso Controlado
 
@@ -337,38 +341,17 @@ El más desafiante, donde la pared está inclinada hacia ti:
 3. **Uso del cuerpo**: Gira ligeramente para ver dónde pisas
 4. **Paciencia**: Los movimientos deben ser más lentos y controlados
 
-## Técnicas Avanzadas
+## Formación para maniobras avanzadas
 
-### Rappel Guiado
+Los bloqueos, las reuniones intermedias y las maniobras de rescate requieren formación práctica supervisada y procedimientos específicos para cada descensor y cuerda. Este artículo es orientativo y no describe un montaje que permita soltarse de la cuerda ni realizar una maniobra por cuenta propia.
 
-Ideal para principiantes o situaciones de rescate:
-
-- Un segundo operador controla la cuerda desde abajo
-- Añade una capa extra de seguridad
-- Permite comunicación constante
-
-### Rappel Doble con Reunión
-
-Para grandes paredes con múltiples largos:
-
-- Monta una reunión intermedia
-- Recupera las cuerdas
-- Continúa hacia el siguiente anclaje
-
-### Auto-bloqueo de Emergencia
-
-Una técnica crucial que todo rappelista debe dominar:
-
-1. Crea una gaza con la cuerda bajo el dispositivo
-2. Pásala por el mosquetón de seguridad
-3. El sistema se bloquea al soltar las manos
-4. Úsalo si necesitas liberarte para cualquier maniobra
+Consulta las instrucciones del fabricante del equipo y aprende estas maniobras con un profesional cualificado antes de utilizarlas en el medio natural.
 
 ## Errores Comunes a Evitar
 
 ### Error 1: Soltar la mano de frenado
 **Consecuencia**: Pérdida total de control
-**Solución**: Practica el bloqueo automático
+**Solución**: Mantén el control de la cuerda de frenado conforme a las instrucciones del fabricante y la supervisión del guía.
 
 ### Error 2: Velocidad excesiva
 **Consecuencia**: Quemaduras en la cuerda, pérdida de control
@@ -388,8 +371,8 @@ Antes de lanzarte a la montaña real:
 
 1. **Rocódromos**: Muchos tienen zonas de práctica de rappel
 2. **Cursos de iniciación**: Con profesionales que corrigen errores
-3. **Muros bajos**: Practica primero donde una caída no sea grave
-4. **Simulaciones**: En casa puedes practicar los nudos y montajes
+3. **Práctica supervisada**: Utiliza instalaciones y sistemas de seguridad adecuados bajo supervisión profesional.
+4. **Revisión del equipo**: Consulta las instrucciones del fabricante antes de cada práctica.
 
 ## El Rappel en Diferentes Disciplinas
 
@@ -415,15 +398,16 @@ El rappel es una habilidad que se perfecciona con la práctica constante. Comien
 Recuerda: en la montaña, la prisa es enemiga de la seguridad. Tómate tu tiempo para hacer cada rappel de forma correcta.
     `,
     featuredImage: media.ropeDetail.src,
-    category: 'tecnicas-seguridad',
-    tags: ['rappel', 'técnicas', 'seguridad', 'formación'],
+    category: "tecnicas-seguridad",
+    tags: ["rappel", "técnicas", "seguridad", "formación"],
     author: defaultAuthor,
-    publishedAt: '2024-01-02',
+    publishedAt: "2024-01-02",
     readTime: 12,
     views: 1890,
     seo: {
-      metaTitle: 'Técnicas de Rappel: Del Básico al Avanzado | Naturaleza Sin Límites',
-      metaDescription: 'Guía completa de técnicas de rappel para todos los niveles. Aprende posición correcta, errores comunes, y progresa desde rappel básico hasta extraplomo.',
+      metaTitle: "Técnicas de Rappel: Del Básico al Avanzado | Naturaleza Sin Límites",
+      metaDescription:
+        "Guía completa de técnicas de rappel para todos los niveles. Aprende posición correcta, errores comunes, y progresa desde rappel básico hasta extraplomo.",
       ogImage: media.ropeDetail.src,
     },
   },
@@ -454,6 +438,6 @@ export const searchPosts = (query: string): BlogPost[] => {
     (post) =>
       post.title.toLowerCase().includes(lowerQuery) ||
       post.excerpt.toLowerCase().includes(lowerQuery) ||
-      post.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))
+      post.tags.some((tag) => tag.toLowerCase().includes(lowerQuery)),
   );
 };
