@@ -24,16 +24,17 @@ export function ActivityMediaGallery({ title, media }: Props) {
 
       <div className={cn('grid gap-2 overflow-hidden rounded-md', images.length > 1 && 'sm:grid-cols-2', images.length > 2 && 'sm:grid-rows-2')}>
         {images.map((image, index) => (
-          <button
+          <Button
             type="button"
+            variant="ghost"
             key={`${image.src}-${index}`}
             onClick={() => setSelected(index)}
-            className={cn('group relative min-h-56 overflow-hidden bg-muted text-left', images.length > 2 && index === 0 && 'sm:row-span-2 sm:min-h-[460px]', images.length > 2 && index > 0 && 'sm:min-h-0')}
+            className={cn('group relative h-auto min-h-56 overflow-hidden rounded-none bg-muted p-0 text-left', images.length > 2 && index === 0 && 'sm:row-span-2 sm:min-h-[460px]', images.length > 2 && index > 0 && 'sm:min-h-0')}
             aria-label={`Ampliar imagen ${index + 1} de ${title}`}
           >
             <img src={image.src} alt={image.alt} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
             <span className="absolute bottom-3 right-3 rounded-sm bg-background/85 px-2 py-1 text-xs text-foreground backdrop-blur-sm">{index + 1}/{images.length}</span>
-          </button>
+          </Button>
         ))}
       </div>
 

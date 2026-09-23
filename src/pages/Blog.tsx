@@ -11,6 +11,7 @@ import { BlogCard } from '@/components/blog/BlogCard';
 import { BlogFilters } from '@/components/blog/BlogFilters';
 import { BlogSidebar } from '@/components/blog/BlogSidebar';
 import { YoutubeVideosSection } from '@/components/blog/YoutubeVideosSection';
+import { Button } from '@/components/ui/button';
 import { blogPosts, BlogCategory, searchPosts } from '@/data/blogPosts';
 
 export default function Blog() {
@@ -109,15 +110,16 @@ export default function Blog() {
                       <p className="text-xl text-muted-foreground mb-4">
                         No se encontraron artículos
                       </p>
-                      <button
+                      <Button
+                        variant="link"
                         onClick={() => {
                           setSearchQuery('');
                           setSelectedCategory('all');
                         }}
-                        className="text-primary hover:underline"
+                        className="text-primary"
                       >
                         Ver todos los artículos
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
