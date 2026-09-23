@@ -1,93 +1,88 @@
-import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, X, Sparkles, Mountain, Trophy } from 'lucide-react';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useActivitiesData, UnifiedActivity } from '@/hooks/useActivitiesData';
-import { Pack, PackDesignerState, SelectedActivity, initialState } from './types';
-import { PackStepIndicator } from './PackStepIndicator';
-import { PackStep1Activities } from './PackStep1Activities';
-import { PackStep2Dates } from './PackStep2Dates';
-import { PackStep3Participants } from './PackStep3Participants';
-import { PackStep4Summary } from './PackStep4Summary';
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, X, Sparkles, Mountain, Trophy } from "lucide-react";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useActivitiesData, UnifiedActivity } from "@/hooks/useActivitiesData";
+import { Pack, PackDesignerState, SelectedActivity, initialState } from "./types";
+import { PackStepIndicator } from "./PackStepIndicator";
+import { PackStep1Activities } from "./PackStep1Activities";
+import { PackStep2Dates } from "./PackStep2Dates";
+import { PackStep3Participants } from "./PackStep3Participants";
+import { PackStep4Summary } from "./PackStep4Summary";
 
 // Pack definitions with validation criteria
-const packConfigs: Omit<Pack, 'icon'>[] = [
+export const packConfigs: Omit<Pack, "icon">[] = [
   {
-    id: 'aventura-completa',
-    name: 'AVENTURA COMPLETA',
-    subtitle: 'La experiencia definitiva',
-    description: '3 actividades diferentes para descubrir todas las disciplinas verticales',
+    id: "aventura-completa",
+    name: "AVENTURA COMPLETA",
+    subtitle: "La experiencia definitiva",
+    description: "3 actividades diferentes para descubrir todas las disciplinas verticales",
     activities: 3,
-    types: ['Barranquismo', 'Escalada', 'Vía Ferrata'],
-    price: '145€',
-    originalPrice: '175€',
-    savings: '30€',
-    color: 'from-primary to-primary/60',
+    types: ["Barranquismo", "Escalada", "Vía Ferrata"],
+    price: "145€",
+    originalPrice: "175€",
+    savings: "30€",
+    color: "from-primary to-primary/60",
     features: [
-      '1 salida de cada actividad',
-      'Material incluido siempre',
-      'Guías profesionales',
-      'Fotos de todas las salidas',
-      'Válido 6 meses',
+      "1 salida de cada actividad",
+      "Material incluido siempre",
+      "Guías profesionales",
+      "Fotos de todas las salidas",
+      "Válido 6 meses",
     ],
     validityMonths: 6,
-    requiredActivityTypes: ['barranquismo', 'escalada', 'ferratas'],
-    levelRestriction: 'any',
+    requiredActivityTypes: ["barranquismo", "escalada", "ferratas"],
+    levelRestriction: "any",
   },
   {
-    id: 'vertical-integral',
-    name: 'VERTICAL INTEGRAL',
-    subtitle: 'Para amantes de la altura',
-    description: '2 actividades verticales para dominar la progresión en altura',
+    id: "vertical-integral",
+    name: "VERTICAL INTEGRAL",
+    subtitle: "Para amantes de la altura",
+    description: "2 actividades verticales para dominar la progresión en altura",
     activities: 2,
-    types: ['Escalada', 'Vía Ferrata'],
-    price: '120€',
-    originalPrice: '145€',
-    savings: '25€',
-    color: 'from-emerald-500 to-emerald-500/60',
-    features: [
-      '1 jornada de escalada',
-      '1 vía ferrata técnica',
-      'Curso de progresión incluido',
-      'Válido 4 meses',
-    ],
+    types: ["Escalada", "Vía Ferrata"],
+    price: "120€",
+    originalPrice: "145€",
+    savings: "25€",
+    color: "from-emerald-500 to-emerald-500/60",
+    features: ["1 jornada de escalada", "1 vía ferrata técnica", "Curso de progresión incluido", "Válido 4 meses"],
     validityMonths: 4,
-    requiredActivityTypes: ['escalada', 'ferratas'],
-    levelRestriction: 'any',
+    requiredActivityTypes: ["escalada", "ferratas"],
+    levelRestriction: "any",
   },
   {
-    id: 'experto-total',
-    name: 'EXPERTO TOTAL',
-    subtitle: 'El desafío máximo',
-    description: '3 actividades de nivel alto para los más experimentados',
+    id: "experto-total",
+    name: "EXPERTO TOTAL",
+    subtitle: "El desafío máximo",
+    description: "3 actividades de nivel alto para los más experimentados",
     activities: 3,
-    types: ['Barranquismo Técnico', 'Escalada Deportiva', 'Ferratas K4+'],
-    price: '195€',
-    originalPrice: '235€',
-    savings: '40€',
-    color: 'from-amber-500 to-amber-500/60',
+    types: ["Barranquismo Técnico", "Escalada Deportiva", "Ferratas K4+"],
+    price: "195€",
+    originalPrice: "235€",
+    savings: "40€",
+    color: "from-amber-500 to-amber-500/60",
     features: [
-      'Solo actividades nivel alto',
-      'Acceso a salidas exclusivas',
-      'Grupo reducido (máx. 4)',
-      'Sesión de técnica incluida',
-      'Válido 12 meses',
+      "Solo actividades nivel alto",
+      "Acceso a salidas exclusivas",
+      "Grupo reducido (máx. 4)",
+      "Sesión de técnica incluida",
+      "Válido 12 meses",
     ],
     validityMonths: 12,
-    requiredActivityTypes: ['barranquismo', 'escalada', 'ferratas'],
-    levelRestriction: 'high',
+    requiredActivityTypes: ["barranquismo", "escalada", "ferratas"],
+    levelRestriction: "high",
     minGroupSize: 2,
   },
 ];
 
 const packIcons: Record<string, React.ElementType> = {
-  'aventura-completa': Sparkles,
-  'vertical-integral': Mountain,
-  'experto-total': Trophy,
+  "aventura-completa": Sparkles,
+  "vertical-integral": Mountain,
+  "experto-total": Trophy,
 };
 
 interface PackDesignerModalProps {
@@ -99,10 +94,10 @@ interface PackDesignerModalProps {
 export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerModalProps) {
   const { activities: allActivities } = useActivitiesData();
   const [state, setState] = useState<PackDesignerState>({ ...initialState });
-  
+
   // Get pack config
   const pack = useMemo(() => {
-    const config = packConfigs.find(p => p.id === packId);
+    const config = packConfigs.find((p) => p.id === packId);
     if (!config) return null;
     return { ...config, icon: packIcons[packId] || Sparkles } as Pack;
   }, [packId]);
@@ -117,15 +112,12 @@ export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerMo
 
   if (!pack) return null;
 
-  const stepLabels = ['Actividades', 'Fechas', 'Participantes', 'Confirmación'];
-  const packPrice = parseInt(pack.price.replace('€', ''));
+  const stepLabels = ["Actividades", "Fechas", "Participantes", "Confirmación"];
+  const packPrice = parseInt(pack.price.replace("€", ""));
 
   // Handlers
-  const handleSelectActivity = (
-    type: 'barranquismo' | 'escalada' | 'ferratas',
-    activity: UnifiedActivity
-  ) => {
-    setState(prev => ({
+  const handleSelectActivity = (type: "barranquismo" | "escalada" | "ferratas", activity: UnifiedActivity) => {
+    setState((prev) => ({
       ...prev,
       selectedActivities: {
         ...prev.selectedActivities,
@@ -134,11 +126,8 @@ export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerMo
     }));
   };
 
-  const handleUpdateActivity = (
-    type: 'barranquismo' | 'escalada' | 'ferratas',
-    updates: Partial<SelectedActivity>
-  ) => {
-    setState(prev => ({
+  const handleUpdateActivity = (type: "barranquismo" | "escalada" | "ferratas", updates: Partial<SelectedActivity>) => {
+    setState((prev) => ({
       ...prev,
       selectedActivities: {
         ...prev.selectedActivities,
@@ -153,10 +142,10 @@ export function PackDesignerModal({ open, onOpenChange, packId }: PackDesignerMo
       .filter(([_, v]) => v?.activity)
       .map(([type, selected]) => {
         const sel = selected as SelectedActivity;
-        const dateStr = sel.date ? format(sel.date, "d MMM yyyy", { locale: es }) : 'Por confirmar';
+        const dateStr = sel.date ? format(sel.date, "d MMM yyyy", { locale: es }) : "Por confirmar";
         return `- ${sel.activity.name}: ${dateStr}`;
       })
-      .join('\n');
+      .join("\n");
 
     // Price per person, then calculate group total with discount
     const subtotalGroup = packPrice * state.participants;
@@ -171,7 +160,7 @@ ${activities}
 
 👥 *Participantes:* ${state.participants} personas
 💰 *Precio por persona:* ${packPrice}€
-${groupDiscount > 0 ? `🎉 *Descuento grupo (+6):* -${discountAmount}€\n` : ''}💵 *TOTAL GRUPO:* ${totalPrice}€
+${groupDiscount > 0 ? `🎉 *Descuento grupo (+6):* -${discountAmount}€\n` : ""}💵 *TOTAL GRUPO:* ${totalPrice}€
 
 👤 *Coordinador:*
 ${state.coordinator.name}
@@ -181,7 +170,7 @@ ${state.coordinator.name}
 ¡Esperamos confirmar fechas pronto!`;
 
     const whatsappUrl = `https://wa.me/34685609542?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    window.open(whatsappUrl, "_blank");
     handleOpenChange(false);
   };
 
@@ -195,7 +184,7 @@ ${state.coordinator.name}
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setState(prev => ({ ...prev, step: prev.step - 1 }))}
+                onClick={() => setState((prev) => ({ ...prev, step: prev.step - 1 }))}
                 className="text-white hover:bg-white/20 -ml-2"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
@@ -204,19 +193,17 @@ ${state.coordinator.name}
             )}
             <div className="flex-1" />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <pack.icon className="h-6 w-6" />
-                <h2 className="text-xl font-heading font-bold">{pack.name}</h2>
+                <DialogTitle className="text-xl font-heading font-bold">{pack.name}</DialogTitle>
               </div>
               <p className="text-white/80 text-sm">{pack.subtitle}</p>
             </div>
             <div className="text-right">
-              <Badge className="bg-white/20 text-white border-0 text-lg px-3 py-1">
-                {pack.price}
-              </Badge>
+              <Badge className="bg-white/20 text-white border-0 text-lg px-3 py-1">{pack.price}</Badge>
               <p className="text-white/80 text-xs mt-1">Ahorras {pack.savings}</p>
             </div>
           </div>
@@ -226,13 +213,9 @@ ${state.coordinator.name}
         <div className="flex flex-col md:flex-row gap-0 overflow-hidden">
           {/* Sidebar - Step Indicator */}
           <div className="md:w-48 p-6 bg-muted/30 border-r border-border hidden md:block">
-            <PackStepIndicator 
-              currentStep={state.step} 
-              totalSteps={4} 
-              labels={stepLabels}
-            />
+            <PackStepIndicator currentStep={state.step} totalSteps={4} labels={stepLabels} />
           </div>
-          
+
           {/* Mobile Step Indicator */}
           <div className="md:hidden p-4 border-b border-border bg-muted/30 flex justify-center">
             <div className="flex items-center gap-2">
@@ -240,7 +223,7 @@ ${state.coordinator.name}
                 <div
                   key={step}
                   className={`h-2 w-8 rounded-full transition-all ${
-                    step <= state.step ? 'bg-primary' : 'bg-muted-foreground/30'
+                    step <= state.step ? "bg-primary" : "bg-muted-foreground/30"
                   }`}
                 />
               ))}
@@ -257,21 +240,21 @@ ${state.coordinator.name}
                   activities={allActivities}
                   selectedActivities={state.selectedActivities}
                   onSelectActivity={handleSelectActivity}
-                  onContinue={() => setState(prev => ({ ...prev, step: 2 }))}
+                  onContinue={() => setState((prev) => ({ ...prev, step: 2 }))}
                 />
               )}
-              
+
               {state.step === 2 && (
                 <PackStep2Dates
                   key="step2"
                   pack={pack}
                   selectedActivities={state.selectedActivities}
                   onUpdateActivity={handleUpdateActivity}
-                  onContinue={() => setState(prev => ({ ...prev, step: 3 }))}
-                  onBack={() => setState(prev => ({ ...prev, step: 1 }))}
+                  onContinue={() => setState((prev) => ({ ...prev, step: 3 }))}
+                  onBack={() => setState((prev) => ({ ...prev, step: 1 }))}
                 />
               )}
-              
+
               {state.step === 3 && (
                 <PackStep3Participants
                   key="step3"
@@ -279,13 +262,13 @@ ${state.coordinator.name}
                   participants={state.participants}
                   coordinator={state.coordinator}
                   packPrice={packPrice}
-                  onUpdateParticipants={(count) => setState(prev => ({ ...prev, participants: count }))}
-                  onUpdateCoordinator={(coordinator) => setState(prev => ({ ...prev, coordinator }))}
-                  onContinue={() => setState(prev => ({ ...prev, step: 4 }))}
-                  onBack={() => setState(prev => ({ ...prev, step: 2 }))}
+                  onUpdateParticipants={(count) => setState((prev) => ({ ...prev, participants: count }))}
+                  onUpdateCoordinator={(coordinator) => setState((prev) => ({ ...prev, coordinator }))}
+                  onContinue={() => setState((prev) => ({ ...prev, step: 4 }))}
+                  onBack={() => setState((prev) => ({ ...prev, step: 2 }))}
                 />
               )}
-              
+
               {state.step === 4 && (
                 <PackStep4Summary
                   key="step4"
@@ -294,8 +277,8 @@ ${state.coordinator.name}
                   participants={state.participants}
                   coordinator={state.coordinator}
                   termsAccepted={state.termsAccepted}
-                  onToggleTerms={() => setState(prev => ({ ...prev, termsAccepted: !prev.termsAccepted }))}
-                  onBack={() => setState(prev => ({ ...prev, step: 3 }))}
+                  onToggleTerms={() => setState((prev) => ({ ...prev, termsAccepted: !prev.termsAccepted }))}
+                  onBack={() => setState((prev) => ({ ...prev, step: 3 }))}
                   onConfirm={handleConfirm}
                 />
               )}
