@@ -61,7 +61,7 @@ export function useActivityEvents({ category, slug, fromDate }: Options = {}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const from = fromDate ? fromDate.toISOString() : new Date().toISOString();
+  const from = useMemo(() => fromDate?.toISOString() ?? new Date().toISOString(), [fromDate]);
 
   const load = useCallback(async () => {
     setLoading(true);
