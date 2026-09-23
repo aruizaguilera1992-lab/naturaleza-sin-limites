@@ -1,93 +1,97 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Send, Check, User, Mail, Phone, MessageSquare, Calendar, Clock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Send, Check, User, Mail, Phone, MessageSquare, Calendar, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 const experienceOptions = [
-  { id: 'escalada', label: 'Escalada' },
-  { id: 'barranquismo', label: 'Barranquismo' },
-  { id: 'espeleologia', label: 'Espeleología' },
-  { id: 'ferratas', label: 'Vías Ferratas' },
-  { id: 'ninguna', label: 'Ninguna (quiero empezar)' },
+  { id: "escalada", label: "Escalada" },
+  { id: "barranquismo", label: "Barranquismo" },
+  { id: "espeleologia", label: "Espeleología" },
+  { id: "ferratas", label: "Vías Ferratas" },
+  { id: "ninguna", label: "Ninguna (quiero empezar)" },
 ];
 
 export function VSTrialFormSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [draftUrl, setDraftUrl] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
+    name: "",
+    email: "",
+    phone: "",
     experience: [] as string[],
-    objetivo: '',
-    franja: '',
+    objetivo: "",
+    franja: "",
   });
 
   const handleExperienceChange = (id: string, checked: boolean) => {
-    if (id === 'ninguna' && checked) {
-      setFormData(prev => ({ ...prev, experience: ['ninguna'] }));
+    if (id === "ninguna" && checked) {
+      setFormData((prev) => ({ ...prev, experience: ["ninguna"] }));
     } else if (checked) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        experience: prev.experience.filter(e => e !== 'ninguna').concat(id)
+        experience: prev.experience.filter((e) => e !== "ninguna").concat(id),
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        experience: prev.experience.filter(e => e !== id)
+        experience: prev.experience.filter((e) => e !== id),
       }));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.phone) {
-      toast.error('Por favor, completa los campos obligatorios');
+      toast.error("Por favor, completa los campos obligatorios");
       return;
     }
 
+    if (!privacyAccepted) {
+      toast.error("Debes aceptar la política de privacidad para continuar");
+      return;
+    }
     setIsSubmitting(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const experienceText =
+      formData.experience.length > 0
+        ? formData.experience.map((e) => experienceOptions.find((o) => o.id === e)?.label).join(", ")
+        : "No especificada";
 
-    const experienceText = formData.experience.length > 0 
-      ? formData.experience.map(e => experienceOptions.find(o => o.id === e)?.label).join(', ')
-      : 'No especificada';
-
-    const dateText = selectedDate 
-      ? format(selectedDate, "EEEE d 'de' MMMM", { locale: es })
-      : 'No especificada';
+    const dateText = selectedDate ? format(selectedDate, "EEEE d 'de' MMMM", { locale: es }) : "No especificada";
 
     const message = encodeURIComponent(
       `¡Hola! Me gustaría solicitar una clase de prueba gratuita de Vértigo Sapiens.\n\n` +
-      `📝 *Datos de contacto:*\n` +
-      `• Nombre: ${formData.name}\n` +
-      `• Email: ${formData.email}\n` +
-      `• Teléfono: ${formData.phone}\n\n` +
-      `🏔️ *Experiencia en:* ${experienceText}\n\n` +
-      `🎯 *Objetivo:* ${formData.objetivo || 'No especificado'}\n\n` +
-      `📅 *Fecha preferida:* ${dateText}\n` +
-      `⏰ *Franja horaria:* ${formData.franja || 'No especificada'}`
+        `📝 *Datos de contacto:*\n` +
+        `• Nombre: ${formData.name}\n` +
+        `• Email: ${formData.email}\n` +
+        `• Teléfono: ${formData.phone}\n\n` +
+        `🏔️ *Experiencia en:* ${experienceText}\n\n` +
+        `🎯 *Objetivo:* ${formData.objetivo || "No especificado"}\n\n` +
+        `📅 *Fecha preferida:* ${dateText}\n` +
+        `⏰ *Franja horaria:* ${formData.franja || "No especificada"}`,
     );
 
     setIsSubmitting(false);
     setIsSubmitted(true);
-    toast.success('¡Solicitud enviada! Te contactaremos pronto.');
-
-    window.open(`https://wa.me/34685609542?text=${message}`, '_blank');
+    const url = `https://wa.me/34685609542?text=${message}`;
+    setDraftUrl(url);
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   if (isSubmitted) {
@@ -103,14 +107,18 @@ export function VSTrialFormSection() {
             <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Check className="h-10 w-10 text-primary" />
             </div>
-            <h3 className="text-2xl font-heading font-bold text-foreground mb-4">
-              ¡Genial! Solicitud Recibida
-            </h3>
+            <h3 className="text-2xl font-heading font-bold text-foreground mb-4">Tu solicitud está preparada</h3>
             <p className="text-muted-foreground mb-6">
-              Nos pondremos en contacto contigo en menos de 24h para confirmar tu clase de prueba gratuita.
+              Completa el envío en WhatsApp para que recibamos tu solicitud. La clase queda pendiente de confirmación;
+              solemos responder en 24–48 horas laborables.
             </p>
+            <Button asChild variant="hero" className="mb-4">
+              <a href={draftUrl} target="_blank" rel="noopener noreferrer">
+                Continuar en WhatsApp
+              </a>
+            </Button>
             <Button variant="outline" onClick={() => setIsSubmitted(false)}>
-              Enviar otra solicitud
+              Volver al formulario
             </Button>
           </motion.div>
         </div>
@@ -135,16 +143,16 @@ export function VSTrialFormSection() {
               Clase de <span className="text-gradient">Prueba Gratis</span>
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Ven a conocernos sin compromiso. Entrena con el grupo, conoce nuestra metodología
-              y descubre si Vértigo Sapiens es para ti.
+              Ven a conocernos sin compromiso. Entrena con el grupo, conoce nuestra metodología y descubre si Vértigo
+              Sapiens es para ti.
             </p>
 
             <div className="space-y-6">
               {[
-                { title: 'Sesión completa de 90 minutos', desc: 'Entrena con un grupo real' },
-                { title: 'Valoración inicial incluida', desc: 'Evaluamos tu nivel y objetivos' },
-                { title: 'Sin compromiso alguno', desc: 'Decide después sin ninguna presión' },
-                { title: 'Material incluido', desc: 'Solo ven con ganas de moverte' },
+                { title: "Sesión completa de 90 minutos", desc: "Entrena con un grupo real" },
+                { title: "Valoración inicial incluida", desc: "Evaluamos tu nivel y objetivos" },
+                { title: "Sin compromiso alguno", desc: "Decide después sin ninguna presión" },
+                { title: "Material incluido", desc: "Solo ven con ganas de moverte" },
               ].map((item, index) => (
                 <motion.div
                   key={item.title}
@@ -174,9 +182,7 @@ export function VSTrialFormSection() {
             transition={{ duration: 0.6 }}
           >
             <form onSubmit={handleSubmit} className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-8">
-              <h3 className="font-heading text-xl font-semibold text-foreground mb-6">
-                Reserva tu clase gratuita
-              </h3>
+              <h3 className="font-heading text-xl font-semibold text-foreground mb-6">Reserva tu clase gratuita</h3>
 
               <div className="space-y-5">
                 {/* Name */}
@@ -231,9 +237,7 @@ export function VSTrialFormSection() {
 
                 {/* Experience Checkboxes */}
                 <div>
-                  <Label className="text-foreground mb-3 block">
-                    ¿Tienes experiencia en deportes de aventura?
-                  </Label>
+                  <Label className="text-foreground mb-3 block">¿Tienes experiencia en deportes de aventura?</Label>
                   <div className="space-y-2">
                     {experienceOptions.map((option) => (
                       <div key={option.id} className="flex items-center space-x-3">
@@ -242,10 +246,7 @@ export function VSTrialFormSection() {
                           checked={formData.experience.includes(option.id)}
                           onCheckedChange={(checked) => handleExperienceChange(option.id, checked as boolean)}
                         />
-                        <label
-                          htmlFor={option.id}
-                          className="text-sm text-foreground cursor-pointer"
-                        >
+                        <label htmlFor={option.id} className="text-sm text-foreground cursor-pointer">
                           {option.label}
                         </label>
                       </div>
@@ -280,7 +281,7 @@ export function VSTrialFormSection() {
                         variant="outline"
                         className={cn(
                           "w-full justify-start text-left font-normal bg-background/50",
-                          !selectedDate && "text-muted-foreground"
+                          !selectedDate && "text-muted-foreground",
                         )}
                       >
                         <Calendar className="mr-2 h-4 w-4" />
@@ -313,7 +314,7 @@ export function VSTrialFormSection() {
                   <RadioGroup
                     value={formData.franja}
                     onValueChange={(value) => setFormData({ ...formData, franja: value })}
-                    className="flex gap-4"
+                    className="flex flex-wrap gap-4"
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="manana" id="manana" />
@@ -335,21 +336,33 @@ export function VSTrialFormSection() {
                   variant="hero"
                   size="lg"
                   className="w-full"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !privacyAccepted}
                 >
                   {isSubmitting ? (
-                    'Enviando...'
+                    "Enviando..."
                   ) : (
                     <>
                       <Send className="mr-2 h-5 w-5" />
-                      Reservar Mi Clase Gratis
+                      Preparar solicitud en WhatsApp
                     </>
                   )}
                 </Button>
 
-                <p className="text-xs text-muted-foreground text-center">
-                  Al enviar este formulario aceptas nuestra política de privacidad.
-                </p>
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="trial-privacy"
+                    checked={privacyAccepted}
+                    onCheckedChange={(checked) => setPrivacyAccepted(checked === true)}
+                  />
+                  <label htmlFor="trial-privacy" className="text-xs text-muted-foreground">
+                    He leído y acepto la{" "}
+                    <Link to="/privacidad" className="text-primary underline">
+                      política de privacidad
+                    </Link>
+                    . Se preparará un mensaje con mis datos para enviarlo por WhatsApp a Naturaleza Sin Límites y
+                    gestionar mi solicitud.
+                  </label>
+                </div>
               </div>
             </form>
           </motion.div>
