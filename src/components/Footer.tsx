@@ -1,30 +1,30 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
-import logoAsset from '@/assets/naturaleza-sin-limites-logo.webp.asset.json';
-import { useCookieConsent } from '@/context/CookieConsentContext';
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
+import logoAsset from "@/assets/naturaleza-sin-limites-logo.webp.asset.json";
+import { useCookieConsent } from "@/context/CookieConsentContext";
 
 const navLinks = [
-  { href: '/#actividades', label: 'Actividades' },
-  { href: '/vertigo-sapiens', label: 'Vértigo Sapiens' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/#nosotros', label: 'Sobre Nosotros' },
-  { href: '/contacto', label: 'Contacto' },
+  { href: "/actividades", label: "Actividades" },
+  { href: "/vertigo-sapiens", label: "Vértigo Sapiens" },
+  { href: "/blog", label: "Blog" },
+  { href: "/quienes-somos", label: "Sobre Nosotros" },
+  { href: "/contacto", label: "Contacto" },
 ];
 
 const activities = [
-  { href: '/barranquismo', label: 'Barranquismo' },
-  { href: '/escalada', label: 'Escalada' },
-  { href: '/vias-ferratas', label: 'Vías Ferratas' },
-  { href: '/espeleologia', label: 'Espeleología' },
+  { href: "/barranquismo", label: "Barranquismo" },
+  { href: "/escalada", label: "Escalada" },
+  { href: "/vias-ferratas", label: "Vías Ferratas" },
+  { href: "/espeleologia", label: "Espeleología" },
 ];
 
 const socialLinks = [
   {
-    href: 'https://wa.me/34685609542?text=%C2%A1Hola!%20Quiero%20informaci%C3%B3n%20sobre%20vuestras%20actividades.',
+    href: "https://wa.me/34685609542?text=%C2%A1Hola!%20Quiero%20informaci%C3%B3n%20sobre%20vuestras%20actividades.",
     icon: MessageCircle,
-    label: 'WhatsApp',
+    label: "WhatsApp",
   },
-  { href: 'mailto:naturaleza.s.limites@gmail.com', icon: Mail, label: 'Email' },
+  { href: "mailto:naturaleza.s.limites@gmail.com", icon: Mail, label: "Email" },
 ];
 
 export function Footer() {
@@ -33,21 +33,21 @@ export function Footer() {
   const { openPreferences } = useCookieConsent();
 
   const handleNavClick = (href: string) => {
-    if (href.startsWith('/#')) {
+    if (href.startsWith("/#")) {
       const sectionId = href.substring(2);
-      if (location.pathname === '/') {
+      if (location.pathname === "/") {
         // Already on home page, just scroll
         const element = document.getElementById(sectionId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView({ behavior: "smooth" });
         }
       } else {
         // Navigate to home then scroll
-        navigate('/');
+        navigate("/");
         setTimeout(() => {
           const element = document.getElementById(sectionId);
           if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
+            element.scrollIntoView({ behavior: "smooth" });
           }
         }, 100);
       }
@@ -55,10 +55,10 @@ export function Footer() {
   };
 
   const handleLogoClick = () => {
-    if (location.pathname === '/') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      navigate('/');
+      navigate("/");
     }
   };
 
@@ -69,11 +69,17 @@ export function Footer() {
           {/* Brand Column */}
           <div>
             <button onClick={handleLogoClick} className="inline-block mb-6 cursor-pointer">
-              <img src={logoAsset.url} alt="Naturaleza Sin Límites" loading="lazy" decoding="async" className="h-24 w-auto" />
+              <img
+                src={logoAsset.url}
+                alt="Naturaleza Sin Límites"
+                loading="lazy"
+                decoding="async"
+                className="h-24 w-auto"
+              />
             </button>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-              Proyecto de guiado y entrenamiento en deportes de aventura en Málaga. 
-              Pasión por la aventura, compromiso con la seguridad.
+              Proyecto de guiado y entrenamiento en deportes de aventura en Málaga. Pasión por la aventura, compromiso
+              con la seguridad.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -97,7 +103,7 @@ export function Footer() {
             <ul className="space-y-3">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  {link.href.startsWith('/#') ? (
+                  {link.href.startsWith("/#") ? (
                     <button
                       onClick={() => handleNavClick(link.href)}
                       className="text-muted-foreground hover:text-primary transition-colors text-sm text-left"
@@ -107,7 +113,7 @@ export function Footer() {
                   ) : (
                     <Link
                       to={link.href}
-                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                       className="text-muted-foreground hover:text-primary transition-colors text-sm"
                     >
                       {link.label}
@@ -159,9 +165,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <span className="text-muted-foreground text-sm">
-                  Málaga, Andalucía, España
-                </span>
+                <span className="text-muted-foreground text-sm">Málaga, Andalucía, España</span>
               </li>
             </ul>
           </div>
@@ -170,14 +174,20 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-muted-foreground text-sm">
-              © 2026 Naturaleza Sin Límites - Proyecto personal
-            </p>
+            <p className="text-muted-foreground text-sm">© 2026 Naturaleza Sin Límites - Proyecto personal</p>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-              <Link to="/privacidad" className="hover:text-primary transition-colors">Política de Privacidad</Link>
-              <Link to="/terminos" className="hover:text-primary transition-colors">Términos y Condiciones</Link>
-              <Link to="/cookies" className="hover:text-primary transition-colors">Política de Cookies</Link>
-              <button onClick={openPreferences} className="hover:text-primary transition-colors">Configurar cookies</button>
+              <Link to="/privacidad" className="hover:text-primary transition-colors">
+                Política de Privacidad
+              </Link>
+              <Link to="/terminos" className="hover:text-primary transition-colors">
+                Términos y Condiciones
+              </Link>
+              <Link to="/cookies" className="hover:text-primary transition-colors">
+                Política de Cookies
+              </Link>
+              <button onClick={openPreferences} className="hover:text-primary transition-colors">
+                Configurar cookies
+              </button>
             </div>
           </div>
         </div>
