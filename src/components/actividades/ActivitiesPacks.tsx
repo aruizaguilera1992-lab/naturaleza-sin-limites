@@ -1,88 +1,17 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Check, Sparkles, Mountain, Zap, Trophy } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { PackDesignerModal } from './pack-designer/PackDesignerModal';
-import { CustomPackDesignerModal } from './pack-designer/CustomPackDesignerModal';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Check, Sparkles, Mountain, Zap, Trophy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { PackDesignerModal, packConfigs } from "./pack-designer/PackDesignerModal";
+import { CustomPackDesignerModal } from "./pack-designer/CustomPackDesignerModal";
 
-interface Pack {
-  id: string;
-  name: string;
-  subtitle: string;
-  description: string;
-  activities: number;
-  types: string[];
-  price: string;
-  originalPrice: string;
-  savings: string;
-  icon: React.ElementType;
-  color: string;
-  features: string[];
-}
-
-const packs: Pack[] = [
-  {
-    id: 'aventura-completa',
-    name: 'AVENTURA COMPLETA',
-    subtitle: 'La experiencia definitiva',
-    description: '4 actividades diferentes para descubrir todas las disciplinas verticales',
-    activities: 4,
-    types: ['Barranquismo', 'Escalada', 'Vía Ferrata', 'Barranco Técnico'],
-    price: '180€',
-    originalPrice: '220€',
-    savings: '40€',
-    icon: Sparkles,
-    color: 'from-primary to-primary/60',
-    features: [
-      '1 salida de cada actividad',
-      'Material incluido siempre',
-      'Guías profesionales',
-      'Fotos de todas las salidas',
-      'Válido 6 meses',
-    ],
-  },
-  {
-    id: 'vertical-integral',
-    name: 'VERTICAL INTEGRAL',
-    subtitle: 'Para amantes de la altura',
-    description: '3 actividades verticales para dominar la progresión en altura',
-    activities: 3,
-    types: ['Barranquismo Vertical', 'Escalada', 'Vía Ferrata'],
-    price: '165€',
-    originalPrice: '195€',
-    savings: '30€',
-    icon: Mountain,
-    color: 'from-emerald-500 to-emerald-500/60',
-    features: [
-      '1 barranco vertical',
-      '1 jornada de escalada',
-      '1 vía ferrata técnica',
-      'Curso de progresión incluido',
-      'Válido 4 meses',
-    ],
-  },
-  {
-    id: 'experto-total',
-    name: 'EXPERTO TOTAL',
-    subtitle: 'El desafío máximo',
-    description: '5 actividades de nivel alto para los más experimentados',
-    activities: 5,
-    types: ['Barranquismo Avanzado', 'Barranquismo Técnico', 'Escalada Deportiva', 'Ferratas K4+', 'Travesía'],
-    price: '240€',
-    originalPrice: '290€',
-    savings: '50€',
-    icon: Trophy,
-    color: 'from-amber-500 to-amber-500/60',
-    features: [
-      'Solo actividades nivel alto',
-      'Acceso a salidas exclusivas',
-      'Grupo reducido (máx. 4)',
-      'Sesión de técnica incluida',
-      'Válido 12 meses',
-    ],
-  },
-];
+const packIcons: Record<string, React.ElementType> = {
+  "aventura-completa": Sparkles,
+  "vertical-integral": Mountain,
+  "experto-total": Trophy,
+};
+const packs = packConfigs.map((pack) => ({ ...pack, icon: packIcons[pack.id] || Sparkles }));
 
 export function ActivitiesPacks() {
   const [selectedPackId, setSelectedPackId] = useState<string | null>(null);
@@ -106,10 +35,11 @@ export function ActivitiesPacks() {
             Ahorra con Nuestros <span className="text-gradient">Packs</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Combina varias actividades y obtén descuentos exclusivos. Ideal para grupos y aventureros que quieren probarlo todo.
+            Combina varias actividades y obtén descuentos exclusivos. Ideal para grupos y aventureros que quieren
+            probarlo todo.
           </p>
         </motion.div>
-        
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {packs.map((pack, index) => (
             <motion.div
@@ -124,20 +54,16 @@ export function ActivitiesPacks() {
               <div className={`bg-gradient-to-r ${pack.color} p-6 text-white`}>
                 <div className="flex items-center justify-between mb-3">
                   <pack.icon className="h-8 w-8" />
-                  <Badge className="bg-white/20 text-white border-0">
-                    Ahorras {pack.savings}
-                  </Badge>
+                  <Badge className="bg-white/20 text-white border-0">Ahorras {pack.savings}</Badge>
                 </div>
                 <h3 className="text-xl font-heading font-bold mb-1">{pack.name}</h3>
                 <p className="text-white/80 text-sm">{pack.subtitle}</p>
               </div>
-              
+
               {/* Content */}
               <div className="p-6">
-                <p className="text-muted-foreground text-sm mb-4">
-                  {pack.description}
-                </p>
-                
+                <p className="text-muted-foreground text-sm mb-4">{pack.description}</p>
+
                 {/* Activities included */}
                 <div className="mb-4">
                   <span className="text-xs text-muted-foreground uppercase tracking-wider">
@@ -151,7 +77,7 @@ export function ActivitiesPacks() {
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Features */}
                 <ul className="space-y-2 mb-6">
                   {pack.features.map((feature, i) => (
@@ -161,29 +87,21 @@ export function ActivitiesPacks() {
                     </li>
                   ))}
                 </ul>
-                
+
                 {/* Pricing */}
                 <div className="flex items-end gap-2 mb-4">
-                  <span className="text-3xl font-heading font-bold text-foreground">
-                    {pack.price}
-                  </span>
-                  <span className="text-muted-foreground line-through text-sm mb-1">
-                    {pack.originalPrice}
-                  </span>
+                  <span className="text-3xl font-heading font-bold text-foreground">{pack.price}</span>
+                  <span className="text-muted-foreground line-through text-sm mb-1">{pack.originalPrice}</span>
                 </div>
-                
-                <Button 
-                  variant="hero" 
-                  className="w-full"
-                  onClick={() => setSelectedPackId(pack.id)}
-                >
+
+                <Button variant="hero" className="w-full" onClick={() => setSelectedPackId(pack.id)}>
                   Ver Pack
                 </Button>
               </div>
             </motion.div>
           ))}
         </div>
-        
+
         {/* Additional CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -192,12 +110,10 @@ export function ActivitiesPacks() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-12"
         >
-          <p className="text-muted-foreground mb-4">
-            ¿Necesitas un pack personalizado para tu grupo?
-          </p>
-          <Button 
-            variant="outline" 
-            size="lg" 
+          <p className="text-muted-foreground mb-4">¿Necesitas un pack personalizado para tu grupo?</p>
+          <Button
+            variant="outline"
+            size="lg"
             onClick={() => setCustomPackOpen(true)}
             className="max-w-full whitespace-normal h-auto min-h-[44px] py-3 text-center"
           >
@@ -211,14 +127,11 @@ export function ActivitiesPacks() {
       <PackDesignerModal
         open={!!selectedPackId}
         onOpenChange={(open) => !open && setSelectedPackId(null)}
-        packId={selectedPackId || ''}
+        packId={selectedPackId || ""}
       />
 
       {/* Custom Pack Designer Modal */}
-      <CustomPackDesignerModal
-        open={customPackOpen}
-        onOpenChange={setCustomPackOpen}
-      />
+      <CustomPackDesignerModal open={customPackOpen} onOpenChange={setCustomPackOpen} />
     </section>
   );
 }
