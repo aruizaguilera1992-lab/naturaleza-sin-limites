@@ -1,4 +1,5 @@
-import { MapPin, Clock, ShieldCheck, Users, CloudRain, Backpack } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { MapPin, Clock, ShieldCheck, Users, CloudRain, Backpack } from "lucide-react";
 
 interface PracticalInfoProps {
   /** Punto de encuentro habitual (ciudad/pueblo de referencia) */
@@ -12,50 +13,56 @@ interface PracticalInfoProps {
 }
 
 const defaultWhatToBring = [
-  'Bañador y ropa de recambio',
-  'Calzado deportivo que se pueda mojar',
-  'Toalla, agua y comida ligera',
-  'Protección solar y gorra',
+  "Ropa y calzado adecuados a la actividad y al tiempo previsto",
+  "Agua, comida ligera y medicación personal si la necesitas",
+  "Ropa de recambio cuando el recorrido lo requiera",
+  "Consulta la lista específica con el guía antes de la salida",
 ];
 
 export function PracticalInfo({
-  meetingPoint = 'Se confirma al reservar (punto accesible en coche, cerca del inicio de la actividad)',
-  totalDuration = 'Jornada aproximada de 5-7 h incluyendo aproximación y regreso',
-  minParticipants = 4,
+  meetingPoint = "Se confirma al reservar (punto accesible en coche, cerca del inicio de la actividad)",
+  totalDuration = "Consulta la duración indicada en la ficha de la actividad; el horario definitivo se confirma al reservar",
+  minParticipants,
   whatToBring = defaultWhatToBring,
 }: PracticalInfoProps) {
   const items = [
-    { icon: MapPin, title: 'Punto de encuentro', text: meetingPoint },
-    { icon: Clock, title: 'Duración total', text: totalDuration },
+    { icon: MapPin, title: "Punto de encuentro", text: meetingPoint },
+    { icon: Clock, title: "Duración total", text: totalDuration },
     {
       icon: ShieldCheck,
-      title: 'Seguros',
-      text: 'Seguro de accidentes y de responsabilidad civil incluidos en todas las salidas, con guías titulados.',
+      title: "Seguros",
+      text: "Seguro de accidentes y de responsabilidad civil incluidos en todas las salidas, con guías titulados.",
     },
     {
       icon: Users,
-      title: 'Grupo mínimo',
-      text: `A partir de ${minParticipants} personas se confirma la salida. Con menos participantes te proponemos otra fecha o una salida privada.`,
+      title: "Grupo mínimo",
+      text: minParticipants
+        ? `Grupo mínimo de ${minParticipants} personas, sujeto a disponibilidad y confirmación. Con menos participantes, consulta una salida privada u otra fecha.`
+        : "El mínimo es el indicado en la ficha de cada actividad. La salida queda sujeta a disponibilidad y confirmación del guía.",
     },
     {
       icon: CloudRain,
-      title: 'Cancelación y meteorología',
-      text: 'Cancelación gratuita hasta 48 h antes. Si la meteorología o el caudal no son seguros, cambiamos de fecha, de actividad o devolvemos el importe.',
+      title: "Cancelación y meteorología",
+      text: (
+        <>
+          Las condiciones de cancelación se detallan en los{" "}
+          <Link to="/terminos" className="text-primary underline underline-offset-4">
+            términos y condiciones
+          </Link>{" "}
+          y se confirman antes de reservar. Si las condiciones no permiten realizar la actividad con seguridad, el guía
+          te comunicará las alternativas.
+        </>
+      ),
     },
   ];
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-heading font-semibold text-foreground">
-        Información práctica
-      </h3>
+      <h3 className="text-lg font-heading font-semibold text-foreground">Información práctica</h3>
 
       <div className="grid gap-3 sm:grid-cols-2">
         {items.map(({ icon: Icon, title, text }) => (
-          <div
-            key={title}
-            className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-3"
-          >
+          <div key={title} className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-3">
             <div className="flex-shrink-0 rounded-lg bg-primary/10 p-2">
               <Icon className="h-4 w-4 text-primary" />
             </div>
