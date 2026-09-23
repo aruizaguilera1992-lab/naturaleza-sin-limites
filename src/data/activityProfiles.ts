@@ -1,12 +1,12 @@
-import { barrancos, type Barranco } from '@/data/barrancos';
-import { crags, type Crag } from '@/data/crags';
-import { ferratas, type Ferrata } from '@/data/ferratas';
-import { espeleologiaPublicada, type ActividadEspeleologia } from '@/data/espeleologia';
-import { getActivityMedia } from '@/data/activityMedia';
+import { barrancos, type Barranco } from "@/data/barrancos";
+import { crags, type Crag } from "@/data/crags";
+import { ferratas, type Ferrata } from "@/data/ferratas";
+import { espeleologiaPublicada, type ActividadEspeleologia } from "@/data/espeleologia";
+import { getActivityMedia } from "@/data/activityMedia";
 
-export const PENDING = '[PENDIENTE DE CONFIRMAR]';
+export const PENDING = "[PENDIENTE DE CONFIRMAR]";
 
-export type PublicActivityCategory = 'barranquismo' | 'escalada' | 'vias-ferratas' | 'espeleologia';
+export type PublicActivityCategory = "barranquismo" | "escalada" | "vias-ferratas" | "espeleologia";
 
 export interface ActivityProfile {
   id: string;
@@ -59,9 +59,14 @@ const parsePrice = (price: string) => {
 const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 const uniqueSix = (values: string[]) => [...new Set(values.filter(Boolean))].slice(0, 6);
 
-function buildEditorial(profile: Omit<ActivityProfile, 'commercialDescription' | 'highlights' | 'safetyRequirements' | 'itinerary' | 'faqs' | 'localSeoSections'>): ActivityProfile {
-  const experienceText = profile.previousExperience.startsWith('No')
-    ? 'No exige experiencia previa según la información disponible, aunque el recorrido siempre se adapta al nivel real del grupo.'
+function buildEditorial(
+  profile: Omit<
+    ActivityProfile,
+    "commercialDescription" | "highlights" | "safetyRequirements" | "itinerary" | "faqs" | "localSeoSections"
+  >,
+): ActivityProfile {
+  const experienceText = profile.previousExperience.startsWith("No")
+    ? "No exige experiencia previa según la información disponible, aunque el recorrido siempre se adapta al nivel real del grupo."
     : `La experiencia previa indicada es: ${profile.previousExperience}.`;
 
   const commercialDescription = `${profile.name} propone una jornada de ${profile.categoryLabel.toLowerCase()} en ${profile.zone}, ${profile.province}, con una duración total estimada de ${profile.totalDuration}. El recorrido está catalogado con nivel técnico ${profile.technicalLevel} y demanda una condición física ${profile.physicalLevel.toLowerCase()}. ${experienceText} La propuesta se dirige especialmente a ${profile.idealClient.toLowerCase()} El itinerario, el horario y cualquier restricción se revisan antes de confirmar la salida, porque las condiciones del terreno y la normativa pueden cambiar. Consulta la disponibilidad para recibir una valoración adecuada del grupo, conocer el punto de encuentro definitivo y confirmar los servicios incluidos. No se garantiza la realización hasta comprobar condiciones, permisos y requisitos.`;
@@ -96,14 +101,32 @@ function buildEditorial(profile: Omit<ActivityProfile, 'commercialDescription' |
   ];
 
   const faqs = [
-    { question: `¿Dónde se realiza ${profile.name}?`, answer: `La actividad se desarrolla en ${profile.zone}, ${profile.province}. El punto exacto de encuentro se facilita tras confirmar la reserva: ${profile.meetingPoint}.` },
-    { question: '¿Cuánto dura la actividad?', answer: `La duración total estimada es ${profile.totalDuration}. La duración efectiva del recorrido figura como ${profile.effectiveDuration}; puede variar por el ritmo del grupo y las condiciones.` },
-    { question: '¿Necesito experiencia previa?', answer: `${profile.previousExperience}. Antes de confirmar, se revisará la experiencia y condición física de cada participante.` },
-    { question: '¿Qué edad mínima se exige?', answer: `La edad mínima indicada es ${profile.minimumAge}. La participación de menores también depende de talla, autonomía, condiciones del recorrido y autorización responsable.` },
-    { question: '¿Qué material está incluido?', answer: profile.included.length ? profile.included.join('. ') : PENDING },
-    { question: '¿Qué tengo que llevar?', answer: profile.bring.join('. ') },
-    { question: '¿Qué ocurre si cambia el tiempo?', answer: profile.weatherPolicy },
-    { question: '¿Puedo reservar una salida privada?', answer: `Sí, puedes solicitar una salida privada. Precio, ratio, disponibilidad y condiciones finales: ${PENDING}.` },
+    {
+      question: `¿Dónde se realiza ${profile.name}?`,
+      answer: `La actividad se desarrolla en ${profile.zone}, ${profile.province}. El punto exacto de encuentro se facilita tras confirmar la reserva: ${profile.meetingPoint}.`,
+    },
+    {
+      question: "¿Cuánto dura la actividad?",
+      answer: `La duración total estimada es ${profile.totalDuration}. La duración efectiva del recorrido figura como ${profile.effectiveDuration}; puede variar por el ritmo del grupo y las condiciones.`,
+    },
+    {
+      question: "¿Necesito experiencia previa?",
+      answer: `${profile.previousExperience}. Antes de confirmar, se revisará la experiencia y condición física de cada participante.`,
+    },
+    {
+      question: "¿Qué edad mínima se exige?",
+      answer: `La edad mínima indicada es ${profile.minimumAge}. La participación de menores también depende de talla, autonomía, condiciones del recorrido y autorización responsable.`,
+    },
+    {
+      question: "¿Qué material está incluido?",
+      answer: profile.included.length ? profile.included.join(". ") : PENDING,
+    },
+    { question: "¿Qué tengo que llevar?", answer: profile.bring.join(". ") },
+    { question: "¿Qué ocurre si cambia el tiempo?", answer: profile.weatherPolicy },
+    {
+      question: "¿Puedo reservar una salida privada?",
+      answer: `Sí, puedes solicitar una salida privada. Precio, ratio, disponibilidad y condiciones finales: ${PENDING}.`,
+    },
   ];
 
   const localSeoSections = [
@@ -117,8 +140,8 @@ function buildEditorial(profile: Omit<ActivityProfile, 'commercialDescription' |
     {
       heading: `Características del recorrido y preparación`,
       paragraphs: [
-        `Entre los elementos técnicos identificados figuran ${profile.technicalElements.join(', ')}. La aproximación y el retorno se resumen así: ${profile.approachReturn}. La temporada indicada es ${profile.season}. Estos valores describen el recorrido de forma orientativa y deben contrastarse cerca de la fecha elegida. Si una autorización, regulación temporal o condición ambiental afecta al itinerario, la salida solo se confirmará cuando pueda realizarse conforme a la normativa aplicable.`,
-        `El material incluido actualmente indicado es: ${profile.included.join(', ') || PENDING}. Por su parte, el material personal que debe aportar el cliente es: ${profile.bring.join(', ')}. No se deben comprar elementos técnicos específicos antes de recibir las instrucciones definitivas. La talla del equipo, el calzado y la ropa adecuada influyen directamente en la comodidad y en la progresión del grupo durante la actividad.`,
+        `Entre los elementos técnicos identificados figuran ${profile.technicalElements.join(", ")}. La aproximación y el retorno se resumen así: ${profile.approachReturn}. La temporada indicada es ${profile.season}. Estos valores describen el recorrido de forma orientativa y deben contrastarse cerca de la fecha elegida. Si una autorización, regulación temporal o condición ambiental afecta al itinerario, la salida solo se confirmará cuando pueda realizarse conforme a la normativa aplicable.`,
+        `El material incluido actualmente indicado es: ${profile.included.join(", ") || PENDING}. Por su parte, el material personal que debe aportar el cliente es: ${profile.bring.join(", ")}. No se deben comprar elementos técnicos específicos antes de recibir las instrucciones definitivas. La talla del equipo, el calzado y la ropa adecuada influyen directamente en la comodidad y en la progresión del grupo durante la actividad.`,
       ],
     },
     {
@@ -130,7 +153,15 @@ function buildEditorial(profile: Omit<ActivityProfile, 'commercialDescription' |
     },
   ];
 
-  return sanitizeProfile({ ...profile, commercialDescription, highlights, safetyRequirements, itinerary, faqs, localSeoSections });
+  return sanitizeProfile({
+    ...profile,
+    commercialDescription,
+    highlights,
+    safetyRequirements,
+    itinerary,
+    faqs,
+    localSeoSections,
+  });
 }
 
 /**
@@ -138,28 +169,25 @@ function buildEditorial(profile: Omit<ActivityProfile, 'commercialDescription' |
  * verificado se sustituye por una formulación comercial honesta, y los
  * elementos de lista que solo contenían el placeholder se eliminan.
  */
-const CONSULT = 'se confirma al reservar';
-const NO_PRICE = 'Consultar precio';
+const CONSULT = "se confirma al reservar";
+const NO_PRICE = "Consultar precio";
 
 const clean = (value: string) =>
   value
     .split(PENDING)
     .join(CONSULT)
-    .replace(/\s{2,}/g, ' ')
-    .replace(/:\s*(?=[.;,])/g, '')
+    .replace(/\s{2,}/g, " ")
+    .replace(/:\s*(?=[.;,])/g, "")
     .trim();
 
 const cleanList = (values: string[], fallback?: string) => {
-  const cleaned = values
-    .map(clean)
-    .filter((item) => item.length > 0 && item.toLowerCase() !== CONSULT);
+  const cleaned = values.map(clean).filter((item) => item.length > 0 && item.toLowerCase() !== CONSULT);
   if (cleaned.length === 0 && fallback) return [fallback];
   return cleaned;
 };
 
 /** True cuando la actividad tiene datos comerciales suficientes para venderse. */
-export const isSellable = (profile: ActivityProfile) =>
-  Boolean(profile.priceValue && profile.priceValue > 0);
+export const isSellable = (profile: ActivityProfile) => Boolean(profile.priceValue && profile.priceValue > 0);
 
 function sanitizeProfile(profile: ActivityProfile): ActivityProfile {
   const hasPrice = Boolean(profile.priceValue && profile.priceValue > 0);
@@ -167,21 +195,21 @@ function sanitizeProfile(profile: ActivityProfile): ActivityProfile {
     ...profile,
     price: hasPrice ? clean(profile.price) : NO_PRICE,
     priceValue: hasPrice ? profile.priceValue : undefined,
-    totalDuration: clean(profile.totalDuration) || 'Consultar duración',
+    totalDuration: clean(profile.totalDuration) || "Consultar duración",
     effectiveDuration: clean(profile.effectiveDuration) || CONSULT,
     guideRatio: profile.guideRatio.includes(PENDING)
-      ? 'Grupos reducidos de máximo 6 personas'
+      ? "Grupos reducidos de máximo 6 personas"
       : clean(profile.guideRatio),
     group: clean(profile.group),
     approachReturn: clean(profile.approachReturn),
     meetingPoint: profile.meetingPoint.includes(PENDING)
-      ? 'Se confirma al reservar, en un punto accesible en coche cerca del inicio de la actividad'
+      ? "Se confirma al reservar, en un punto accesible en coche cerca del inicio de la actividad"
       : clean(profile.meetingPoint),
     weatherPolicy: profile.weatherPolicy.includes(PENDING)
-      ? 'Si la meteorología o las condiciones del recorrido no son seguras, proponemos nueva fecha, otra actividad o la devolución del importe.'
+      ? "Si la meteorología o las condiciones del recorrido no son seguras, proponemos nueva fecha, otra actividad o la devolución del importe."
       : clean(profile.weatherPolicy),
     cancellationPolicy: profile.cancellationPolicy.includes(PENDING)
-      ? 'Las condiciones de cancelación se facilitan por escrito antes de confirmar la reserva.'
+      ? "Las condiciones de cancelación se facilitan por escrito antes de confirmar la reserva."
       : clean(profile.cancellationPolicy),
     technicalLevel: clean(profile.technicalLevel),
     physicalLevel: clean(profile.physicalLevel),
@@ -189,9 +217,15 @@ function sanitizeProfile(profile: ActivityProfile): ActivityProfile {
     season: clean(profile.season),
     previousExperience: clean(profile.previousExperience),
     technicalElements: cleanList(profile.technicalElements),
-    included: cleanList(profile.included, 'Material técnico homologado y guía titulado; el detalle se confirma al reservar'),
-    bring: cleanList(profile.bring, 'Te enviamos la lista de material personal al confirmar la reserva'),
-    insurancePermits: cleanList(profile.insurancePermits, 'Seguro de accidentes y responsabilidad civil para la actividad'),
+    included: cleanList(
+      profile.included,
+      "Material técnico homologado y guía titulado; el detalle se confirma al reservar",
+    ),
+    bring: cleanList(profile.bring, "Te enviamos la lista de material personal al confirmar la reserva"),
+    insurancePermits: cleanList(
+      profile.insurancePermits,
+      "Seguro de accidentes y responsabilidad civil para la actividad",
+    ),
     highlights: cleanList(profile.highlights),
     safetyRequirements: cleanList(profile.safetyRequirements),
     itinerary: cleanList(profile.itinerary),
@@ -207,88 +241,210 @@ function sanitizeProfile(profile: ActivityProfile): ActivityProfile {
   };
 }
 
-
 function fromBarranco(item: Barranco): ActivityProfile {
   const included = item.incluye.length ? item.incluye : [PENDING];
   const activityImage = getActivityMedia(item.id);
   return buildEditorial({
-    id: `barranco-${item.id}`, slug: item.id, category: 'barranquismo', categoryLabel: 'Barranquismo',
-    name: item.nombre, type: 'Descenso de barrancos', province: item.provincia, zone: item.poblacion,
-    image: activityImage?.src ?? item.imagenGrande, imageAlt: activityImage?.alt ?? `Barranquismo en ${item.nombre}, ${item.poblacion}, ${item.provincia}`,
-    price: item.precio || PENDING, priceValue: parsePrice(item.precio), totalDuration: item.duracion,
-    effectiveDuration: PENDING, technicalLevel: `${item.clasificacionTecnica} (${item.nivel})`,
-    physicalLevel: cap(item.requisitos.condicionFisica), minimumAge: `${item.requisitos.edadMinima} años`,
-    season: item.mejorEpoca, group: `Mínimo ${item.grupoMinimo}; máximo ${PENDING}`, guideRatio: PENDING,
-    approachReturn: item.acceso === 'facil' ? `Acceso fácil; tiempos exactos ${PENDING}` : `Acceso ${item.acceso}; tiempos exactos ${PENDING}`,
-    technicalElements: [`${item.numRapeles} rápel(es)`, `rápel máximo ${item.rapelMaximo}`, `desnivel ${item.desnivel}`, `longitud ${item.longitud}`, ...item.caracteristicas],
-    previousExperience: item.nivelExperiencia === 'principiante' ? 'No; sujeto a valoración previa' : `Sí o experiencia equivalente; nivel ${item.nivelExperiencia}`,
-    included, bring: [PENDING], meetingPoint: PENDING,
-    insurancePermits: [`Seguro y acreditación profesional: ${included.some((v) => /seguro/i.test(v)) ? 'incluido según catálogo; documentación concreta ' + PENDING : PENDING}`, `Permisos y regulación: ${item.regulacion || PENDING}`],
-    weatherPolicy: PENDING, cancellationPolicy: PENDING,
-    idealClient: item.nivelExperiencia === 'principiante' ? 'personas que buscan iniciarse con acompañamiento profesional.' : `personas con nivel ${item.nivelExperiencia} que buscan un descenso acorde a su experiencia.`,
+    id: `barranco-${item.id}`,
+    slug: item.id,
+    category: "barranquismo",
+    categoryLabel: "Barranquismo",
+    name: item.nombre,
+    type: "Descenso de barrancos",
+    province: item.provincia,
+    zone: item.poblacion,
+    image: activityImage?.src ?? item.imagenGrande,
+    imageAlt: activityImage?.alt ?? `Barranquismo en ${item.nombre}, ${item.poblacion}, ${item.provincia}`,
+    price: item.precio || PENDING,
+    priceValue: parsePrice(item.precio),
+    totalDuration: item.duracion,
+    effectiveDuration: PENDING,
+    technicalLevel: `${item.clasificacionTecnica} (${item.nivel})`,
+    physicalLevel: cap(item.requisitos.condicionFisica),
+    minimumAge: `${item.requisitos.edadMinima} años`,
+    season: item.mejorEpoca,
+    group: `Mínimo ${item.grupoMinimo}; máximo 6 participantes`,
+    guideRatio: PENDING,
+    approachReturn:
+      item.acceso === "facil"
+        ? `Acceso fácil; tiempos exactos ${PENDING}`
+        : `Acceso ${item.acceso}; tiempos exactos ${PENDING}`,
+    technicalElements: [
+      `${item.numRapeles} rápel(es)`,
+      `rápel máximo ${item.rapelMaximo}`,
+      `desnivel ${item.desnivel}`,
+      `longitud ${item.longitud}`,
+      ...item.caracteristicas,
+    ],
+    previousExperience:
+      item.nivelExperiencia === "principiante"
+        ? "No; sujeto a valoración previa"
+        : `Sí o experiencia equivalente; nivel ${item.nivelExperiencia}`,
+    included,
+    bring: [PENDING],
+    meetingPoint: PENDING,
+    insurancePermits: [
+      `Seguro y acreditación profesional: ${included.some((v) => /seguro/i.test(v)) ? "incluido según catálogo; documentación concreta " + PENDING : PENDING}`,
+      `Permisos y regulación: ${item.regulacion || PENDING}`,
+    ],
+    weatherPolicy: PENDING,
+    cancellationPolicy: PENDING,
+    idealClient:
+      item.nivelExperiencia === "principiante"
+        ? "personas que buscan iniciarse con acompañamiento profesional."
+        : `personas con nivel ${item.nivelExperiencia} que buscan un descenso acorde a su experiencia.`,
     differentiator: `Recorrido con clasificación ${item.clasificacionTecnica} en ${item.poblacion}`,
-    shortDescription: item.descripcionCorta, sourceUrl: item.urlInfo, sourceLabel: 'Infobarrancos (fuente técnica colaborativa)',
+    shortDescription: item.descripcionCorta,
+    sourceUrl: item.urlInfo,
+    sourceLabel: "Infobarrancos (fuente técnica colaborativa)",
   });
 }
 
 function fromCrag(item: Crag): ActivityProfile {
   const activityImage = getActivityMedia(item.id);
   return buildEditorial({
-    id: `crag-${item.id}`, slug: item.id, category: 'escalada', categoryLabel: 'Escalada', name: item.nombre,
-    type: item.tipo, province: item.provincia, zone: item.zona, image: activityImage?.src ?? item.imagenGrande,
-    imageAlt: activityImage?.alt ?? `Escalada en ${item.nombre}, ${item.zona}, ${item.provincia}`, price: item.precio || PENDING,
-    priceValue: parsePrice(item.precio), totalDuration: item.duracion, effectiveDuration: PENDING,
-    technicalLevel: `${item.gradoMinimo}–${item.gradoMaximo}`, physicalLevel: cap(item.requisitos.condicionFisica),
-    minimumAge: `${item.requisitos.edadMinima} años`, season: item.mejorEpoca,
-    group: `Mínimo ${item.grupoMinimo}; máximo ${PENDING}`, guideRatio: PENDING,
+    id: `crag-${item.id}`,
+    slug: item.id,
+    category: "escalada",
+    categoryLabel: "Escalada",
+    name: item.nombre,
+    type: item.tipo,
+    province: item.provincia,
+    zone: item.zona,
+    image: activityImage?.src ?? item.imagenGrande,
+    imageAlt: activityImage?.alt ?? `Escalada en ${item.nombre}, ${item.zona}, ${item.provincia}`,
+    price: item.precio || PENDING,
+    priceValue: parsePrice(item.precio),
+    totalDuration: item.duracion,
+    effectiveDuration: PENDING,
+    technicalLevel: `${item.gradoMinimo}–${item.gradoMaximo}`,
+    physicalLevel: cap(item.requisitos.condicionFisica),
+    minimumAge: `${item.requisitos.edadMinima} años`,
+    season: item.mejorEpoca,
+    group: `Mínimo ${item.grupoMinimo}; máximo 6 participantes`,
+    guideRatio: PENDING,
     approachReturn: `Aproximación ${item.aproximacion}; retorno ${PENDING}`,
-    technicalElements: [`${item.numeroVias} vías en la escuela`, `altura ${item.altura}`, `orientación ${item.orientacion}`, ...item.tipoEscalada, ...item.caracteristicas],
-    previousExperience: item.requisitos.experienciaPrevia ? 'Sí; nivel concreto sujeto a valoración' : 'No; sujeto a valoración previa',
-    included: item.incluye.length ? item.incluye : [PENDING], bring: [PENDING], meetingPoint: PENDING,
-    insurancePermits: [`Seguro, permisos y acreditaciones: ${PENDING}`], weatherPolicy: PENDING, cancellationPolicy: PENDING,
-    idealClient: item.requisitos.experienciaPrevia ? 'escaladores con experiencia previa que desean progresar en roca.' : 'personas que quieren iniciarse o mejorar su técnica en roca.',
+    technicalElements: [
+      `${item.numeroVias} vías en la escuela`,
+      `altura ${item.altura}`,
+      `orientación ${item.orientacion}`,
+      ...item.tipoEscalada,
+      ...item.caracteristicas,
+    ],
+    previousExperience: item.requisitos.experienciaPrevia
+      ? "Sí; nivel concreto sujeto a valoración"
+      : "No; sujeto a valoración previa",
+    included: item.incluye.length ? item.incluye : [PENDING],
+    bring: [PENDING],
+    meetingPoint: PENDING,
+    insurancePermits: [`Seguro, permisos y acreditaciones: ${PENDING}`],
+    weatherPolicy: PENDING,
+    cancellationPolicy: PENDING,
+    idealClient: item.requisitos.experienciaPrevia
+      ? "escaladores con experiencia previa que desean progresar en roca."
+      : "personas que quieren iniciarse o mejorar su técnica en roca.",
     differentiator: item.destacados[0] || `Escalada en ${item.zona}`,
-    shortDescription: item.descripcionCorta, sourceUrl: item.urlInfo, sourceLabel: 'TheCrag (referencia técnica comunitaria)',
+    shortDescription: item.descripcionCorta,
+    sourceUrl: item.urlInfo,
+    sourceLabel: "TheCrag (referencia técnica comunitaria)",
   });
 }
 
 function fromFerrata(item: Ferrata): ActivityProfile {
   const activityImage = getActivityMedia(item.id);
   return buildEditorial({
-    id: item.id, slug: item.id, category: 'vias-ferratas', categoryLabel: 'Vía ferrata', name: item.nombre,
-    type: item.tipo.replace(/-/g, ' '), province: item.provincia === 'cualquiera' ? 'Andalucía' : item.provincia,
-    zone: item.zona, image: activityImage?.src ?? item.imagenGrande, imageAlt: activityImage?.alt ?? `Vía ferrata ${item.nombre} en ${item.zona}`,
-    price: item.precio || PENDING, priceValue: parsePrice(item.precio), totalDuration: item.duracion,
-    effectiveDuration: item.desarrollo || PENDING, technicalLevel: `${item.clasificacion} · ${item.dificultad}`,
-    physicalLevel: cap(item.requisitos.condicionFisica), minimumAge: `${item.requisitos.edadMinima} años`, season: item.mejorEpoca,
-    group: `${item.grupoMinimo}–${item.grupoMaximo} participantes`, guideRatio: PENDING,
+    id: item.id,
+    slug: item.id,
+    category: "vias-ferratas",
+    categoryLabel: "Vía ferrata",
+    name: item.nombre,
+    type: item.tipo.replace(/-/g, " "),
+    province: item.provincia === "cualquiera" ? "Andalucía" : item.provincia,
+    zone: item.zona,
+    image: activityImage?.src ?? item.imagenGrande,
+    imageAlt: activityImage?.alt ?? `Vía ferrata ${item.nombre} en ${item.zona}`,
+    price: item.precio || PENDING,
+    priceValue: parsePrice(item.precio),
+    totalDuration: item.duracion,
+    effectiveDuration: item.desarrollo || PENDING,
+    technicalLevel: `${item.clasificacion} · ${item.dificultad}`,
+    physicalLevel: cap(item.requisitos.condicionFisica),
+    minimumAge: `${item.requisitos.edadMinima} años`,
+    season: item.mejorEpoca,
+    group: `${item.grupoMinimo}–${Math.min(item.grupoMaximo, 6)} participantes`,
+    guideRatio: PENDING,
     approachReturn: `Aproximación ${item.aproximacion}; retorno ${PENDING}`,
-    technicalElements: [`desnivel ${item.desnivel}`, `altura máxima ${item.alturaMaxima}`, `exposición ${item.exposicion}`, `${item.elementosDestacados.puentes} puente(s)`, `${item.elementosDestacados.tirolinas} tirolina(s)`, ...item.caracteristicas],
-    previousExperience: item.requisitos.experienciaPrevia ? 'Sí; nivel concreto sujeto a valoración' : 'No; sujeto a valoración previa',
-    included: item.incluye.length ? item.incluye : [PENDING], bring: [PENDING], meetingPoint: PENDING,
-    insurancePermits: [`Reserva o permiso: ${item.reservaObligatoria ? 'obligatorio; trámite concreto ' + PENDING : PENDING}`, `Seguro y acreditaciones: ${PENDING}`, ...(item.regulacion ? [`Regulación: ${item.regulacion}`] : [])],
-    weatherPolicy: PENDING, cancellationPolicy: PENDING,
-    idealClient: item.requisitos.experienciaPrevia ? 'personas con experiencia previa y tolerancia a la exposición.' : 'personas con condición física adecuada que quieren conocer la progresión por cable y peldaños.',
+    technicalElements: [
+      `desnivel ${item.desnivel}`,
+      `altura máxima ${item.alturaMaxima}`,
+      `exposición ${item.exposicion}`,
+      `${item.elementosDestacados.puentes} puente(s)`,
+      `${item.elementosDestacados.tirolinas} tirolina(s)`,
+      ...item.caracteristicas,
+    ],
+    previousExperience: item.requisitos.experienciaPrevia
+      ? "Sí; nivel concreto sujeto a valoración"
+      : "No; sujeto a valoración previa",
+    included: item.incluye.length ? item.incluye : [PENDING],
+    bring: [PENDING],
+    meetingPoint: PENDING,
+    insurancePermits: [
+      `Reserva o permiso: ${item.reservaObligatoria ? "obligatorio; trámite concreto " + PENDING : PENDING}`,
+      `Seguro y acreditaciones: ${PENDING}`,
+      ...(item.regulacion ? [`Regulación: ${item.regulacion}`] : []),
+    ],
+    weatherPolicy: PENDING,
+    cancellationPolicy: PENDING,
+    idealClient: item.requisitos.experienciaPrevia
+      ? "personas con experiencia previa y tolerancia a la exposición."
+      : "personas con condición física adecuada que quieren conocer la progresión por cable y peldaños.",
     differentiator: item.destacados[0] || `Itinerario ${item.clasificacion} en ${item.zona}`,
-    shortDescription: item.descripcionCorta, sourceUrl: item.urlInfo, sourceLabel: 'RocJumper (referencia técnica)',
+    shortDescription: item.descripcionCorta,
+    sourceUrl: item.urlInfo,
+    sourceLabel: "RocJumper (referencia técnica)",
   });
 }
 
 function fromCave(item: ActividadEspeleologia): ActivityProfile {
   const activityImage = getActivityMedia(item.id);
   return buildEditorial({
-    id: `espeleologia-${item.id}`, slug: item.id, category: 'espeleologia', categoryLabel: 'Espeleología', name: item.nombre,
-    type: 'Actividad de espeleología', province: item.provincia, zone: item.zona, image: activityImage?.src ?? item.imagenGrande,
-    imageAlt: activityImage?.alt ?? item.imagenAlt, price: item.precio, priceValue: item.precioDesde || undefined,
-    totalDuration: item.duracion, effectiveDuration: PENDING, technicalLevel: item.nivel,
-    physicalLevel: cap(item.requisitos.condicionFisica), minimumAge: `${item.requisitos.edadMinima} años`, season: item.mejorEpoca,
-    group: `Mínimo ${item.grupoMinimo}; máximo ${PENDING}`, guideRatio: PENDING, approachReturn: item.acceso,
-    technicalElements: item.caracteristicas, previousExperience: item.requisitos.experienciaPrevia ? 'Sí; condiciones concretas sujetas a valoración' : 'No; sujeto a valoración previa',
-    included: item.incluye, bring: [PENDING], meetingPoint: PENDING,
-    insurancePermits: [`Seguro, permisos y acreditaciones: ${PENDING}`], weatherPolicy: PENDING, cancellationPolicy: PENDING,
-    idealClient: item.requisitos.experienciaPrevia ? 'personas con experiencia previa que buscan progresión subterránea.' : 'personas que desean una primera experiencia subterránea guiada.',
-    differentiator: item.destacados[0] || 'Actividad adaptada al nivel del grupo', shortDescription: item.descripcionCorta,
-    sourceLabel: 'Catálogo propio; cavidad y datos operativos por confirmar',
+    id: `espeleologia-${item.id}`,
+    slug: item.id,
+    category: "espeleologia",
+    categoryLabel: "Espeleología",
+    name: item.nombre,
+    type: "Actividad de espeleología",
+    province: item.provincia,
+    zone: item.zona,
+    image: activityImage?.src ?? item.imagenGrande,
+    imageAlt: activityImage?.alt ?? item.imagenAlt,
+    price: item.precio,
+    priceValue: item.precioDesde || undefined,
+    totalDuration: item.duracion,
+    effectiveDuration: PENDING,
+    technicalLevel: item.nivel,
+    physicalLevel: cap(item.requisitos.condicionFisica),
+    minimumAge: `${item.requisitos.edadMinima} años`,
+    season: item.mejorEpoca,
+    group: `Mínimo ${item.grupoMinimo}; máximo 6 participantes`,
+    guideRatio: PENDING,
+    approachReturn: item.acceso,
+    technicalElements: item.caracteristicas,
+    previousExperience: item.requisitos.experienciaPrevia
+      ? "Sí; condiciones concretas sujetas a valoración"
+      : "No; sujeto a valoración previa",
+    included: item.incluye,
+    bring: [PENDING],
+    meetingPoint: PENDING,
+    insurancePermits: [`Seguro, permisos y acreditaciones: ${PENDING}`],
+    weatherPolicy: PENDING,
+    cancellationPolicy: PENDING,
+    idealClient: item.requisitos.experienciaPrevia
+      ? "personas con experiencia previa que buscan progresión subterránea."
+      : "personas que desean una primera experiencia subterránea guiada.",
+    differentiator: item.destacados[0] || "Actividad adaptada al nivel del grupo",
+    shortDescription: item.descripcionCorta,
+    sourceLabel: "Catálogo propio; cavidad y datos operativos por confirmar",
   });
 }
 
@@ -304,6 +460,8 @@ export const getActivityProfile = (category?: string, slug?: string) =>
 
 export const getRelatedProfiles = (profile: ActivityProfile) =>
   activityProfiles
-    .filter((item) => item.id !== profile.id && (item.category === profile.category || item.province === profile.province))
+    .filter(
+      (item) => item.id !== profile.id && (item.category === profile.category || item.province === profile.province),
+    )
     .sort((a, b) => Number(b.zone === profile.zone) - Number(a.zone === profile.zone))
     .slice(0, 3);
