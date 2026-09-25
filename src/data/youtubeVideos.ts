@@ -18,11 +18,11 @@ export interface YoutubeVideo {
   title: string;
   sourceUrl: string;
   channel: typeof OFFICIAL_YOUTUBE_CHANNEL_NAME;
-  thumbnail: string;
+  thumbnail?: string;
   relatedPostSlugs?: string[];
 }
 
-const video = (youtubeId: string, title: string, thumbnail: string, relatedPostSlugs?: string[]): YoutubeVideo => ({
+const video = (youtubeId: string, title: string, thumbnail?: string, relatedPostSlugs?: string[]): YoutubeVideo => ({
   youtubeId,
   title,
   sourceUrl: `https://www.youtube.com/watch?v=${youtubeId}`,
