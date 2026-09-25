@@ -94,19 +94,6 @@ var media = {
   }
 };
 
-// src/assets/youtube/xd9qKdM16xQ.jpg.asset.json
-var xd9qKdM16xQ_jpg_asset_default = {
-  version: 1,
-  asset_id: "2f9ebfc5-63a3-40df-91c4-7e5ae42060b2",
-  project_id: "e8067521-0f87-494a-b789-e89c9f7b9922",
-  url: "/__l5e/assets-v1/2f9ebfc5-63a3-40df-91c4-7e5ae42060b2/xd9qKdM16xQ.jpg",
-  r2_key: "a/v1/e8067521-0f87-494a-b789-e89c9f7b9922/2f9ebfc5-63a3-40df-91c4-7e5ae42060b2/xd9qKdM16xQ.jpg",
-  original_filename: "xd9qKdM16xQ.jpg",
-  size: 37148,
-  content_type: "image/jpeg",
-  created_at: "2026-09-25T09:30:52Z"
-};
-
 // src/data/activityMedia.ts
 var activityMedia = {
   "guadalmina": {
@@ -655,15 +642,6 @@ var activityMedia = {
   }
 };
 var getActivityMedia = (id) => activityMedia[id];
-var activityVideos = {
-  "barranquismo/jorox": [{
-    youtubeId: "xd9qKdM16xQ",
-    title: "BARRANCO JOROX (Descenso ac\xFAatico) 01/03/26",
-    sourceUrl: "https://www.youtube.com/watch?v=xd9qKdM16xQ",
-    channel: "Naturaleza Sin L\xEDmites",
-    thumbnail: xd9qKdM16xQ_jpg_asset_default.url
-  }]
-};
 
 // src/data/barrancos.ts
 var barrancos = [
