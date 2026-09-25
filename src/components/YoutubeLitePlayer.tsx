@@ -12,7 +12,6 @@ interface Props {
 export function YoutubeLitePlayer({ video, compact = false }: Props) {
   const [playing, setPlaying] = useState(false);
   const { consent, openPreferences } = useCookieConsent();
-  const thumbnail = `https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`;
 
   if (playing && consent.marketing) {
     return (
@@ -31,9 +30,9 @@ export function YoutubeLitePlayer({ video, compact = false }: Props) {
   return (
     <div className="overflow-hidden rounded-md border border-border bg-card">
       <div className="group relative aspect-video overflow-hidden bg-muted">
-        {consent.marketing && (
+        {video.thumbnail && (
           <img
-            src={thumbnail}
+            src={video.thumbnail}
             alt=""
             loading="lazy"
             decoding="async"
