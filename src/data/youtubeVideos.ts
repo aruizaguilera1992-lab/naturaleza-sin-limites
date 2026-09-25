@@ -33,19 +33,19 @@ const video = (youtubeId: string, title: string, thumbnail?: string, relatedPost
 
 /** Vídeos comprobados directamente en el canal oficial. */
 export const officialYoutubeVideos: YoutubeVideo[] = [
-  video('Q6xfrWBmpc0', 'Cueva de los Chorros 01/08/2026. Riópar, Albacete.', thumbChorros.src),
-  video('ImfyWysSlxU', 'ESPELEOBARRANQUISMO - Travesía Sil de las Perlas - La Covona | Valporquero de Torío, León (15/06/26)', thumbPerlas.src),
-  video('48XZMU7Hwtw', 'SIMA RASCA, TORCAL DE ANTEQUERA 06/06/2026', thumbRasca.src),
-  video('U87YbmUD6zU', 'Sima de las Lepiotas 17/05/26, GES/SEM', thumbLepiotas.src),
-  video('TBVMHN4MPoQ', 'ENCUENTRO EN SORBAS, 02/05/26 TRAVESÍA DE COVADURA', thumbCovadura.src),
-  video('Qkmf1V47rhc', 'ENCUENTRO EN SORBAS, 01/05/26. TRAVESÍA CLÁSICA EN COMPLEJO GEP', thumbGep.src),
-  video('TCCHBbtIFj8', 'ENCUENTRO EN SORBAS, 01/05/26. TRAVESÍA SO-21, CUEVA DEL AGUA GALERÍA FÓSIL', thumbSo21.src),
-  video('kqFCkljcP8I', 'ENCUENTRO DE SORBAS GES-SEM 01/05/26 CUEVA DEL YESO.', thumbYeso.src),
-  video('0s0imVjb-zE', 'Zarzalones Superior 12-04-26', thumbZarzalones.src),
-  video('-dqK-7pZsls', 'Iniciación al descenso de cañones GES - 21 y 22/03/2026', thumbIniciacion.src, ['guia-completa-primer-descenso-barrancos-malaga']),
+  video('Q6xfrWBmpc0', 'Cueva de los Chorros 01/08/2026. Riópar, Albacete.', thumbChorros.url),
+  video('ImfyWysSlxU', 'ESPELEOBARRANQUISMO - Travesía Sil de las Perlas - La Covona | Valporquero de Torío, León (15/06/26)', thumbPerlas.url),
+  video('48XZMU7Hwtw', 'SIMA RASCA, TORCAL DE ANTEQUERA 06/06/2026', thumbRasca.url),
+  video('U87YbmUD6zU', 'Sima de las Lepiotas 17/05/26, GES/SEM', thumbLepiotas.url),
+  video('TBVMHN4MPoQ', 'ENCUENTRO EN SORBAS, 02/05/26 TRAVESÍA DE COVADURA', thumbCovadura.url),
+  video('Qkmf1V47rhc', 'ENCUENTRO EN SORBAS, 01/05/26. TRAVESÍA CLÁSICA EN COMPLEJO GEP', thumbGep.url),
+  video('TCCHBbtIFj8', 'ENCUENTRO EN SORBAS, 01/05/26. TRAVESÍA SO-21, CUEVA DEL AGUA GALERÍA FÓSIL', thumbSo21.url),
+  video('kqFCkljcP8I', 'ENCUENTRO DE SORBAS GES-SEM 01/05/26 CUEVA DEL YESO.', thumbYeso.url),
+  video('0s0imVjb-zE', 'Zarzalones Superior 12-04-26', thumbZarzalones.url),
+  video('-dqK-7pZsls', 'Iniciación al descenso de cañones GES - 21 y 22/03/2026', thumbIniciacion.url, ['guia-completa-primer-descenso-barrancos-malaga']),
   video('9Ic_uJ5-m9c', 'Encuentro de Espeleología GES/SEM Lújar 15/03/26'),
   video('qUsXK3u1gnI', 'Encuentro de Espeleología GES/SEM Lújar 14/03/26'),
-  video('xd9qKdM16xQ', 'BARRANCO JOROX (Descenso acúatico) 01/03/26', thumbJorox.src),
+  video('xd9qKdM16xQ', 'BARRANCO JOROX (Descenso acúatico) 01/03/26', thumbJorox.url),
   video('0wFvTY0SC6c', 'SIMA TUTO 22/02/2026'),
 ];
 

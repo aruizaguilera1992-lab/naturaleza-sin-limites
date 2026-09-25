@@ -661,7 +661,7 @@ var activityVideos = {
     title: "BARRANCO JOROX (Descenso ac\xFAatico) 01/03/26",
     sourceUrl: "https://www.youtube.com/watch?v=xd9qKdM16xQ",
     channel: "Naturaleza Sin L\xEDmites",
-    thumbnail: xd9qKdM16xQ_jpg_asset_default.src
+    thumbnail: xd9qKdM16xQ_jpg_asset_default.url
   }]
 };
 
