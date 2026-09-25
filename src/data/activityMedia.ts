@@ -1,5 +1,6 @@
 import type { MediaAsset } from './media';
 import type { YoutubeVideo } from './youtubeVideos';
+import joroxVideoThumbnail from '@/assets/youtube/xd9qKdM16xQ.jpg.asset.json';
 
 export type ActivityMediaAsset = Omit<MediaAsset, 'replacementNote'> & { sourceTitle: string };
 export interface ActivityMediaCollection {
@@ -565,6 +566,7 @@ const activityVideos: Record<string, YoutubeVideo[]> = {
     title: 'BARRANCO JOROX (Descenso acúatico) 01/03/26',
     sourceUrl: 'https://www.youtube.com/watch?v=xd9qKdM16xQ',
     channel: 'Naturaleza Sin Límites',
+    thumbnail: joroxVideoThumbnail.src,
   }],
 };
 
