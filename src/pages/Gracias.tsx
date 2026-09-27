@@ -88,13 +88,45 @@ export default function Gracias() {
             Revisa también la carpeta de spam por si acaso.
           </p>
 
-          {order?.portalToken && (
+          {order?.portalToken ? (
             <p className="mt-4 flex items-center justify-center gap-2 text-sm">
               <Settings className="h-4 w-4 text-primary" />
               <Link to={`/mi-suscripcion/${order.portalToken}`} className="text-primary underline">
                 Gestionar mi suscripción (facturas, tarjeta, cancelación)
               </Link>
             </p>
+          ) : (
+            order?.mode === "suscripcion" &&
+            order?.status !== "pendiente" && (
+              <div className="mt-6 rounded-lg border border-border bg-background/60 p-4 text-left">
+                <p className="mb-2 flex items-center gap-2 text-sm font-medium">
+                  <Settings className="h-4 w-4 text-primary" />
+                  ¿Quieres gestionar tu suscripción?
+                </p>
+                <p className="mb-3 text-xs text-muted-foreground">
+                  Escribe el correo con el que hiciste el pago y te mostraremos el enlace de gestión.
+                </p>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="tu@correo.com"
+                    className="h-10 flex-1 rounded-md border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={revealPortalLink}
+                    disabled={checkingEmail || !email.trim()}
+                    className="transition-all duration-300 active:scale-95"
+                  >
+                    {checkingEmail ? "Comprobando…" : "Ver enlace de gestión"}
+                  </Button>
+                </div>
+                {emailError && <p className="mt-2 text-xs text-destructive">{emailError}</p>}
+              </div>
+            )
           )}
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
