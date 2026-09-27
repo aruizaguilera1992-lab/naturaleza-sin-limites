@@ -4,6 +4,9 @@ import { z } from "npm:zod@3.23.8";
 
 const BodySchema = z.object({
   sessionId: z.string().min(8).max(200).regex(/^cs_[A-Za-z0-9_]+$/),
+  // Required to reveal the subscription-management link: the caller must
+  // also know the customer email stored on the order.
+  email: z.string().email().max(200).optional(),
 });
 
 const json = (body: unknown, status = 200) =>
@@ -42,6 +45,11 @@ Deno.serve(async (req) => {
   }
   if (!data) return json({ found: false });
 
+  const emailMatches =
+    parsed.data.email !== undefined &&
+    data.customer_email !== null &&
+    parsed.data.email.trim().toLowerCase() === (data.customer_email as string).trim().toLowerCase();
+
   return json({
     found: true,
     productName: data.product_name,
@@ -49,7 +57,12 @@ Deno.serve(async (req) => {
     status: data.status,
     amountCents: data.amount_cents,
     currency: data.currency,
-    // Only a paid subscription can be managed in the billing portal.
-    portalToken: data.mode === "suscripcion" && data.status !== "pendiente" ? data.portal_token : null,
+    // Only a paid subscription can be managed in the billing portal, and the
+    // portal token is only revealed when the caller proves knowledge of the
+    // customer email stored on the order.
+    portalToken:
+      data.mode === "suscripcion" && data.status !== "pendiente" && emailMatches
+        ? data.portal_token
+        : null,
   });
 });

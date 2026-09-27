@@ -8,6 +8,25 @@ const BodySchema = z.object({
   returnUrl: z.string().url().max(400),
 });
 
+// Customers may only be sent back to our own site after managing billing.
+const ALLOWED_RETURN_ORIGINS = new Set([
+  "https://naturalezasinlimites.es",
+  "https://www.naturalezasinlimites.es",
+]);
+
+const isAllowedReturnUrl = (value: string): boolean => {
+  try {
+    const url = new URL(value);
+    if (ALLOWED_RETURN_ORIGINS.has(url.origin)) return true;
+    // Lovable preview/editor origins and local development.
+    if (url.protocol === "https:" && url.hostname.endsWith(".lovable.app")) return true;
+    if (url.hostname === "localhost" || url.hostname === "127.0.0.1") return true;
+    return false;
+  } catch {
+    return false;
+  }
+};
+
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -26,6 +45,9 @@ Deno.serve(async (req) => {
   }
   const parsed = BodySchema.safeParse(raw);
   if (!parsed.success) return json({ error: "Enlace no válido" }, 400);
+  if (!isAllowedReturnUrl(parsed.data.returnUrl)) {
+    return json({ error: "Dirección de retorno no permitida" }, 400);
+  }
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
