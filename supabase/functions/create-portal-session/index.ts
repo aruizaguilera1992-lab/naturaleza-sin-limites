@@ -45,6 +45,9 @@ Deno.serve(async (req) => {
   }
   const parsed = BodySchema.safeParse(raw);
   if (!parsed.success) return json({ error: "Enlace no válido" }, 400);
+  if (!isAllowedReturnUrl(parsed.data.returnUrl)) {
+    return json({ error: "Dirección de retorno no permitida" }, 400);
+  }
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
