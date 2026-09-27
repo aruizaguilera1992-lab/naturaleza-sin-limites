@@ -17,6 +17,9 @@ export default function Gracias() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [order, setOrder] = useState<Order | null>(null);
+  const [email, setEmail] = useState("");
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -31,6 +34,26 @@ export default function Gracias() {
       active = false;
     };
   }, [sessionId]);
+
+  const revealPortalLink = async () => {
+    if (!sessionId || !email.trim()) return;
+    setCheckingEmail(true);
+    setEmailError(null);
+    try {
+      const { data } = await supabase.functions.invoke("get-plan-order", {
+        body: { sessionId, email: email.trim() },
+      });
+      if (data?.portalToken) {
+        setOrder(data as Order);
+      } else {
+        setEmailError("No encontramos una suscripción con ese correo para este pago.");
+      }
+    } catch {
+      setEmailError("No hemos podido comprobar el correo. Inténtalo de nuevo.");
+    } finally {
+      setCheckingEmail(false);
+    }
+  };
 
   const isPack = order?.mode === "paquete";
 
