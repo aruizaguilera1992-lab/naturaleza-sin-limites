@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
 
   const { data, error } = await supabase
     .from("plan_orders")
-    .select("product_name, mode, status, amount_cents, currency, portal_token")
+    .select("product_name, mode, status, amount_cents, currency, customer_email, portal_token")
     .eq("stripe_session_id", parsed.data.sessionId)
     .maybeSingle();
 
