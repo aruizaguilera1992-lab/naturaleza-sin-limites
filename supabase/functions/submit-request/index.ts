@@ -45,7 +45,17 @@ const ContactSchema = z.object({
   rgpd: z.literal(true),
 });
 
-const BodySchema = z.discriminatedUnion("type", [BookingSchema, ContactSchema]);
+const OnlineSchema = z.object({
+  type: z.literal("online_request"),
+  nombre: z.string().trim().min(2).max(120),
+  email: z.string().trim().email().max(150),
+  disciplina: z.enum(["Barranquismo", "Espeleología", "Actividades verticales"]),
+  objetivo: z.string().trim().min(3).max(600),
+  disponibilidad: z.string().trim().min(1).max(60),
+  rgpd: z.literal(true),
+});
+
+const BodySchema = z.discriminatedUnion("type", [BookingSchema, ContactSchema, OnlineSchema]);
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -93,6 +103,43 @@ Deno.serve(async (req) => {
   );
 
   const now = new Date().toISOString();
+
+  if (data.type === "online_request") {
+    // Solicitud de información sin pago: no crea reservas, cobros ni suscripciones.
+    const mensaje = `Disciplina: ${data.disciplina}\nObjetivo: ${data.objetivo}\nDisponibilidad semanal: ${data.disponibilidad}`;
+    const { data: inserted, error } = await supabase
+      .from("contact_submissions")
+      .insert({
+        nombre: data.nombre,
+        contacto: data.email,
+        email: data.email,
+        interes: "Vértigo Sapiens Online · evaluación inicial",
+        mensaje,
+        rgpd_accepted_at: now,
+      })
+      .select("id")
+      .single();
+    if (error || !inserted) {
+      console.error("Insert online request error", error);
+      return json({ error: "No se pudo guardar la solicitud" }, 500);
+    }
+    const subject = `Solicitud Vértigo Sapiens Online: ${data.nombre}`;
+    const business = await sendTrackedNotification(supabase, {
+      kind: "contacto_negocio",
+      dedupeKey: `online_business:${inserted.id}`,
+      recipients: businessRecipients(),
+      subject,
+      contactId: inserted.id,
+      html: listLayout(subject, [
+        `Nombre: ${data.nombre}`,
+        `Email: ${data.email}`,
+        `Disciplina: ${data.disciplina}`,
+        `Objetivo: ${data.objetivo}`,
+        `Disponibilidad: ${data.disponibilidad}`,
+      ]),
+    });
+    return json({ ok: true, id: inserted.id, notifications: { business: business.status } });
+  }
 
   if (data.type === "booking") {
     const { data: inserted, error } = await supabase

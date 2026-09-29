@@ -25,7 +25,7 @@ const paths = [
     audience: "Para quienes sienten que la montaña ya es parte de su vida y quieren ir un paso más allá.",
     bullets: [
       "Entrenamientos estructurados para mejorar tu rendimiento y tu técnica.",
-      "Acompañamiento cercano, con seguimiento y feedback individual.",
+      "Programa online con seguimiento y revisiones periódicas.",
       "Enfoque en crecimiento personal: no solo llegar más alto, sino hacerlo con cabeza.",
     ],
     cta: "Quiero mejorar mi rendimiento en montaña",

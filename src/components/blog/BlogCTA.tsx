@@ -35,7 +35,7 @@ export function BlogCTA() {
               
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
                 Deja de leer sobre aventuras y empieza a vivirlas. Reserva tu próxima experiencia 
-                o descubre nuestro programa de entrenamiento Vértigo Sapiens.
+                o descubre Vértigo Sapiens Online, nuestra preparación física a distancia para deportes verticales.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

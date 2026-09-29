@@ -113,7 +113,7 @@ export function ValueProposition() {
               
               {/* Description */}
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                Programa de entrenamiento funcional especializado para deportes de aventura. Preparación física + técnica + comunidad.
+                Preparación física online para barranquismo, espeleología y actividades verticales. Programa guiado de 8 semanas.
               </p>
 
               {/* Features with checkmarks */}
@@ -122,27 +122,27 @@ export function ValueProposition() {
                   <div className="flex-shrink-0 w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center">
                     <Check className="h-3 w-3 text-primary" />
                   </div>
-                  <span className="text-foreground text-sm font-medium">Grupos pequeños (4-6 máx)</span>
+                  <span className="text-foreground text-sm font-medium">100 % online</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex-shrink-0 w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center">
                     <Check className="h-3 w-3 text-primary" />
                   </div>
-                  <span className="text-foreground text-sm font-medium">Salidas outdoor programadas</span>
+                  <span className="text-foreground text-sm font-medium">Fuerza funcional, resistencia y movilidad</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex-shrink-0 w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center">
                     <Check className="h-3 w-3 text-primary" />
                   </div>
-                  <span className="text-foreground text-sm font-medium">Asesoramiento personalizado</span>
+                  <span className="text-foreground text-sm font-medium">Revisión de progreso cada dos semanas</span>
                 </div>
               </div>
 
               {/* Price and CTA */}
               <div className="flex items-center justify-between pt-6 border-t border-primary/20">
                 <div className="flex flex-col">
-                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Desde</span>
-                  <span className="text-2xl font-heading font-bold text-gradient">99€/mes</span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Programa</span>
+                  <span className="text-2xl font-heading font-bold text-gradient">8 semanas</span>
                 </div>
                 <Button variant="hero" size="default" asChild>
                   <Link to="/vertigo-sapiens" className="flex items-center gap-2">
