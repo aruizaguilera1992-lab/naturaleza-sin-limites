@@ -44,7 +44,7 @@ const sections = [
         </p>
         <ul className="space-y-3 list-disc pl-5">
           <li>
-            <strong className="text-foreground">Datos de contacto</strong> (nombre, email, teléfono): gestionar consultas y reservas de actividades de aventura y entrenamiento.
+            <strong className="text-foreground">Datos de contacto</strong> (nombre, email, teléfono): gestionar consultas y reservas de actividades de aventura y entrenamiento, incluidas las solicitudes de información de Vértigo Sapiens Online (disciplina, objetivo y disponibilidad semanal), que no suponen contratación ni pago.
           </li>
           <li>
             <strong className="text-foreground">Datos de reserva</strong> (actividad, fecha, número de personas, nivel): organizar, planificar y ejecutar la actividad contratada con seguridad.

@@ -4,43 +4,41 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
-import { VSHeroSection } from '@/components/vertigo-sapiens/VSHeroSection';
-import { VSWhatIsSection } from '@/components/vertigo-sapiens/VSWhatIsSection';
-import { VSMethodologySection } from '@/components/vertigo-sapiens/VSMethodologySection';
-import { VSComponentsSection } from '@/components/vertigo-sapiens/VSComponentsSection';
-import { VSPlansSection } from '@/components/vertigo-sapiens/VSPlansSection';
-import { VSCalendarSection } from '@/components/vertigo-sapiens/VSCalendarSection';
-import { VSFacilitiesSection } from '@/components/vertigo-sapiens/VSFacilitiesSection';
-import { VSTrainersSection } from '@/components/vertigo-sapiens/VSTrainersSection';
-import { VSEnrollmentSection } from '@/components/vertigo-sapiens/VSEnrollmentSection';
-import { VSFAQSection } from '@/components/vertigo-sapiens/VSFAQSection';
-import { VSTrialFormSection } from '@/components/vertigo-sapiens/VSTrialFormSection';
+import {
+  OnlineHero,
+  OnlineProblem,
+  OnlineAudience,
+  OnlineMethod,
+  OnlineProgram,
+  OnlineCoach,
+  OnlineFAQ,
+  OnlineFinalCTA,
+} from '@/components/vertigo-sapiens/online/OnlineSections';
 
+// Las secciones de los planes presenciales (VSPlansSection, etc.) se conservan en el
+// proyecto pero ya no se muestran: la oferta principal es Vértigo Sapiens Online.
 const VertigoSapiensPage = () => {
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0 });
   }, []);
 
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="Vértigo Sapiens | Entrenamiento de fuerza funcional en Málaga"
-        description="Programa de entrenamiento de fuerza funcional para escalada, barrancos y montaña. Planes mensuales, sesiones dirigidas y salidas outdoor."
+        title="Vértigo Sapiens Online | Preparación física para barranquismo y espeleología"
+        description="Programa online de 8 semanas de fuerza funcional, resistencia y movilidad para barranquismo, espeleología y actividades verticales. Solicita tu evaluación inicial."
         path="/vertigo-sapiens"
       />
       <Navbar />
       <main>
-        <VSHeroSection />
-        <VSWhatIsSection />
-        <VSMethodologySection />
-        <VSComponentsSection />
-        <VSPlansSection />
-        <VSCalendarSection />
-        <VSFacilitiesSection />
-        <VSTrainersSection />
-        <VSEnrollmentSection />
-        <VSFAQSection />
-        <VSTrialFormSection />
+        <OnlineHero />
+        <OnlineProblem />
+        <OnlineAudience />
+        <OnlineMethod />
+        <OnlineProgram />
+        <OnlineCoach />
+        <OnlineFAQ />
+        <OnlineFinalCTA />
       </main>
       <Footer />
       <WhatsAppButton />
