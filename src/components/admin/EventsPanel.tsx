@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CalendarDays, Copy, List, Loader2, Pencil, Plus, RefreshCw, X } from "lucide-react";
+import { CalendarDays, Copy, List, Loader2, Pencil, Plus, RefreshCw, Users, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +55,22 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 const STATUSES = Object.keys(STATUS_LABELS);
+
+interface Attendee {
+  id: string;
+  participants: number;
+  state: string;
+  name: string | null;
+  contact: string | null;
+  email: string | null;
+  phone: string | null;
+  paid_amount_cents: number | null;
+}
+
+const ATTENDEE_STATE: Record<string, string> = {
+  bloqueada: "Pendiente de pago",
+  confirmada: "Confirmada",
+};
 
 const DEFAULT_GUIDE = "Antonio Ruiz Aguilera";
 
@@ -112,6 +128,43 @@ export function EventsPanel() {
   const [view, setView] = useState<"lista" | "mes">("lista");
   const [statusFilter, setStatusFilter] = useState("todos");
   const [categoryFilter, setCategoryFilter] = useState("todas");
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [attendees, setAttendees] = useState<Record<string, Attendee[]>>({});
+
+  const toggleAttendees = async (eventId: string) => {
+    if (openId === eventId) {
+      setOpenId(null);
+      return;
+    }
+    setOpenId(eventId);
+    const { data, error } = await supabase
+      .from("activity_event_bookings")
+      .select(
+        "id, participants, state, booking:bookings(name, contact, email, phone, paid_amount_cents)",
+      )
+      .eq("event_id", eventId)
+      .neq("state", "liberada")
+      .order("created_at", { ascending: true });
+    if (error) {
+      setMessage("No se han podido cargar los inscritos.");
+      setAttendees((prev) => ({ ...prev, [eventId]: [] }));
+      return;
+    }
+    const rows: Attendee[] = (data ?? []).map((r) => {
+      const b = (Array.isArray(r.booking) ? r.booking[0] : r.booking) as Partial<Attendee> | null;
+      return {
+        id: r.id,
+        participants: r.participants,
+        state: r.state,
+        name: b?.name ?? null,
+        contact: b?.contact ?? null,
+        email: b?.email ?? null,
+        phone: b?.phone ?? null,
+        paid_amount_cents: b?.paid_amount_cents ?? null,
+      };
+    });
+    setAttendees((prev) => ({ ...prev, [eventId]: rows }));
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -327,13 +380,59 @@ export function EventsPanel() {
               ))}
             </SelectContent>
           </Select>
-          <Button size="sm" variant="outline" onClick={() => startEdit(event)}>
+          <Button
+            size="sm"
+            variant={openId === event.id ? "default" : "outline"}
+            onClick={() => void toggleAttendees(event.id)}
+            aria-label="Ver inscritos"
+          >
+            <Users className="mr-1 h-4 w-4" /> Inscritos
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => startEdit(event)} aria-label="Editar">
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button size="sm" variant="outline" onClick={() => duplicate(event)}>
+          <Button size="sm" variant="outline" onClick={() => duplicate(event)} aria-label="Duplicar">
             <Copy className="h-4 w-4" />
           </Button>
         </div>
+        {openId === event.id && (
+          <div className="w-full border-t border-border pt-3">
+            {attendees[event.id] === undefined ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : attendees[event.id].length === 0 ? (
+              <p className="text-sm text-muted-foreground">Todavía no hay inscritos.</p>
+            ) : (
+              <ul className="space-y-2">
+                {attendees[event.id].map((a) => (
+                  <li
+                    key={a.id}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-muted/40 px-3 py-2 text-sm"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium text-foreground">{a.name || "Sin nombre"}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {[a.phone, a.email, !a.phone && !a.email ? a.contact : null]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">
+                        {a.participants} {a.participants === 1 ? "plaza" : "plazas"}
+                      </span>
+                      <Badge variant="outline">{ATTENDEE_STATE[a.state] ?? a.state}</Badge>
+                      {a.paid_amount_cents ? (
+                        <Badge>Señal {(a.paid_amount_cents / 100).toFixed(2)} €</Badge>
+                      ) : (
+                        <Badge variant="secondary">Sin pago</Badge>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
       </div>
     );
   };
