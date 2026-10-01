@@ -517,7 +517,7 @@ export default function Admin() {
     { id: "overview", label: "Resumen", icon: Home },
     { id: "bookings", label: "Reservas", icon: CalendarCheck, count: newBookings },
     { id: "contacts", label: "Contactos", icon: Inbox, count: newContacts },
-    { id: "events", label: "Salidas", icon: CalendarDays },
+    { id: "events", label: "Calendario", icon: CalendarDays },
     { id: "notifications", label: "Notificaciones", icon: Bell, count: pendingNotifications },
     { id: "settings", label: "Ajustes legales", icon: Settings },
   ];
