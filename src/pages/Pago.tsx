@@ -44,6 +44,13 @@ export default function Pago() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const loadStatus = useCallback(async () => {
+    // Enlaces mal formados (p. ej. "/pago/:token") no llegan al servidor.
+    if (!/^[a-f0-9]{16,80}$/.test(token)) {
+      setError("Este enlace de pago no es válido. Revisa que lo hayas copiado completo.");
+      setPayment(null);
+      setLoading(false);
+      return;
+    }
     const { data, error: fnError } = await supabase.functions.invoke("get-payment", {
       body: { token, action: "status" },
     });
