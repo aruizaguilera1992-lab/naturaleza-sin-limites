@@ -4,8 +4,6 @@ import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Mountain } from "lucide-react";
 
 function safeNext(raw: string | null): string {
@@ -17,10 +15,6 @@ function safeNext(raw: string | null): string {
 export default function Login() {
   const [params] = useSearchParams();
   const next = safeNext(params.get("next"));
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -33,32 +27,6 @@ export default function Login() {
     });
     return () => sub.subscription.unsubscribe();
   }, [next]);
-
-  const redirectTo = `${window.location.origin}${next}`;
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setError(null);
-    setMessage(null);
-    if (mode === "signup") {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: redirectTo },
-      });
-      setBusy(false);
-      if (error) return setError(error.message);
-      if (!data.session) {
-        setMessage("Te hemos enviado un email de confirmación. Confirma tu cuenta para continuar.");
-      }
-      return;
-    }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setBusy(false);
-    if (error) return setError(error.message);
-    window.location.href = next;
-  }
 
   async function handleGoogle() {
     setError(null);
@@ -91,65 +59,22 @@ export default function Login() {
           <span className="font-heading font-bold tracking-wide">NATURALEZA SIN LÍMITES</span>
         </div>
         <h1 className="text-2xl font-heading font-bold text-foreground mb-2">
-          {mode === "signin" ? "Iniciar sesión" : "Crear cuenta"}
+          Iniciar sesión
         </h1>
         <p className="text-sm text-muted-foreground mb-6">
           Accede con tu cuenta para autorizar aplicaciones conectadas.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-background text-foreground"
-              autoComplete="email"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-background text-foreground"
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            />
-          </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          {message && <p className="text-sm text-primary">{message}</p>}
-          <Button
-            type="submit"
-            disabled={busy}
-            className="w-full transition-all duration-300 active:scale-95"
-          >
-            {busy ? "Procesando…" : mode === "signin" ? "Entrar" : "Registrarme"}
-          </Button>
-        </form>
+        {error && <p className="text-sm text-destructive mb-4">{error}</p>}
 
         <Button
           type="button"
-          variant="outline"
           onClick={handleGoogle}
-          className="w-full mt-3 transition-all duration-300 active:scale-95"
+          disabled={busy}
+          className="w-full transition-all duration-300 active:scale-95"
         >
-          Continuar con Google
+          {busy ? "Conectando…" : "Continuar con Google"}
         </Button>
-
-        <button
-          type="button"
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-          className="w-full mt-6 text-sm text-muted-foreground hover:text-primary transition-colors"
-        >
-          {mode === "signin" ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión"}
-        </button>
       </div>
     </div>
   );
