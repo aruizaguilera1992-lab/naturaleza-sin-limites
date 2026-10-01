@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Mail, Phone, MapPin, Shield } from 'lucide-react';
+import { BusinessLegalData } from '@/components/legal/BusinessLegalData';
 
 const sections = [
   {
@@ -31,6 +32,9 @@ const sections = [
           </li>
           <li><strong className="text-foreground">Dirección:</strong> Málaga, Andalucía, España</li>
         </ul>
+        <div className="mt-4">
+          <BusinessLegalData includeTourism={false} />
+        </div>
       </>
     ),
   },

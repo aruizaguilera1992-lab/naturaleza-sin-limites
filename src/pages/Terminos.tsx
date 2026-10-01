@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { FileText, Mail, Phone } from 'lucide-react';
+import { BusinessLegalData } from '@/components/legal/BusinessLegalData';
 
 const sections = [
   {
@@ -15,6 +16,7 @@ const sections = [
         <p className="mb-4">
           El presente sitio web es operado por <strong className="text-foreground">Naturaleza Sin Límites</strong>, un proyecto personal de guiado y entrenamiento en deportes de aventura con sede en Málaga, Andalucía, España.
         </p>
+        <BusinessLegalData />
         <p className="mb-4">
           Puedes contactar con nosotros a través de:
         </p>
