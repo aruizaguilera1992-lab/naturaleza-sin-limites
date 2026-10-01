@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EventCard } from "@/components/calendario/EventCard";
@@ -28,6 +28,47 @@ const MONTHS = [
   "Noviembre",
   "Diciembre",
 ];
+
+const toIso = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+/** Día sin salida abierta: invita a pedir una salida privada en esa fecha. */
+function FreeDayCard({ date }: { date: Date }) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (date < today) {
+    return <p className="text-muted-foreground text-center py-8">Esta fecha ya ha pasado.</p>;
+  }
+  const label = date.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
+  const wa = `https://wa.me/34685609542?text=${encodeURIComponent(
+    `¡Hola Antonio! He visto que el ${label} está libre en el calendario y me gustaría consultar una salida privada.`,
+  )}`;
+  const requestDate = () => {
+    window.dispatchEvent(new CustomEvent("nsl:prefill-date", { detail: toIso(date) }));
+    const form = document.getElementById("contacto");
+    if (form) form.scrollIntoView({ behavior: "smooth" });
+    else window.location.href = `/#contacto`;
+  };
+  return (
+    <div className="rounded-xl border border-primary/40 bg-card p-6 text-center">
+      <CalendarDays className="mx-auto h-8 w-8 text-primary" />
+      <p className="mt-3 font-heading font-semibold text-foreground">Fecha disponible para tu grupo</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Este día no hay salida abierta. Podemos organizar una salida privada para ti.
+      </p>
+      <div className="mt-4 flex flex-wrap justify-center gap-2">
+        <Button onClick={requestDate} className="transition-all duration-300 active:scale-95">
+          Solicitar salida en esta fecha
+        </Button>
+        <Button asChild variant="outline" className="gap-2 transition-all duration-300 active:scale-95">
+          <a href={wa} target="_blank" rel="noopener noreferrer">
+            <MessageCircle className="h-4 w-4" /> Preguntar por WhatsApp
+          </a>
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 export function ActivitiesCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -197,7 +238,7 @@ export function ActivitiesCalendar() {
             </h3>
 
             {selectedEvents.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No hay salidas programadas para este día</p>
+              <FreeDayCard date={selectedDate} />
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {selectedEvents.map((event) => (

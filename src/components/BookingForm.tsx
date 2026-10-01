@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useForm } from 'react-hook-form';
@@ -80,6 +80,16 @@ export const BookingForm = () => {
       rgpd: false,
     },
   });
+
+  // El calendario de la portada puede pedir rellenar una fecha libre.
+  useEffect(() => {
+    const onPrefill = (e: Event) => {
+      const date = (e as CustomEvent<string>).detail;
+      if (date) form.setValue('preferredDate', date, { shouldValidate: true });
+    };
+    window.addEventListener('nsl:prefill-date', onPrefill);
+    return () => window.removeEventListener('nsl:prefill-date', onPrefill);
+  }, [form]);
 
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
