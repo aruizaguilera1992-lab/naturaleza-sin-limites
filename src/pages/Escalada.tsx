@@ -45,12 +45,17 @@ export default function Escalada() {
       return;
     }
 
-    const frame = window.requestAnimationFrame(() => {
+    const scrollToHash = () => {
       const target = document.getElementById(decodeURIComponent(hash.slice(1)));
       target?.scrollIntoView({ block: "start" });
-    });
+    };
+    const frame = window.requestAnimationFrame(scrollToHash);
+    const settledLayout = window.setTimeout(scrollToHash, 450);
 
-    return () => window.cancelAnimationFrame(frame);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(settledLayout);
+    };
   }, [hash]);
 
   const showFilteredResults = (answers: FilterAnswers) => {
