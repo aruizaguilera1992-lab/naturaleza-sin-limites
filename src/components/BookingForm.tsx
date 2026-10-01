@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useForm } from 'react-hook-form';
@@ -90,8 +90,6 @@ export const BookingForm = () => {
     window.addEventListener('nsl:prefill-date', onPrefill);
     return () => window.removeEventListener('nsl:prefill-date', onPrefill);
   }, [form]);
-  const __unused = useState(0); void __unused; void ({
-  });
 
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);

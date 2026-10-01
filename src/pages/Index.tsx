@@ -13,6 +13,7 @@ import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { TrustBar } from '@/components/TrustBar';
+import { HomeCalendarSection } from '@/components/home/HomeCalendarSection';
 
 
 const Index = () => {
@@ -28,6 +29,7 @@ const Index = () => {
         <HeroSection />
         <ActivitiesGrid />
         <TrustBar />
+        <HomeCalendarSection />
         <GuideAuthority />
         <WhyChooseUs />
         <VertigoSapiens />
