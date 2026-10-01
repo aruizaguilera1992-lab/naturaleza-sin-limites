@@ -1,6 +1,6 @@
-import { barrancos, type Barranco } from "@/data/barrancos";
-import { crags, type Crag } from "@/data/crags";
-import { ferratas, type Ferrata } from "@/data/ferratas";
+import { barrancos, barrancosImagenLocal, type Barranco } from "@/data/barrancos";
+import { crags, cragsImagenLocal, type Crag } from "@/data/crags";
+import { ferratas, ferratasImagenLocal, type Ferrata } from "@/data/ferratas";
 import { espeleologiaPublicada, type ActividadEspeleologia } from "@/data/espeleologia";
 import { getActivityMedia } from "@/data/activityMedia";
 
@@ -457,6 +457,20 @@ export const activityProfiles: ActivityProfile[] = [
 
 export const getActivityProfile = (category?: string, slug?: string) =>
   activityProfiles.find((profile) => profile.category === category && profile.slug === slug);
+
+/** Imagen preferida para piezas compactas (p. ej. celdas del calendario): usa la foto local
+ * del catálogo base cuando existe, que se sirve de forma fiable también en la vista previa. */
+export const getActivityCatalogImage = (category?: string, slug?: string): string | null => {
+  const local =
+    category === "barranquismo"
+      ? barrancosImagenLocal[slug ?? ""]
+      : category === "escalada"
+        ? cragsImagenLocal[slug ?? ""]
+        : category === "vias-ferratas"
+          ? ferratasImagenLocal[slug ?? ""]
+          : undefined;
+  return local ?? getActivityProfile(category, slug)?.image ?? null;
+};
 
 export const getRelatedProfiles = (profile: ActivityProfile) =>
   activityProfiles

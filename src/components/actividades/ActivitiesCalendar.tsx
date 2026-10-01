@@ -5,6 +5,7 @@ import { CalendarDays, ChevronLeft, ChevronRight, Clock, MessageCircle, Users } 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EventCard } from "@/components/calendario/EventCard";
+import { getActivityCatalogImage } from "@/data/activityProfiles";
 import { useActivityEvents, type ActivityEvent } from "@/hooks/useActivityEvents";
 
 const categoryStyles: Record<string, { bar: string; text: string; overlay: string }> = {
@@ -92,13 +93,14 @@ interface DayCellProps {
   onSelect: (date: Date) => void;
 }
 
-/** Celda de día tipo tablón: al pasar el ratón muestra el plan con acción directa. */
+/** Celda de día tipo tablón visual: foto a sangre, sello de categoría y llamada a la acción grande. */
 function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, onSelect }: DayCellProps) {
   const [hovered, setHovered] = useState(false);
   const date = new Date(year, month, day);
   const featured = events[0];
   const extras = events.length - 1;
   const featuredStyle = featured ? categoryStyles[featured.category] : null;
+  const cellImage = featured ? getActivityCatalogImage(featured.category, featured.slug) : null;
   const full = featured ? featured.isFull : false;
 
   const handleClick = () => onSelect(date);
@@ -124,20 +126,49 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
       onBlur={() => setHovered(false)}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        "group relative flex h-16 cursor-pointer flex-col overflow-hidden rounded-lg border p-1.5 text-left outline-none sm:h-24 sm:p-2 lg:h-32",
-        "transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary",
-        selected
-          ? "border-primary bg-primary/10 ring-2 ring-primary"
-          : isToday
-            ? "border-primary/40 bg-muted"
-            : "border-border/60 bg-card hover:border-primary/40 hover:bg-muted/40",
-        isPast && "opacity-50",
+        "group relative flex h-32 cursor-pointer flex-col overflow-hidden rounded-xl text-left outline-none sm:h-44 lg:h-52",
+        "transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary active:scale-95",
+        featured
+          ? cn("border-2", selected ? "border-primary ring-2 ring-primary" : isToday ? "border-primary/60" : "border-transparent hover:border-primary")
+          : cn(
+              "border border-dashed p-2",
+              selected
+                ? "border-primary bg-primary/10 ring-2 ring-primary"
+                : isToday
+                  ? "border-primary/50 bg-muted"
+                  : "border-border/60 bg-card hover:border-primary/50",
+            ),
+        isPast && "opacity-40 grayscale",
       )}
     >
+      {/* Foto de fondo a sangre en días con salida */}
+      {cellImage && (
+        <img
+          src={cellImage}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
+      )}
+      {featured && (
+        <div
+          className={cn(
+            "absolute inset-0 bg-gradient-to-t",
+            featuredStyle?.overlay ?? "from-primary/95",
+            "via-background/50 to-background/40",
+          )}
+        />
+      )}
+
+      {/* Número del día */}
       <span
         className={cn(
-          "text-xs font-semibold sm:text-sm",
-          selected || isToday ? "text-primary" : "text-muted-foreground",
+          "relative z-10 px-2 pt-1.5 text-lg font-black drop-shadow-md sm:text-xl",
+          featured ? "text-white" : selected || isToday ? "text-primary" : "text-muted-foreground",
         )}
       >
         {day}
@@ -145,93 +176,90 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
 
       {/* Sello en móvil: puntos de categoría (el detalle aparece al tocar) */}
       {events.length > 0 && (
-        <div className="mt-auto flex gap-0.5 sm:hidden">
+        <div className="relative z-10 mt-auto flex gap-1 pb-2 pl-2 sm:hidden">
           {events.slice(0, 3).map((event) => (
             <span
               key={event.id}
-              className={cn("h-1.5 w-1.5 rounded-full", categoryDot[event.category] ?? "bg-primary")}
+              className={cn("h-1.5 w-4 rounded-full", categoryDot[event.category] ?? "bg-primary")}
             />
           ))}
         </div>
       )}
 
-      {/* Etiqueta del plan en la celda (escritorio y tablet) */}
+      {/* Etiqueta del plan sobre la foto (tablet y escritorio) */}
       {featured && (
-        <div className="mt-auto hidden min-w-0 sm:block">
-          <div className={cn("mb-1 h-1 w-6 rounded-full", featuredStyle?.bar ?? "bg-primary")} />
-          <p className="truncate text-[10px] font-bold uppercase leading-tight tracking-tight lg:text-[11px]">
-            <span className={cn(featuredStyle?.text ?? "text-primary")}>{featured.profile?.categoryLabel}</span>
-            {" · "}
-            <span className="text-foreground">{featured.title}</span>
-          </p>
-          {extras > 0 && <p className="text-[9px] font-semibold text-muted-foreground">+{extras} más</p>}
+        <div className="relative z-10 mt-auto hidden min-w-0 flex-col gap-1 px-2 pb-2 sm:flex">
+          <div className="flex flex-wrap items-center gap-1">
+            <span
+              className={cn(
+                "rounded px-1.5 py-0.5 text-[9px] font-black uppercase tracking-tight text-primary-foreground",
+                featuredStyle?.bar ?? "bg-primary",
+              )}
+            >
+              {featured.profile?.categoryLabel}
+            </span>
+            <span className="rounded bg-background/40 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-tight text-foreground backdrop-blur-sm">
+              Niv. {featured.profile?.technicalLevel}
+            </span>
+          </div>
+          <h3 className="truncate text-sm font-black uppercase leading-tight tracking-tight text-white drop-shadow-lg lg:text-base">
+            {featured.title}
+          </h3>
+          {extras > 0 && <p className="text-[10px] font-bold text-white/90">+{extras} más</p>}
         </div>
       )}
 
-      {/* Detalle flotante al pasar el ratón o enfocar (escritorio) */}
-      {hovered && featured && (
+      {/* Llamada a la acción con precio: aparece al pasar el ratón (escritorio) */}
+      {featured && (
         <div
           className={cn(
-            "absolute inset-0 z-20 hidden flex-col sm:flex",
+            "absolute inset-0 z-20 hidden flex-col justify-end gap-1 bg-gradient-to-t from-background via-background/85 to-transparent p-2.5 transition-opacity duration-200 sm:flex",
+            hovered ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         >
-          {featured.profile?.image && (
-            <img
-              src={featured.profile.image}
-              alt=""
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover opacity-70"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.display = "none";
-              }}
-            />
+          <p className={cn("truncate text-[9px] font-black uppercase tracking-widest", featuredStyle?.text ?? "text-primary")}>
+            {featured.profile?.categoryLabel} · {featured.profile?.zone}
+          </p>
+          <p className="truncate text-sm font-black uppercase leading-tight text-foreground lg:text-base">
+            {featured.title}
+          </p>
+          <p className="flex flex-wrap items-center gap-x-2.5 text-[11px] font-semibold text-foreground/90">
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3" aria-hidden="true" /> {formatTime(featured.startDate)}
+            </span>
+            <span className="flex items-center gap-1">
+              <Users className="h-3 w-3" aria-hidden="true" />
+              {featured.isFull ? "Sin plazas" : `${featured.freeSeats} plazas`}
+            </span>
+          </p>
+          {full ? (
+            <span className="mt-0.5 rounded-lg bg-muted px-2 py-2 text-center text-xs font-black uppercase tracking-wide text-muted-foreground">
+              Completa
+            </span>
+          ) : (
+            <Link
+              to={`/reservar/${featured.category}/${featured.slug}?evento=${featured.id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="mt-0.5 block whitespace-nowrap rounded-lg bg-primary px-2 py-2.5 text-center text-sm font-black uppercase tracking-wide text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 active:scale-95 lg:text-base"
+            >
+              Reservar
+              {featured.pricePerPerson > 0 && featured.pricePerPerson < 1000
+                ? ` · ${euros(featured.pricePerPerson)}`
+                : ""}
+            </Link>
           )}
-          <div
-            className={cn(
-              "relative flex h-full flex-col justify-end gap-1 bg-gradient-to-t p-2",
-              featuredStyle?.overlay ?? "from-primary/95",
-              "via-background/85 to-background/30",
-            )}
-          >
-            <p className={cn("text-[10px] font-bold uppercase tracking-wider", featuredStyle?.text ?? "text-primary")}>
-              {featured.profile?.categoryLabel}
-            </p>
-            <p className="line-clamp-2 text-xs font-bold leading-tight text-foreground">{featured.title}</p>
-            <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-foreground/90">
-              <span className="flex items-center gap-1">
-                <Clock className="h-3 w-3" aria-hidden="true" /> {formatTime(featured.startDate)}
-              </span>
-              <span className="flex items-center gap-1">
-                <Users className="h-3 w-3" aria-hidden="true" />
-                {featured.isFull ? "Sin plazas" : `${featured.freeSeats}/${featured.capacity_total} libres`}
-              </span>
-              {featured.pricePerPerson > 0 && (
-                <span className="font-bold text-primary">{euros(featured.pricePerPerson)}</span>
-              )}
-            </p>
-            {full ? (
-              <span className="mt-auto rounded bg-muted px-2 py-1.5 text-center text-[10px] font-bold uppercase text-muted-foreground">
-                Completa
-              </span>
-            ) : (
-              <Link
-                to={`/reservar/${featured.category}/${featured.slug}?evento=${featured.id}`}
-                onClick={(e) => e.stopPropagation()}
-                className="mt-auto block rounded bg-primary px-2 py-1.5 text-center text-[10px] font-bold uppercase tracking-wide text-primary-foreground transition-all duration-300 hover:bg-primary/90 active:scale-95"
-              >
-                Reservar mi plaza
-              </Link>
-            )}
-          </div>
         </div>
       )}
 
       {/* Pista en días libres (escritorio) */}
-      {hovered && !featured && !isPast && (
-        <div className="pointer-events-none absolute inset-0 z-10 hidden items-end justify-center bg-background/80 p-2 sm:flex">
-          <span className="text-center text-[10px] font-bold uppercase leading-tight tracking-tight text-primary">
-            Libre · salida privada
-          </span>
+      {!featured && !isPast && (
+        <div className="relative z-10 mt-auto hidden pb-2 px-2 sm:block">
+          <p className="text-[10px] font-bold uppercase italic leading-tight tracking-tight text-muted-foreground">
+            Día disponible
+          </p>
+          <p className="mt-0.5 rounded border border-dashed border-border/80 py-1 text-center text-[9px] font-bold uppercase text-primary/80 transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+            Solicitar privada
+          </p>
         </div>
       )}
     </motion.div>
@@ -298,9 +326,14 @@ export function ActivitiesCalendar() {
         className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
       >
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4 sm:p-6">
-          <h2 className="font-heading text-xl font-bold uppercase tracking-tight text-foreground sm:text-2xl">
-            {MONTHS[currentMonth]} <span className="text-primary">{currentYear}</span>
-          </h2>
+          <div>
+            <h2 className="font-heading text-3xl font-black uppercase tracking-tight text-foreground sm:text-4xl">
+              {MONTHS[currentMonth]} <span className="text-primary">{currentYear}</span>
+            </h2>
+            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-muted-foreground sm:text-sm">
+              Salidas con plazas reales · Málaga
+            </p>
+          </div>
           <div className="flex items-center gap-1.5">
             <Button variant="outline" size="icon" onClick={goToPreviousMonth} aria-label="Mes anterior">
               <ChevronLeft className="h-5 w-5" />
@@ -332,7 +365,7 @@ export function ActivitiesCalendar() {
           <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
             {calendarDays.map((day, index) =>
               day === null ? (
-                <div key={`empty-${index}`} className="h-16 sm:h-24 lg:h-32" />
+                <div key={`empty-${index}`} className="h-32 sm:h-44 lg:h-52" />
               ) : (
                 <CalendarDayCell
                   key={day}
@@ -358,16 +391,21 @@ export function ActivitiesCalendar() {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3 border-t border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground sm:gap-5 sm:text-sm">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas
-          </span>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground sm:px-6 sm:text-sm">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas
+            </span>
+          </div>
+          <p className="font-bold uppercase tracking-wide">
+            Grupos máx. 6 personas · Reserva con señal 30%
+          </p>
         </div>
       </motion.div>
 

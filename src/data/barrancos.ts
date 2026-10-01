@@ -843,6 +843,15 @@ export const barrancos: Barranco[] = [
   },
 ];
 
+/** Copia de las fotos locales originales antes de enriquecer con CDN.
+ * La sirven las piezas compactas (p. ej. celdas del calendario), que necesitan una
+ * imagen que funcione también en la vista previa local. */
+export const barrancosImagenLocal: Record<string, string> = Object.fromEntries(
+  barrancos
+    .filter((barranco) => barranco.imagenGrande.startsWith("/images/"))
+    .map((barranco) => [barranco.id, barranco.imagenGrande]),
+);
+
 barrancos.forEach((barranco) => {
   const activityImage = getActivityMedia(barranco.id);
   if (activityImage) {

@@ -41,6 +41,10 @@ export function EventCard({ event, showDate = true }: EventCardProps) {
         ) : null}
       </div>
 
+      {profile?.shortDescription && (
+        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{profile.shortDescription}</p>
+      )}
+
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
           <Clock className="h-3 w-3" aria-hidden="true" /> {formatTime(event.startDate)}

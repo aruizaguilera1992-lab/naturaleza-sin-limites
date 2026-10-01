@@ -878,6 +878,13 @@ export const crags: Crag[] = [
   }
 ];
 
+/** Copia de las fotos locales originales antes de enriquecer con CDN (vistas compactas). */
+export const cragsImagenLocal: Record<string, string> = Object.fromEntries(
+  crags
+    .filter((crag) => crag.imagenGrande.startsWith("/images/"))
+    .map((crag) => [crag.id, crag.imagenGrande]),
+);
+
 crags.forEach((crag) => {
   const activityImage = getActivityMedia(crag.id);
   if (activityImage) {
