@@ -64,6 +64,13 @@
       "when": 1790853054112,
       "tag": "0008_grant_user_roles_read",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790854302173,
+      "tag": "0009_business_settings",
+      "breakpoints": true
     }
   ]
 }
