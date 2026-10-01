@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,11 +62,20 @@ export default function Login() {
 
   async function handleGoogle() {
     setError(null);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo },
+    setBusy(true);
+    // El destino se guarda aparte; el retorno de Google siempre va a la raíz
+    // y desde ahí se navega a `next` una vez confirmada la sesión.
+    sessionStorage.setItem("auth_next", next);
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
     });
-    if (error) setError(error.message);
+    setBusy(false);
+    if (result.error) {
+      setError("No se pudo iniciar sesión con Google. Inténtalo de nuevo.");
+      return;
+    }
+    if (result.redirected) return;
+    window.location.href = next;
   }
 
   return (
