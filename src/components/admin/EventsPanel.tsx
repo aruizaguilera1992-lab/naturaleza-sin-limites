@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CalendarDays, Copy, List, Loader2, Pencil, Plus, RefreshCw, Users, X } from "lucide-react";
+import { CalendarDays, ChevronDown, Copy, List, Loader2, Pencil, Plus, RefreshCw, Users, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,8 +89,6 @@ const sellableActivities = activityProfiles
     categoryLabel: profile.categoryLabel,
   }));
 
-const categories = [...new Set(sellableActivities.map((a) => a.category))];
-
 const emptyForm = {
   activityKey: "",
   startsAt: "",
@@ -127,7 +125,7 @@ export function EventsPanel() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [view, setView] = useState<"lista" | "mes">("lista");
   const [statusFilter, setStatusFilter] = useState("todos");
-  const [categoryFilter, setCategoryFilter] = useState("todas");
+  const [advanced, setAdvanced] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [attendees, setAttendees] = useState<Record<string, Attendee[]>>({});
 
@@ -188,13 +186,8 @@ export function EventsPanel() {
   );
 
   const filtered = useMemo(
-    () =>
-      events.filter(
-        (e) =>
-          (statusFilter === "todos" || e.status === statusFilter) &&
-          (categoryFilter === "todas" || e.category === categoryFilter),
-      ),
-    [events, statusFilter, categoryFilter],
+    () => events.filter((e) => statusFilter === "todos" || e.status === statusFilter),
+    [events, statusFilter],
   );
 
   const monthGroups = useMemo(() => {
@@ -257,7 +250,10 @@ export function EventsPanel() {
   const save = async () => {
     const editing = events.find((e) => e.id === editingId);
     const error = validate(editing);
-    if (error) return setMessage(error);
+    if (error) {
+      if (error.startsWith("Para publicar")) setAdvanced(true);
+      return setMessage(error);
+    }
 
     setSaving(true);
     setMessage(null);
@@ -295,6 +291,17 @@ export function EventsPanel() {
   const startEdit = (event: EventRow) => {
     setEditingId(event.id);
     setShowForm(true);
+    setAdvanced(
+      Boolean(
+        event.ends_at ||
+          event.event_type === "private" ||
+          event.price_cents != null ||
+          event.meeting_point_public ||
+          event.meeting_point_private ||
+          event.latitude != null ||
+          event.notes,
+      ),
+    );
     setForm({
       activityKey: `${event.category}|${event.slug}`,
       startsAt: toLocalInput(event.starts_at),
@@ -444,7 +451,10 @@ export function EventsPanel() {
           size="sm"
           onClick={() => {
             if (showForm) resetForm();
-            else setShowForm(true);
+            else {
+              setAdvanced(false);
+              setShowForm(true);
+            }
           }}
         >
           {showForm ? <X className="mr-1 h-4 w-4" /> : <Plus className="mr-1 h-4 w-4" />}
@@ -476,19 +486,6 @@ export function EventsPanel() {
             {STATUSES.map((s) => (
               <SelectItem key={s} value={s}>
                 {STATUS_LABELS[s]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-44">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="todas">Todas las actividades</SelectItem>
-            {categories.map((c) => (
-              <SelectItem key={c} value={c}>
-                {c}
               </SelectItem>
             ))}
           </SelectContent>
@@ -540,16 +537,6 @@ export function EventsPanel() {
             />
           </div>
           <div>
-            <Label htmlFor="endsAt">Fin (opcional)</Label>
-            <Input
-              id="endsAt"
-              type="datetime-local"
-              className="mt-1 text-foreground"
-              value={form.endsAt}
-              onChange={(e) => setForm({ ...form, endsAt: e.target.value })}
-            />
-          </div>
-          <div>
             <Label htmlFor="capacity">Plazas totales</Label>
             <Input
               id="capacity"
@@ -560,21 +547,6 @@ export function EventsPanel() {
               value={form.capacity}
               onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) || 6 })}
             />
-          </div>
-          <div>
-            <Label>Tipo de salida</Label>
-            <Select
-              value={form.eventType}
-              onValueChange={(value) => setForm({ ...form, eventType: value })}
-            >
-              <SelectTrigger className="mt-1">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="open_group">Grupo abierto</SelectItem>
-                <SelectItem value="private">Privada</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
           <div>
             <Label>Estado</Label>
@@ -594,85 +566,127 @@ export function EventsPanel() {
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <Label htmlFor="guide">Guía</Label>
-            <Input
-              id="guide"
-              className="mt-1 text-foreground"
-              value={form.guideName}
-              onChange={(e) => setForm({ ...form, guideName: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="price">Precio override (€/persona, opcional)</Label>
-            <Input
-              id="price"
-              type="number"
-              min={0}
-              className="mt-1 text-foreground"
-              value={form.priceEuros}
-              onChange={(e) => setForm({ ...form, priceEuros: e.target.value })}
-              placeholder="Vacío = precio del catálogo"
-            />
-          </div>
-          <div>
-            <Label htmlFor="meetingPublic">Zona pública (visible en la web)</Label>
-            <Input
-              id="meetingPublic"
-              className="mt-1 text-foreground"
-              value={form.meetingPublic}
-              onChange={(e) => setForm({ ...form, meetingPublic: e.target.value })}
-              placeholder="Ej. El Chorro, Álora"
-            />
-          </div>
-          <div>
-            <Label htmlFor="meetingPrivate">Punto de encuentro exacto (privado)</Label>
-            <Input
-              id="meetingPrivate"
-              className="mt-1 text-foreground"
-              value={form.meetingPrivate}
-              onChange={(e) => setForm({ ...form, meetingPrivate: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="latitude">Latitud aproximada (opcional)</Label>
-            <Input
-              id="latitude"
-              className="mt-1 text-foreground"
-              value={form.latitude}
-              onChange={(e) => setForm({ ...form, latitude: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="longitude">Longitud aproximada (opcional)</Label>
-            <Input
-              id="longitude"
-              className="mt-1 text-foreground"
-              value={form.longitude}
-              onChange={(e) => setForm({ ...form, longitude: e.target.value })}
-            />
-          </div>
-          {!editingId && (
-            <div className="sm:col-span-2">
-              <Label htmlFor="extraDates">Fechas adicionales (una por línea)</Label>
-              <Textarea
-                id="extraDates"
-                className="mt-1 text-foreground"
-                value={form.extraDates}
-                onChange={(e) => setForm({ ...form, extraDates: e.target.value })}
-                placeholder="2026-10-04T09:00&#10;2026-10-18T09:00"
-              />
-            </div>
-          )}
           <div className="sm:col-span-2">
-            <Label htmlFor="notes">Notas internas</Label>
-            <Textarea
-              id="notes"
-              className="mt-1 text-foreground"
-              value={form.notes}
-              onChange={(e) => setForm({ ...form, notes: e.target.value })}
-            />
+            <button
+              type="button"
+              onClick={() => setAdvanced((v) => !v)}
+              aria-expanded={advanced}
+              className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-300 active:scale-95"
+            >
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${advanced ? "rotate-180" : ""}`}
+              />
+              {advanced ? "Ocultar opciones avanzadas" : "Opciones avanzadas"}
+            </button>
           </div>
+          {advanced && (
+            <>
+              <div>
+                <Label htmlFor="endsAt">Fin (opcional)</Label>
+                <Input
+                  id="endsAt"
+                  type="datetime-local"
+                  className="mt-1 text-foreground"
+                  value={form.endsAt}
+                  onChange={(e) => setForm({ ...form, endsAt: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Tipo de salida</Label>
+                <Select
+                  value={form.eventType}
+                  onValueChange={(value) => setForm({ ...form, eventType: value })}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="open_group">Grupo abierto</SelectItem>
+                    <SelectItem value="private">Privada</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="guide">Guía</Label>
+                <Input
+                  id="guide"
+                  className="mt-1 text-foreground"
+                  value={form.guideName}
+                  onChange={(e) => setForm({ ...form, guideName: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="price">Precio override (€/persona, opcional)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  min={0}
+                  className="mt-1 text-foreground"
+                  value={form.priceEuros}
+                  onChange={(e) => setForm({ ...form, priceEuros: e.target.value })}
+                  placeholder="Vacío = precio del catálogo"
+                />
+              </div>
+              <div>
+                <Label htmlFor="meetingPublic">Zona pública (visible en la web)</Label>
+                <Input
+                  id="meetingPublic"
+                  className="mt-1 text-foreground"
+                  value={form.meetingPublic}
+                  onChange={(e) => setForm({ ...form, meetingPublic: e.target.value })}
+                  placeholder="Ej. El Chorro, Álora"
+                />
+              </div>
+              <div>
+                <Label htmlFor="meetingPrivate">Punto de encuentro exacto (privado)</Label>
+                <Input
+                  id="meetingPrivate"
+                  className="mt-1 text-foreground"
+                  value={form.meetingPrivate}
+                  onChange={(e) => setForm({ ...form, meetingPrivate: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="latitude">Latitud aproximada (opcional)</Label>
+                <Input
+                  id="latitude"
+                  className="mt-1 text-foreground"
+                  value={form.latitude}
+                  onChange={(e) => setForm({ ...form, latitude: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="longitude">Longitud aproximada (opcional)</Label>
+                <Input
+                  id="longitude"
+                  className="mt-1 text-foreground"
+                  value={form.longitude}
+                  onChange={(e) => setForm({ ...form, longitude: e.target.value })}
+                />
+              </div>
+              {!editingId && (
+                <div className="sm:col-span-2">
+                  <Label htmlFor="extraDates">Fechas adicionales (una por línea)</Label>
+                  <Textarea
+                    id="extraDates"
+                    className="mt-1 text-foreground"
+                    value={form.extraDates}
+                    onChange={(e) => setForm({ ...form, extraDates: e.target.value })}
+                    placeholder="2026-10-04T09:00&#10;2026-10-18T09:00"
+                  />
+                </div>
+              )}
+              <div className="sm:col-span-2">
+                <Label htmlFor="notes">Notas internas</Label>
+                <Textarea
+                  id="notes"
+                  className="mt-1 text-foreground"
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                />
+              </div>
+            </>
+          )}
           <div className="flex gap-2 sm:col-span-2">
             <Button onClick={save} disabled={saving}>
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
