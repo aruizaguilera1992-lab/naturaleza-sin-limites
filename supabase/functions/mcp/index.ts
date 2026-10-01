@@ -69,7 +69,7 @@ var media = {
     replacementNote: "Paisaje documental de M\xE1laga para secciones generales y de contacto."
   },
   espeleologiaHero: {
-    src: "/__l5e/assets-v1/dc42c617-bd5b-4257-91be-aa7c0c201fe3/espeleologia-hero-documentary.webp",
+    src: "/images/espeleologia/hero.webp",
     alt: "Persona con iluminaci\xF3n frontal explorando una gran sala subterr\xE1nea de roca caliza con estalactitas y estalagmitas",
     sourceUrl: "https://www.pexels.com/photo/adventurer-exploring-a-majestic-cave-interior-31651851/",
     license: pexelsLicense,
@@ -77,7 +77,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia horizontal de una salida de espeleolog\xEDa con casco, frontal y mono t\xE9cnico."
   },
   espeleologiaVertical: {
-    src: "/__l5e/assets-v1/139e2166-df17-46f6-bd06-9f2253c01a52/espeleologia-vertical-documentary.webp",
+    src: "/images/espeleologia/vertical.webp",
     alt: "Espele\xF3logo descendiendo por cuerda en el pozo de entrada de una cavidad iluminada por luz natural",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:TraversitaM11.jpg",
     license: "CC BY-SA 3.0",
