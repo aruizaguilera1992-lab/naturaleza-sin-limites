@@ -66,7 +66,8 @@ export function useActivityEvents({ category, slug, fromDate }: Options = {}) {
   const load = useCallback(async () => {
     setLoading(true);
     let query = supabase
-      .from("activity_events")
+      // Vista pública: proyección fija sin campos privados (ver migración 0007).
+      .from("activity_events_public")
       .select(EVENT_FIELDS)
       .in("status", ["publicada", "completa"])
       .gte("starts_at", from)
