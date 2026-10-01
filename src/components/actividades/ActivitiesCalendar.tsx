@@ -180,7 +180,7 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
               src={featured.profile.image}
               alt=""
               loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover opacity-40"
+              className="absolute inset-0 h-full w-full object-cover opacity-70"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).style.display = "none";
               }}
@@ -190,14 +190,14 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
             className={cn(
               "relative flex h-full flex-col justify-end gap-1 bg-gradient-to-t p-2",
               featuredStyle?.overlay ?? "from-primary/95",
-              "via-background/90 to-background/20",
+              "via-background/85 to-background/30",
             )}
           >
             <p className={cn("text-[10px] font-bold uppercase tracking-wider", featuredStyle?.text ?? "text-primary")}>
               {featured.profile?.categoryLabel}
             </p>
             <p className="line-clamp-2 text-xs font-bold leading-tight text-foreground">{featured.title}</p>
-            <p className="flex flex-wrap items-center gap-x-2 text-[10px] text-muted-foreground">
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-foreground/90">
               <span className="flex items-center gap-1">
                 <Clock className="h-3 w-3" aria-hidden="true" /> {formatTime(featured.startDate)}
               </span>
@@ -205,6 +205,9 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
                 <Users className="h-3 w-3" aria-hidden="true" />
                 {featured.isFull ? "Sin plazas" : `${featured.freeSeats}/${featured.capacity_total} libres`}
               </span>
+              {featured.pricePerPerson > 0 && (
+                <span className="font-bold text-primary">{euros(featured.pricePerPerson)}</span>
+              )}
             </p>
             {full ? (
               <span className="mt-auto rounded bg-muted px-2 py-1.5 text-center text-[10px] font-bold uppercase text-muted-foreground">
