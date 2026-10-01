@@ -252,15 +252,13 @@ export function EventsPanel() {
   const save = async () => {
     const editing = events.find((e) => e.id === editingId);
     const error = validate(editing);
-    if (error) return setMessage(error);
-
-    setSaving(true);
-    setMessage(null);
-
     if (error) {
       if (error.startsWith("Para publicar")) setAdvanced(true);
       return setMessage(error);
     }
+
+    setSaving(true);
+    setMessage(null);
 
     if (editingId) {
       const { error: updateError } = await supabase
