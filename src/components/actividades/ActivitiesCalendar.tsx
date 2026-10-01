@@ -142,9 +142,9 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
       )}
     >
       {/* Foto de fondo a sangre en días con salida */}
-      {featured?.profile?.image && (
+      {cellImage && (
         <img
-          src={featured.profile.image}
+          src={cellImage}
           alt=""
           loading="lazy"
           decoding="async"
