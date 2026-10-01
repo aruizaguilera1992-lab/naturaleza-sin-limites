@@ -8,9 +8,10 @@ import { TrustBar } from "@/components/TrustBar";
 import { Button } from "@/components/ui/button";
 import { EventCard } from "@/components/calendario/EventCard";
 import { EventMap } from "@/components/calendario/EventMap";
+import { ActivitiesCalendar } from "@/components/actividades/ActivitiesCalendar";
 import { useActivityEvents, type ActivityEvent } from "@/hooks/useActivityEvents";
 
-type ViewMode = "lista" | "mes";
+type ViewMode = "calendario" | "lista" | "mes";
 
 const MONTHS = [
   "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -21,7 +22,7 @@ const monthKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}`;
 
 export default function Calendario() {
   const { events, loading, error } = useActivityEvents();
-  const [view, setView] = useState<ViewMode>("lista");
+  const [view, setView] = useState<ViewMode>("calendario");
 
   const grouped = useMemo(() => {
     const map = new Map<string, { label: string; items: ActivityEvent[] }>();
