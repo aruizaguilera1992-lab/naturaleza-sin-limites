@@ -1,6 +1,6 @@
-import { barrancos, type Barranco } from "@/data/barrancos";
-import { crags, type Crag } from "@/data/crags";
-import { ferratas, type Ferrata } from "@/data/ferratas";
+import { barrancos, barrancosImagenLocal, type Barranco } from "@/data/barrancos";
+import { crags, cragsImagenLocal, type Crag } from "@/data/crags";
+import { ferratas, ferratasImagenLocal, type Ferrata } from "@/data/ferratas";
 import { espeleologiaPublicada, type ActividadEspeleologia } from "@/data/espeleologia";
 import { getActivityMedia } from "@/data/activityMedia";
 
