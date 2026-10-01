@@ -458,6 +458,20 @@ export const activityProfiles: ActivityProfile[] = [
 export const getActivityProfile = (category?: string, slug?: string) =>
   activityProfiles.find((profile) => profile.category === category && profile.slug === slug);
 
+/** Imagen preferida para piezas compactas (p. ej. celdas del calendario): usa la foto del
+ * catálogo base cuando tiene ruta local, que se sirve de forma fiable en todas las vistas. */
+export const getActivityCatalogImage = (category?: string, slug?: string): string | null => {
+  const raw =
+    category === "barranquismo"
+      ? barrancos.find((item) => item.id === slug)?.imagenGrande
+      : category === "escalada"
+        ? crags.find((item) => item.id === slug)?.imagenGrande
+        : category === "vias-ferratas"
+          ? ferratas.find((item) => item.id === slug)?.imagenGrande
+          : undefined;
+  return raw && raw.startsWith("/") ? raw : (getActivityProfile(category, slug)?.image ?? null);
+};
+
 export const getRelatedProfiles = (profile: ActivityProfile) =>
   activityProfiles
     .filter(
