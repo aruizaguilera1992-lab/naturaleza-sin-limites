@@ -57,6 +57,13 @@
       "when": 1790849872748,
       "tag": "0007_step1_lock_event_rpcs_and_public_events_view",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790853054112,
+      "tag": "0008_grant_user_roles_read",
+      "breakpoints": true
     }
   ]
 }
