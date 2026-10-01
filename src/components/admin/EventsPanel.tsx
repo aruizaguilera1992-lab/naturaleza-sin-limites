@@ -257,6 +257,11 @@ export function EventsPanel() {
     setSaving(true);
     setMessage(null);
 
+    if (error) {
+      if (error.startsWith("Para publicar")) setAdvanced(true);
+      return setMessage(error);
+    }
+
     if (editingId) {
       const { error: updateError } = await supabase
         .from("activity_events")
@@ -290,6 +295,17 @@ export function EventsPanel() {
   const startEdit = (event: EventRow) => {
     setEditingId(event.id);
     setShowForm(true);
+    setAdvanced(
+      Boolean(
+        event.ends_at ||
+          event.event_type === "private" ||
+          event.price_cents != null ||
+          event.meeting_point_public ||
+          event.meeting_point_private ||
+          event.latitude != null ||
+          event.notes,
+      ),
+    );
     setForm({
       activityKey: `${event.category}|${event.slug}`,
       startsAt: toLocalInput(event.starts_at),
