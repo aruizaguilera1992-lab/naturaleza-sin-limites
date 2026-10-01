@@ -37,6 +37,22 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Tras volver de Google, la sesión llega a la raíz; si había un destino
+// guardado (p. ej. /admin), redirige una vez confirmada la sesión.
+function AuthRedirectHandler() {
+  useEffect(() => {
+    const pending = sessionStorage.getItem("auth_next");
+    if (!pending) return;
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        sessionStorage.removeItem("auth_next");
+        window.location.href = pending;
+      }
+    });
+  }, []);
+  return null;
+}
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
