@@ -89,8 +89,6 @@ const sellableActivities = activityProfiles
     categoryLabel: profile.categoryLabel,
   }));
 
-const categories = [...new Set(sellableActivities.map((a) => a.category))];
-
 const emptyForm = {
   activityKey: "",
   startsAt: "",
@@ -453,7 +451,10 @@ export function EventsPanel() {
           size="sm"
           onClick={() => {
             if (showForm) resetForm();
-            else setShowForm(true);
+            else {
+              setAdvanced(false);
+              setShowForm(true);
+            }
           }}
         >
           {showForm ? <X className="mr-1 h-4 w-4" /> : <Plus className="mr-1 h-4 w-4" />}
