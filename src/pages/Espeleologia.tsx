@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { CavingSectionNav, CavingTrainingPath, CavingPractices } from '@/components/espeleologia/CavingTrainingSections';
 import { motion } from 'framer-motion';
 import {
   Clock, Users, MapPin, ShieldCheck, Backpack, Sparkles, MessageCircle, ChevronRight,
@@ -23,9 +24,17 @@ const whatsappUrl =
   encodeURIComponent('¡Hola! Me interesa la Espeleología. ¿Podéis contarme las opciones y disponibilidad?');
 
 const Espeleologia = () => {
+  const { hash } = useLocation();
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, []);
+    if (!hash) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
+    const go = () => document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView({ block: 'start' });
+    const frame = window.requestAnimationFrame(go);
+    const settled = window.setTimeout(go, 450);
+    return () => { window.cancelAnimationFrame(frame); window.clearTimeout(settled); };
+  }, [hash]);
 
   const actividades = espeleologiaPublicada();
   const c = espeleologiaContenido;
@@ -33,7 +42,7 @@ const Espeleologia = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="Espeleología en Málaga y Andalucía | Naturaleza Sin Límites"
+        title="Espeleología en Málaga: experiencias y formación | Naturaleza Sin Límites"
         description="Espeleología guiada en Málaga y Andalucía: iniciación, progresión vertical y salidas de exploración con guía titulado, material incluido y grupos reducidos."
         path="/espeleologia"
       />
@@ -80,13 +89,15 @@ const Espeleologia = () => {
                   </a>
                 </Button>
               </div>
+              <CavingSectionNav />
             </motion.div>
           </div>
         </section>
 
         {/* Actividades */}
-        <section className="py-16 bg-background">
+        <section id="experiencias" className="scroll-mt-32 py-16 bg-background">
           <div className="container mx-auto px-4">
+            <p className="text-sm font-semibold uppercase tracking-wide text-primary">Vive la experiencia</p>
             <h2 className="text-2xl sm:text-3xl font-heading font-bold text-foreground mb-2">
               Nuestras salidas de espeleología
             </h2>
@@ -149,6 +160,9 @@ const Espeleologia = () => {
             </div>
           </div>
         </section>
+
+        <CavingTrainingPath />
+        <CavingPractices />
 
         {/* Bloques informativos */}
         <section className="py-16 bg-muted/20">
