@@ -1,11 +1,17 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { CalendarDays, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Clock, MessageCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EventCard } from "@/components/calendario/EventCard";
-import { useActivityEvents } from "@/hooks/useActivityEvents";
+import { useActivityEvents, type ActivityEvent } from "@/hooks/useActivityEvents";
+
+const categoryStyles: Record<string, { bar: string; text: string; overlay: string }> = {
+  barranquismo: { bar: "bg-cyan-500", text: "text-cyan-500", overlay: "from-cyan-950/95" },
+  escalada: { bar: "bg-emerald-500", text: "text-emerald-500", overlay: "from-emerald-950/95" },
+  "vias-ferratas": { bar: "bg-purple-500", text: "text-purple-500", overlay: "from-purple-950/95" },
+};
 
 const categoryDot: Record<string, string> = {
   barranquismo: "bg-cyan-500",
@@ -31,6 +37,11 @@ const MONTHS = [
 
 const toIso = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+const euros = (value: number) =>
+  new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(value);
+
+const formatTime = (date: Date) => date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
 
 /** Día sin salida abierta: invita a pedir una salida privada en esa fecha. */
 function FreeDayCard({ date }: { date: Date }) {
@@ -67,6 +78,160 @@ function FreeDayCard({ date }: { date: Date }) {
         </Button>
       </div>
     </div>
+  );
+}
+
+interface DayCellProps {
+  day: number;
+  month: number;
+  year: number;
+  events: ActivityEvent[];
+  selected: boolean;
+  isToday: boolean;
+  isPast: boolean;
+  onSelect: (date: Date) => void;
+}
+
+/** Celda de día tipo tablón: al pasar el ratón muestra el plan con acción directa. */
+function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, onSelect }: DayCellProps) {
+  const [hovered, setHovered] = useState(false);
+  const date = new Date(year, month, day);
+  const featured = events[0];
+  const extras = events.length - 1;
+  const featuredStyle = featured ? categoryStyles[featured.category] : null;
+  const full = featured ? featured.isFull : false;
+
+  const handleClick = () => onSelect(date);
+  const handleKey = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
+  return (
+    <motion.div
+      role="button"
+      tabIndex={0}
+      aria-label={`${day} de ${MONTHS[month]} de ${year}: ${events.length > 0 ? `${events.length} salidas` : "día libre"}`}
+      aria-pressed={selected}
+      aria-current={isToday ? "date" : undefined}
+      onClick={handleClick}
+      onKeyDown={handleKey}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      whileTap={{ scale: 0.95 }}
+      className={cn(
+        "group relative flex h-16 cursor-pointer flex-col overflow-hidden rounded-lg border p-1.5 text-left outline-none sm:h-24 sm:p-2 lg:h-28",
+        "transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary",
+        selected
+          ? "border-primary bg-primary/10 ring-2 ring-primary"
+          : isToday
+            ? "border-primary/40 bg-muted"
+            : "border-border/60 bg-card hover:border-primary/40 hover:bg-muted/40",
+        isPast && "opacity-50",
+      )}
+    >
+      <span
+        className={cn(
+          "text-xs font-semibold sm:text-sm",
+          selected || isToday ? "text-primary" : "text-muted-foreground",
+        )}
+      >
+        {day}
+      </span>
+
+      {/* Sello en móvil: puntos de categoría (el detalle aparece al tocar) */}
+      {events.length > 0 && (
+        <div className="mt-auto flex gap-0.5 sm:hidden">
+          {events.slice(0, 3).map((event) => (
+            <span
+              key={event.id}
+              className={cn("h-1.5 w-1.5 rounded-full", categoryDot[event.category] ?? "bg-primary")}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Etiqueta del plan en la celda (escritorio y tablet) */}
+      {featured && (
+        <div className="mt-auto hidden min-w-0 sm:block">
+          <div className={cn("mb-1 h-1 w-6 rounded-full", featuredStyle?.bar ?? "bg-primary")} />
+          <p className="truncate text-[10px] font-bold uppercase leading-tight tracking-tight lg:text-[11px]">
+            <span className={cn(featuredStyle?.text ?? "text-primary")}>{featured.profile?.categoryLabel}</span>
+            {" · "}
+            <span className="text-foreground">{featured.title}</span>
+          </p>
+          {extras > 0 && <p className="text-[9px] font-semibold text-muted-foreground">+{extras} más</p>}
+        </div>
+      )}
+
+      {/* Detalle flotante al pasar el ratón o enfocar (escritorio) */}
+      {hovered && featured && (
+        <div
+          className={cn(
+            "absolute inset-0 z-20 hidden flex-col sm:flex",
+          )}
+        >
+          {featured.profile?.image && (
+            <img
+              src={featured.profile.image}
+              alt=""
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover opacity-40"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = "none";
+              }}
+            />
+          )}
+          <div
+            className={cn(
+              "relative flex h-full flex-col justify-end gap-1 bg-gradient-to-t p-2",
+              featuredStyle?.overlay ?? "from-primary/95",
+              "via-background/90 to-background/20",
+            )}
+          >
+            <p className={cn("text-[10px] font-bold uppercase tracking-wider", featuredStyle?.text ?? "text-primary")}>
+              {featured.profile?.categoryLabel}
+            </p>
+            <p className="line-clamp-2 text-xs font-bold leading-tight text-foreground">{featured.title}</p>
+            <p className="flex flex-wrap items-center gap-x-2 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Clock className="h-3 w-3" aria-hidden="true" /> {formatTime(featured.startDate)}
+              </span>
+              <span className="flex items-center gap-1">
+                <Users className="h-3 w-3" aria-hidden="true" />
+                {featured.isFull ? "Sin plazas" : `${featured.freeSeats}/${featured.capacity_total} libres`}
+              </span>
+            </p>
+            {full ? (
+              <span className="mt-auto rounded bg-muted px-2 py-1.5 text-center text-[10px] font-bold uppercase text-muted-foreground">
+                Completa
+              </span>
+            ) : (
+              <Link
+                to={`/reservar/${featured.category}/${featured.slug}?evento=${featured.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="mt-auto block rounded bg-primary px-2 py-1.5 text-center text-[10px] font-bold uppercase tracking-wide text-primary-foreground transition-all duration-300 hover:bg-primary/90 active:scale-95"
+              >
+                Reservar mi plaza
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Pista en días libres (escritorio) */}
+      {hovered && !featured && !isPast && (
+        <div className="pointer-events-none absolute inset-0 z-10 hidden items-end justify-center bg-background/80 p-2 sm:flex">
+          <span className="text-center text-[10px] font-bold uppercase leading-tight tracking-tight text-primary">
+            Libre · salida privada
+          </span>
+        </div>
+      )}
+    </motion.div>
   );
 }
 
@@ -116,93 +281,88 @@ export function ActivitiesCalendar() {
     setSelectedDate(null);
   };
 
+  const goToToday = () => {
+    const now = new Date();
+    setCurrentDate(new Date(now.getFullYear(), now.getMonth(), 1));
+    setSelectedDate(null);
+  };
+
   return (
     <div className="max-w-5xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-card border border-border rounded-2xl overflow-hidden"
+        className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
       >
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border">
-          <Button variant="ghost" size="icon" onClick={goToPreviousMonth} aria-label="Mes anterior">
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-          <h2 className="text-lg sm:text-xl font-heading font-bold text-foreground">
-            {MONTHS[currentMonth]} {currentYear}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4 sm:p-6">
+          <h2 className="font-heading text-xl font-bold uppercase tracking-tight text-foreground sm:text-2xl">
+            {MONTHS[currentMonth]} <span className="text-primary">{currentYear}</span>
           </h2>
-          <Button variant="ghost" size="icon" onClick={goToNextMonth} aria-label="Mes siguiente">
-            <ChevronRight className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-1.5">
+            <Button variant="outline" size="icon" onClick={goToPreviousMonth} aria-label="Mes anterior">
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={goToToday}>
+              Hoy
+            </Button>
+            <Button variant="outline" size="icon" onClick={goToNextMonth} aria-label="Mes siguiente">
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
 
         <div className="p-2 sm:p-4">
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {WEEKDAYS.map((day) => (
-              <div key={day} className="text-center text-xs font-medium text-muted-foreground py-2">
+          <div className="mb-1 grid grid-cols-7 gap-1">
+            {WEEKDAYS.map((day, i) => (
+              <div
+                key={day}
+                className={cn(
+                  "py-2 text-center text-[10px] font-bold uppercase tracking-widest sm:text-xs",
+                  i >= 5 ? "text-primary" : "text-muted-foreground",
+                )}
+              >
                 {day}
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-1">
-            {calendarDays.map((day, index) => {
-              if (day === null) return <div key={`empty-${index}`} className="aspect-square" />;
-
-              const dayEvents = getEventsForDay(day);
-              const isSelected =
-                selectedDate?.getDate() === day &&
-                selectedDate?.getMonth() === currentMonth &&
-                selectedDate?.getFullYear() === currentYear;
-              const today = new Date();
-              const isToday =
-                today.getDate() === day && today.getMonth() === currentMonth && today.getFullYear() === currentYear;
-
-              return (
-                <motion.button
+          <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
+            {calendarDays.map((day, index) =>
+              day === null ? (
+                <div key={`empty-${index}`} className="h-16 sm:h-24 lg:h-28" />
+              ) : (
+                <CalendarDayCell
                   key={day}
-                  aria-label={`${day} de ${MONTHS[currentMonth]} de ${currentYear}: ${dayEvents.length} salidas`}
-                  aria-pressed={isSelected}
-                  aria-current={isToday ? "date" : undefined}
-                  onClick={() => setSelectedDate(new Date(currentYear, currentMonth, day))}
-                  className={cn(
-                    "aspect-square p-1 rounded-lg flex flex-col items-center justify-start relative transition-colors",
-                    isSelected && "bg-primary/10 ring-2 ring-primary",
-                    isToday && !isSelected && "bg-muted",
-                    !isSelected && !isToday && "hover:bg-muted/50",
-                  )}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span
-                    className={cn("text-xs sm:text-sm font-medium", isSelected ? "text-primary" : "text-foreground")}
-                  >
-                    {day}
-                  </span>
-                  {dayEvents.length > 0 && (
-                    <div className="flex gap-0.5 mt-1 flex-wrap justify-center">
-                      {dayEvents.slice(0, 3).map((event) => (
-                        <span
-                          key={event.id}
-                          className={cn("h-1.5 w-1.5 rounded-full", categoryDot[event.category] ?? "bg-primary")}
-                          title={event.title}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </motion.button>
-              );
-            })}
+                  day={day}
+                  month={currentMonth}
+                  year={currentYear}
+                  events={getEventsForDay(day)}
+                  selected={
+                    selectedDate?.getDate() === day &&
+                    selectedDate?.getMonth() === currentMonth &&
+                    selectedDate?.getFullYear() === currentYear
+                  }
+                  isToday={
+                    new Date().getDate() === day &&
+                    new Date().getMonth() === currentMonth &&
+                    new Date().getFullYear() === currentYear
+                  }
+                  isPast={new Date(currentYear, currentMonth, day) < new Date(new Date().setHours(0, 0, 0, 0))}
+                  onSelect={setSelectedDate}
+                />
+              ),
+            )}
           </div>
         </div>
 
-        <div className="px-4 sm:px-6 pb-4 flex flex-wrap gap-3 sm:gap-4 justify-center text-xs sm:text-sm text-muted-foreground border-t border-border pt-4">
-          <span className="flex items-center gap-1">
+        <div className="flex flex-wrap justify-center gap-3 border-t border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground sm:gap-5 sm:text-sm">
+          <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas
           </span>
         </div>
