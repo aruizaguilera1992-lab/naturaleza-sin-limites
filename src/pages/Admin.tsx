@@ -489,7 +489,6 @@ export default function Admin() {
     { id: "contacts", label: "Contactos", icon: Inbox, count: newContacts },
     { id: "events", label: "Salidas", icon: CalendarDays },
     { id: "notifications", label: "Notificaciones", icon: Bell, count: pendingNotifications },
-    { id: "plans", label: "Altas y planes", icon: CreditCard },
     { id: "settings", label: "Ajustes legales", icon: Settings },
   ];
   const current = NAV.find((n) => n.id === tab)!;
