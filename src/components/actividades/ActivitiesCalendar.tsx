@@ -325,9 +325,14 @@ export function ActivitiesCalendar() {
         className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
       >
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4 sm:p-6">
-          <h2 className="font-heading text-xl font-bold uppercase tracking-tight text-foreground sm:text-2xl">
-            {MONTHS[currentMonth]} <span className="text-primary">{currentYear}</span>
-          </h2>
+          <div>
+            <h2 className="font-heading text-3xl font-black uppercase tracking-tight text-foreground sm:text-4xl">
+              {MONTHS[currentMonth]} <span className="text-primary">{currentYear}</span>
+            </h2>
+            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-muted-foreground sm:text-sm">
+              Salidas con plazas reales · Málaga
+            </p>
+          </div>
           <div className="flex items-center gap-1.5">
             <Button variant="outline" size="icon" onClick={goToPreviousMonth} aria-label="Mes anterior">
               <ChevronLeft className="h-5 w-5" />
@@ -359,7 +364,7 @@ export function ActivitiesCalendar() {
           <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
             {calendarDays.map((day, index) =>
               day === null ? (
-                <div key={`empty-${index}`} className="h-16 sm:h-24 lg:h-32" />
+                <div key={`empty-${index}`} className="h-32 sm:h-44 lg:h-52" />
               ) : (
                 <CalendarDayCell
                   key={day}
@@ -385,16 +390,21 @@ export function ActivitiesCalendar() {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3 border-t border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground sm:gap-5 sm:text-sm">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas
-          </span>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground sm:px-6 sm:text-sm">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas
+            </span>
+          </div>
+          <p className="font-bold uppercase tracking-wide">
+            Grupos máx. 6 personas · Reserva con señal 30%
+          </p>
         </div>
       </motion.div>
 
