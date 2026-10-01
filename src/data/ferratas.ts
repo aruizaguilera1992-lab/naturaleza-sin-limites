@@ -2163,6 +2163,13 @@ export const ferratas: Ferrata[] = [
   },
 ];
 
+/** Copia de las fotos locales originales antes de enriquecer con CDN (vistas compactas). */
+export const ferratasImagenLocal: Record<string, string> = Object.fromEntries(
+  ferratas
+    .filter((ferrata) => ferrata.imagenGrande.startsWith("/images/"))
+    .map((ferrata) => [ferrata.id, ferrata.imagenGrande]),
+);
+
 ferratas.forEach((ferrata) => {
   const activityImage = getActivityMedia(ferrata.id);
   if (activityImage) {
