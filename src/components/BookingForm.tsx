@@ -81,6 +81,18 @@ export const BookingForm = () => {
     },
   });
 
+  // El calendario de la portada puede pedir rellenar una fecha libre.
+  useEffect(() => {
+    const onPrefill = (e: Event) => {
+      const date = (e as CustomEvent<string>).detail;
+      if (date) form.setValue('preferredDate', date, { shouldValidate: true });
+    };
+    window.addEventListener('nsl:prefill-date', onPrefill);
+    return () => window.removeEventListener('nsl:prefill-date', onPrefill);
+  }, [form]);
+  const __unused = useState(0); void __unused; void ({
+  });
+
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
     
