@@ -42,7 +42,7 @@ function LevelCard({ level }: { level: ClimbingLevel }) {
         </div>
         <h3 className="font-heading text-xl font-bold leading-tight text-foreground sm:text-2xl">{level.title}</h3>
         <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" />{level.duration}</span>
+          <span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" />Duración orientativa: {level.duration}</span>
           <span className="inline-flex items-center gap-2"><Users className="h-4 w-4 text-primary" />Máximo 6 · ajustado al contenido</span>
         </div>
       </div>
