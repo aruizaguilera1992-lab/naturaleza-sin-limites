@@ -14,6 +14,9 @@ import { ActivitiesComparison } from "@/components/actividades/ActivitiesCompari
 import { ActivitiesCalendar } from "@/components/actividades/ActivitiesCalendar";
 import { ActivitiesPacks } from "@/components/actividades/ActivitiesPacks";
 import { useActivitiesData, UnifiedActivity } from "@/hooks/useActivitiesData";
+import { ArrowRight, GraduationCap } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export type ActivityType = "todas" | "barranquismo" | "escalada" | "ferratas" | "espeleologia" | "calendario";
 export type ViewMode = "grid" | "list" | "map";
@@ -264,6 +267,20 @@ const Actividades = () => {
 
                   {/* Main Content */}
                   <div className="flex-1 min-w-0">
+                    {activeTab === "escalada" && (
+                      <div className="mb-5 flex flex-col gap-4 rounded-md border border-primary/30 bg-primary/10 p-5 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex min-w-0 gap-3">
+                          <GraduationCap className="mt-1 h-6 w-6 shrink-0 text-primary" />
+                          <div>
+                            <h2 className="font-heading text-lg font-bold text-foreground">¿Quieres aprender paso a paso?</h2>
+                            <p className="mt-1 text-sm leading-6 text-muted-foreground">Conoce el itinerario propio NSL E1–E3 y las prácticas tutorizadas.</p>
+                          </div>
+                        </div>
+                        <Button variant="outline" className="shrink-0 gap-2" asChild>
+                          <Link to="/escalada#formacion">Ver formación <ArrowRight className="h-4 w-4" /></Link>
+                        </Button>
+                      </div>
+                    )}
                     <ActivitiesToolbar
                       totalCount={filteredActivities.length}
                       viewMode={viewMode}

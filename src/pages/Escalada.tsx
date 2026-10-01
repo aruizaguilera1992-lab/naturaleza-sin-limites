@@ -1,15 +1,21 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Mountain, MessageCircle } from 'lucide-react';
-import { Seo } from '@/components/Seo';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
-import { WhatsAppButton } from '@/components/WhatsAppButton';
-import { ScrollToTop } from '@/components/ScrollToTop';
-import { Button } from '@/components/ui/button';
-import { ClimbingQuestionnaire } from '@/components/escalada/ClimbingQuestionnaire';
-import { CragResults } from '@/components/escalada/CragResults';
-import { media } from '@/data/media';
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowDown, ArrowRight, Compass, Mountain, Users } from "lucide-react";
+import { Seo } from "@/components/Seo";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import { Button } from "@/components/ui/button";
+import { ClimbingQuestionnaire } from "@/components/escalada/ClimbingQuestionnaire";
+import { CragResults } from "@/components/escalada/CragResults";
+import {
+  ClimbingOrientation,
+  ClimbingPractices,
+  ClimbingSectionNav,
+  ClimbingTrainingPath,
+} from "@/components/escalada/ClimbingTrainingSections";
+import { media } from "@/data/media";
 
 interface FilterAnswers {
   nivel: string;
@@ -18,207 +24,113 @@ interface FilterAnswers {
   provincia: string;
 }
 
+const initialFilters: FilterAnswers = { nivel: "", tipo: "", duracion: "", provincia: "" };
+
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -20 },
-  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
 };
 
 export default function Escalada() {
   const [showResults, setShowResults] = useState(false);
-  const [filters, setFilters] = useState<FilterAnswers>({
-    nivel: '',
-    tipo: '',
-    duracion: '',
-    provincia: '',
-  });
+  const [filters, setFilters] = useState<FilterAnswers>(initialFilters);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const handleQuestionnaireComplete = (answers: FilterAnswers) => {
+  const showFilteredResults = (answers: FilterAnswers) => {
     setFilters(answers);
     setShowResults(true);
-    setTimeout(() => {
-      document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    window.setTimeout(() => document.getElementById("resultados")?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
-
   const handleShowAll = () => {
-    setFilters({ nivel: '', tipo: '', duracion: '', provincia: '' });
+    setFilters(initialFilters);
     setShowResults(true);
-    setTimeout(() => {
-      document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    window.setTimeout(() => document.getElementById("resultados")?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
   const handleReset = () => {
-    setFilters({ nivel: '', tipo: '', duracion: '', provincia: '' });
+    setFilters(initialFilters);
     setShowResults(false);
-    setTimeout(() => {
-      document.getElementById('cuestionario')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    window.setTimeout(() => document.getElementById("cuestionario")?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
   return (
-    <motion.div 
-      className="min-h-screen bg-background"
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageTransition}
-    >
+    <motion.div className="min-h-screen overflow-x-clip bg-background" initial="initial" animate="animate" exit="exit" variants={pageTransition}>
       <Seo
-        title="Escalada en roca en Málaga y Andalucía | Naturaleza Sin Límites"
-        description="Escuelas de escalada en roca en Málaga y Andalucía con guía titulado. Filtra por nivel, tipo de escalada, duración y provincia."
+        title="Escalada deportiva en Málaga: experiencias y formación | Naturaleza Sin Límites"
+        description="Escalada deportiva en Málaga y Andalucía: experiencias guiadas, formación propia NSL E1–E3 y prácticas tutorizadas en vías equipadas de un largo."
         path="/escalada"
       />
 
       <Navbar />
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-
-      {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src={media.climbing.src}
-            alt={media.climbing.alt}
-            loading="eager"
-            decoding="async"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 text-center pt-44 md:pt-32">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 backdrop-blur-sm rounded-full mb-6">
-              <Mountain className="h-5 w-5 text-primary" />
-              <span className="text-primary font-medium">Escalada Deportiva y Clásica</span>
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-heading font-bold text-white mb-6">
-              Descubre la Escalada en
-              <span className="text-primary block mt-2">Málaga y Andalucía</span>
-            </h1>
-
-            <p className="text-xl text-white/80 max-w-2xl mx-auto mb-8">
-              Encuentra la escuela perfecta para tu nivel y estilo de escalada.
-              Desde iniciación hasta vías de alto nivel en los mejores sectores.
-            </p>
-
-            <Button
-              variant="hero"
-              size="xl"
-              className="gap-2"
-              onClick={() => document.getElementById('cuestionario')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Encuentra tu escuela ideal
-              <Mountain className="h-5 w-5" />
-            </Button>
-          </motion.div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-1">
-            <div className="w-1 h-2 bg-white/50 rounded-full" />
+      <main>
+        <section className="relative flex min-h-[78vh] items-end overflow-hidden pb-24 pt-44 sm:min-h-[84vh] md:pt-32">
+          <div className="absolute inset-0">
+            <img src={media.climbing.src} alt={media.climbing.alt} loading="eager" decoding="async" className="h-full w-full object-cover object-center" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-background/15" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
           </div>
-        </motion.div>
-      </section>
 
-      {/* Questionnaire Section */}
-      {!showResults && (
-        <section id="cuestionario" className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
-                ¿Qué tipo de escalada buscas?
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Responde unas preguntas y te recomendaremos las mejores escuelas 
-                de escalada según tu nivel y preferencias.
+          <div className="container relative z-10 mx-auto px-4">
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-4xl">
+              <div className="mb-5 flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-background/75 px-4 py-2 text-sm font-bold text-primary backdrop-blur-sm"><Mountain className="h-4 w-4" /> Escalada deportiva</span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/75 px-4 py-2 text-sm font-semibold text-foreground backdrop-blur-sm"><Users className="h-4 w-4 text-primary" /> Grupos reducidos</span>
+              </div>
+              <h1 className="max-w-4xl font-heading text-4xl font-extrabold leading-[1.05] text-foreground sm:text-6xl lg:text-7xl">
+                Escalada deportiva: <span className="text-primary">vive, aprende y progresa</span>
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-foreground/80 sm:text-xl">
+                Experiencias guiadas, formación progresiva y práctica tutorizada en Málaga y Andalucía.
               </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button variant="hero" size="lg" className="gap-2" asChild><a href="#experiencias">Ver experiencias <ArrowDown className="h-5 w-5" /></a></Button>
+                <Button variant="heroOutline" size="lg" className="gap-2" asChild><a href="#orientacion">Encontrar mi nivel <Compass className="h-5 w-5" /></a></Button>
+              </div>
             </motion.div>
+          </div>
 
-            <ClimbingQuestionnaire
-              onComplete={handleQuestionnaireComplete}
-              onReset={handleReset}
-            />
-            <div className="mt-6 text-center">
-              <button
-                onClick={handleShowAll}
-                className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors duration-300 active:scale-95"
-              >
-                Prefiero ver todas las escuelas
-              </button>
+          <a href={media.climbing.sourceUrl} target="_blank" rel="noopener noreferrer" className="absolute bottom-16 right-4 z-10 text-xs text-foreground/60 underline underline-offset-4 hover:text-foreground">
+            Fotografía provisional · Pexels
+          </a>
+        </section>
+
+        <ClimbingSectionNav />
+
+        <section id="experiencias" className="scroll-mt-24 py-16 sm:py-24" aria-labelledby="experiences-title">
+          <div className="container mx-auto px-4">
+            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+              <div>
+                <p className="mb-3 text-sm font-bold uppercase text-primary">Salidas guiadas existentes</p>
+                <h2 id="experiences-title" className="font-heading text-3xl font-extrabold text-foreground sm:text-5xl">Vive la experiencia</h2>
+              </div>
+              <p className="max-w-2xl leading-7 text-muted-foreground lg:justify-self-end">
+                Elige según tu experiencia, tipo de escalada, tiempo y zona. Accederás a las fichas actuales y a su reserva habitual.
+              </p>
             </div>
 
+            {!showResults ? (
+              <div id="cuestionario" className="mt-10 scroll-mt-24">
+                <ClimbingQuestionnaire onComplete={showFilteredResults} onReset={handleReset} />
+                <div className="mt-6 text-center">
+                  <Button variant="link" onClick={handleShowAll}>Ver todas las escuelas <ArrowRight className="h-4 w-4" /></Button>
+                </div>
+              </div>
+            ) : (
+              <div id="resultados" className="mt-10 scroll-mt-24"><CragResults filters={filters} onReset={handleReset} /></div>
+            )}
           </div>
         </section>
-      )}
 
-      {/* Results Section */}
-      {showResults && (
-        <section id="resultados" className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <CragResults filters={filters} onReset={handleReset} />
-          </div>
-        </section>
-      )}
-
-      {/* CTA Section */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
-              ¿No encuentras lo que buscas?
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-              Contáctanos y te ayudaremos a encontrar la experiencia de escalada perfecta 
-              para ti. Cursos personalizados, salidas en grupo y mucho más.
-            </p>
-            <Button variant="hero" size="lg" className="gap-2" asChild>
-              <a
-                href="https://wa.me/34685609542?text=¡Hola! Me gustaría información sobre escalada en Andalucía"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MessageCircle className="h-5 w-5" />
-                Contactar por WhatsApp
-              </a>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      </motion.main>
+        <ClimbingOrientation />
+        <ClimbingTrainingPath />
+        <ClimbingPractices />
+      </main>
 
       <Footer />
       <WhatsAppButton />
