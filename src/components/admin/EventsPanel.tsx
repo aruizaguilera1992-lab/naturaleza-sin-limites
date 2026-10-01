@@ -127,7 +127,7 @@ export function EventsPanel() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [view, setView] = useState<"lista" | "mes">("lista");
   const [statusFilter, setStatusFilter] = useState("todos");
-  const [categoryFilter, setCategoryFilter] = useState("todas");
+  const [advanced, setAdvanced] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [attendees, setAttendees] = useState<Record<string, Attendee[]>>({});
 
@@ -188,13 +188,8 @@ export function EventsPanel() {
   );
 
   const filtered = useMemo(
-    () =>
-      events.filter(
-        (e) =>
-          (statusFilter === "todos" || e.status === statusFilter) &&
-          (categoryFilter === "todas" || e.category === categoryFilter),
-      ),
-    [events, statusFilter, categoryFilter],
+    () => events.filter((e) => statusFilter === "todos" || e.status === statusFilter),
+    [events, statusFilter],
   );
 
   const monthGroups = useMemo(() => {
