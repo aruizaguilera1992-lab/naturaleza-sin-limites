@@ -60,6 +60,13 @@ export type Database = {
             referencedRelation: "activity_events"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "activity_event_bookings_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "activity_events_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       activity_events: {
@@ -204,6 +211,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "activity_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "activity_events_public"
             referencedColumns: ["id"]
           },
         ]
@@ -544,7 +558,57 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      activity_events_public: {
+        Row: {
+          capacity_total: number | null
+          category: string | null
+          ends_at: string | null
+          event_type: string | null
+          id: string | null
+          latitude: number | null
+          longitude: number | null
+          meeting_point_public: string | null
+          price_cents: number | null
+          seats_reserved: number | null
+          slug: string | null
+          starts_at: string | null
+          status: string | null
+          title: string | null
+        }
+        Insert: {
+          capacity_total?: number | null
+          category?: string | null
+          ends_at?: string | null
+          event_type?: string | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          meeting_point_public?: string | null
+          price_cents?: number | null
+          seats_reserved?: number | null
+          slug?: string | null
+          starts_at?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Update: {
+          capacity_total?: number | null
+          category?: string | null
+          ends_at?: string | null
+          event_type?: string | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          meeting_point_public?: string | null
+          price_cents?: number | null
+          seats_reserved?: number | null
+          slug?: string | null
+          starts_at?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       begin_checkout_generation: {

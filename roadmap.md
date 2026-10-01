@@ -107,3 +107,7 @@
   `https://naturalezasinlimites.es/*`, `https://www.naturalezasinlimites.es/*` y el dominio de vista previa.
 - APIs a habilitar: Maps Embed API (y Maps JavaScript API si se amplía el mapa).
 - Sin clave o sin coordenadas cargadas por el admin, se muestra solo el nombre de la zona: nunca se inventan coordenadas.
+
+## Estabilización (01/10/2026)
+- [x] Paso 1: RPC de plazas solo backend (service_role) y lectura pública de salidas mediante vista `activity_events_public` sin campos privados; regresión SQL en `supabase/tests/step1_event_privacy.sql`
+- [ ] Paso 2: pendiente (no iniciado)
