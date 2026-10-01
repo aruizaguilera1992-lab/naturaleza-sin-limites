@@ -62,7 +62,14 @@ export default function Calendario() {
 
           <TrustBar variant="compact" />
 
-          <div className="mt-8 flex gap-2">
+          <div className="mt-8 flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant={view === "calendario" ? "default" : "outline"}
+              onClick={() => setView("calendario")}
+            >
+              Calendario
+            </Button>
             <Button
               size="sm"
               variant={view === "lista" ? "default" : "outline"}
@@ -80,8 +87,10 @@ export default function Calendario() {
           </div>
 
           <div className="mt-6 space-y-8">
-            {loading && <p className="text-muted-foreground">Cargando salidas…</p>}
-            {error && <p className="text-destructive">{error}</p>}
+            {view === "calendario" && <ActivitiesCalendar />}
+
+            {loading && view !== "calendario" && <p className="text-muted-foreground">Cargando salidas…</p>}
+            {error && view !== "calendario" && <p className="text-destructive">{error}</p>}
 
             {!loading && !error && events.length === 0 && (
               <div className="rounded-xl border border-border bg-card p-6">
