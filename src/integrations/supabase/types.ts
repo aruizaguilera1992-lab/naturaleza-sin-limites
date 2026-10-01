@@ -222,6 +222,51 @@ export type Database = {
           },
         ]
       }
+      business_settings: {
+        Row: {
+          accident_policy: string | null
+          address: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          id: boolean
+          insurer: string | null
+          legal_name: string | null
+          rc_policy: string | null
+          tax_id: string | null
+          tourism_registry: string | null
+          trade_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          accident_policy?: string | null
+          address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          id?: boolean
+          insurer?: string | null
+          legal_name?: string | null
+          rc_policy?: string | null
+          tax_id?: string | null
+          tourism_registry?: string | null
+          trade_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accident_policy?: string | null
+          address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          id?: boolean
+          insurer?: string | null
+          legal_name?: string | null
+          rc_policy?: string | null
+          tax_id?: string | null
+          tourism_registry?: string | null
+          trade_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           admin_notes: string | null
