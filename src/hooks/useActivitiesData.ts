@@ -268,9 +268,10 @@ export function useActivitiesData() {
     
     
     // Catálogo comercial: solo se listan actividades con precio real publicado.
-    // Las que no lo tienen conservan su dataset y su ficha, pero no se venden
-    // desde el catálogo hasta confirmar precio y duración.
-    return unified.filter(a => a.priceValue > 0);
+    // Excepción: la espeleología se muestra siempre como disciplina propia con
+    // precio "Consultar disponibilidad" y CTA de consulta (sin reserva online)
+    // hasta confirmar precios y cavidades.
+    return unified.filter(a => a.priceValue > 0 || a.activityType === 'espeleologia');
   }, []);
 
   

@@ -58,8 +58,14 @@ function ActivityCard({ activity, index, isInCompareList, isFavorite, onToggleCo
             <h3 className="mt-1 line-clamp-2 text-lg font-extrabold leading-6 [overflow-wrap:anywhere]">{activity.name}</h3>
           </div>
           <div className={cn('shrink-0', !isList && 'mt-1')}>
-            <p className="text-xs text-muted-foreground">Desde</p>
-            <p className="text-2xl font-extrabold text-primary">{activity.priceValue} € <span className="text-xs font-semibold text-muted-foreground">/ persona</span></p>
+            {activity.priceValue > 0 ? (
+              <>
+                <p className="text-xs text-muted-foreground">Desde</p>
+                <p className="text-2xl font-extrabold text-primary">{activity.priceValue} € <span className="text-xs font-semibold text-muted-foreground">/ persona</span></p>
+              </>
+            ) : (
+              <p className="text-sm font-bold text-primary">Precio a consultar</p>
+            )}
           </div>
         </div>
 
@@ -74,7 +80,13 @@ function ActivityCard({ activity, index, isInCompareList, isFavorite, onToggleCo
         <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><CalendarCheck className="h-4 w-4 text-primary" />Salidas bajo petición</p>
 
         <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
-          <Button variant="hero" size="sm" className="min-h-11 px-2" asChild><Link to={bookUrl}>Reservar</Link></Button>
+          {activity.priceValue > 0 ? (
+            <Button variant="hero" size="sm" className="min-h-11 px-2" asChild><Link to={bookUrl}>Reservar</Link></Button>
+          ) : (
+            <Button variant="hero" size="sm" className="min-h-11 px-2" asChild>
+              <a href={`https://wa.me/34685609542?text=${encodeURIComponent(`Hola, me interesa la actividad de espeleología "${activity.name}". ¿Me podéis dar precio y disponibilidad?`)}`} target="_blank" rel="noopener noreferrer">Consultar</a>
+            </Button>
+          )}
           <Button variant="outline" size="sm" className="min-h-11 px-2" asChild><Link to={profileUrl}>Ver experiencia</Link></Button>
         </div>
       </div>

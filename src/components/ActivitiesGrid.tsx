@@ -65,6 +65,7 @@ export function ActivitiesGrid() {
           <Link to="/barranquismo" className="hover:text-primary">Barranquismo</Link>
           <Link to="/escalada" className="hover:text-primary">Escalada</Link>
           <Link to="/vias-ferratas" className="hover:text-primary">Vías ferratas</Link>
+          <Link to="/espeleologia" className="hover:text-primary">Espeleología</Link>
         </div>
       </div>
     </section>

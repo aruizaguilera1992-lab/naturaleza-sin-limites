@@ -69,7 +69,7 @@ var media = {
     replacementNote: "Paisaje documental de M\xE1laga para secciones generales y de contacto."
   },
   espeleologiaHero: {
-    src: "/__l5e/assets-v1/dc42c617-bd5b-4257-91be-aa7c0c201fe3/espeleologia-hero-documentary.webp",
+    src: "/images/espeleologia/hero.webp",
     alt: "Persona con iluminaci\xF3n frontal explorando una gran sala subterr\xE1nea de roca caliza con estalactitas y estalagmitas",
     sourceUrl: "https://www.pexels.com/photo/adventurer-exploring-a-majestic-cave-interior-31651851/",
     license: pexelsLicense,
@@ -77,7 +77,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia horizontal de una salida de espeleolog\xEDa con casco, frontal y mono t\xE9cnico."
   },
   espeleologiaVertical: {
-    src: "/__l5e/assets-v1/139e2166-df17-46f6-bd06-9f2253c01a52/espeleologia-vertical-documentary.webp",
+    src: "/images/espeleologia/vertical.webp",
     alt: "Espele\xF3logo descendiendo por cuerda en el pozo de entrada de una cavidad iluminada por luz natural",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:TraversitaM11.jpg",
     license: "CC BY-SA 3.0",
@@ -617,27 +617,27 @@ var activityMedia = {
     status: "propia-pendiente"
   },
   "iniciacion": {
-    src: "/__l5e/assets-v1/c49d8e25-0ca4-4f4c-a9fc-ada0281888b8/iniciacion.webp",
-    alt: "Espeleolog\xEDa de iniciaci\xF3n: fotograf\xEDa documental de espeleologia en entorno natural de monta\xF1a",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sp%C3%A9l%C3%A9ologie_(14205874680).jpg",
-    sourceTitle: "Sp\xE9l\xE9ologie (14205874680).jpg",
-    license: "CC BY 2.0",
+    src: "/images/espeleologia.webp",
+    alt: "Grupo de espele\xF3logos con casco, frontal y mono t\xE9cnico progresando por la entrada de una cueva",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Goikolau-11.jpg",
+    sourceTitle: "Goikolau-11.jpg",
+    license: "CC BY-SA 4.0",
     status: "propia-pendiente"
   },
   "progresion-vertical": {
-    src: "/__l5e/assets-v1/b5e12d3e-2c55-4497-86b5-fec830f8518c/progresion-vertical.webp",
-    alt: "Progresi\xF3n vertical en cavidad: fotograf\xEDa documental de espeleologia en entorno natural de monta\xF1a",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sp%C3%A9l%C3%A9ologie_(14205874680).jpg",
-    sourceTitle: "Sp\xE9l\xE9ologie (14205874680).jpg",
-    license: "CC BY 2.0",
+    src: "/images/espeleologia/vertical.webp",
+    alt: "Espele\xF3logo descendiendo por cuerda en el pozo de entrada de una cavidad iluminada por luz natural",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:TraversitaM11.jpg",
+    sourceTitle: "TraversitaM11.jpg",
+    license: "CC BY-SA 3.0",
     status: "propia-pendiente"
   },
   "exploracion": {
-    src: "/__l5e/assets-v1/1c3633ee-9670-4670-b3d7-869dc7797457/exploracion.webp",
-    alt: "Salida de exploraci\xF3n: fotograf\xEDa documental de espeleologia en entorno natural de monta\xF1a",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Sp%C3%A9l%C3%A9ologie_(14205874680).jpg",
-    sourceTitle: "Sp\xE9l\xE9ologie (14205874680).jpg",
-    license: "CC BY 2.0",
+    src: "/images/espeleologia/hero.webp",
+    alt: "Persona con iluminaci\xF3n frontal explorando una gran sala subterr\xE1nea de roca caliza con estalactitas y estalagmitas",
+    sourceUrl: "https://www.pexels.com/photo/adventurer-exploring-a-majestic-cave-interior-31651851/",
+    sourceTitle: "Pexels 31651851",
+    license: "Pexels License",
     status: "propia-pendiente"
   }
 };
