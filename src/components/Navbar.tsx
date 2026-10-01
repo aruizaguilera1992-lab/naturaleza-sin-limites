@@ -16,6 +16,11 @@ const navLinks = [
     isRoute: true,
   },
   {
+    href: "/calendario",
+    label: "Calendario",
+    isRoute: true,
+  },
+  {
     href: "/vertigo-sapiens",
     label: "Vértigo Sapiens",
     isRoute: true,
