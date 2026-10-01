@@ -92,7 +92,7 @@ export default function Calendario() {
             {loading && view !== "calendario" && <p className="text-muted-foreground">Cargando salidas…</p>}
             {error && view !== "calendario" && <p className="text-destructive">{error}</p>}
 
-            {!loading && !error && events.length === 0 && (
+            {!loading && !error && view !== "calendario" && events.length === 0 && (
               <div className="rounded-xl border border-border bg-card p-6">
                 <p className="text-foreground">
                   Todavía no hay salidas publicadas en el calendario.
