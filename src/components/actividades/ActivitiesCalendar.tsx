@@ -124,7 +124,7 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
       onBlur={() => setHovered(false)}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        "group relative flex h-16 cursor-pointer flex-col overflow-hidden rounded-lg border p-1.5 text-left outline-none sm:h-24 sm:p-2 lg:h-28",
+        "group relative flex h-16 cursor-pointer flex-col overflow-hidden rounded-lg border p-1.5 text-left outline-none sm:h-24 sm:p-2 lg:h-32",
         "transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary",
         selected
           ? "border-primary bg-primary/10 ring-2 ring-primary"
