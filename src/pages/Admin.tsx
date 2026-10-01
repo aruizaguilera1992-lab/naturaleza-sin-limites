@@ -32,6 +32,7 @@ import {
   Inbox,
   Bell,
   Settings,
+  MessageCircle,
 } from "lucide-react";
 import { BusinessSettingsPanel } from "@/components/admin/BusinessSettingsPanel";
 
@@ -110,6 +111,7 @@ type Booking = {
   paid_amount_cents: number | null;
   paid_at: string | null;
   payment_reference: string | null;
+  event_id: string | null;
 };
 
 type Contact = {
@@ -212,17 +214,34 @@ function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: Payme
               <span className="flex items-center gap-2">
                 <Badge variant={p.status === "pagado" ? "default" : "outline"}>{p.status}</Badge>
                 {p.status !== "pagado" && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="gap-1"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`${window.location.origin}/pago/${p.token}`);
-                      toast({ title: "Enlace copiado" });
-                    }}
-                  >
-                    <Copy className="h-3.5 w-3.5" /> Copiar enlace
-                  </Button>
+                  <>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="gap-1"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/pago/${p.token}`);
+                        toast({ title: "Enlace copiado" });
+                      }}
+                    >
+                      <Copy className="h-3.5 w-3.5" /> Copiar enlace
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="gap-1"
+                      onClick={() => {
+                        const text = `¡Hola! Para confirmar tu plaza (${p.concept}) puedes pagar ${formatAmount(
+                          p.amount_cents,
+                          p.currency,
+                        )} de forma segura aquí:\n${window.location.origin}/pago/${p.token}\n\nGracias, Naturaleza Sin Límites`;
+                        navigator.clipboard.writeText(text);
+                        toast({ title: "Mensaje para WhatsApp copiado" });
+                      }}
+                    >
+                      <MessageCircle className="h-3.5 w-3.5" /> Copiar para WhatsApp
+                    </Button>
+                  </>
                 )}
               </span>
             </div>
@@ -319,6 +338,9 @@ export default function Admin() {
   const [planOrders, setPlanOrders] = useState<PlanOrder[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
   const [tab, setTab] = useState<AdminTab>("overview");
+  const [eventsById, setEventsById] = useState<
+    Record<string, { id: string; title: string; starts_at: string }>
+  >({});
 
   const loadData = useCallback(async () => {
     const [b, c, p, n, o] = await Promise.all([
@@ -337,6 +359,14 @@ export default function Admin() {
     if (p.data) setPayments(p.data as PaymentRequest[]);
     if (n.data) setNotifications(n.data as NotificationRow[]);
     if (o.data) setPlanOrders(o.data as unknown as PlanOrder[]);
+    const ids = [...new Set((b.data ?? []).map((r) => r.event_id).filter(Boolean))] as string[];
+    if (ids.length) {
+      const { data: ev } = await supabase
+        .from("activity_events")
+        .select("id, title, starts_at")
+        .in("id", ids);
+      setEventsById(Object.fromEntries((ev ?? []).map((e) => [e.id, e])));
+    }
   }, []);
 
   const retryNotification = async (id: string) => {
@@ -599,6 +629,21 @@ export default function Admin() {
                     <span>Personas: {b.number_of_people ?? "-"}</span>
                     <span>Nivel: {b.experience_level ?? "-"}</span>
                   </div>
+                  {b.event_id && (
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/40 bg-primary/5 px-3 py-2 text-sm">
+                      <span className="flex items-center gap-2 text-foreground">
+                        <CalendarDays className="h-4 w-4 text-primary" />
+                        {eventsById[b.event_id]
+                          ? `${eventsById[b.event_id].title} · ${new Date(
+                              eventsById[b.event_id].starts_at,
+                            ).toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" })}`
+                          : "Salida programada"}
+                      </span>
+                      <Button size="sm" variant="outline" onClick={() => setTab("events")}>
+                        Ver salida
+                      </Button>
+                    </div>
+                  )}
                   {b.message && <p className="mt-3 text-sm text-foreground">{b.message}</p>}
                   <NotesField
                     value={b.admin_notes}

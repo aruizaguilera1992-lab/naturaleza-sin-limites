@@ -1,4 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import logoAsset from "@/assets/naturaleza-sin-limites-logo.webp.asset.json";
 import { useCookieConsent } from "@/context/CookieConsentContext";
@@ -31,6 +33,21 @@ export function Footer() {
   const navigate = useNavigate();
   const location = useLocation();
   const { openPreferences } = useCookieConsent();
+  const [registry, setRegistry] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    supabase
+      .from("business_settings")
+      .select("tourism_registry")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (active) setRegistry(data?.tourism_registry?.trim() || null);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleNavClick = (href: string) => {
     if (href.startsWith("/#")) {
@@ -174,7 +191,14 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-muted-foreground text-sm">© 2026 Naturaleza Sin Límites - Proyecto personal</p>
+            <div className="text-center md:text-left">
+              <p className="text-muted-foreground text-sm">© 2026 Naturaleza Sin Límites - Proyecto personal</p>
+              {registry && (
+                <p className="text-muted-foreground text-xs mt-1">
+                  Registro de Turismo Activo de Andalucía: {registry}
+                </p>
+              )}
+            </div>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <Link to="/privacidad" className="hover:text-primary transition-colors">
                 Política de Privacidad
