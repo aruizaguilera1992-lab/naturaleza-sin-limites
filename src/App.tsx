@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,6 +9,7 @@ import { CookieConsentProvider } from "./context/CookieConsentContext";
 import { CookieBanner } from "./components/CookieBanner";
 import { CookiePreferencesModal } from "./components/CookiePreferencesModal";
 import { AnalyticsLoader } from "./components/AnalyticsLoader";
+import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import Actividades from "./pages/Actividades";
 import Calendario from "./pages/Calendario";
