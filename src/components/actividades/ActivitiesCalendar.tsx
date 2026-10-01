@@ -92,7 +92,7 @@ interface DayCellProps {
   onSelect: (date: Date) => void;
 }
 
-/** Celda de día tipo tablón: al pasar el ratón muestra el plan con acción directa. */
+/** Celda de día tipo tablón visual: foto a sangre, sello de categoría y llamada a la acción grande. */
 function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, onSelect }: DayCellProps) {
   const [hovered, setHovered] = useState(false);
   const date = new Date(year, month, day);
@@ -124,20 +124,49 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
       onBlur={() => setHovered(false)}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        "group relative flex h-16 cursor-pointer flex-col overflow-hidden rounded-lg border p-1.5 text-left outline-none sm:h-24 sm:p-2 lg:h-32",
-        "transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary",
-        selected
-          ? "border-primary bg-primary/10 ring-2 ring-primary"
-          : isToday
-            ? "border-primary/40 bg-muted"
-            : "border-border/60 bg-card hover:border-primary/40 hover:bg-muted/40",
-        isPast && "opacity-50",
+        "group relative flex h-32 cursor-pointer flex-col overflow-hidden rounded-xl text-left outline-none sm:h-44 lg:h-52",
+        "transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary active:scale-95",
+        featured
+          ? cn("border-2", selected ? "border-primary ring-2 ring-primary" : isToday ? "border-primary/60" : "border-transparent hover:border-primary")
+          : cn(
+              "border border-dashed p-2",
+              selected
+                ? "border-primary bg-primary/10 ring-2 ring-primary"
+                : isToday
+                  ? "border-primary/50 bg-muted"
+                  : "border-border/60 bg-card hover:border-primary/50",
+            ),
+        isPast && "opacity-40 grayscale",
       )}
     >
+      {/* Foto de fondo a sangre en días con salida */}
+      {featured?.profile?.image && (
+        <img
+          src={featured.profile.image}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
+      )}
+      {featured && (
+        <div
+          className={cn(
+            "absolute inset-0 bg-gradient-to-t",
+            featuredStyle?.overlay ?? "from-primary/95",
+            "via-background/50 to-background/40",
+          )}
+        />
+      )}
+
+      {/* Número del día */}
       <span
         className={cn(
-          "text-xs font-semibold sm:text-sm",
-          selected || isToday ? "text-primary" : "text-muted-foreground",
+          "relative z-10 px-2 pt-1.5 text-lg font-black drop-shadow-md sm:text-xl",
+          featured ? "text-white" : selected || isToday ? "text-primary" : "text-muted-foreground",
         )}
       >
         {day}
@@ -145,93 +174,91 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
 
       {/* Sello en móvil: puntos de categoría (el detalle aparece al tocar) */}
       {events.length > 0 && (
-        <div className="mt-auto flex gap-0.5 sm:hidden">
+        <div className="relative z-10 mt-auto flex gap-1 pb-2 pl-2 sm:hidden">
           {events.slice(0, 3).map((event) => (
             <span
               key={event.id}
-              className={cn("h-1.5 w-1.5 rounded-full", categoryDot[event.category] ?? "bg-primary")}
+              className={cn("h-1.5 w-4 rounded-full", categoryDot[event.category] ?? "bg-primary")}
             />
           ))}
         </div>
       )}
 
-      {/* Etiqueta del plan en la celda (escritorio y tablet) */}
+      {/* Etiqueta del plan sobre la foto (tablet y escritorio) */}
       {featured && (
-        <div className="mt-auto hidden min-w-0 sm:block">
-          <div className={cn("mb-1 h-1 w-6 rounded-full", featuredStyle?.bar ?? "bg-primary")} />
-          <p className="truncate text-[10px] font-bold uppercase leading-tight tracking-tight lg:text-[11px]">
-            <span className={cn(featuredStyle?.text ?? "text-primary")}>{featured.profile?.categoryLabel}</span>
-            {" · "}
-            <span className="text-foreground">{featured.title}</span>
-          </p>
-          {extras > 0 && <p className="text-[9px] font-semibold text-muted-foreground">+{extras} más</p>}
+        <div className="relative z-10 mt-auto hidden min-w-0 flex-col gap-1 px-2 pb-2 sm:flex">
+          <div className="flex flex-wrap items-center gap-1">
+            <span
+              className={cn(
+                "rounded px-1.5 py-0.5 text-[9px] font-black uppercase tracking-tight text-primary-foreground",
+                featuredStyle?.bar ?? "bg-primary",
+              )}
+            >
+              {featured.profile?.categoryLabel}
+            </span>
+            <span className="rounded bg-background/40 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-tight text-foreground backdrop-blur-sm">
+              Niv. {featured.profile?.technicalLevel}
+            </span>
+          </div>
+          <h3 className="truncate text-sm font-black uppercase leading-tight tracking-tight text-white drop-shadow-lg lg:text-base">
+            {featured.title}
+          </h3>
+          {extras > 0 && <p className="text-[10px] font-bold text-white/90">+{extras} más</p>}
         </div>
       )}
 
-      {/* Detalle flotante al pasar el ratón o enfocar (escritorio) */}
-      {hovered && featured && (
+      {/* Llamada a la acción con precio: aparece al pasar el ratón (escritorio) */}
+      {featured && (
         <div
           className={cn(
-            "absolute inset-0 z-20 hidden flex-col sm:flex",
+            "absolute inset-0 z-20 hidden flex-col justify-end gap-1.5 bg-gradient-to-t from-background via-background/80 to-transparent p-3 transition-opacity duration-200 sm:flex",
+            hovered ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         >
-          {featured.profile?.image && (
-            <img
-              src={featured.profile.image}
-              alt=""
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover opacity-70"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.display = "none";
-              }}
-            />
+          <p className={cn("text-[10px] font-black uppercase tracking-widest", featuredStyle?.text ?? "text-primary")}>
+            {featured.profile?.categoryLabel} · {featured.profile?.zone}
+          </p>
+          <p className="text-base font-black uppercase leading-tight text-foreground lg:text-lg">{featured.title}</p>
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs font-semibold text-foreground/90">
+            <span className="flex items-center gap-1">
+              <Clock className="h-3.5 w-3.5" aria-hidden="true" /> {formatTime(featured.startDate)}
+            </span>
+            <span className="flex items-center gap-1">
+              <Users className="h-3.5 w-3.5" aria-hidden="true" />
+              {featured.isFull ? "Sin plazas" : `${featured.freeSeats} plazas`}
+            </span>
+          </p>
+          <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+            {featured.profile?.shortDescription}
+          </p>
+          {full ? (
+            <span className="mt-1 rounded-lg bg-muted px-3 py-2.5 text-center text-sm font-black uppercase tracking-wide text-muted-foreground">
+              Completa
+            </span>
+          ) : (
+            <Link
+              to={`/reservar/${featured.category}/${featured.slug}?evento=${featured.id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="mt-1 block rounded-lg bg-primary px-3 py-3 text-center text-base font-black uppercase tracking-wide text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 active:scale-95 lg:text-lg"
+            >
+              Reservar
+              {featured.pricePerPerson > 0 && featured.pricePerPerson < 1000
+                ? ` · ${euros(featured.pricePerPerson)}`
+                : ""}
+            </Link>
           )}
-          <div
-            className={cn(
-              "relative flex h-full flex-col justify-end gap-1 bg-gradient-to-t p-2",
-              featuredStyle?.overlay ?? "from-primary/95",
-              "via-background/85 to-background/30",
-            )}
-          >
-            <p className={cn("text-[10px] font-bold uppercase tracking-wider", featuredStyle?.text ?? "text-primary")}>
-              {featured.profile?.categoryLabel}
-            </p>
-            <p className="line-clamp-2 text-xs font-bold leading-tight text-foreground">{featured.title}</p>
-            <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-foreground/90">
-              <span className="flex items-center gap-1">
-                <Clock className="h-3 w-3" aria-hidden="true" /> {formatTime(featured.startDate)}
-              </span>
-              <span className="flex items-center gap-1">
-                <Users className="h-3 w-3" aria-hidden="true" />
-                {featured.isFull ? "Sin plazas" : `${featured.freeSeats}/${featured.capacity_total} libres`}
-              </span>
-              {featured.pricePerPerson > 0 && (
-                <span className="font-bold text-primary">{euros(featured.pricePerPerson)}</span>
-              )}
-            </p>
-            {full ? (
-              <span className="mt-auto rounded bg-muted px-2 py-1.5 text-center text-[10px] font-bold uppercase text-muted-foreground">
-                Completa
-              </span>
-            ) : (
-              <Link
-                to={`/reservar/${featured.category}/${featured.slug}?evento=${featured.id}`}
-                onClick={(e) => e.stopPropagation()}
-                className="mt-auto block rounded bg-primary px-2 py-1.5 text-center text-[10px] font-bold uppercase tracking-wide text-primary-foreground transition-all duration-300 hover:bg-primary/90 active:scale-95"
-              >
-                Reservar mi plaza
-              </Link>
-            )}
-          </div>
         </div>
       )}
 
       {/* Pista en días libres (escritorio) */}
-      {hovered && !featured && !isPast && (
-        <div className="pointer-events-none absolute inset-0 z-10 hidden items-end justify-center bg-background/80 p-2 sm:flex">
-          <span className="text-center text-[10px] font-bold uppercase leading-tight tracking-tight text-primary">
-            Libre · salida privada
-          </span>
+      {!featured && !isPast && (
+        <div className="relative z-10 mt-auto hidden pb-2 px-2 sm:block">
+          <p className="text-[10px] font-bold uppercase italic leading-tight tracking-tight text-muted-foreground">
+            Día disponible
+          </p>
+          <p className="mt-0.5 rounded border border-dashed border-border/80 py-1 text-center text-[9px] font-bold uppercase text-primary/80 transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+            Solicitar privada
+          </p>
         </div>
       )}
     </motion.div>
