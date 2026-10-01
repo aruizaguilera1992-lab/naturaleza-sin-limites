@@ -26,7 +26,17 @@ import {
   Copy,
   Mail,
   CheckCircle2,
+  Home,
+  CalendarCheck,
+  CalendarDays,
+  Inbox,
+  Bell,
+  Settings,
 } from "lucide-react";
+import { BusinessSettingsPanel } from "@/components/admin/BusinessSettingsPanel";
+
+type AdminTab = "overview" | "bookings" | "contacts" | "plans" | "notifications" | "events" | "settings";
+
 
 type NotesFieldProps = {
   value: string | null;
@@ -308,9 +318,7 @@ export default function Admin() {
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [planOrders, setPlanOrders] = useState<PlanOrder[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
-  const [tab, setTab] = useState<
-    "bookings" | "contacts" | "plans" | "notifications" | "events"
-  >("bookings");
+  const [tab, setTab] = useState<AdminTab>("overview");
 
   const loadData = useCallback(async () => {
     const [b, c, p, n, o] = await Promise.all([
@@ -465,64 +473,98 @@ export default function Admin() {
     );
   }
 
+  const pendingNotifications = notifications.filter((n) => n.status !== "enviado").length;
+  const newBookings = bookings.filter((b) => b.status === "nueva").length;
+  const newContacts = contacts.filter((c) => c.status === "nueva").length;
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+  const paidThisMonth = payments
+    .filter((p) => p.status === "pagado" && p.paid_at && new Date(p.paid_at) >= monthStart)
+    .reduce((sum, p) => sum + p.amount_cents, 0);
+
+  const NAV: { id: AdminTab; label: string; icon: typeof Home; count?: number }[] = [
+    { id: "overview", label: "Resumen", icon: Home },
+    { id: "bookings", label: "Reservas", icon: CalendarCheck, count: newBookings },
+    { id: "contacts", label: "Contactos", icon: Inbox, count: newContacts },
+    { id: "events", label: "Salidas", icon: CalendarDays },
+    { id: "notifications", label: "Notificaciones", icon: Bell, count: pendingNotifications },
+    { id: "plans", label: "Altas y planes", icon: CreditCard },
+    { id: "settings", label: "Ajustes legales", icon: Settings },
+  ];
+  const current = NAV.find((n) => n.id === tab)!;
+
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
+    <div className="min-h-screen bg-background md:flex">
       <Helmet>
         <title>Panel de gestión | Naturaleza Sin Límites</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <div className="container mx-auto max-w-6xl">
+      <aside className="md:w-60 md:shrink-0 md:min-h-screen border-b md:border-b-0 md:border-r border-border bg-card md:sticky md:top-0 md:h-screen flex md:flex-col">
+        <div className="hidden md:flex items-center gap-2 px-5 py-6 font-heading font-bold">
+          <Mountain className="h-5 w-5 text-primary" /> Gestión NSL
+        </div>
+        <nav className="flex md:flex-col gap-1 overflow-x-auto px-2 py-2 md:px-3 flex-1">
+          {NAV.map((n) => (
+            <button
+              key={n.id}
+              onClick={() => setTab(n.id)}
+              className={`flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm transition-all duration-300 active:scale-95 ${
+                tab === n.id
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+            >
+              <n.icon className="h-4 w-4" />
+              <span className="flex-1 text-left">{n.label}</span>
+              {!!n.count && (
+                <span className="rounded-full bg-destructive px-2 text-xs text-destructive-foreground">
+                  {n.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </nav>
+        <div className="hidden md:block p-3 border-t border-border">
+          <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()} className="w-full justify-start gap-2">
+            <LogOut className="h-4 w-4" /> Salir
+          </Button>
+        </div>
+      </aside>
+      <main className="flex-1 min-w-0 px-4 py-8 md:px-10">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <h1 className="text-3xl font-heading font-bold">Solicitudes</h1>
+          <h1 className="text-3xl font-heading font-bold">{current.label}</h1>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={loadData} className="gap-2">
               <RefreshCw className="h-4 w-4" /> Actualizar
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()} className="gap-2 md:hidden">
               <LogOut className="h-4 w-4" /> Salir
             </Button>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-6">
-          <Button
-            variant={tab === "bookings" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setTab("bookings")}
-          >
-            Reservas ({bookings.length})
-          </Button>
-          <Button
-            variant={tab === "contacts" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setTab("contacts")}
-          >
-            Contactos ({contacts.length})
-          </Button>
-          <Button
-            variant={tab === "plans" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setTab("plans")}
-          >
-            Altas y planes ({planOrders.length})
-          </Button>
-          <Button
-            variant={tab === "events" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setTab("events")}
-          >
-            Salidas
-          </Button>
-          <Button
-            variant={tab === "notifications" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setTab("notifications")}
-          >
-            Notificaciones ({notifications.filter((n) => n.status !== "enviado").length})
-          </Button>
-        </div>
-
-        <div className="space-y-4">
+        <div className="space-y-4 max-w-6xl">
+          {tab === "overview" && (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { label: "Reservas nuevas", value: newBookings, go: "bookings" as AdminTab },
+                { label: "Contactos nuevos", value: newContacts, go: "contacts" as AdminTab },
+                { label: "Cobrado este mes", value: formatAmount(paidThisMonth, "eur"), go: "bookings" as AdminTab },
+                { label: "Avisos con fallo", value: pendingNotifications, go: "notifications" as AdminTab },
+              ].map((s) => (
+                <button
+                  key={s.label}
+                  onClick={() => setTab(s.go)}
+                  className="rounded-xl border border-border bg-card p-5 text-left transition-all duration-300 hover:border-primary active:scale-95"
+                >
+                  <p className="text-sm text-muted-foreground">{s.label}</p>
+                  <p className="mt-2 text-3xl font-heading font-bold">{s.value}</p>
+                </button>
+              ))}
+            </div>
+          )}
+          {tab === "settings" && <BusinessSettingsPanel />}
           {tab === "events" && <EventsPanel />}
           {tab === "bookings" &&
             (bookings.length === 0 ? (
