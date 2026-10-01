@@ -5,6 +5,7 @@ import { CalendarDays, ChevronLeft, ChevronRight, Clock, MessageCircle, Users } 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EventCard } from "@/components/calendario/EventCard";
+import { getActivityCatalogImage } from "@/data/activityProfiles";
 import { useActivityEvents, type ActivityEvent } from "@/hooks/useActivityEvents";
 
 const categoryStyles: Record<string, { bar: string; text: string; overlay: string }> = {
@@ -99,6 +100,7 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
   const featured = events[0];
   const extras = events.length - 1;
   const featuredStyle = featured ? categoryStyles[featured.category] : null;
+  const cellImage = featured ? getActivityCatalogImage(featured.category, featured.slug) : null;
   const full = featured ? featured.isFull : false;
 
   const handleClick = () => onSelect(date);
