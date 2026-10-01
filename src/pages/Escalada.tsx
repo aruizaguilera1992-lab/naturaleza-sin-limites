@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, ArrowRight, Compass, Mountain, Users } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { Seo } from "@/components/Seo";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -36,10 +37,26 @@ const pageTransition = {
 export default function Escalada() {
   const [showResults, setShowResults] = useState(false);
   const [filters, setFilters] = useState<FilterAnswers>(initialFilters);
+  const { hash } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+    if (!hash) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    const scrollToHash = () => {
+      const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+      target?.scrollIntoView({ block: "start" });
+    };
+    const frame = window.requestAnimationFrame(scrollToHash);
+    const settledLayout = window.setTimeout(scrollToHash, 450);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(settledLayout);
+    };
+  }, [hash]);
 
   const showFilteredResults = (answers: FilterAnswers) => {
     setFilters(answers);
