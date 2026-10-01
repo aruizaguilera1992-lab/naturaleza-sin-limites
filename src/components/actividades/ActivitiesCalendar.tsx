@@ -213,35 +213,34 @@ function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, 
       {featured && (
         <div
           className={cn(
-            "absolute inset-0 z-20 hidden flex-col justify-end gap-1.5 bg-gradient-to-t from-background via-background/80 to-transparent p-3 transition-opacity duration-200 sm:flex",
+            "absolute inset-0 z-20 hidden flex-col justify-end gap-1 bg-gradient-to-t from-background via-background/85 to-transparent p-2.5 transition-opacity duration-200 sm:flex",
             hovered ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         >
-          <p className={cn("text-[10px] font-black uppercase tracking-widest", featuredStyle?.text ?? "text-primary")}>
+          <p className={cn("truncate text-[9px] font-black uppercase tracking-widest", featuredStyle?.text ?? "text-primary")}>
             {featured.profile?.categoryLabel} · {featured.profile?.zone}
           </p>
-          <p className="text-base font-black uppercase leading-tight text-foreground lg:text-lg">{featured.title}</p>
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs font-semibold text-foreground/90">
+          <p className="truncate text-sm font-black uppercase leading-tight text-foreground lg:text-base">
+            {featured.title}
+          </p>
+          <p className="flex flex-wrap items-center gap-x-2.5 text-[11px] font-semibold text-foreground/90">
             <span className="flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" aria-hidden="true" /> {formatTime(featured.startDate)}
+              <Clock className="h-3 w-3" aria-hidden="true" /> {formatTime(featured.startDate)}
             </span>
             <span className="flex items-center gap-1">
-              <Users className="h-3.5 w-3.5" aria-hidden="true" />
+              <Users className="h-3 w-3" aria-hidden="true" />
               {featured.isFull ? "Sin plazas" : `${featured.freeSeats} plazas`}
             </span>
           </p>
-          <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-            {featured.profile?.shortDescription}
-          </p>
           {full ? (
-            <span className="mt-1 rounded-lg bg-muted px-3 py-2.5 text-center text-sm font-black uppercase tracking-wide text-muted-foreground">
+            <span className="mt-0.5 rounded-lg bg-muted px-2 py-2 text-center text-xs font-black uppercase tracking-wide text-muted-foreground">
               Completa
             </span>
           ) : (
             <Link
               to={`/reservar/${featured.category}/${featured.slug}?evento=${featured.id}`}
               onClick={(e) => e.stopPropagation()}
-              className="mt-1 block rounded-lg bg-primary px-3 py-3 text-center text-base font-black uppercase tracking-wide text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 active:scale-95 lg:text-lg"
+              className="mt-0.5 block whitespace-nowrap rounded-lg bg-primary px-2 py-2.5 text-center text-sm font-black uppercase tracking-wide text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 active:scale-95 lg:text-base"
             >
               Reservar
               {featured.pricePerPerson > 0 && featured.pricePerPerson < 1000
