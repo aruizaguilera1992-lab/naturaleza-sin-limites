@@ -332,7 +332,7 @@ export function ActivitiesCalendar() {
           <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
             {calendarDays.map((day, index) =>
               day === null ? (
-                <div key={`empty-${index}`} className="h-16 sm:h-24 lg:h-28" />
+                <div key={`empty-${index}`} className="h-16 sm:h-24 lg:h-32" />
               ) : (
                 <CalendarDayCell
                   key={day}
