@@ -41,7 +41,12 @@ export function CanyonCard({ barranco, index, userLevel, onOpenDetail }: CanyonC
       className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
     >
       {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+      <button
+        type="button"
+        onClick={() => onOpenDetail(barranco)}
+        aria-label={`Ver ficha del barranco ${barranco.nombre}`}
+        className="relative block h-48 w-full cursor-pointer overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
         <img
           src={barranco.imagen}
           alt={`Entorno natural del barranco ${barranco.nombre} en ${barranco.provincia}`}
@@ -71,7 +76,8 @@ export function CanyonCard({ barranco, index, userLevel, onOpenDetail }: CanyonC
             📍 {barranco.provincia}
           </span>
         </div>
-      </div>
+      </button>
+
 
       {/* Content */}
       <div className="p-6">

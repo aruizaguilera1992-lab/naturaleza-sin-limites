@@ -6,7 +6,6 @@ import {
   FALLBACK_INSURER,
   FALLBACK_RC_POLICY,
   FALLBACK_TOURISM_REGISTRY,
-  POLICY_VALIDITY_PERIOD,
   useBusinessSettings,
 } from '@/hooks/useBusinessSettings';
 
@@ -14,17 +13,11 @@ import {
  * Sección de confianza y seguridad.
  *
  * IMPORTANTE: solo se afirman datos verificados. Ambas pólizas (RC 1500175606
- * y accidentes 1300013109) son reales y de la misma compañía y vigencia. La
- * cobertura de accidentes aplica exclusivamente durante la participación en
- * las actividades aseguradas: no se generaliza, ni se muestran capitales,
- * edades o altitud. Los logotipos son versiones monocromas generadas como
- * placeholder hasta contar con los archivos oficiales de cada marca.
- * «Datos del seguro» lleva al Aviso Legal; nunca se enlaza el contrato
- * completo (contiene datos personales).
+ * y accidentes 1300013109) son reales y de la misma compañía. La cobertura de
+ * accidentes no se generaliza, ni se muestran capitales, edades o altitud. En
+ * esta tarjeta no se muestran vigencia, condiciones ni enlaces de seguro
+ * (retirados a petición del titular).
  */
-
-const ACCIDENT_FORM_URL =
-  'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
 
 const brands = [
   { src: '/images/brands/petzl.png', alt: 'Petzl' },
@@ -58,15 +51,10 @@ function Block({ visual, title, children, footer }: BlockProps) {
   );
 }
 
-const legalLinkClasses =
-  'inline-flex items-center gap-2 rounded-full border border-primary/40 px-5 py-2.5 text-sm font-semibold text-primary transition-all duration-300 hover:bg-primary/10 active:scale-95';
-
 const secondaryLinkClasses = 'text-xs font-semibold text-primary hover:underline underline-offset-2';
 
 export function SafetyAssuranceSection({ className }: { className?: string }) {
   const { insurer, rcPolicy, accidentPolicy, tourismRegistry } = useBusinessSettings();
-
-  const VALIDITY = POLICY_VALIDITY_PERIOD;
 
   return (
     <section
@@ -132,21 +120,6 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
                 <ShieldCheck className="h-12 w-12 text-primary" aria-hidden="true" />
               </span>
             }
-            footer={
-              <>
-                <Link to="/terminos#identificacion" className={legalLinkClasses}>
-                  Datos del seguro
-                </Link>
-                <a
-                  href={ACCIDENT_FORM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={secondaryLinkClasses}
-                >
-                  Formulario de declaración de accidentes
-                </a>
-              </>
-            }
           >
             <span className="block">
               Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}.
@@ -154,13 +127,7 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
             <span className="mt-1 block">
               Responsabilidad civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}.
             </span>
-            <span className="mt-2 block">
-              {insurer || FALLBACK_INSURER} · Vigencia {VALIDITY}.
-            </span>
-            <span className="mt-2 block">
-              Cobertura para participantes durante las actividades aseguradas, según las
-              condiciones de la póliza.
-            </span>
+            <span className="mt-2 block">{insurer || FALLBACK_INSURER}.</span>
           </Block>
 
           <Block

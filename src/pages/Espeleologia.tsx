@@ -116,7 +116,11 @@ const Espeleologia = () => {
                   transition={{ duration: 0.5, delay: i * 0.1 }}
                   className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300"
                 >
-                  <div className="relative h-48">
+                  <Link
+                    to={`/actividades/espeleologia/${a.id}`}
+                    aria-label={`Ver ficha de ${a.nombre}`}
+                    className="relative block h-48 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
                     <img
                       src={a.imagen}
                       alt={a.imagenAlt}
@@ -128,7 +132,7 @@ const Espeleologia = () => {
                     <Badge className="absolute top-3 left-3 bg-amber-500/20 text-amber-400 border border-amber-500/30">
                       {a.nivelLabel}
                     </Badge>
-                  </div>
+                  </Link>
 
                   <div className="p-5">
                     <h3 className="text-lg font-heading font-bold text-foreground mb-2">{a.nombre}</h3>

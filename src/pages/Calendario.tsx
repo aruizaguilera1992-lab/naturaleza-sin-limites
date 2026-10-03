@@ -39,8 +39,6 @@ export default function Calendario() {
             </p>
           </header>
 
-          <TrustBar variant="compact" />
-
           <div className="mt-10 space-y-12">
             <AgendaAventuras />
 

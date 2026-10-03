@@ -6,7 +6,6 @@ import {
   FALLBACK_INSURER,
   FALLBACK_RC_POLICY,
   FALLBACK_TOURISM_REGISTRY,
-  POLICY_VALIDITY_PERIOD,
   useBusinessSettings,
   type BusinessSettings,
 } from '@/hooks/useBusinessSettings';
@@ -18,15 +17,10 @@ import {
  * turismo activo).
  *
  * IMPORTANTE: ambas pólizas (accidentes 1300013109 y RC 1500175606) son reales
- * y de la misma compañía y vigencia. La cobertura de accidentes aplica
- * exclusivamente durante la participación en las actividades aseguradas; no se
- * generaliza, ni se muestran capitales, edades o altitud. El enlace de seguro
- * apunta al formulario oficial de declaración de siniestros; «Datos del
- * seguro» lleva al Aviso Legal, no al contrato completo.
+ * y de la misma compañía. No se generaliza la cobertura ni se muestran
+ * capitales, edades o altitud. En esta tarjeta no se muestran vigencia,
+ * condiciones ni enlaces de seguro (retirados a petición del titular).
  */
-
-const ACCIDENT_FORM_URL =
-  'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
 
 function TourismRegistryCard({ registry }: { registry: string | null }) {
   return (
@@ -54,23 +48,7 @@ function AccidentInsuranceCard({
   return (
     <span>
       Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}. Responsabilidad
-      civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}. {insurer || FALLBACK_INSURER} ·
-      Vigencia {POLICY_VALIDITY_PERIOD}. Cobertura para participantes durante las
-      actividades aseguradas, según las condiciones de la póliza.{' '}
-      <a
-        href={ACCIDENT_FORM_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-semibold text-primary hover:underline underline-offset-2"
-      >
-        Formulario de declaración de accidentes
-      </a>{' · '}
-      <Link
-        to="/terminos#identificacion"
-        className="font-semibold text-primary hover:underline underline-offset-2"
-      >
-        Datos del seguro
-      </Link>
+      civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}. {insurer || FALLBACK_INSURER}.
     </span>
   );
 }
