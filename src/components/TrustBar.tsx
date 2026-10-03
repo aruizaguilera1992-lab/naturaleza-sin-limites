@@ -7,38 +7,59 @@ import { cn } from '@/lib/utils';
 /**
  * Señales de confianza verificables. Solo se incluyen afirmaciones que el
  * propio proyecto ya respalda (titulación TD2 del guía, grupos de máximo 6,
- * material homologado, seguro de accidentes y registro de turismo activo).
+ * material homologado, seguro de accidentes y RC, registro de turismo activo).
  *
  * IMPORTANTE: el enlace de seguro apunta al formulario oficial de declaración
- * de siniestros de la aseguradora; no presenta póliza, vigencia, coberturas ni
- * número de póliza (no hay condiciones particulares verificadas publicadas) y
- * no atribuye responsabilidad civil a la aseguradora del seguro de accidentes.
+ * de siniestros de la aseguradora; no presenta certificado de accidentes, ni
+ * condiciones, ni número de póliza de accidentes (aún no aportados). Los datos
+ * de la póliza de Responsabilidad Civil (número y vigencia) son los de la
+ * póliza real facilitada; no se inventan coberturas ni capitales. El enlace
+ * «Datos del seguro» lleva al Aviso Legal, no al contrato completo.
  */
 
 const ACCIDENT_FORM_URL =
   'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
 
-/** Valor de respaldo si la lectura de business_settings no está disponible. */
+/** Valores de respaldo si la lectura de business_settings no está disponible. */
+const FALLBACK_INSURER = 'W. R. Berkley Europe AG, Sucursal en España';
+const FALLBACK_RC_POLICY = '1500175606';
+const RC_VALIDITY_PERIOD = '18/09/2026–17/09/2027';
 const FALLBACK_TOURISM_REGISTRY = 'AT/MA/00508';
 
-export function useTourismRegistry() {
-  const [registry, setRegistry] = useState<string | null>(null);
+interface BusinessSettings {
+  insurer: string | null;
+  rcPolicy: string | null;
+  tourismRegistry: string | null;
+}
+
+export function useBusinessSettings(): BusinessSettings {
+  const [settings, setSettings] = useState<BusinessSettings>({
+    insurer: null,
+    rcPolicy: null,
+    tourismRegistry: null,
+  });
 
   useEffect(() => {
     let active = true;
     supabase
       .from('business_settings')
-      .select('tourism_registry')
+      .select('insurer, rc_policy, tourism_registry')
       .maybeSingle()
       .then(({ data }) => {
-        if (active) setRegistry(data?.tourism_registry?.trim() || null);
+        if (active) {
+          setSettings({
+            insurer: data?.insurer?.trim() || null,
+            rcPolicy: data?.rc_policy?.trim() || null,
+            tourismRegistry: data?.tourism_registry?.trim() || null,
+          });
+        }
       });
     return () => {
       active = false;
     };
   }, []);
 
-  return registry;
+  return settings;
 }
 
 function TourismRegistryCard({ registry }: { registry: string | null }) {
@@ -55,11 +76,18 @@ function TourismRegistryCard({ registry }: { registry: string | null }) {
   );
 }
 
-function AccidentInsuranceCard() {
+function AccidentInsuranceCard({
+  insurer,
+  rcPolicy,
+}: {
+  insurer: string | null;
+  rcPolicy: string | null;
+}) {
   return (
     <span>
-      Cobertura de accidentes con la aseguradora W. R. Berkley Europe AG, Sucursal en
-      España.{' '}
+      Responsabilidad civil · {insurer || FALLBACK_INSURER} · Póliza{' '}
+      {rcPolicy || FALLBACK_RC_POLICY} · Vigencia {RC_VALIDITY_PERIOD}. Seguro de
+      accidentes incluido en la actividad.{' '}
       <a
         href={ACCIDENT_FORM_URL}
         target="_blank"
@@ -67,7 +95,13 @@ function AccidentInsuranceCard() {
         className="font-semibold text-primary hover:underline underline-offset-2"
       >
         Formulario de declaración de accidentes
-      </a>
+      </a>{' · '}
+      <Link
+        to="/terminos#identificacion"
+        className="font-semibold text-primary hover:underline underline-offset-2"
+      >
+        Datos del seguro
+      </Link>
     </span>
   );
 }
@@ -78,7 +112,7 @@ interface TrustItem {
   description: React.ReactNode;
 }
 
-export function buildTrustItems(registry: string | null): TrustItem[] {
+export function buildTrustItems(settings: BusinessSettings): TrustItem[] {
   return [
     {
       icon: BadgeCheck,
@@ -97,13 +131,13 @@ export function buildTrustItems(registry: string | null): TrustItem[] {
     },
     {
       icon: ShieldCheck,
-      title: 'Seguro de accidentes',
-      description: <AccidentInsuranceCard />,
+      title: 'Seguro de accidentes y RC',
+      description: <AccidentInsuranceCard insurer={settings.insurer} rcPolicy={settings.rcPolicy} />,
     },
     {
       icon: FileText,
       title: 'Turismo activo registrado',
-      description: <TourismRegistryCard registry={registry} />,
+      description: <TourismRegistryCard registry={settings.tourismRegistry} />,
     },
   ];
 }
@@ -115,8 +149,8 @@ interface TrustBarProps {
 }
 
 export function TrustBar({ className, variant = 'section' }: TrustBarProps) {
-  const registry = useTourismRegistry();
-  const items = buildTrustItems(registry);
+  const settings = useBusinessSettings();
+  const items = buildTrustItems(settings);
 
   if (variant === 'compact') {
     return (
