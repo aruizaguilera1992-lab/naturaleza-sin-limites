@@ -12,9 +12,7 @@ import { BookingForm } from '@/components/BookingForm';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
-import { TrustBar } from '@/components/TrustBar';
 import { HomeCalendarSection } from '@/components/home/HomeCalendarSection';
-import { SafetyAssuranceSection } from '@/components/home/SafetyAssuranceSection';
 
 
 const Index = () => {
@@ -28,9 +26,6 @@ const Index = () => {
       <Navbar />
       <main>
         <HeroSection />
-        <SafetyAssuranceSection />
-        <ActivitiesGrid />
-        <TrustBar />
         <HomeCalendarSection />
         <GuideAuthority />
         <WhyChooseUs />
