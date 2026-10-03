@@ -5,6 +5,7 @@ import { ArrowRight, ChevronDown, Flame, GraduationCap, Mountain, ShieldCheck, U
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import heroVideoAsset from '@/assets/photography/naturaleza-sin-limites-hero.mp4.asset.json';
+import { officialYoutubeVideos } from '@/data/youtubeVideos';
 
 // Cuestionarios por disciplina: cada enlace abre el cuestionario de esa disciplina.
 const DISCIPLINE_QUESTIONNAIRES = [
@@ -33,6 +34,9 @@ export function HeroSection() {
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   );
   const [phraseIndex, setPhraseIndex] = useState(0);
+  const [youtubeVideo] = useState(
+    () => officialYoutubeVideos[Math.floor(Math.random() * officialYoutubeVideos.length)]
+  );
 
   useEffect(() => {
     const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -52,7 +56,7 @@ export function HeroSection() {
   }, [reduceMotion]);
 
   return <section id="inicio" className="homepage-hero relative min-h-[620px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
-      {/* Animated background; the section background remains as the loading/reduced-motion poster. */}
+      {/* Vídeo local de respaldo mientras carga YouTube; el fondo de sección queda como póster. */}
       {!reduceMotion && (
         <video
           className="absolute inset-0 z-0 h-full w-full object-cover object-center"
@@ -66,6 +70,18 @@ export function HeroSection() {
         >
           <source src={heroVideoAsset.url} type="video/mp4" />
         </video>
+      )}
+      {/* Vídeo aleatorio del canal oficial en cada visita */}
+      {!reduceMotion && (
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+          <iframe
+            title={youtubeVideo.title}
+            src={`https://www.youtube-nocookie.com/embed/${youtubeVideo.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeVideo.youtubeId}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&disablekb=1`}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            tabIndex={-1}
+            className="absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.78vh] min-w-full -translate-x-1/2 -translate-y-1/2 scale-[1.15] border-0"
+          />
+        </div>
       )}
       <div className="homepage-hero-overlay absolute inset-0 z-[1]" />
 
