@@ -74,7 +74,7 @@ export function HeroSection() {
         }} className="text-hero font-heading mb-6">
             Naturaleza Sin Límites
             <span className="block text-gradient mt-2">
-              Vive la Aventura.
+              Vive la Aventura
             </span>
           </motion.h1>
 
