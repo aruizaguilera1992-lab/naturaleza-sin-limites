@@ -17,15 +17,10 @@ import {
  * turismo activo).
  *
  * IMPORTANTE: ambas pólizas (accidentes 1300013109 y RC 1500175606) son reales
- * y de la misma compañía y vigencia. La cobertura de accidentes aplica
- * exclusivamente durante la participación en las actividades aseguradas; no se
- * generaliza, ni se muestran capitales, edades o altitud. El enlace de seguro
- * apunta al formulario oficial de declaración de siniestros; «Datos del
- * seguro» lleva al Aviso Legal, no al contrato completo.
+ * y de la misma compañía. No se generaliza la cobertura ni se muestran
+ * capitales, edades o altitud. En esta tarjeta no se muestran vigencia,
+ * condiciones ni enlaces de seguro (retirados a petición del titular).
  */
-
-const ACCIDENT_FORM_URL =
-  'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
 
 function TourismRegistryCard({ registry }: { registry: string | null }) {
   return (
