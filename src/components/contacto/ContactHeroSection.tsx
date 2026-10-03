@@ -33,19 +33,18 @@ export function ContactHeroSection() {
       </div>
 
       {/* Escena: el guía integrado en el paisaje */}
-      <div className="absolute bottom-0 right-0 z-10 w-full md:w-3/5 h-full flex items-end justify-end pointer-events-none">
-        <div className="relative w-full h-[88%] flex items-end justify-end overflow-hidden opacity-50 md:opacity-100">
+      <div className="absolute bottom-0 right-0 z-10 h-full w-full md:w-3/5 flex items-end justify-end pointer-events-none">
+        <div className="relative h-full w-full md:w-auto flex items-end justify-end overflow-hidden opacity-60 md:opacity-100">
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/15 blur-[150px] rounded-full" />
           <motion.img
-            src="/images/guia-retrato.png"
+            src="/images/guia-retrato-corte.png"
             alt="Guía de Naturaleza Sin Límites"
             loading="eager"
             decoding="async"
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 0.15 }}
-            className="h-full w-auto max-w-none object-contain object-bottom drop-shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
-            style={guideMask}
+            className="h-[68%] md:h-[72%] w-auto max-w-none object-contain object-bottom translate-x-4 drop-shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
           />
         </div>
       </div>
