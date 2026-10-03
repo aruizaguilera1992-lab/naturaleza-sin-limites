@@ -6,7 +6,6 @@ import {
   FALLBACK_INSURER,
   FALLBACK_RC_POLICY,
   FALLBACK_TOURISM_REGISTRY,
-  POLICY_VALIDITY_PERIOD,
   useBusinessSettings,
   type BusinessSettings,
 } from '@/hooks/useBusinessSettings';
