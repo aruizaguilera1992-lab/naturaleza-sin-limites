@@ -198,7 +198,7 @@
   }
 
   .nav-scrolled {
-    @apply bg-background/95 backdrop-blur-md shadow-lg;
+    @apply bg-transparent;
   }
 }
 
