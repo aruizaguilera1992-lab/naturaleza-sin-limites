@@ -120,19 +120,19 @@ export function HeroSection() {
             ) : (
               <>
                 <p className="sr-only">{HERO_DESCRIPTION_FULL}</p>
-                <div aria-hidden="true" className="max-w-2xl mx-auto flex items-center justify-center min-h-[7.5rem] sm:min-h-[5.5rem] md:min-h-[4.5rem]">
-                  <AnimatePresence mode="wait">
+                <div aria-hidden="true" className="max-w-2xl mx-auto grid min-h-[7.5rem] sm:min-h-[5.5rem] md:min-h-[4.5rem] place-items-center">
+                  <AnimatePresence mode="sync">
                     <motion.span
                       key={phraseIndex}
-                      initial={{ opacity: 0, letterSpacing: '0.3em' }}
-                      animate={{ opacity: 1, letterSpacing: '0.01em' }}
-                      exit={{ opacity: 0, letterSpacing: '0.18em' }}
-                      transition={{ duration: 0.7, ease: 'easeOut' }}
-                      className={
+                      initial={{ opacity: 0, scale: 0.94, filter: 'blur(6px)' }}
+                      animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                      exit={{ opacity: 0, scale: 1.04, filter: 'blur(6px)' }}
+                      transition={{ duration: 0.6, ease: 'easeOut' }}
+                      className={`col-start-1 row-start-1 block font-heading leading-tight text-foreground/95 will-change-transform ${
                         HERO_PHRASES[phraseIndex].big
-                          ? 'font-heading text-3xl sm:text-4xl md:text-5xl leading-tight text-foreground/95'
-                          : 'text-hero-sub text-foreground/80'
-                      }
+                          ? 'text-3xl sm:text-4xl md:text-5xl'
+                          : 'text-xl sm:text-2xl md:text-3xl'
+                      }`}
                     >
                       {HERO_PHRASES[phraseIndex].text}
                     </motion.span>
