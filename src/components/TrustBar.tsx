@@ -101,7 +101,13 @@ export function buildTrustItems(settings: BusinessSettings): TrustItem[] {
     {
       icon: ShieldCheck,
       title: 'Seguro de accidentes y RC',
-      description: <AccidentInsuranceCard insurer={settings.insurer} rcPolicy={settings.rcPolicy} />,
+      description: (
+        <AccidentInsuranceCard
+          insurer={settings.insurer}
+          rcPolicy={settings.rcPolicy}
+          accidentPolicy={settings.accidentPolicy}
+        />
+      ),
     },
     {
       icon: FileText,
