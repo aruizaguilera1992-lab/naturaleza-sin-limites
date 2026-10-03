@@ -76,7 +76,13 @@ function TourismRegistryCard({ registry }: { registry: string | null }) {
   );
 }
 
-function AccidentInsuranceCard({ insurer, rcPolicy }: BusinessSettings) {
+function AccidentInsuranceCard({
+  insurer,
+  rcPolicy,
+}: {
+  insurer: string | null;
+  rcPolicy: string | null;
+}) {
   return (
     <span>
       Responsabilidad civil · {insurer || FALLBACK_INSURER} · Póliza{' '}
