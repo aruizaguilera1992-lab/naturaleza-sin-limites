@@ -1,4 +1,4 @@
-import { ShieldCheck, Anchor, Wrench } from 'lucide-react';
+import { ShieldCheck, Anchor } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -137,6 +137,3 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
 }
 
 export default SafetyAssuranceSection;
-
-// Icono auxiliar (no se usa actualmente, reservado para el logo federativo real)
-export const _unused = Wrench;
