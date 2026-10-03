@@ -267,3 +267,40 @@
   .delay-400 { animation-delay: 400ms; }
   .delay-500 { animation-delay: 500ms; }
 }
+
+/* ===== Ambiente global: fondos dinámicos y transiciones suaves ===== */
+@layer base {
+  html { scroll-behavior: smooth; }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(40% 35% at 20% 25%, hsl(var(--primary) / 0.07), transparent 70%),
+      radial-gradient(35% 30% at 80% 70%, hsl(var(--primary) / 0.05), transparent 70%);
+    animation: nsl-ambient 28s ease-in-out infinite alternate;
+  }
+  #root > * { animation: nsl-page-in 0.6s ease-out both; }
+}
+@keyframes nsl-ambient {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(4%, -3%, 0) scale(1.08); }
+}
+@keyframes nsl-page-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes nsl-reveal {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@supports (animation-timeline: view()) {
+  main section, #root section:not(:first-of-type) {
+    animation: nsl-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before, #root > *, main section, #root section { animation: none !important; }
+  html { scroll-behavior: auto; }
+}
