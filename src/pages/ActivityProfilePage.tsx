@@ -20,6 +20,13 @@ function shorten(value: string, max: number) {
   return value.length <= max ? value : `${value.slice(0, max - 1).trimEnd()}…`;
 }
 
+function summarize(value: string, sentences = 2, max = 260) {
+  const parts = value.match(/[^.!?]+[.!?]+/g) ?? [value];
+  let out = parts.slice(0, sentences).join(' ').trim() || value;
+  if (out.length > max) out = `${out.slice(0, max - 1).trimEnd()}…`;
+  return out;
+}
+
 export default function ActivityProfilePage() {
   const { category, slug } = useParams<{ category: string; slug: string }>();
   const activity = getActivityProfile(category, slug);
