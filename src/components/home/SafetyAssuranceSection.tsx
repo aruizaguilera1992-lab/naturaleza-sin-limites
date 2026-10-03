@@ -26,7 +26,7 @@ import {
  *
  * IMPORTANTE: solo se afirman datos verificados. Ambas pólizas (RC 1500175606
  * y accidentes 1300013109) son reales y de la misma compañía. La cobertura de
- * accidentes no se generaliza, ni se muestran capitales, edades o altitud. En
+ * accidentes no se generaliza; capitales y restricciones viven en src/data/insuranceCoverage.ts. En
  * esta tarjeta no se muestran vigencia, condiciones ni enlaces de seguro
  * (retirados a petición del titular). Las marcas de material no implican
  * patrocinio ni acuerdo (ver src/data/technicalBrands.ts).
