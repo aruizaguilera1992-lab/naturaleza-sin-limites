@@ -1,6 +1,7 @@
-import { FileText, ShieldCheck } from 'lucide-react';
+import { FileText, HardHat, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { technicalBrands } from '@/data/technicalBrands';
 import {
   FALLBACK_ACCIDENT_POLICY,
   FALLBACK_INSURER,
@@ -16,14 +17,9 @@ import {
  * y accidentes 1300013109) son reales y de la misma compañía. La cobertura de
  * accidentes no se generaliza, ni se muestran capitales, edades o altitud. En
  * esta tarjeta no se muestran vigencia, condiciones ni enlaces de seguro
- * (retirados a petición del titular).
+ * (retirados a petición del titular). Las marcas de material no implican
+ * patrocinio ni acuerdo (ver src/data/technicalBrands.ts).
  */
-
-const brands = [
-  { src: '/images/brands/petzl.png', alt: 'Petzl' },
-  { src: '/images/brands/fixe.png', alt: 'Fixe' },
-  { src: '/images/brands/sealand.png', alt: 'Sealand' },
-];
 
 interface BlockProps {
   visual: React.ReactNode;
@@ -76,27 +72,21 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-5 sm:mt-12 md:grid-cols-3">
-
-
           <Block
             title="Material técnico homologado"
             visual={
-              <div className="flex flex-wrap items-center justify-center gap-6">
-                {brands.map((brand) => (
-                  <img
-                    key={brand.alt}
-                    src={brand.src}
-                    alt={brand.alt}
-                    loading="lazy"
-                    width={816}
-                    height={816}
-                    className="h-14 w-auto opacity-80 transition-opacity duration-300 group-hover:opacity-100"
-                  />
-                ))}
-              </div>
+              <span className="inline-flex items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 p-4">
+                <HardHat className="h-12 w-12 text-primary" aria-hidden="true" />
+              </span>
+            }
+            footer={
+              <a href="#marcas-equipamiento" className={secondaryLinkClasses}>
+                Ver las {technicalBrands.length} marcas
+              </a>
             }
           >
-            Equipamiento Petzl, Fixe y Sealand, revisado antes de cada salida.
+            Seleccionamos equipos adecuados para cada actividad y revisamos el material antes de cada
+            salida. Los EPI se utilizan según su certificación y las indicaciones del fabricante.
           </Block>
 
           <Block
@@ -131,6 +121,32 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           >
             Registro de Turismo de Andalucía · {tourismRegistry || FALLBACK_TOURISM_REGISTRY}.
           </Block>
+        </div>
+
+        <div id="marcas-equipamiento" className="mt-12 scroll-mt-32">
+          <h3 className="text-center font-heading text-lg font-bold uppercase tracking-wide text-foreground sm:text-xl">
+            Marcas de nuestro equipamiento técnico
+          </h3>
+          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {technicalBrands.map((brand) => (
+              <li key={brand.name} className="min-w-0">
+                <a
+                  href={brand.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${brand.name} (web oficial, se abre en una pestaña nueva)`}
+                  className="group/brand flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card/60 transition-all duration-300 hover:border-primary/40 active:scale-95"
+                >
+                  <span className={cn('flex h-20 items-center justify-center p-3 sm:h-24', brand.plate === 'light' ? 'bg-foreground' : 'bg-secondary')}>
+                    <img src={brand.logo} alt={brand.name} loading="lazy" decoding="async" className="max-h-full w-full object-contain" />
+                  </span>
+                  <span className="truncate px-2 py-2 text-center text-xs font-semibold text-muted-foreground group-hover/brand:text-primary">
+                    {brand.name}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
