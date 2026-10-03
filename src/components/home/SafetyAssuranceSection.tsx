@@ -53,24 +53,15 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
   const { insurer, rcPolicy, accidentPolicy, tourismRegistry } = useBusinessSettings();
   const { hash } = useLocation();
   const [brandsOpen, setBrandsOpen] = useState(false);
-  const [coverageOpen, setCoverageOpen] = useState(false);
 
   useEffect(() => {
     if (hash === '#marcas-equipamiento') setBrandsOpen(true);
-    if (hash === '#coberturas-seguro') setCoverageOpen(true);
   }, [hash]);
 
   const openBrands = () => {
     setBrandsOpen(true);
     requestAnimationFrame(() =>
       document.getElementById('marcas-equipamiento')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-    );
-  };
-
-  const openCoverage = () => {
-    setCoverageOpen(true);
-    requestAnimationFrame(() =>
-      document.getElementById('coberturas-seguro')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
     );
   };
 
