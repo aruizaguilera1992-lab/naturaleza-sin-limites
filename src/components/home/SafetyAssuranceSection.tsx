@@ -2,22 +2,25 @@ import { FileText, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import {
+  FALLBACK_ACCIDENT_POLICY,
   FALLBACK_INSURER,
   FALLBACK_RC_POLICY,
   FALLBACK_TOURISM_REGISTRY,
+  POLICY_VALIDITY_PERIOD,
   useBusinessSettings,
 } from '@/hooks/useBusinessSettings';
 
 /**
  * Sección de confianza y seguridad.
  *
- * IMPORTANTE: solo se afirman datos verificados. La Responsabilidad Civil está
- * acreditada con la póliza real (nº y vigencia); el seguro de accidentes está
- * contratado según informa el titular, pero aún no hay certificado aportado, así
- * que no se presentan número de póliza, condiciones ni coberturas de accidentes.
- * Los logotipos son versiones monocromas generadas como placeholder hasta contar
- * con los archivos oficiales de cada marca. «Datos del seguro» lleva al Aviso
- * Legal; nunca se enlaza el contrato completo (contiene datos personales).
+ * IMPORTANTE: solo se afirman datos verificados. Ambas pólizas (RC 1500175606
+ * y accidentes 1300013109) son reales y de la misma compañía y vigencia. La
+ * cobertura de accidentes aplica exclusivamente durante la participación en
+ * las actividades aseguradas: no se generaliza, ni se muestran capitales,
+ * edades o altitud. Los logotipos son versiones monocromas generadas como
+ * placeholder hasta contar con los archivos oficiales de cada marca.
+ * «Datos del seguro» lleva al Aviso Legal; nunca se enlaza el contrato
+ * completo (contiene datos personales).
  */
 
 const ACCIDENT_FORM_URL =
@@ -61,12 +64,9 @@ const legalLinkClasses =
 const secondaryLinkClasses = 'text-xs font-semibold text-primary hover:underline underline-offset-2';
 
 export function SafetyAssuranceSection({ className }: { className?: string }) {
-  const { insurer, rcPolicy, tourismRegistry } = useBusinessSettings();
+  const { insurer, rcPolicy, accidentPolicy, tourismRegistry } = useBusinessSettings();
 
-  const FALLBACK_INSURER = 'W. R. Berkley Europe AG, Sucursal en España';
-  const FALLBACK_RC_POLICY = '1500175606';
-  const RC_VALIDITY_PERIOD = '18/09/2026–17/09/2027';
-  const FALLBACK_TOURISM_REGISTRY = 'AT/MA/00508';
+  const VALIDITY = POLICY_VALIDITY_PERIOD;
 
   return (
     <section
@@ -149,11 +149,17 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
             }
           >
             <span className="block">
-              Seguro de accidentes incluido en todas las actividades.
+              Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}.
+            </span>
+            <span className="mt-1 block">
+              Responsabilidad civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}.
             </span>
             <span className="mt-2 block">
-              Responsabilidad civil · {insurer || FALLBACK_INSURER} · Póliza{' '}
-              {rcPolicy || FALLBACK_RC_POLICY} · Vigencia {RC_VALIDITY_PERIOD}.
+              {insurer || FALLBACK_INSURER} · Vigencia {VALIDITY}.
+            </span>
+            <span className="mt-2 block">
+              Cobertura para participantes durante las actividades aseguradas, según las
+              condiciones de la póliza.
             </span>
           </Block>
 

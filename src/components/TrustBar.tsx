@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom';
 import { BadgeCheck, FileText, ShieldCheck, Users, Wrench } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
+  FALLBACK_ACCIDENT_POLICY,
   FALLBACK_INSURER,
   FALLBACK_RC_POLICY,
   FALLBACK_TOURISM_REGISTRY,
+  POLICY_VALIDITY_PERIOD,
   useBusinessSettings,
   type BusinessSettings,
 } from '@/hooks/useBusinessSettings';
@@ -12,21 +14,19 @@ import {
 /**
  * Señales de confianza verificables. Solo se incluyen afirmaciones que el
  * propio proyecto ya respalda (titulación TD2 del guía, grupos de máximo 6,
- * material homologado, seguro de accidentes y RC, registro de turismo activo).
+ * material homologado, póliza de accidentes y póliza de RC, registro de
+ * turismo activo).
  *
- * IMPORTANTE: el enlace de seguro apunta al formulario oficial de declaración
- * de siniestros de la aseguradora; no presenta certificado de accidentes, ni
- * condiciones, ni número de póliza de accidentes (aún no aportados). Los datos
- * de la póliza de Responsabilidad Civil (número y vigencia) son los de la
- * póliza real facilitada; no se inventan coberturas ni capitales. El enlace
- * «Datos del seguro» lleva al Aviso Legal, no al contrato completo.
+ * IMPORTANTE: ambas pólizas (accidentes 1300013109 y RC 1500175606) son reales
+ * y de la misma compañía y vigencia. La cobertura de accidentes aplica
+ * exclusivamente durante la participación en las actividades aseguradas; no se
+ * generaliza, ni se muestran capitales, edades o altitud. El enlace de seguro
+ * apunta al formulario oficial de declaración de siniestros; «Datos del
+ * seguro» lleva al Aviso Legal, no al contrato completo.
  */
 
 const ACCIDENT_FORM_URL =
   'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
-
-/** Vigencia de la póliza de Responsabilidad Civil (póliza real facilitada). */
-const RC_VALIDITY_PERIOD = '18/09/2026–17/09/2027';
 
 function TourismRegistryCard({ registry }: { registry: string | null }) {
   return (
@@ -45,15 +45,18 @@ function TourismRegistryCard({ registry }: { registry: string | null }) {
 function AccidentInsuranceCard({
   insurer,
   rcPolicy,
+  accidentPolicy,
 }: {
   insurer: string | null;
   rcPolicy: string | null;
+  accidentPolicy: string | null;
 }) {
   return (
     <span>
-      Responsabilidad civil · {insurer || FALLBACK_INSURER} · Póliza{' '}
-      {rcPolicy || FALLBACK_RC_POLICY} · Vigencia {RC_VALIDITY_PERIOD}. Seguro de
-      accidentes incluido en la actividad.{' '}
+      Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}. Responsabilidad
+      civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}. {insurer || FALLBACK_INSURER} ·
+      Vigencia {POLICY_VALIDITY_PERIOD}. Cobertura para participantes durante las
+      actividades aseguradas, según las condiciones de la póliza.{' '}
       <a
         href={ACCIDENT_FORM_URL}
         target="_blank"
@@ -98,7 +101,13 @@ export function buildTrustItems(settings: BusinessSettings): TrustItem[] {
     {
       icon: ShieldCheck,
       title: 'Seguro de accidentes y RC',
-      description: <AccidentInsuranceCard insurer={settings.insurer} rcPolicy={settings.rcPolicy} />,
+      description: (
+        <AccidentInsuranceCard
+          insurer={settings.insurer}
+          rcPolicy={settings.rcPolicy}
+          accidentPolicy={settings.accidentPolicy}
+        />
+      ),
     },
     {
       icon: FileText,
