@@ -22,6 +22,7 @@ export function HeroSection() {
   const [reduceMotion, setReduceMotion] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   );
+  const [phraseIndex, setPhraseIndex] = useState(0);
 
   useEffect(() => {
     const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -30,6 +31,15 @@ export function HeroSection() {
     motionPreference.addEventListener('change', updatePreference);
     return () => motionPreference.removeEventListener('change', updatePreference);
   }, []);
+
+  // Rotación de frases del subtítulo (se desactiva con prefers-reduced-motion).
+  useEffect(() => {
+    if (reduceMotion) return;
+    const interval = window.setInterval(() => {
+      setPhraseIndex((current) => (current + 1) % HERO_PHRASES.length);
+    }, PHRASE_HOLD_MS);
+    return () => window.clearInterval(interval);
+  }, [reduceMotion]);
 
   return <section id="inicio" className="homepage-hero relative min-h-[620px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
       {/* Animated background; the section background remains as the loading/reduced-motion poster. */}
