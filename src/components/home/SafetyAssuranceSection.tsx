@@ -115,54 +115,32 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
         </div>
 
         <div id="marcas-equipamiento" className="mt-12 scroll-mt-32">
-          <button
-            type="button"
-            onClick={() => setBrandsOpen((v) => !v)}
-            aria-expanded={brandsOpen}
-            aria-controls="lista-marcas-equipamiento"
-            className="mx-auto flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-center transition-all duration-300 hover:text-primary active:scale-95"
+          <h3 className="text-center font-heading text-lg font-bold uppercase tracking-wide text-foreground sm:text-xl">
+            Solo trabajamos con las mejores marcas
+          </h3>
+          <ul
+            id="lista-marcas-equipamiento"
+            className="mt-6 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:gap-3"
           >
-            <span className="font-heading text-lg font-bold uppercase tracking-wide text-foreground sm:text-xl">
-              Marcas de nuestro equipamiento técnico
-            </span>
-            <ChevronDown
-              aria-hidden="true"
-              className={cn(
-                'h-5 w-5 shrink-0 text-primary transition-transform duration-300',
-                brandsOpen && 'rotate-180',
-              )}
-            />
-          </button>
-          <p className="mt-1 text-center text-xs text-muted-foreground">
-            {brandsOpen
-              ? 'Toca para plegar'
-              : `${technicalBrands.length} fabricantes · toca para ver`}
-          </p>
-          {brandsOpen && (
-            <ul
-              id="lista-marcas-equipamiento"
-              className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
-            >
-              {technicalBrands.map((brand) => (
-                <li key={brand.name} className="min-w-0">
-                  <a
-                    href={brand.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${brand.name} (web oficial, se abre en una pestaña nueva)`}
-                    className="group/brand flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card/60 transition-all duration-300 hover:border-primary/40 active:scale-95"
-                  >
-                    <span className={cn('flex h-20 items-center justify-center p-3 sm:h-24', brand.plate === 'light' ? 'bg-foreground' : 'bg-secondary')}>
-                      <img src={brand.logo} alt={brand.name} loading="lazy" decoding="async" className="max-h-full w-full object-contain" />
-                    </span>
-                    <span className="truncate px-2 py-2 text-center text-xs font-semibold text-muted-foreground group-hover/brand:text-primary">
-                      {brand.name}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
+            {technicalBrands.map((brand) => (
+              <li key={brand.name} className="min-w-0">
+                <a
+                  href={brand.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${brand.name} (web oficial, se abre en una pestaña nueva)`}
+                  className="group/brand flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card/60 transition-all duration-300 hover:border-primary/40 active:scale-95"
+                >
+                  <span className={cn('flex h-14 items-center justify-center p-2 sm:h-16 lg:h-24 lg:p-3', brand.plate === 'light' ? 'bg-foreground' : 'bg-secondary')}>
+                    <img src={brand.logo} alt={brand.name} loading="lazy" decoding="async" className="max-h-full w-full object-contain" />
+                  </span>
+                  <span className="truncate px-1 py-1.5 text-center text-xs font-semibold text-muted-foreground group-hover/brand:text-primary lg:px-2 lg:py-2">
+                    {brand.name}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
