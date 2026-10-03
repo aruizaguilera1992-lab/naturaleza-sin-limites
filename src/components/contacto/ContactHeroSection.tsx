@@ -35,7 +35,7 @@ export function ContactHeroSection() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 0.15 }}
-            className="h-[68%] md:h-[72%] w-auto max-w-none object-contain object-bottom translate-x-4 drop-shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+            className="h-auto w-[78%] max-w-[420px] md:h-[72%] md:w-auto md:max-w-none object-contain object-bottom translate-x-4 drop-shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
           />
         </div>
       </div>
