@@ -51,9 +51,6 @@ function Block({ visual, title, children, footer }: BlockProps) {
   );
 }
 
-const legalLinkClasses =
-  'inline-flex items-center gap-2 rounded-full border border-primary/40 px-5 py-2.5 text-sm font-semibold text-primary transition-all duration-300 hover:bg-primary/10 active:scale-95';
-
 const secondaryLinkClasses = 'text-xs font-semibold text-primary hover:underline underline-offset-2';
 
 export function SafetyAssuranceSection({ className }: { className?: string }) {
