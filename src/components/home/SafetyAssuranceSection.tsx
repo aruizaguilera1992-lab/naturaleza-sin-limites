@@ -78,15 +78,6 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
                 <HardHat className="h-12 w-12 text-primary" aria-hidden="true" />
               </span>
             }
-            footer={
-              <button
-                type="button"
-                onClick={openBrands}
-                className={cn(secondaryLinkClasses, 'cursor-pointer')}
-              >
-                Ver las {technicalBrands.length} marcas
-              </button>
-            }
           >
             Seleccionamos equipos adecuados para cada actividad y revisamos el material antes de cada
             salida. Los EPI se utilizan según su certificación y las indicaciones del fabricante.
