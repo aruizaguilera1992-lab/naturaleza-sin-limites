@@ -2,7 +2,45 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Clock, MapPin, Mountain, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { activityProfiles } from '@/data/activityProfiles';
+import { activityProfiles, getActivityCatalogImage } from '@/data/activityProfiles';
+import { getActivityMedia } from '@/data/activityMedia';
+
+const caveImage = getActivityMedia('exploracion');
+
+const DISCIPLINES = [
+  {
+    name: 'Barranquismo',
+    description: 'Descensos guiados entre ríos y cascadas',
+    cta: 'Ver cuestionario',
+    to: '/barranquismo#cuestionario',
+    image: getActivityCatalogImage('barranquismo', 'guadalmina') ?? '',
+    imageAlt: 'Barranco con toboganes y saltos: actividad de barranquismo guiada en Málaga',
+  },
+  {
+    name: 'Escalada',
+    description: 'Vive la pared con seguridad y guía',
+    cta: 'Ver cuestionario',
+    to: '/escalada#cuestionario',
+    image: getActivityCatalogImage('escalada', 'chorro-frontales') ?? '',
+    imageAlt: 'Escalador deportivo en una pared de roca caliza en Andalucía',
+  },
+  {
+    name: 'Vías ferratas',
+    description: 'Itinerarios verticales equipados con cable',
+    cta: 'Ver cuestionario',
+    to: '/vias-ferratas#cuestionario',
+    image: getActivityCatalogImage('vias-ferratas', 'ferrata-el-chorro') ?? '',
+    imageAlt: 'Vía ferrata con cable y peldaños sobre un desfiladero rocoso',
+  },
+  {
+    name: 'Espeleología',
+    description: 'Exploración guiada de cavidades subterráneas',
+    cta: 'Ver salidas',
+    to: '/espeleologia#experiencias',
+    image: caveImage?.src ?? '',
+    imageAlt: caveImage?.alt ?? 'Espeleólogos explorando una cavidad subterránea iluminada con frontal',
+  },
+];
 
 const featuredKeys = [
   'barranquismo/guadalmina',
@@ -60,12 +98,39 @@ export function ActivitiesGrid() {
           ))}
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 border-t border-border pt-7 text-sm text-muted-foreground">
-          <span className="font-semibold text-foreground">Explorar por disciplina:</span>
-          <Link to="/barranquismo" className="hover:text-primary">Barranquismo</Link>
-          <Link to="/escalada" className="hover:text-primary">Escalada</Link>
-          <Link to="/vias-ferratas" className="hover:text-primary">Vías ferratas</Link>
-          <Link to="/espeleologia" className="hover:text-primary">Espeleología</Link>
+        <div className="mt-8 border-t border-border pt-7">
+          <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground">Explorar por disciplina</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {DISCIPLINES.map((discipline, index) => (
+              <motion.div key={discipline.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
+                <Link
+                  to={discipline.to}
+                  className="group relative block h-40 overflow-hidden rounded-lg border border-border transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-card sm:h-48"
+                >
+                  <img
+                    src={discipline.image}
+                    alt={discipline.imageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/10" />
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4">
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-extrabold leading-tight text-foreground sm:text-xl">{discipline.name}</h3>
+                      <p className="mt-1 text-xs leading-4 text-muted-foreground">{discipline.description}</p>
+                    </div>
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform duration-300 group-hover:translate-x-1">
+                      <ArrowRight className="h-5 w-5" />
+                    </span>
+                  </div>
+                  <span className="absolute left-4 top-3 rounded-md bg-primary px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-primary-foreground">
+                    {discipline.cta}
+                  </span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
