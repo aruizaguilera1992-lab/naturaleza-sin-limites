@@ -9,9 +9,7 @@ import {
   RC_ROWS,
 } from '@/data/insuranceCoverage';
 import {
-  FALLBACK_ACCIDENT_POLICY,
   FALLBACK_INSURER,
-  FALLBACK_RC_POLICY,
   useBusinessSettings,
 } from '@/hooks/useBusinessSettings';
 import { secondaryLinkClasses } from '@/components/legal/linkStyles';
@@ -54,7 +52,7 @@ function CoverageTable({
  * Usado en la sección de confianza de portada y en /terminos#identificacion.
  */
 export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showCheckedLabel?: boolean }) {
-  const { insurer, rcPolicy, accidentPolicy } = useBusinessSettings();
+  const { insurer } = useBusinessSettings();
 
   return (
     <div className="grid gap-5 text-left lg:grid-cols-2">
@@ -83,11 +81,11 @@ export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showChe
         </p>
       </div>
 
-      <CoverageTable title={`Responsabilidad civil · Póliza ${rcPolicy || FALLBACK_RC_POLICY}`} rows={RC_ROWS} />
+      <CoverageTable title="Responsabilidad civil" rows={RC_ROWS} />
 
       <div className="min-w-0">
         <CoverageTable
-          title={`Accidentes · Póliza ${accidentPolicy || FALLBACK_ACCIDENT_POLICY}`}
+          title="Accidentes"
           rows={ACCIDENT_ROWS}
           caption="Límites generales por persona"
         />

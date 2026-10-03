@@ -2,9 +2,7 @@ import { Link } from 'react-router-dom';
 import { BadgeCheck, FileText, ShieldCheck, Users, Wrench } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
-  FALLBACK_ACCIDENT_POLICY,
   FALLBACK_INSURER,
-  FALLBACK_RC_POLICY,
   FALLBACK_TOURISM_REGISTRY,
   useBusinessSettings,
   type BusinessSettings,
@@ -36,21 +34,8 @@ function TourismRegistryCard({ registry }: { registry: string | null }) {
   );
 }
 
-function AccidentInsuranceCard({
-  insurer,
-  rcPolicy,
-  accidentPolicy,
-}: {
-  insurer: string | null;
-  rcPolicy: string | null;
-  accidentPolicy: string | null;
-}) {
-  return (
-    <span>
-      Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}. Responsabilidad
-      civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}. {insurer || FALLBACK_INSURER}.
-    </span>
-  );
+function AccidentInsuranceCard({ insurer }: { insurer: string | null }) {
+  return <span>Accidentes · Responsabilidad civil · {insurer || FALLBACK_INSURER}.</span>;
 }
 
 interface TrustItem {
@@ -80,11 +65,7 @@ export function buildTrustItems(settings: BusinessSettings): TrustItem[] {
       icon: ShieldCheck,
       title: 'Seguro de accidentes y RC',
       description: (
-        <AccidentInsuranceCard
-          insurer={settings.insurer}
-          rcPolicy={settings.rcPolicy}
-          accidentPolicy={settings.accidentPolicy}
-        />
+        <AccidentInsuranceCard insurer={settings.insurer} />
       ),
     },
     {
