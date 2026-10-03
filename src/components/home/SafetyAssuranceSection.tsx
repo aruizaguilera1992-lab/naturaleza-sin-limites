@@ -13,17 +13,11 @@ import {
  * Sección de confianza y seguridad.
  *
  * IMPORTANTE: solo se afirman datos verificados. Ambas pólizas (RC 1500175606
- * y accidentes 1300013109) son reales y de la misma compañía y vigencia. La
- * cobertura de accidentes aplica exclusivamente durante la participación en
- * las actividades aseguradas: no se generaliza, ni se muestran capitales,
- * edades o altitud. Los logotipos son versiones monocromas generadas como
- * placeholder hasta contar con los archivos oficiales de cada marca.
- * «Datos del seguro» lleva al Aviso Legal; nunca se enlaza el contrato
- * completo (contiene datos personales).
+ * y accidentes 1300013109) son reales y de la misma compañía. La cobertura de
+ * accidentes no se generaliza, ni se muestran capitales, edades o altitud. En
+ * esta tarjeta no se muestran vigencia, condiciones ni enlaces de seguro
+ * (retirados a petición del titular).
  */
-
-const ACCIDENT_FORM_URL =
-  'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
 
 const brands = [
   { src: '/images/brands/petzl.png', alt: 'Petzl' },
