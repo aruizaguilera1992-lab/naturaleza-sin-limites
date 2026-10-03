@@ -122,7 +122,7 @@ function buildEditorial(
       answer: profile.included.length ? profile.included.join(". ") : PENDING,
     },
     { question: "¿Qué tengo que llevar?", answer: profile.bring.join(". ") },
-    { question: "¿Qué ocurre si cambia el tiempo?", answer: profile.weatherPolicy },
+    { question: "¿Qué ocurre si cambia el tiempo?", answer: profile.weatherPolicy.includes(PENDING) ? FALLBACK_WEATHER_POLICY : profile.weatherPolicy },
     {
       question: "¿Puedo reservar una salida privada?",
       answer: `Sí, puedes solicitar una salida privada. Precio, ratio, disponibilidad y condiciones finales: ${PENDING}.`,
