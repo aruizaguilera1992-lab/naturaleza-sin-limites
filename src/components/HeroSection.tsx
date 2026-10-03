@@ -109,13 +109,13 @@ export function HeroSection() {
             });
           }}>
               <Mountain className="h-5 w-5 mr-2" />
-              ¡Reserva tu Aventura!
+              Reserva tu aventura
             </Button>
             <Button variant="heroOutline" size="xl" className="w-full sm:w-auto" onClick={() => {
-            window.location.href = '/vertigo-sapiens';
+            window.location.href = '/calendario';
           }}>
               <Users className="h-5 w-5 mr-2" />
-              Únete a Vértigo Sapiens
+              Encuentra mi salida ideal
             </Button>
           </motion.div>
 
