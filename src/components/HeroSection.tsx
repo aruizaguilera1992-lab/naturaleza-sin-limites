@@ -1,8 +1,18 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Mountain, Users } from 'lucide-react';
+import { ArrowRight, ChevronDown, Mountain, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import heroVideoAsset from '@/assets/photography/naturaleza-sin-limites-hero.mp4.asset.json';
+
+// Cuestionarios por disciplina: cada enlace abre el cuestionario de esa disciplina.
+const DISCIPLINE_QUESTIONNAIRES = [
+  { label: 'Barranquismo', to: '/barranquismo#cuestionario' },
+  { label: 'Escalada', to: '/escalada#cuestionario' },
+  { label: 'Vía ferrata', to: '/vias-ferratas#cuestionario' },
+  { label: 'Espeleología', to: '/espeleologia#experiencias' },
+];
 
 const HERO_DESCRIPTION_FULL =
   'Descubre y explora los lugares más exclusivos de la costa del Sol. Aventura y experiencias únicas, grupos reducidos, naturaleza en estado puro y recuerdos que se quedan contigo.';
