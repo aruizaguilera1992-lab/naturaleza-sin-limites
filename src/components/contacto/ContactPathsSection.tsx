@@ -1,33 +1,27 @@
 import { motion } from 'framer-motion';
-import { Mountain, Trophy, Users, Target, ArrowRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 import { media } from '@/data/media';
 
 const pathways = [
   {
     id: 'adventure',
+    eyebrow: 'Experiencias',
     title: 'Quiero vivir una experiencia de aventura',
     description: 'Ideal si buscas una salida de barranquismo, escalada, vía ferrata u otra actividad puntual para ti, tu pareja, tus amigos o tu familia.',
     image: media.canyoning,
-    icon: Users,
     ctaShort: 'Propuesta de aventura',
     ctaLong: 'Quiero una propuesta de aventura',
     whatsappMessage: 'Hola, me interesa una experiencia de aventura. ¿Podrías darme más información?',
-    gradient: 'from-emerald-500/20 to-teal-500/20',
-    iconBg: 'bg-emerald-500/10 text-emerald-500',
   },
   {
     id: 'training',
+    eyebrow: 'Rendimiento',
     title: 'Quiero mejorar mi rendimiento en montaña',
     description: 'Pensado si quieres dar un salto de nivel, entrenar con estructura y aprovechar la experiencia y resultados en competición para avanzar con seguridad.',
     image: media.functionalTraining,
-    icon: Target,
     ctaShort: 'Hablar de entrenamiento',
     ctaLong: 'Quiero hablar sobre entrenamiento',
     whatsappMessage: 'Hola, quiero mejorar mi rendimiento en montaña. ¿Podemos hablar sobre el programa Vértigo Sapiens?',
-    gradient: 'from-amber-500/20 to-orange-500/20',
-    iconBg: 'bg-amber-500/10 text-amber-500',
   },
 ];
 
@@ -40,24 +34,27 @@ export function ContactPathsSection() {
   };
 
   return (
-    <section id="que-buscas" className="py-20 md:py-28 bg-muted/30">
+    <section id="que-buscas" className="py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <p className="text-primary font-heading font-bold uppercase tracking-[0.2em] mb-2">
+            Dos caminos
+          </p>
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-foreground">
             ¿Qué estás buscando ahora mismo?
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-muted-foreground max-w-xl mt-4">
             Elige el camino que mejor se adapte a lo que necesitas
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-5xl mx-auto px-2 sm:px-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 max-w-6xl mx-auto">
           {pathways.map((pathway, index) => (
             <motion.div
               key={pathway.id}
@@ -65,47 +62,39 @@ export function ContactPathsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="w-full"
+              className="group relative bg-card border border-primary/20 overflow-hidden transition-all duration-300 hover:border-primary active:scale-95"
             >
-              <Card className="h-full overflow-hidden group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30">
-                {/* Image */}
-                <div className="relative h-40 sm:h-48 lg:h-52 overflow-hidden">
-                  <img 
-                    src={pathway.image.src}
-                    alt={pathway.image.alt}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${pathway.gradient} to-transparent`} />
-                  <div className={`absolute top-3 left-3 sm:top-4 sm:left-4 p-2 sm:p-3 rounded-full ${pathway.iconBg}`}>
-                    <pathway.icon className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </div>
-                </div>
+              {/* Image */}
+              <div className="aspect-[16/9] overflow-hidden">
+                <img
+                  src={pathway.image.src}
+                  alt={pathway.image.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500"
+                />
+                <div className="absolute pointer-events-none w-full h-full bg-gradient-to-t from-card via-transparent to-transparent" />
+              </div>
 
-                <CardHeader className="pb-2 px-4 sm:px-6">
-                  <CardTitle className="text-lg sm:text-xl md:text-2xl leading-tight">
-                    {pathway.title}
-                  </CardTitle>
-                </CardHeader>
-
-                <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6">
-                  <p className="text-sm sm:text-base text-muted-foreground">
-                    {pathway.description}
-                  </p>
-
-                  <Button 
-                    variant="hero" 
-                    size="lg" 
-                    className="w-full gap-2 text-sm sm:text-base"
-                    onClick={() => handleWhatsApp(pathway.whatsappMessage)}
-                  >
-                    <span className="sm:hidden">{pathway.ctaShort}</span>
-                    <span className="hidden sm:inline">{pathway.ctaLong}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </CardContent>
-              </Card>
+              <div className="p-6 sm:p-8">
+                <span className="text-primary font-heading font-bold uppercase tracking-[0.2em] text-sm mb-3 block">
+                  {pathway.eyebrow}
+                </span>
+                <h3 className="font-heading text-xl sm:text-2xl font-bold uppercase tracking-tight text-foreground mb-4 leading-tight">
+                  {pathway.title}
+                </h3>
+                <p className="text-muted-foreground mb-8 leading-relaxed">
+                  {pathway.description}
+                </p>
+                <button
+                  onClick={() => handleWhatsApp(pathway.whatsappMessage)}
+                  className="inline-flex items-center gap-2 border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-bold py-3 px-6 transition-all duration-300 uppercase text-sm tracking-widest active:scale-95 w-full justify-center sm:w-auto"
+                >
+                  <span className="sm:hidden">{pathway.ctaShort}</span>
+                  <span className="hidden sm:inline">{pathway.ctaLong}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </motion.div>
           ))}
         </div>

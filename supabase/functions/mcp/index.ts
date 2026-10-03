@@ -37,7 +37,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia en ferrata andaluza con disipador y anclaje claramente visibles."
   },
   functionalTraining: {
-    src: "/__l5e/assets-v1/569003b3-0e21-43cd-aaa8-ae6387d66bea/functional-training-documentary.webp",
+    src: "/images/functional-training-documentary.jpg",
     alt: "Grupo realizando una sesi\xF3n real de entrenamiento funcional en un espacio abierto y sobrio",
     sourceUrl: "https://www.pexels.com/photo/outdoor-crossfit-training-session-under-a-bamboo-roof-36400030/",
     license: pexelsLicense,
@@ -45,7 +45,7 @@ var media = {
     replacementNote: "Sustituir por una foto propia de una sesi\xF3n de V\xE9rtigo Sapiens con permiso de imagen."
   },
   ropeDetail: {
-    src: "/__l5e/assets-v1/890c3cf4-e7ef-488a-a13f-7a1defef3d74/rope-detail-documentary.webp",
+    src: "/images/rope-detail-documentary.jpg",
     alt: "Detalle real de unas manos preparando la cuerda y el material de seguridad de escalada",
     sourceUrl: "https://www.pexels.com/photo/a-person-holding-the-rope-from-the-harness-5916512/",
     license: pexelsLicense,
@@ -61,7 +61,7 @@ var media = {
     replacementNote: "Paisaje documental de M\xE1laga para evitar inventar retratos del equipo."
   },
   caminito: {
-    src: "/__l5e/assets-v1/9eafaa23-629f-4814-8686-f24d84181708/caminito-del-rey-malaga.webp",
+    src: "/images/caminito-del-rey-malaga.jpg",
     alt: "Grupo recorriendo el desfiladero calizo del Caminito del Rey en M\xE1laga",
     sourceUrl: "https://www.pexels.com/photo/group-of-people-walking-on-a-narrow-path-in-a-canyon-caminito-del-rey-malaga-spain-17941747/",
     license: pexelsLicense,
