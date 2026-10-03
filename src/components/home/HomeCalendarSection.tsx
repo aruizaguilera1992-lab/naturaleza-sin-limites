@@ -5,14 +5,14 @@ export function HomeCalendarSection() {
   return (
     <section id="calendario" className="py-20 bg-background">
       <div className="container mx-auto px-4">
-        <header className="mx-auto mb-10 max-w-2xl text-center">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
+        <header className="mx-auto mb-12 max-w-3xl text-center">
+          <p className="mb-3 text-lg font-bold uppercase text-primary">
             Próximas salidas
           </p>
-          <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">
+          <h2 className="font-heading text-4xl font-extrabold leading-tight text-foreground sm:text-5xl">
             Agenda de Aventuras
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
             Únete a un grupo abierto (máx. 6 personas) o solicita tu actividad privada en cualquier
             fecha libre.
           </p>
