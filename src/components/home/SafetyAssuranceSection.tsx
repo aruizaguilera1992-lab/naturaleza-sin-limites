@@ -95,9 +95,13 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
               </span>
             }
             footer={
-              <a href="#marcas-equipamiento" className={secondaryLinkClasses}>
+              <button
+                type="button"
+                onClick={openBrands}
+                className={cn(secondaryLinkClasses, 'cursor-pointer')}
+              >
                 Ver las {technicalBrands.length} marcas
-              </a>
+              </button>
             }
           >
             Seleccionamos equipos adecuados para cada actividad y revisamos el material antes de cada
