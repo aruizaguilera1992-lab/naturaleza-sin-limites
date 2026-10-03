@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 interface Props {
   title: string;
   media: ActivityMediaCollection;
+  fallbackSrc?: string;
 }
 
 type Slide =
@@ -16,7 +17,7 @@ type Slide =
   | { kind: 'image'; image: ActivityMediaCollection['images'][number] };
 
 /** Carrusel principal de la ficha: el vídeo (si existe) va primero. */
-export function ActivityHeroCarousel({ title, media }: Props) {
+export function ActivityHeroCarousel({ title, media, fallbackSrc }: Props) {
   const slides: Slide[] = [
     ...media.videos.map((video) => ({ kind: 'video' as const, video })),
     ...media.images.map((image) => ({ kind: 'image' as const, image })),
@@ -50,6 +51,7 @@ export function ActivityHeroCarousel({ title, media }: Props) {
         src={slide.image.src}
         alt={slide.image.alt}
         decoding="async"
+        onError={(e) => { if (fallbackSrc && !e.currentTarget.src.endsWith(fallbackSrc)) e.currentTarget.src = fallbackSrc; }}
         fetchPriority={large ? undefined : 'high'}
         className={cn('h-full w-full', large ? 'max-h-[80vh] object-contain' : 'object-cover')}
       />

@@ -9,7 +9,7 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { getActivityProfile, getRelatedProfiles } from '@/data/activityProfiles';
+import { getActivityCatalogImage, getActivityProfile, getRelatedProfiles } from '@/data/activityProfiles';
 import { getActivityMedia, getActivityMediaCollection } from '@/data/activityMedia';
 import { SITE_URL } from '@/lib/site';
 import { MobileBookingBar } from '@/components/actividades/MobileBookingBar';
@@ -70,7 +70,7 @@ export default function ActivityProfilePage() {
       </Helmet>
       <Navbar />
       <main className="pt-28 sm:pt-32">
-        <ActivityHeroCarousel title={activity.name} media={gallery} />
+        <ActivityHeroCarousel title={activity.name} media={gallery} fallbackSrc={getActivityCatalogImage(activity)} />
 
         <div className="container mx-auto grid min-w-0 gap-10 px-4 py-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:py-12">
           <article className="min-w-0 space-y-10">
