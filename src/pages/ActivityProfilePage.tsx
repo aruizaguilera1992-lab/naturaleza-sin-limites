@@ -20,6 +20,13 @@ function shorten(value: string, max: number) {
   return value.length <= max ? value : `${value.slice(0, max - 1).trimEnd()}…`;
 }
 
+function summarize(value: string, sentences = 2, max = 260) {
+  const parts = value.match(/[^.!?]+[.!?]+/g) ?? [value];
+  let out = parts.slice(0, sentences).join(' ').trim() || value;
+  if (out.length > max) out = `${out.slice(0, max - 1).trimEnd()}…`;
+  return out;
+}
+
 export default function ActivityProfilePage() {
   const { category, slug } = useParams<{ category: string; slug: string }>();
   const activity = getActivityProfile(category, slug);
@@ -58,7 +65,14 @@ export default function ActivityProfilePage() {
   const technicalRows = ([
     ['Tipo de actividad', activity.type], ['Duración total', activity.totalDuration], ['Duración efectiva', activity.effectiveDuration], ['Nivel técnico', activity.technicalLevel], ['Nivel físico', activity.physicalLevel], ['Temporada', activity.season], ['Grupo mínimo/máximo', activity.group], ['Ratio guía-participantes', activity.guideRatio], ['Aproximación y retorno', activity.approachReturn], ['Elementos técnicos', activity.technicalElements.join(', ')], ['Zona de encuentro', activity.meetingPoint],
   ] as [string, string][]).filter(([, value]) => Boolean(value?.trim()));
-  const list = (items: string[], Icon = Check) => <ul className="space-y-3 text-sm text-muted-foreground">{items.map((item) => <li key={item} className="flex gap-2"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul>;
+  const list = (items: string[], Icon = Check, compact = false) => <ul className={compact ? 'grid gap-2 text-sm text-muted-foreground sm:grid-cols-2' : 'space-y-3 text-sm text-muted-foreground'}>{items.map((item) => <li key={item} className="flex gap-2"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul>;
+  const extraSafety = activity.safetyRequirements.filter((item) =>
+    !['Edad mínima', 'Nivel físico', 'Experiencia previa'].some((l) => item.startsWith(`${l}:`)) &&
+    !/^(Seguro y acreditación profesional|Permisos y regulación):/i.test(item) &&
+    !/^La salida queda condicionada a la meteorología/i.test(item),
+  );
+  const visibleFaqs = activity.faqs.filter((faq) => /^(¿Dónde se realiza|¿Cuánto dura|¿Necesito experiencia|¿Qué edad mínima|¿Qué ocurre si cambia el tiempo)/.test(faq.question));
+  const faqs = visibleFaqs.length > 0 ? visibleFaqs : activity.faqs.slice(0, 5);
   const trigger = 'min-h-14 font-heading text-lg text-left';
 
   return (
@@ -119,36 +133,36 @@ export default function ActivityProfilePage() {
                     {activity.sourceUrl && <a href={activity.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">Fuente técnica <ExternalLink className="h-4 w-4" /></a>}
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="incluye"><AccordionTrigger className={trigger}>Qué incluye</AccordionTrigger><AccordionContent>{list(activity.included)}</AccordionContent></AccordionItem>
-                <AccordionItem value="llevar"><AccordionTrigger className={trigger}>Qué llevar</AccordionTrigger><AccordionContent>{list(activity.bring)}</AccordionContent></AccordionItem>
+                <AccordionItem value="incluye"><AccordionTrigger className={trigger}>Qué incluye</AccordionTrigger><AccordionContent>{list(activity.included, Check, true)}</AccordionContent></AccordionItem>
+                <AccordionItem value="llevar"><AccordionTrigger className={trigger}>Qué llevar</AccordionTrigger><AccordionContent>{list(activity.bring, Check, true)}</AccordionContent></AccordionItem>
                 <AccordionItem value="requisitos">
                   <AccordionTrigger className={trigger}>Requisitos</AccordionTrigger>
                   <AccordionContent className="space-y-4">
                     <dl className="grid gap-3 text-sm sm:grid-cols-3">{([['Edad mínima', activity.minimumAge], ['Nivel físico', activity.physicalLevel], ['Experiencia previa', activity.previousExperience]] as [string, string][]).filter(([, v]) => v?.trim()).map(([l, v]) => <div key={l}><dt className="text-xs text-muted-foreground">{l}</dt><dd className="font-semibold">{v}</dd></div>)}</dl>
-                    {list(activity.safetyRequirements, AlertTriangle)}
+                    {extraSafety.length > 0 && list(extraSafety, AlertTriangle)}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="condiciones">
                   <AccordionTrigger className={trigger}>Condiciones</AccordionTrigger>
-                  <AccordionContent className="space-y-4 text-sm leading-7 text-muted-foreground">
-                    {activity.weatherPolicy && <div><h3 className="font-semibold text-foreground">Meteorología</h3><p>{activity.weatherPolicy}</p></div>}
-                    {activity.cancellationPolicy && <div><h3 className="font-semibold text-foreground">Cancelación</h3><p>{activity.cancellationPolicy}</p></div>}
-                    {activity.insurancePermits.length > 0 && <div><h3 className="font-semibold text-foreground">Seguros y permisos</h3>{list(activity.insurancePermits, ShieldCheck)}</div>}
-                    <p>Señal del 30 % para confirmar la plaza.</p>
+                  <AccordionContent className="space-y-3 text-sm leading-7 text-muted-foreground">
+                    {activity.weatherPolicy && <p><span className="font-semibold text-foreground">Meteorología: </span>{summarize(activity.weatherPolicy, 1)}</p>}
+                    {activity.cancellationPolicy && <p><span className="font-semibold text-foreground">Cancelación: </span>{summarize(activity.cancellationPolicy, 1)}</p>}
+                    {activity.insurancePermits.length > 0 && <p><ShieldCheck className="mr-2 inline h-4 w-4 text-primary" /><span className="font-semibold text-foreground">Seguros y permisos: </span>{activity.insurancePermits.join(' · ')}</p>}
+                    <p><span className="font-semibold text-foreground">Reserva: </span>señal del 30 % para confirmar la plaza.</p>
                   </AccordionContent>
                 </AccordionItem>
                 {activity.localSeoSections.length > 0 && (
                   <AccordionItem value="zona">
                     <AccordionTrigger className={trigger}>Sobre la zona y la actividad</AccordionTrigger>
                     <AccordionContent className="space-y-5 text-sm leading-7 text-muted-foreground">
-                      {activity.commercialDescription && <p>{activity.commercialDescription}</p>}
-                      {activity.localSeoSections.map((section) => <div key={section.heading}><h3 className="mb-2 font-semibold text-foreground">{section.heading}</h3><div className="space-y-3">{section.paragraphs.map((p) => <p key={p}>{p}</p>)}</div></div>)}
+                      {activity.commercialDescription && <p>{summarize(activity.commercialDescription, 2, 280)}</p>}
+                      {activity.localSeoSections.map((section) => <div key={section.heading}><h3 className="mb-2 font-semibold text-foreground">{section.heading}</h3>{section.paragraphs[0] && <p>{summarize(section.paragraphs[0], 2, 280)}</p>}</div>)}
                     </AccordionContent>
                   </AccordionItem>
                 )}
                 <AccordionItem value="faq">
                   <AccordionTrigger className={trigger}>Preguntas frecuentes</AccordionTrigger>
-                  <AccordionContent className="space-y-4">{activity.faqs.map((faq) => <div key={faq.question}><h3 className="font-semibold">{faq.question}</h3><p className="mt-1 text-sm leading-7 text-muted-foreground">{faq.answer}</p></div>)}</AccordionContent>
+                  <AccordionContent className="space-y-4">{faqs.map((faq) => <div key={faq.question}><h3 className="font-semibold">{faq.question}</h3><p className="mt-1 text-sm leading-7 text-muted-foreground">{summarize(faq.answer, 2, 240)}</p></div>)}</AccordionContent>
                 </AccordionItem>
               </Accordion>
             </section>

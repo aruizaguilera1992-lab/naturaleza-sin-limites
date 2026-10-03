@@ -122,7 +122,7 @@ function buildEditorial(
       answer: profile.included.length ? profile.included.join(". ") : PENDING,
     },
     { question: "¿Qué tengo que llevar?", answer: profile.bring.join(". ") },
-    { question: "¿Qué ocurre si cambia el tiempo?", answer: profile.weatherPolicy },
+    { question: "¿Qué ocurre si cambia el tiempo?", answer: profile.weatherPolicy.includes(PENDING) ? FALLBACK_WEATHER_POLICY : profile.weatherPolicy },
     {
       question: "¿Puedo reservar una salida privada?",
       answer: `Sí, puedes solicitar una salida privada. Precio, ratio, disponibilidad y condiciones finales: ${PENDING}.`,
@@ -171,6 +171,7 @@ function buildEditorial(
  */
 const CONSULT = "se confirma al reservar";
 const NO_PRICE = "Consultar precio";
+const FALLBACK_WEATHER_POLICY = "Si la meteorología o las condiciones del recorrido no son seguras, proponemos nueva fecha, otra actividad o la devolución del importe.";
 
 const clean = (value: string) =>
   value
@@ -206,7 +207,7 @@ function sanitizeProfile(profile: ActivityProfile): ActivityProfile {
       ? "Se confirma al reservar, en un punto accesible en coche cerca del inicio de la actividad"
       : clean(profile.meetingPoint),
     weatherPolicy: profile.weatherPolicy.includes(PENDING)
-      ? "Si la meteorología o las condiciones del recorrido no son seguras, proponemos nueva fecha, otra actividad o la devolución del importe."
+      ? FALLBACK_WEATHER_POLICY
       : clean(profile.weatherPolicy),
     cancellationPolicy: profile.cancellationPolicy.includes(PENDING)
       ? "Las condiciones de cancelación se facilitan por escrito antes de confirmar la reserva."
