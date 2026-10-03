@@ -14,7 +14,7 @@ export interface AdventureQuestion {
   }>;
 }
 
-interface AdventureQuestionnaireProps<Answers extends Record<string, string | null>> {
+interface AdventureQuestionnaireProps<Answers extends object> {
   activityLabel: string;
   questions: AdventureQuestion[];
   initialAnswers: Answers;
@@ -23,7 +23,7 @@ interface AdventureQuestionnaireProps<Answers extends Record<string, string | nu
   autoAdvance?: boolean;
 }
 
-export function AdventureQuestionnaire<Answers extends Record<string, string | null>>({
+export function AdventureQuestionnaire<Answers extends object>({
   activityLabel,
   questions,
   initialAnswers,
