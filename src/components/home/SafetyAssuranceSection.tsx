@@ -1,7 +1,12 @@
 import { FileText, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { useBusinessSettings } from '@/hooks/useBusinessSettings';
+import {
+  FALLBACK_INSURER,
+  FALLBACK_RC_POLICY,
+  FALLBACK_TOURISM_REGISTRY,
+  useBusinessSettings,
+} from '@/hooks/useBusinessSettings';
 
 /**
  * Sección de confianza y seguridad.
