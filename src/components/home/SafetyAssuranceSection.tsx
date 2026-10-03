@@ -113,11 +113,6 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
                 <ShieldCheck className="h-12 w-12 text-primary" aria-hidden="true" />
               </span>
             }
-            footer={
-              <button type="button" onClick={openCoverage} className={cn(secondaryLinkClasses, 'cursor-pointer')}>
-                Ver coberturas y condiciones
-              </button>
-            }
           >
             <span className="mt-3 block">
               Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY} · RC · Póliza {rcPolicy || FALLBACK_RC_POLICY}
