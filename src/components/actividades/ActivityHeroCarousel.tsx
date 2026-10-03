@@ -88,7 +88,7 @@ export function ActivityHeroCarousel({ title, media }: Props) {
         {renderSlide(current)}
         {current.kind === 'image' && <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />}
         {arrows}
-        <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
+        <div className="absolute bottom-12 right-3 z-10 flex items-center gap-2">
           {current.kind === 'video' && <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground"><PlayCircle className="h-4 w-4" /> Vídeo</span>}
           <span className="rounded-full bg-background/80 px-3 py-1 text-xs text-foreground backdrop-blur">{index + 1}/{total}</span>
           <button type="button" onClick={() => setFullscreen(true)} aria-label="Ver a pantalla completa" className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/80 text-foreground backdrop-blur transition-all duration-300 hover:text-primary active:scale-95">
