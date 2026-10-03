@@ -54,7 +54,7 @@ function CoverageTable({
  * Usado en la sección de confianza de portada y en /terminos#identificacion.
  */
 export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showCheckedLabel?: boolean }) {
-  const { insurer, rcPolicy, accidentPolicy } = useBusinessSettings();
+  const { insurer } = useBusinessSettings();
 
   return (
     <div className="grid gap-5 text-left lg:grid-cols-2">
