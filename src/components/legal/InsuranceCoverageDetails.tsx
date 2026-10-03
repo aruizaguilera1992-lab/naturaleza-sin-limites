@@ -83,11 +83,11 @@ export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showChe
         </p>
       </div>
 
-      <CoverageTable title={`Responsabilidad civil · Póliza ${rcPolicy || FALLBACK_RC_POLICY}`} rows={RC_ROWS} />
+      <CoverageTable title="Responsabilidad civil" rows={RC_ROWS} />
 
       <div className="min-w-0">
         <CoverageTable
-          title={`Accidentes · Póliza ${accidentPolicy || FALLBACK_ACCIDENT_POLICY}`}
+          title="Accidentes"
           rows={ACCIDENT_ROWS}
           caption="Límites generales por persona"
         />

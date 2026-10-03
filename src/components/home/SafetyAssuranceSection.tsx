@@ -4,9 +4,7 @@ import { cn } from '@/lib/utils';
 import { technicalBrands } from '@/data/technicalBrands';
 import { secondaryLinkClasses } from '@/components/legal/linkStyles';
 import {
-  FALLBACK_ACCIDENT_POLICY,
   FALLBACK_INSURER,
-  FALLBACK_RC_POLICY,
   FALLBACK_TOURISM_REGISTRY,
   useBusinessSettings,
 } from '@/hooks/useBusinessSettings';
@@ -91,9 +89,7 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
               </span>
             }
           >
-            <span className="mt-3 block">
-              Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY} · RC · Póliza {rcPolicy || FALLBACK_RC_POLICY}
-            </span>
+            <span className="mt-3 block">Accidentes · Responsabilidad civil</span>
             <span className="mt-1 block">{insurer || FALLBACK_INSURER}.</span>
           </Block>
 
