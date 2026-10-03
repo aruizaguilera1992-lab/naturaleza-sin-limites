@@ -1,7 +1,7 @@
 import { Award, MessageCircle, ShieldCheck, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import guidePortrait from '@/assets/guia-retrato.png.asset.json';
+const guidePortrait = { url: '/images/guia-retrato.png' };
 
 export function GuideAuthority() {
   return (

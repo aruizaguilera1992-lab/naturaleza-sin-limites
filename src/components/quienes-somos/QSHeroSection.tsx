@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { User, MessageCircle, Leaf } from 'lucide-react';
 import { media } from '@/data/media';
-import guidePortrait from '@/assets/guia-retrato.png.asset.json';
+const guidePortrait = { url: '/images/guia-retrato.png' };
 
 const bullets = [
   { icon: User, text: "Proyecto de autor, no una agencia masiva." },
