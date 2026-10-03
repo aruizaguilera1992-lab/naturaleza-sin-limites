@@ -111,7 +111,8 @@ export function ContactFormSection() {
 
   if (isSubmitted) {
     return (
-      <section id="formulario" className="py-20 md:py-28 bg-muted/30">
+      <section id="formulario" className="py-20 md:py-28 bg-background">
+
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -140,7 +141,7 @@ export function ContactFormSection() {
   }
 
   return (
-    <section id="formulario" className="py-20 md:py-28 bg-muted/30">
+    <section id="formulario" className="py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <motion.div
@@ -150,7 +151,10 @@ export function ContactFormSection() {
             transition={{ duration: 0.6 }}
             className="text-center mb-10"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <p className="text-primary font-heading font-bold uppercase tracking-[0.2em] mb-2">
+              Escríbenos
+            </p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-foreground mb-4">
               O envíame un mensaje directo aquí
             </h2>
             <p className="text-muted-foreground">
@@ -163,8 +167,9 @@ export function ContactFormSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-card rounded-2xl p-6 md:p-10 border border-border shadow-lg"
+            className="bg-card p-6 md:p-10 border-t-8 border-primary shadow-2xl"
           >
+
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 {/* Nombre */}
