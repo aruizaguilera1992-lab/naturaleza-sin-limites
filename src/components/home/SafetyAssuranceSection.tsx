@@ -4,6 +4,16 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { technicalBrands } from '@/data/technicalBrands';
 import {
+  ACCIDENT_NOTES,
+  ACCIDENT_ROWS,
+  AGE_RESTRICTION,
+  COVERAGE_CHECKED_LABEL,
+  NORMATIVE_REQUIREMENT,
+  NORMATIVE_SOURCE,
+  POLICY_PERIOD,
+  RC_ROWS,
+} from '@/data/insuranceCoverage';
+import {
   FALLBACK_ACCIDENT_POLICY,
   FALLBACK_INSURER,
   FALLBACK_RC_POLICY,
@@ -16,7 +26,7 @@ import {
  *
  * IMPORTANTE: solo se afirman datos verificados. Ambas pólizas (RC 1500175606
  * y accidentes 1300013109) son reales y de la misma compañía. La cobertura de
- * accidentes no se generaliza, ni se muestran capitales, edades o altitud. En
+ * accidentes no se generaliza; capitales y restricciones viven en src/data/insuranceCoverage.ts. En
  * esta tarjeta no se muestran vigencia, condiciones ni enlaces de seguro
  * (retirados a petición del titular). Las marcas de material no implican
  * patrocinio ni acuerdo (ver src/data/technicalBrands.ts).
@@ -50,20 +60,49 @@ function Block({ visual, title, children, footer }: BlockProps) {
 
 const secondaryLinkClasses = 'text-xs font-semibold text-primary hover:underline underline-offset-2';
 
+function CoverageTable({ title, rows, caption }: { title: string; rows: { label: string; value: string }[]; caption?: string }) {
+  return (
+    <div className="min-w-0 rounded-2xl border border-border bg-card/60 p-5">
+      <table className="w-full table-fixed text-sm">
+        <caption className="mb-3 text-left">
+          <span className="block font-heading text-base font-bold text-foreground break-words">{title}</span>
+          {caption && <span className="block text-xs text-muted-foreground">{caption}</span>}
+        </caption>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.label} className="border-t border-border">
+              <th scope="row" className="w-1/2 py-2 pr-3 text-left font-normal text-muted-foreground break-words">{r.label}</th>
+              <td className="py-2 text-right font-semibold text-foreground break-words">{r.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function SafetyAssuranceSection({ className }: { className?: string }) {
   const { insurer, rcPolicy, accidentPolicy, tourismRegistry } = useBusinessSettings();
   const { hash } = useLocation();
   const [brandsOpen, setBrandsOpen] = useState(false);
+  const [coverageOpen, setCoverageOpen] = useState(false);
 
-  // Si se llega por enlace directo al bloque de marcas, se abre desplegado.
   useEffect(() => {
     if (hash === '#marcas-equipamiento') setBrandsOpen(true);
+    if (hash === '#coberturas-seguro') setCoverageOpen(true);
   }, [hash]);
 
   const openBrands = () => {
     setBrandsOpen(true);
     requestAnimationFrame(() =>
       document.getElementById('marcas-equipamiento')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    );
+  };
+
+  const openCoverage = () => {
+    setCoverageOpen(true);
+    requestAnimationFrame(() =>
+      document.getElementById('coberturas-seguro')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
     );
   };
 
@@ -115,14 +154,24 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
                 <ShieldCheck className="h-12 w-12 text-primary" aria-hidden="true" />
               </span>
             }
+            footer={
+              <button type="button" onClick={openCoverage} className={cn(secondaryLinkClasses, 'cursor-pointer')}>
+                Ver coberturas y condiciones
+              </button>
+            }
           >
-            <span className="block">
-              Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}.
+            <span className="flex flex-wrap justify-center gap-2">
+              <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold text-foreground">RC 1.000.000 €</span>
+              <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold text-foreground">Asistencia hasta 6.000 €</span>
+              <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold text-foreground">Rescate hasta 12.000 €</span>
             </span>
-            <span className="mt-1 block">
-              Responsabilidad civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}.
+            <span className="mt-3 block text-xs">
+              Límites generales por persona para accidentes, sujetos a condiciones, exclusiones y restricciones por edad.
             </span>
-            <span className="mt-2 block">{insurer || FALLBACK_INSURER}.</span>
+            <span className="mt-2 block">
+              Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY} · RC · Póliza {rcPolicy || FALLBACK_RC_POLICY}
+            </span>
+            <span className="mt-1 block">{insurer || FALLBACK_INSURER}.</span>
           </Block>
 
           <Block
@@ -140,6 +189,71 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           >
             Registro de Turismo de Andalucía · {tourismRegistry || FALLBACK_TOURISM_REGISTRY}.
           </Block>
+        </div>
+
+        <div id="coberturas-seguro" className="mt-12 scroll-mt-32">
+          <button
+            type="button"
+            onClick={() => setCoverageOpen((v) => !v)}
+            aria-expanded={coverageOpen}
+            aria-controls="detalle-coberturas-seguro"
+            className="mx-auto flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-center transition-all duration-300 hover:text-primary active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            <span className="font-heading text-lg font-bold uppercase tracking-wide text-foreground sm:text-xl">
+              Ver coberturas y condiciones
+            </span>
+            <ChevronDown aria-hidden="true" className={cn('h-5 w-5 shrink-0 text-primary transition-transform duration-300', coverageOpen && 'rotate-180')} />
+          </button>
+          <p className="mt-1 text-center text-xs text-muted-foreground">{COVERAGE_CHECKED_LABEL}</p>
+          {coverageOpen && (
+            <div id="detalle-coberturas-seguro" className="mx-auto mt-6 grid max-w-5xl gap-5 text-left lg:grid-cols-2">
+              <div className="min-w-0 rounded-2xl border border-border bg-card/60 p-5 lg:col-span-2">
+                <h3 className="font-heading text-base font-bold text-foreground">Norma vs. contrato</h3>
+                <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-primary/40 bg-primary/10 p-3">
+                    <dt className="text-xs text-muted-foreground">RC contratada</dt>
+                    <dd className="font-heading text-lg font-bold text-foreground">1.000.000 € por siniestro</dd>
+                  </div>
+                  <div className="rounded-xl border border-border bg-secondary/40 p-3">
+                    <dt className="text-xs text-muted-foreground">Mínimo normativo</dt>
+                    <dd className="font-heading text-lg font-bold text-foreground">600.000 € por siniestro</dd>
+                  </div>
+                </dl>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{NORMATIVE_REQUIREMENT}</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  La comparación de importes es informativa; no constituye certificado de cumplimiento ni aval de la Junta de Andalucía.{' '}
+                  <a href={NORMATIVE_SOURCE.url} target="_blank" rel="noopener noreferrer" className={secondaryLinkClasses}>
+                    {NORMATIVE_SOURCE.label}
+                  </a>
+                </p>
+              </div>
+
+              <CoverageTable
+                title={`Responsabilidad civil · Póliza ${rcPolicy || FALLBACK_RC_POLICY}`}
+                rows={RC_ROWS}
+              />
+              <div className="min-w-0">
+                <CoverageTable
+                  title={`Accidentes · Póliza ${accidentPolicy || FALLBACK_ACCIDENT_POLICY}`}
+                  rows={ACCIDENT_ROWS}
+                  caption="Límites generales por persona"
+                />
+                <p role="note" className="mt-3 rounded-xl border border-primary/50 bg-primary/10 p-3 text-sm font-semibold leading-6 text-foreground">
+                  {AGE_RESTRICTION}
+                </p>
+              </div>
+
+              <div className="min-w-0 rounded-2xl border border-border bg-card/60 p-5 lg:col-span-2">
+                <h3 className="font-heading text-base font-bold text-foreground">Precisiones del seguro de accidentes</h3>
+                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
+                  {ACCIDENT_NOTES.map((n) => <li key={n}>{n}</li>)}
+                </ul>
+                <p className="mt-4 text-sm text-muted-foreground">
+                  Aseguradora: {insurer || FALLBACK_INSURER} · Vigencia de ambas pólizas: {POLICY_PERIOD}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div id="marcas-equipamiento" className="mt-12 scroll-mt-32">
