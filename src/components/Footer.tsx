@@ -192,7 +192,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
-              <p className="text-muted-foreground text-sm">© 2026 Naturaleza Sin Límites - Proyecto personal</p>
+              <p className="text-muted-foreground text-sm">© 2026 Naturaleza Sin Límites - Turismo activo sostenible y entrenamiento funcional en deportes de aventura</p>
               {registry && (
                 <p className="text-muted-foreground text-xs mt-1">
                   Registro de Turismo Activo de Andalucía: {registry}
