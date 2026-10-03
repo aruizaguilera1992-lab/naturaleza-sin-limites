@@ -2,7 +2,45 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Clock, MapPin, Mountain, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { activityProfiles } from '@/data/activityProfiles';
+import { activityProfiles, getActivityCatalogImage } from '@/data/activityProfiles';
+import { getActivityMedia } from '@/data/activityMedia';
+
+const caveImage = getActivityMedia('exploracion');
+
+const DISCIPLINES = [
+  {
+    name: 'Barranquismo',
+    description: 'Descensos guiados entre ríos y cascadas',
+    cta: 'Ver cuestionario',
+    to: '/barranquismo#cuestionario',
+    image: getActivityCatalogImage('barranquismo', 'guadalmina') ?? '',
+    imageAlt: 'Barranco con toboganes y saltos: actividad de barranquismo guiada en Málaga',
+  },
+  {
+    name: 'Escalada',
+    description: 'Vive la pared con seguridad y guía',
+    cta: 'Ver cuestionario',
+    to: '/escalada#cuestionario',
+    image: getActivityCatalogImage('escalada', 'chorro-frontales') ?? '',
+    imageAlt: 'Escalador deportivo en una pared de roca caliza en Andalucía',
+  },
+  {
+    name: 'Vías ferratas',
+    description: 'Itinerarios verticales equipados con cable',
+    cta: 'Ver cuestionario',
+    to: '/vias-ferratas#cuestionario',
+    image: getActivityCatalogImage('vias-ferratas', 'ferrata-el-chorro') ?? '',
+    imageAlt: 'Vía ferrata con cable y peldaños sobre un desfiladero rocoso',
+  },
+  {
+    name: 'Espeleología',
+    description: 'Exploración guiada de cavidades subterráneas',
+    cta: 'Ver salidas',
+    to: '/espeleologia#experiencias',
+    image: caveImage?.src ?? '',
+    imageAlt: caveImage?.alt ?? 'Espeleólogos explorando una cavidad subterránea iluminada con frontal',
+  },
+];
 
 const featuredKeys = [
   'barranquismo/guadalmina',
