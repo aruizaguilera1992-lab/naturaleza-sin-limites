@@ -1,8 +1,13 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BadgeCheck, FileText, ShieldCheck, Users, Wrench } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
+import {
+  FALLBACK_INSURER,
+  FALLBACK_RC_POLICY,
+  FALLBACK_TOURISM_REGISTRY,
+  useBusinessSettings,
+  type BusinessSettings,
+} from '@/hooks/useBusinessSettings';
 
 /**
  * Señales de confianza verificables. Solo se incluyen afirmaciones que el
@@ -20,17 +25,8 @@ import { cn } from '@/lib/utils';
 const ACCIDENT_FORM_URL =
   'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
 
-/** Valores de respaldo si la lectura de business_settings no está disponible. */
-const FALLBACK_INSURER = 'W. R. Berkley Europe AG, Sucursal en España';
-const FALLBACK_RC_POLICY = '1500175606';
+/** Vigencia de la póliza de Responsabilidad Civil (póliza real facilitada). */
 const RC_VALIDITY_PERIOD = '18/09/2026–17/09/2027';
-const FALLBACK_TOURISM_REGISTRY = 'AT/MA/00508';
-
-interface BusinessSettings {
-  insurer: string | null;
-  rcPolicy: string | null;
-  tourismRegistry: string | null;
-}
 
 export function useBusinessSettings(): BusinessSettings {
   const [settings, setSettings] = useState<BusinessSettings>({
