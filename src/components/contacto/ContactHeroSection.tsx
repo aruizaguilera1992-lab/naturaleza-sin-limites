@@ -33,13 +33,13 @@ export function ContactHeroSection() {
           >
             <div className="relative group">
               <div className="absolute inset-0 bg-primary blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
-              <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-primary">
+              <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-primary">
                 <img
-                  src={media.ropeDetail.src}
-                  alt={media.ropeDetail.alt}
+                  src="/images/guia-retrato.png"
+                  alt="Guía de Naturaleza Sin Límites"
                   loading="eager"
                   decoding="async"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
               </div>
             </div>
