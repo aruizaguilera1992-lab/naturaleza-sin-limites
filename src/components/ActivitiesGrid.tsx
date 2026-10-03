@@ -94,8 +94,12 @@ export function ActivitiesGrid() {
           ))}
         </div>
 
-        <div className="mt-8 border-t border-border pt-7">
-          <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground">Explorar por disciplina</p>
+        <div className="mt-8 border-t border-border pt-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mx-auto max-w-2xl text-center">
+            <span className="mb-3 block text-lg font-bold uppercase text-primary">Explorar por disciplina</span>
+            <h2 className="text-3xl font-extrabold sm:text-5xl">Cuatro formas de vivir la montaña</h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">Elige tu disciplina y te orientamos hacia la salida que mejor encaja contigo. Cada categoría tiene su propio formulario para encontrar tu experiencia ideal.</p>
+          </motion.div>
           <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {DISCIPLINES.map((discipline, index) => (
               <motion.div key={discipline.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
