@@ -23,7 +23,7 @@ export function ActivitiesGrid() {
       <div className="container mx-auto px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <span className="mb-3 block text-sm font-bold uppercase text-primary">Experiencias destacadas</span>
+            <span className="mb-3 block text-lg font-bold uppercase text-primary">Experiencias destacadas</span>
             <h2 className="text-3xl font-extrabold sm:text-5xl">Elige tu próxima aventura</h2>
             <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">Compara nivel, duración y precio antes de elegir. Todas las salidas se confirman según el perfil del grupo y las condiciones.</p>
           </div>
