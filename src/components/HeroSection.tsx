@@ -154,7 +154,7 @@ export function HeroSection() {
           duration: 0.6
           }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center w-full">
             <Button variant="hero" size="xl" className="group w-full sm:w-auto" onClick={() => {
-            document.getElementById('actividades')?.scrollIntoView({
+            document.getElementById('calendario')?.scrollIntoView({
               behavior: 'smooth'
             });
           }}>
