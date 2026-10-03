@@ -36,7 +36,12 @@ export function CragCard({ crag, index, userLevel, onOpenDetail }: CragCardProps
       className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
     >
       {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+      <button
+        type="button"
+        onClick={() => onOpenDetail(crag)}
+        aria-label={`Ver ficha de la escuela ${crag.nombre}`}
+        className="relative block h-48 w-full cursor-pointer overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
         <img
           src={crag.imagen}
           alt={`Escuela de escalada ${crag.nombre} en ${crag.zona}, ${crag.provincia}`}
@@ -66,7 +71,8 @@ export function CragCard({ crag, index, userLevel, onOpenDetail }: CragCardProps
             📍 {crag.provincia} - {crag.zona}
           </span>
         </div>
-      </div>
+      </button>
+
 
       {/* Content */}
       <div className="p-6">

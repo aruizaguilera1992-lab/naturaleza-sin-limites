@@ -74,7 +74,12 @@ export function FerrataCard({ ferrata, index, userLevel, onOpenDetail }: Ferrata
       className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
     >
       {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+      <button
+        type="button"
+        onClick={() => onOpenDetail(ferrata)}
+        aria-label={`Ver ficha de la vía ferrata ${ferrata.nombre}`}
+        className="relative block h-48 w-full cursor-pointer overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
         <img
           src={ferrata.imagen}
           alt={`Vía ferrata ${ferrata.nombre} en ${ferrata.zona}, ${ferrata.provincia}`}
@@ -114,7 +119,8 @@ export function FerrataCard({ ferrata, index, userLevel, onOpenDetail }: Ferrata
             📍 {ferrata.provincia} - {ferrata.zona.split(' - ')[0]}
           </span>
         </div>
-      </div>
+      </button>
+
 
       {/* Content */}
       <div className="p-6">
