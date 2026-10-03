@@ -3,7 +3,6 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { TrustBar } from "@/components/TrustBar";
 import { EventMap } from "@/components/calendario/EventMap";
 import { AgendaAventuras } from "@/components/home/AgendaAventuras";
 import { useActivityEvents } from "@/hooks/useActivityEvents";
