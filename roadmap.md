@@ -129,4 +129,4 @@
 
 ## Cabecera auto-ocultable (03/10/2026)
 - [x] Hero de contacto integrado con el guía en la escena
-- [ ] Menú de navegación: se oculta al hacer scroll (escritorio) y reaparece al acercar el ratón a la cabecera
+- [x] Menú de navegación: se oculta al hacer scroll (escritorio) y reaparece al acercar el ratón a la cabecera
