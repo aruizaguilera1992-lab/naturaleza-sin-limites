@@ -33,7 +33,7 @@ const paths = [
     cta: 'Quiero mejorar mi rendimiento en montaña',
     shortCta: 'Ver entrenamiento',
     link: '/vertigo-sapiens',
-    image: 'https://images.unsplash.com/photo-1551632811-561732d1e8a3?q=85&w=1920&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=85&w=1920&auto=format&fit=crop',
     iconBg: 'bg-adventure-forest',
   },
 ];
