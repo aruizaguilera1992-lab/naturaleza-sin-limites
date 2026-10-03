@@ -9,6 +9,7 @@ import {
   listLayout,
   sendTrackedNotification,
 } from "../_shared/email.ts";
+import { CANONICAL_ORIGIN, approvedOrigin } from "../_shared/allowedOrigins.ts";
 
 const MAX_STANDARD_GROUP = 6;
 const phoneRegex = /^[+]?[\d\s()./-]{9,20}$/;
@@ -131,7 +132,7 @@ Deno.serve(async (req) => {
     return json({ error: "No se pudo preparar el pago" }, 500);
   }
 
-  const payUrl = `${new URL(body.origin).origin}/pago/${request.token}`;
+  const payUrl = `${approvedOrigin(body.origin) ?? CANONICAL_ORIGIN}/pago/${request.token}`;
   const summary = [
     `Actividad: ${activityLabel}`,
     `Fecha solicitada: ${body.preferredDate}`,
