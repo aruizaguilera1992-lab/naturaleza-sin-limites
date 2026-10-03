@@ -3,15 +3,6 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { media } from '@/data/media';
 
-const guideMask = {
-  maskImage:
-    'linear-gradient(to top, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 30%)',
-  WebkitMaskImage:
-    'linear-gradient(to top, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 30%)',
-  maskComposite: 'intersect',
-  WebkitMaskComposite: 'source-in',
-} as React.CSSProperties;
-
 export function ContactHeroSection() {
   const scrollToPathways = () => {
     document.getElementById('que-buscas')?.scrollIntoView({ behavior: 'smooth' });
