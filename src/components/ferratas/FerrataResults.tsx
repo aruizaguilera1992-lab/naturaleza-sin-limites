@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { RotateCcw, ArrowUpDown, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FerrataCard } from './FerrataCard';
-import { FerrataDetailModal } from './FerrataDetailModal';
 import { ferratas, type Ferrata, type NivelExperiencia, type ToleranciaVertigo, type DuracionPreferida, type ElementoPreferido } from '@/data/ferratas';
 
 interface FilterAnswers {
@@ -23,17 +23,10 @@ type SortOption = 'clasificacion' | 'exposicion' | 'duracion' | 'precio';
 
 export function FerrataResults({ filters, onReset }: FerrataResultsProps) {
   const [sortBy, setSortBy] = useState<SortOption>('clasificacion');
-  const [selectedFerrata, setSelectedFerrata] = useState<Ferrata | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpenDetail = (ferrata: Ferrata) => {
-    setSelectedFerrata(ferrata);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedFerrata(null);
+    navigate(`/actividades/vias-ferratas/${ferrata.id}`);
   };
 
   const filteredFerratas = useMemo(() => {
@@ -241,13 +234,6 @@ export function FerrataResults({ filters, onReset }: FerrataResultsProps) {
         </motion.div>
       )}
 
-      {/* Detail Modal */}
-      <FerrataDetailModal
-        ferrata={selectedFerrata}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        userLevel={nivelLabel}
-      />
     </div>
   );
 }

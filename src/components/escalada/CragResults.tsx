@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Filter, RotateCcw, Mountain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { CragCard } from './CragCard';
-import { CragDetailModal } from './CragDetailModal';
 import { crags, type Crag } from '@/data/crags';
 
 interface FilterAnswers {
@@ -28,8 +28,11 @@ interface CragResultsProps {
 
 export function CragResults({ filters, onReset }: CragResultsProps) {
   const [sortBy, setSortBy] = useState<'nivel' | 'vias' | 'precio'>('nivel');
-  const [selectedCrag, setSelectedCrag] = useState<Crag | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleOpenDetail = (crag: Crag) => {
+    navigate(`/actividades/escalada/${crag.id}`);
+  };
 
   const filteredCrags = useMemo(() => {
     let result = [...crags];
@@ -105,16 +108,6 @@ export function CragResults({ filters, onReset }: CragResultsProps) {
 
     return result;
   }, [filters, sortBy]);
-
-  const handleOpenDetail = (crag: Crag) => {
-    setSelectedCrag(crag);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedCrag(null);
-  };
 
   const nivelLabels: Record<string, string> = {
     principiante: 'Principiante',
@@ -224,14 +217,6 @@ export function CragResults({ filters, onReset }: CragResultsProps) {
           </Button>
         </motion.div>
       )}
-
-      {/* Detail Modal */}
-      <CragDetailModal
-        crag={selectedCrag}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        userLevel={nivelLabels[filters.nivel] || 'No especificado'}
-      />
     </div>
   );
 }
