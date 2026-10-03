@@ -171,12 +171,29 @@ export function HeroSection() {
               <Mountain className="h-5 w-5 mr-2" />
               Reserva tu aventura
             </Button>
-            <Button variant="heroOutline" size="xl" className="w-full sm:w-auto" onClick={() => {
-            window.location.href = '/calendario';
-          }}>
-              <Users className="h-5 w-5 mr-2" />
-              Encuentra mi salida ideal
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="heroOutline" size="xl" className="w-full sm:w-auto">
+                  <Users className="h-5 w-5 mr-2" />
+                  Encuentra mi salida ideal
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="center" side="top" className="w-60 p-2">
+                <p className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Elige tu disciplina
+                </p>
+                {DISCIPLINE_QUESTIONNAIRES.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                  >
+                    {item.label}
+                    <ArrowRight className="h-4 w-4 opacity-60" />
+                  </Link>
+                ))}
+              </PopoverContent>
+            </Popover>
           </motion.div>
 
           {/* Trust Badges */}
