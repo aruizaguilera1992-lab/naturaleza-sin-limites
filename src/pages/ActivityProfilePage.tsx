@@ -155,8 +155,8 @@ export default function ActivityProfilePage() {
                   <AccordionItem value="zona">
                     <AccordionTrigger className={trigger}>Sobre la zona y la actividad</AccordionTrigger>
                     <AccordionContent className="space-y-5 text-sm leading-7 text-muted-foreground">
-                      {activity.commercialDescription && <p>{activity.commercialDescription}</p>}
-                      {activity.localSeoSections.map((section) => <div key={section.heading}><h3 className="mb-2 font-semibold text-foreground">{section.heading}</h3><div className="space-y-3">{section.paragraphs.map((p) => <p key={p}>{p}</p>)}</div></div>)}
+                      {activity.commercialDescription && <p>{summarize(activity.commercialDescription, 2, 280)}</p>}
+                      {activity.localSeoSections.map((section) => <div key={section.heading}><h3 className="mb-2 font-semibold text-foreground">{section.heading}</h3>{section.paragraphs[0] && <p>{summarize(section.paragraphs[0], 2, 280)}</p>}</div>)}
                     </AccordionContent>
                   </AccordionItem>
                 )}
