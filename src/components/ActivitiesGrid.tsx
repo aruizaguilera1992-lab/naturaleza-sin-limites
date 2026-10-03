@@ -55,7 +55,43 @@ export function ActivitiesGrid() {
   return (
     <section id="actividades" className="bg-background py-16 sm:py-24">
       <div className="container mx-auto px-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <div className="border-b border-border pb-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mx-auto max-w-2xl text-center">
+            <span className="mb-3 block text-lg font-bold uppercase text-primary">Explorar por disciplina</span>
+            <h2 className="text-3xl font-extrabold sm:text-5xl">Cuatro formas de vivir la montaña</h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">Elige tu disciplina y te orientamos hacia la salida que mejor encaja contigo. Cada categoría tiene su propio formulario para encontrar tu experiencia ideal.</p>
+          </motion.div>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {DISCIPLINES.map((discipline, index) => (
+              <motion.div key={discipline.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
+                <Link
+                  to={discipline.to}
+                  className="group relative block h-72 overflow-hidden rounded-xl border border-border transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-card sm:h-80"
+                >
+                  <img
+                    src={discipline.image}
+                    alt={discipline.imageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
+                    <div className="min-w-0">
+                      <h3 className="text-2xl font-extrabold leading-tight text-foreground sm:text-3xl">{discipline.name}</h3>
+                      <p className="mt-2 text-sm leading-5 text-muted-foreground sm:text-base">{discipline.description}</p>
+                    </div>
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform duration-300 group-hover:translate-x-1">
+                      <ArrowRight className="h-6 w-6" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10 mt-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div className="max-w-2xl">
             <span className="mb-3 block text-lg font-bold uppercase text-primary">Experiencias destacadas</span>
             <h2 className="text-3xl font-extrabold sm:text-5xl">Elige tu próxima aventura</h2>
@@ -92,42 +128,6 @@ export function ActivitiesGrid() {
               </div>
             </motion.article>
           ))}
-        </div>
-
-        <div className="mt-8 border-t border-border pt-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mx-auto max-w-2xl text-center">
-            <span className="mb-3 block text-lg font-bold uppercase text-primary">Explorar por disciplina</span>
-            <h2 className="text-3xl font-extrabold sm:text-5xl">Cuatro formas de vivir la montaña</h2>
-            <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">Elige tu disciplina y te orientamos hacia la salida que mejor encaja contigo. Cada categoría tiene su propio formulario para encontrar tu experiencia ideal.</p>
-          </motion.div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {DISCIPLINES.map((discipline, index) => (
-              <motion.div key={discipline.name} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.06 }}>
-                <Link
-                  to={discipline.to}
-                  className="group relative block h-72 overflow-hidden rounded-xl border border-border transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-card sm:h-80"
-                >
-                  <img
-                    src={discipline.image}
-                    alt={discipline.imageAlt}
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
-                    <div className="min-w-0">
-                      <h3 className="text-2xl font-extrabold leading-tight text-foreground sm:text-3xl">{discipline.name}</h3>
-                      <p className="mt-2 text-sm leading-5 text-muted-foreground sm:text-base">{discipline.description}</p>
-                    </div>
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform duration-300 group-hover:translate-x-1">
-                      <ArrowRight className="h-6 w-6" />
-                    </span>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
