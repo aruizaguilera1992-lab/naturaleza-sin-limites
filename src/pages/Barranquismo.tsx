@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Waves, ChevronDown } from 'lucide-react';
 import { Seo } from '@/components/Seo';
