@@ -120,4 +120,5 @@
 - [x] Quitar los detalles del seguro (vigencia, cobertura, formulario, «Datos del seguro») de la tarjeta de seguro en portada y TrustBar
 - [x] Quitar tarjeta FAE de la sección de confianza de la portada
 - [x] Aumentar tamaño del eyebrow «Por qué Naturaleza Sin Límites» (WhyChooseUs)
-- [ ] Mejorar teaser Vértigo Sapiens con CTA y nueva imagen de atleta (direcciones en curso)
+- [x] Mejorar teaser Vértigo Sapiens con CTA y nueva imagen de atleta (dirección Commercial conversion split)
+- [x] Pie de página: «Turismo activo sostenible y entrenamiento funcional en deportes de aventura»
