@@ -113,7 +113,14 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
             Equipamiento Petzl, Fixe y Sealand, revisado antes de cada salida.
           </Block>
 
-          <Block title="Seguro de accidentes y RC">
+          <Block
+            title="Seguro de accidentes y RC"
+            visual={
+              <span className="inline-flex items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 p-4">
+                <ShieldCheck className="h-12 w-12 text-primary" aria-hidden="true" />
+              </span>
+            }
+          >
             <span className="block">
               Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}.
             </span>
