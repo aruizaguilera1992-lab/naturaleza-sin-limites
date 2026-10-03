@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { AlertTriangle, ArrowLeft, CalendarDays, Check, Clock, ExternalLink, Gauge, MapPin, MessageCircle, Mountain, ShieldCheck, Sparkles, Sun, UserRound, Users } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, CalendarDays, Check, Clock, ExternalLink, MapPin, MessageCircle, Mountain, ShieldCheck, Sparkles, Sun, Users } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -9,14 +9,12 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getActivityProfile, getRelatedProfiles } from '@/data/activityProfiles';
 import { getActivityMedia, getActivityMediaCollection } from '@/data/activityMedia';
-import { TrustBar } from '@/components/TrustBar';
 import { SITE_URL } from '@/lib/site';
 import { MobileBookingBar } from '@/components/actividades/MobileBookingBar';
-import { ActivityUpcomingEvents } from '@/components/actividades/ActivityUpcomingEvents';
-import { ActivityMediaGallery } from '@/components/ActivityMediaGallery';
+import { ActivityNextDates } from '@/components/actividades/ActivityNextDates';
+import { ActivityHeroCarousel } from '@/components/actividades/ActivityHeroCarousel';
 
 function shorten(value: string, max: number) {
   return value.length <= max ? value : `${value.slice(0, max - 1).trimEnd()}…`;
