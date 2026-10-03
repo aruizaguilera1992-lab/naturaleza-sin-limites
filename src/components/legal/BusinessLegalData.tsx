@@ -34,8 +34,6 @@ export function BusinessLegalData({ includeTourism = true }: { includeTourism?: 
       ? ([
           ["Registro de Turismo de Andalucía", row.tourism_registry],
           ["Aseguradora", row.insurer],
-          ["Póliza de Responsabilidad Civil", row.rc_policy],
-          ["Póliza de Accidentes", row.accident_policy],
         ] as [string, string | null][])
       : []),
   ];
