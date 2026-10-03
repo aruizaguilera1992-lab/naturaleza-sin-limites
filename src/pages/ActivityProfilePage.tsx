@@ -114,11 +114,9 @@ export default function ActivityProfilePage() {
                   <AccordionTrigger className={trigger}>Más detalles</AccordionTrigger>
                   <AccordionContent className="space-y-6 text-muted-foreground">
                     <p className="leading-7">{activity.shortDescription}</p>
-                    <p className="leading-7">{activity.commercialDescription}</p>
                     <div><h3 className="mb-3 font-semibold text-foreground">Cómo será la actividad</h3><ol className="space-y-2 text-sm">{activity.itinerary.map((step, i) => <li key={step} className="flex gap-3"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{i + 1}</span>{step}</li>)}</ol></div>
                     <dl className="grid gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-2">{technicalRows.map(([label, value]) => <div key={label} className="bg-card p-3"><dt className="text-xs font-semibold text-foreground">{label}</dt><dd className="mt-1 text-sm [overflow-wrap:anywhere]">{value}</dd></div>)}</dl>
                     {activity.sourceUrl && <a href={activity.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">Fuente técnica <ExternalLink className="h-4 w-4" /></a>}
-                    {activity.localSeoSections.map((section) => <div key={section.heading}><h3 className="mb-2 font-semibold text-foreground">{section.heading}</h3><div className="space-y-3 text-sm leading-7">{section.paragraphs.map((p) => <p key={p}>{p}</p>)}</div></div>)}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="incluye"><AccordionTrigger className={trigger}>Qué incluye</AccordionTrigger><AccordionContent>{list(activity.included)}</AccordionContent></AccordionItem>
@@ -139,6 +137,15 @@ export default function ActivityProfilePage() {
                     <p>Señal del 30 % para confirmar la plaza.</p>
                   </AccordionContent>
                 </AccordionItem>
+                {activity.localSeoSections.length > 0 && (
+                  <AccordionItem value="zona">
+                    <AccordionTrigger className={trigger}>Sobre la zona y la actividad</AccordionTrigger>
+                    <AccordionContent className="space-y-5 text-sm leading-7 text-muted-foreground">
+                      {activity.commercialDescription && <p>{activity.commercialDescription}</p>}
+                      {activity.localSeoSections.map((section) => <div key={section.heading}><h3 className="mb-2 font-semibold text-foreground">{section.heading}</h3><div className="space-y-3">{section.paragraphs.map((p) => <p key={p}>{p}</p>)}</div></div>)}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
                 <AccordionItem value="faq">
                   <AccordionTrigger className={trigger}>Preguntas frecuentes</AccordionTrigger>
                   <AccordionContent className="space-y-4">{activity.faqs.map((faq) => <div key={faq.question}><h3 className="font-semibold">{faq.question}</h3><p className="mt-1 text-sm leading-7 text-muted-foreground">{faq.answer}</p></div>)}</AccordionContent>
