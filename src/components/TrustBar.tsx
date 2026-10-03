@@ -1,36 +1,112 @@
-import { Award, ShieldCheck, Users, Wrench } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { BadgeCheck, FileText, ShieldCheck, Users, Wrench } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 
 /**
  * Señales de confianza verificables. Solo se incluyen afirmaciones que el
  * propio proyecto ya respalda (titulación TD2 del guía, grupos de máximo 6,
- * material homologado y seguros de la actividad).
+ * material homologado, seguro de accidentes y registro de turismo activo).
  *
- * IMPORTANTE: no añadir aquí números de registro de turismo activo, número
- * de póliza ni aseguradora mientras no exista el dato verificado.
+ * IMPORTANTE: el enlace de seguro apunta al formulario oficial de declaración
+ * de siniestros de la aseguradora; no presenta póliza, vigencia, coberturas ni
+ * número de póliza (no hay condiciones particulares verificadas publicadas) y
+ * no atribuye responsabilidad civil a la aseguradora del seguro de accidentes.
  */
-export const trustItems = [
-  {
-    icon: Award,
-    title: 'Guía TD2',
-    description: 'Formación técnica en progresión vertical.',
-  },
-  {
-    icon: Users,
-    title: 'Máx. 6 personas',
-    description: 'Ritmo adaptado y atención directa.',
-  },
-  {
-    icon: Wrench,
-    title: 'Material homologado',
-    description: 'Equipo técnico revisado antes de cada salida.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Seguro accidentes + RC',
-    description: 'Cobertura incluida durante la actividad.',
-  },
-];
+
+const ACCIDENT_FORM_URL =
+  'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
+
+/** Valor de respaldo si la lectura de business_settings no está disponible. */
+const FALLBACK_TOURISM_REGISTRY = 'AT/MA/00508';
+
+export function useTourismRegistry() {
+  const [registry, setRegistry] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    supabase
+      .from('business_settings')
+      .select('tourism_registry')
+      .maybeSingle()
+      .then(({ data }) => {
+        if (active) setRegistry(data?.tourism_registry?.trim() || null);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return registry;
+}
+
+function TourismRegistryCard({ registry }: { registry: string | null }) {
+  return (
+    <span>
+      Registro de Turismo de Andalucía · {registry || FALLBACK_TOURISM_REGISTRY}.{' '}
+      <Link
+        to="/terminos#identificacion"
+        className="font-semibold text-primary hover:underline underline-offset-2"
+      >
+        Ver Aviso Legal
+      </Link>
+    </span>
+  );
+}
+
+function AccidentInsuranceCard() {
+  return (
+    <span>
+      Cobertura de accidentes con la aseguradora W. R. Berkley Europe AG, Sucursal en
+      España.{' '}
+      <a
+        href={ACCIDENT_FORM_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-primary hover:underline underline-offset-2"
+      >
+        Formulario de declaración de accidentes
+      </a>
+    </span>
+  );
+}
+
+interface TrustItem {
+  icon: typeof ShieldCheck;
+  title: string;
+  description: React.ReactNode;
+}
+
+export function buildTrustItems(registry: string | null): TrustItem[] {
+  return [
+    {
+      icon: BadgeCheck,
+      title: 'Guía TD2',
+      description: 'Formación técnica en progresión vertical.',
+    },
+    {
+      icon: Users,
+      title: 'Máx. 6 personas',
+      description: 'Ritmo adaptado y atención directa.',
+    },
+    {
+      icon: Wrench,
+      title: 'Material homologado',
+      description: 'Equipo técnico revisado antes de cada salida.',
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Seguro de accidentes',
+      description: <AccidentInsuranceCard />,
+    },
+    {
+      icon: FileText,
+      title: 'Turismo activo registrado',
+      description: <TourismRegistryCard registry={registry} />,
+    },
+  ];
+}
 
 interface TrustBarProps {
   className?: string;
@@ -39,10 +115,13 @@ interface TrustBarProps {
 }
 
 export function TrustBar({ className, variant = 'section' }: TrustBarProps) {
+  const registry = useTourismRegistry();
+  const items = buildTrustItems(registry);
+
   if (variant === 'compact') {
     return (
       <ul className={cn('space-y-2 text-sm text-muted-foreground', className)}>
-        {trustItems.map(({ icon: Icon, title }) => (
+        {items.map(({ icon: Icon, title }) => (
           <li key={title} className="flex items-start gap-2">
             <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
             <span>{title}</span>
@@ -57,15 +136,20 @@ export function TrustBar({ className, variant = 'section' }: TrustBarProps) {
       aria-label="Garantías de seguridad"
       className={cn('border-y border-border bg-secondary/40', className)}
     >
-      <div className="container mx-auto grid grid-cols-2 gap-px bg-border lg:grid-cols-4">
-        {trustItems.map(({ icon: Icon, title, description }) => (
-          <div key={title} className="flex items-start gap-3 bg-secondary px-4 py-5 sm:px-6 lg:py-6">
+      <div className="container mx-auto grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-5">
+        {items.map(({ icon: Icon, title, description }) => (
+          <div
+            key={title}
+            className="flex items-start gap-3 bg-secondary px-4 py-5 sm:px-5 lg:py-6"
+          >
             <div className="rounded-md border border-primary/20 bg-primary/10 p-2">
               <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <p className="font-heading text-xs font-bold uppercase text-foreground sm:text-sm">{title}</p>
-              <p className="mt-1 hidden text-xs leading-5 text-muted-foreground sm:block">{description}</p>
+              <p className="font-heading text-xs font-bold uppercase text-foreground sm:text-sm">
+                {title}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">{description}</p>
             </div>
           </div>
         ))}
