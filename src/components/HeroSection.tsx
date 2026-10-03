@@ -1,13 +1,28 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Mountain, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import heroVideoAsset from '@/assets/photography/naturaleza-sin-limites-hero.mp4.asset.json';
+
+const HERO_DESCRIPTION_FULL =
+  'Descubre y explora los lugares más exclusivos de la costa del Sol. Aventura y experiencias únicas, grupos reducidos, naturaleza en estado puro y recuerdos que se quedan contigo.';
+
+// Frases rotativas de la descripción; la primera lleva su tamaño propio (más larga).
+const HERO_PHRASES: { text: string; big?: boolean }[] = [
+  { text: 'Descubre y explora los lugares más exclusivos de la costa del Sol.' },
+  { text: 'Aventura y experiencias únicas', big: true },
+  { text: 'Grupos reducidos', big: true },
+  { text: 'Naturaleza en estado puro', big: true },
+  { text: 'Recuerdos que se quedan contigo', big: true },
+];
+
+const PHRASE_HOLD_MS = 3400;
 
 export function HeroSection() {
   const [reduceMotion, setReduceMotion] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   );
+  const [phraseIndex, setPhraseIndex] = useState(0);
 
   useEffect(() => {
     const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -16,6 +31,15 @@ export function HeroSection() {
     motionPreference.addEventListener('change', updatePreference);
     return () => motionPreference.removeEventListener('change', updatePreference);
   }, []);
+
+  // Rotación de frases del subtítulo (se desactiva con prefers-reduced-motion).
+  useEffect(() => {
+    if (reduceMotion) return;
+    const interval = window.setInterval(() => {
+      setPhraseIndex((current) => (current + 1) % HERO_PHRASES.length);
+    }, PHRASE_HOLD_MS);
+    return () => window.clearInterval(interval);
+  }, [reduceMotion]);
 
   return <section id="inicio" className="homepage-hero relative min-h-[620px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
       {/* Animated background; the section background remains as the loading/reduced-motion poster. */}
@@ -78,8 +102,8 @@ export function HeroSection() {
             </span>
           </motion.h1>
 
-          {/* Subtitle */}
-          <motion.p initial={{
+          {/* Subtitle — frases rotativas (texto completo para buscadores/lectores de pantalla) */}
+          <motion.div initial={{
           opacity: 0,
           y: 20
         }} animate={{
@@ -88,9 +112,35 @@ export function HeroSection() {
         }} transition={{
           delay: 0.5,
           duration: 0.6
-        }} className="text-hero-sub text-foreground/80 max-w-2xl mx-auto mb-10">
-            Descubre y explora los lugares más exclusivos de la costa del Sol. Aventura y experiencias únicas, grupos reducidos, naturaleza en estado puro y recuerdos que se quedan contigo.
-          </motion.p>
+        }} className="mb-10">
+            {reduceMotion ? (
+              <p className="text-hero-sub text-foreground/80 max-w-2xl mx-auto">
+                {HERO_DESCRIPTION_FULL}
+              </p>
+            ) : (
+              <>
+                <p className="sr-only">{HERO_DESCRIPTION_FULL}</p>
+                <div aria-hidden="true" className="max-w-2xl mx-auto flex items-center justify-center min-h-[7.5rem] sm:min-h-[5.5rem] md:min-h-[4.5rem]">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={phraseIndex}
+                      initial={{ opacity: 0, letterSpacing: '0.3em' }}
+                      animate={{ opacity: 1, letterSpacing: '0.01em' }}
+                      exit={{ opacity: 0, letterSpacing: '0.18em' }}
+                      transition={{ duration: 0.7, ease: 'easeOut' }}
+                      className={
+                        HERO_PHRASES[phraseIndex].big
+                          ? 'font-heading text-3xl sm:text-4xl md:text-5xl leading-tight text-foreground/95'
+                          : 'text-hero-sub text-foreground/80'
+                      }
+                    >
+                      {HERO_PHRASES[phraseIndex].text}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </>
+            )}
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div initial={{
