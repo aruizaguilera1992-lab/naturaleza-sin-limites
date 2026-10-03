@@ -47,7 +47,7 @@ function TourismRegistryCard({ registry }: { registry: string | null }) {
       Registro de Turismo de Andalucía · {registry || FALLBACK_TOURISM_REGISTRY}.{' '}
       <Link
         to="/terminos#identificacion"
-        className="whitespace-nowrap font-semibold text-primary hover:underline"
+        className="font-semibold text-primary hover:underline underline-offset-2"
       >
         Ver Aviso Legal
       </Link>
@@ -64,7 +64,7 @@ function AccidentInsuranceCard() {
         href={ACCIDENT_FORM_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="whitespace-nowrap font-semibold text-primary hover:underline"
+        className="font-semibold text-primary hover:underline underline-offset-2"
       >
         Formulario de declaración de accidentes
       </a>
