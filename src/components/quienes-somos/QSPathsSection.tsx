@@ -3,35 +3,38 @@ import { Mountain, TrendingUp, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 const paths = [
   {
     icon: Mountain,
-    title: "Experiencias de aventura",
-    audience: "Para quienes quieren descubrir la naturaleza de forma segura, emocionante y responsable.",
-    bullets: [
-      "Barranquismo, cuevas, vías ferratas y actividades guiadas en entornos únicos.",
-      "Pensado para parejas, grupos de amigos, familias y personas que se inician.",
-      "Tú disfrutas; yo me ocupo de la seguridad, el ritmo del grupo y los detalles.",
+    title: 'Experiencias de aventura',
+    lead: 'Salidas guiadas en barrancos, cuevas, paredes y ferratas de Málaga y Andalucía.',
+    benefits: [
+      'Grupos reducidos, máximo 6 personas',
+      'Guía profesional en cada salida',
+      'Tú lo disfrutas; nosotros nos ocupamos de todo',
     ],
-    cta: "Quiero vivir una experiencia de aventura",
-    link: "/actividades",
-    gradient: "from-adventure-orange/20 to-adventure-orange/5",
-    iconBg: "bg-adventure-orange",
+    cta: 'Quiero vivir una experiencia de aventura',
+    shortCta: 'Ver experiencias',
+    link: '/actividades',
+    image: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=85&w=1920&auto=format&fit=crop',
+    iconBg: 'bg-adventure-orange',
   },
   {
     icon: TrendingUp,
-    title: "Entrenamiento y progreso en montaña",
-    audience: "Para quienes sienten que la montaña ya es parte de su vida y quieren ir un paso más allá.",
-    bullets: [
-      "Entrenamientos estructurados para mejorar tu rendimiento y tu técnica.",
-      "Programa online con seguimiento y revisiones periódicas.",
-      "Enfoque en crecimiento personal: no solo llegar más alto, sino hacerlo con cabeza.",
+    title: 'Entrenamiento y progreso en montaña',
+    lead: 'Programa online de 8 semanas para llegar más lejos en la montaña.',
+    benefits: [
+      'Fuerza funcional, resistencia y movilidad',
+      'Plan guiado con seguimiento periódico',
+      '100% online, a tu ritmo',
     ],
-    cta: "Quiero mejorar mi rendimiento en montaña",
-    link: "/vertigo-sapiens",
-    gradient: "from-adventure-forest/20 to-adventure-forest/5",
-    iconBg: "bg-adventure-forest",
+    cta: 'Quiero mejorar mi rendimiento en montaña',
+    shortCta: 'Ver entrenamiento',
+    link: '/vertigo-sapiens',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=85&w=1920&auto=format&fit=crop',
+    iconBg: 'bg-adventure-forest',
   },
 ];
 
@@ -46,13 +49,11 @@ export function QSPathsSection() {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto mb-12"
         >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Dos caminos, un mismo propósito
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-foreground mb-4">
+            Dos caminos, <span className="text-gradient">un mismo propósito</span>
           </h2>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Naturaleza Sin Límites combina experiencias de turismo activo y entrenamiento 
-            específico en montaña para que puedas elegir cómo quieres vivir la naturaleza: 
-            disfrutando un día inolvidable o construyendo un proceso de mejora continua.
+          <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
+            Elige cómo quieres vivir la naturaleza: un día inolvidable o un proceso de mejora continua.
           </p>
         </motion.div>
 
@@ -64,34 +65,44 @@ export function QSPathsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2, duration: 0.6 }}
+              className="h-full"
             >
-              <Card className={`h-full bg-gradient-to-br ${path.gradient} border-0 shadow-lg hover:shadow-xl transition-shadow`}>
-                <CardContent className="p-8">
-                  <div className={`w-14 h-14 rounded-xl ${path.iconBg} flex items-center justify-center mb-6`}>
-                    <path.icon className="w-7 h-7 text-white" />
+              <Card className="group relative h-full min-h-[440px] overflow-hidden rounded-2xl border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <img
+                  src={path.image}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/10" />
+
+                <CardContent className="relative z-10 flex h-full flex-col justify-end p-8">
+                  <div className={cn('w-14 h-14 rounded-xl flex items-center justify-center mb-5', path.iconBg)}>
+                    <path.icon className="w-7 h-7 text-primary-foreground" />
                   </div>
 
-                  <h3 className="font-heading text-2xl font-bold text-foreground mb-3">
+                  <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground mb-2">
                     {path.title}
                   </h3>
 
-                  <p className="text-muted-foreground italic mb-6">
-                    {path.audience}
+                  <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-5">
+                    {path.lead}
                   </p>
 
-                  <ul className="space-y-3 mb-8">
-                    {path.bullets.map((bullet, bulletIndex) => (
-                      <li key={bulletIndex} className="flex items-start gap-3">
+                  <ul className="space-y-2.5 mb-7">
+                    {path.benefits.map((benefit, benefitIndex) => (
+                      <li key={benefitIndex} className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span className="text-foreground">{bullet}</span>
+                        <span className="text-sm sm:text-base font-medium text-foreground">{benefit}</span>
                       </li>
                     ))}
                   </ul>
 
-                  <Button asChild variant="default" className="w-full text-sm sm:text-base">
+                  <Button asChild variant="hero" className="w-full text-sm sm:text-base mt-auto">
                     <Link to={path.link}>
                       <span className="hidden sm:inline">{path.cta}</span>
-                      <span className="sm:hidden">{path.title === 'Experiencias de aventura' ? 'Ver experiencias' : 'Ver entrenamiento'}</span>
+                      <span className="sm:hidden">{path.shortCta}</span>
                     </Link>
                   </Button>
                 </CardContent>
