@@ -43,13 +43,13 @@ export function ContactPathsSection() {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <p className="text-primary font-heading font-bold uppercase tracking-[0.2em] mb-2">
+          <p className="text-primary font-heading font-bold uppercase tracking-[0.2em] text-base sm:text-lg mb-3">
             Dos caminos
           </p>
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-foreground">
+          <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase tracking-tight text-foreground">
             ¿Qué estás buscando ahora mismo?
           </h2>
-          <p className="text-muted-foreground max-w-xl mt-4">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mt-4">
             Elige el camino que mejor se adapte a lo que necesitas
           </p>
         </motion.div>
@@ -80,7 +80,7 @@ export function ContactPathsSection() {
                 <span className="text-primary font-heading font-bold uppercase tracking-[0.2em] text-sm mb-3 block">
                   {pathway.eyebrow}
                 </span>
-                <h3 className="font-heading text-xl sm:text-2xl font-bold uppercase tracking-tight text-foreground mb-4 leading-tight">
+                <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase tracking-tight text-foreground mb-4 leading-tight">
                   {pathway.title}
                 </h3>
                 <p className="text-muted-foreground mb-8 leading-relaxed">
