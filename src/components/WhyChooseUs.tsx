@@ -12,7 +12,7 @@ export function WhyChooseUs() {
     <section id="nosotros" className="border-y border-border bg-secondary/30 py-16 sm:py-24">
       <div className="container mx-auto px-4">
         <div className="mx-auto mb-12 max-w-2xl text-center sm:mb-16">
-          <span className="mb-4 block text-sm font-bold uppercase tracking-widest text-primary">
+          <span className="mb-4 block text-base font-bold uppercase tracking-widest text-primary sm:text-lg">
             Por qué Naturaleza Sin Límites
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-5xl">
