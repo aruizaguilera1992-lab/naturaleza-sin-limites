@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, ChevronDown, Mountain, Users } from 'lucide-react';
+import { ArrowRight, ChevronDown, Flame, GraduationCap, Mountain, ShieldCheck, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import heroVideoAsset from '@/assets/photography/naturaleza-sin-limites-hero.mp4.asset.json';
