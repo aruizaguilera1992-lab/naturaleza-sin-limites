@@ -133,8 +133,8 @@ export default function ActivityProfilePage() {
                     {activity.sourceUrl && <a href={activity.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">Fuente técnica <ExternalLink className="h-4 w-4" /></a>}
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="incluye"><AccordionTrigger className={trigger}>Qué incluye</AccordionTrigger><AccordionContent>{list(activity.included)}</AccordionContent></AccordionItem>
-                <AccordionItem value="llevar"><AccordionTrigger className={trigger}>Qué llevar</AccordionTrigger><AccordionContent>{list(activity.bring)}</AccordionContent></AccordionItem>
+                <AccordionItem value="incluye"><AccordionTrigger className={trigger}>Qué incluye</AccordionTrigger><AccordionContent>{list(activity.included, Check, true)}</AccordionContent></AccordionItem>
+                <AccordionItem value="llevar"><AccordionTrigger className={trigger}>Qué llevar</AccordionTrigger><AccordionContent>{list(activity.bring, Check, true)}</AccordionContent></AccordionItem>
                 <AccordionItem value="requisitos">
                   <AccordionTrigger className={trigger}>Requisitos</AccordionTrigger>
                   <AccordionContent className="space-y-4">
