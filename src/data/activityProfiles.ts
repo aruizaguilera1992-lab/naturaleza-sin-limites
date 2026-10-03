@@ -207,7 +207,7 @@ function sanitizeProfile(profile: ActivityProfile): ActivityProfile {
       ? "Se confirma al reservar, en un punto accesible en coche cerca del inicio de la actividad"
       : clean(profile.meetingPoint),
     weatherPolicy: profile.weatherPolicy.includes(PENDING)
-      ? "Si la meteorología o las condiciones del recorrido no son seguras, proponemos nueva fecha, otra actividad o la devolución del importe."
+      ? FALLBACK_WEATHER_POLICY
       : clean(profile.weatherPolicy),
     cancellationPolicy: profile.cancellationPolicy.includes(PENDING)
       ? "Las condiciones de cancelación se facilitan por escrito antes de confirmar la reserva."
