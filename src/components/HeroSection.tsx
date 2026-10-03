@@ -89,7 +89,7 @@ export function HeroSection() {
           delay: 0.5,
           duration: 0.6
         }} className="text-hero-sub text-foreground/80 max-w-2xl mx-auto mb-10">
-            Descubre barrancos, paredes, ferratas y cavidades con salidas guiadas, grupos reducidos y seguridad en cada paso.
+            Descubre y explora los lugares más exclusivos de la costa del Sol. Aventura y experiencias únicas, grupos reducidos, naturaleza en estado puro y recuerdos que se quedan contigo.
           </motion.p>
 
           {/* CTA Buttons */}
