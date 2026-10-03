@@ -2,21 +2,13 @@ import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox';
 import { motion } from 'framer-motion';
-import { Send, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { Send, MessageCircle, CheckCircle, Loader2, Users, Waves, Flashlight, Dumbbell, Compass, MessageSquare, Mail, Phone } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Form,
   FormControl,
@@ -27,6 +19,7 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
 
 const contactSchema = z.object({
   nombre: z.string().trim().min(2, 'El nombre es obligatorio').max(100, 'Máximo 100 caracteres'),
@@ -43,11 +36,35 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 const interestOptions = [
-  { value: 'aventura', label: 'Experiencia de aventura' },
-  { value: 'espeleologia', label: 'Espeleología' },
-  { value: 'entrenamiento', label: 'Entrenamiento en montaña' },
-  { value: 'orientacion', label: 'No lo tengo claro, quiero orientación' },
+  { value: 'aventura', label: 'Experiencia de aventura', icon: Waves },
+  { value: 'espeleologia', label: 'Espeleología', icon: Flashlight },
+  { value: 'entrenamiento', label: 'Entrenamiento en montaña', icon: Dumbbell },
+  { value: 'orientacion', label: 'No lo tengo claro, quiero orientación', icon: Compass },
 ];
+
+const peopleOptions = Array.from({ length: 6 }, (_, i) => String(i + 1));
+
+const inputClasses = 'bg-background/50 border-border text-base h-12 placeholder:text-muted-foreground/70';
+
+const FieldLabel = ({ icon: Icon, children, optional }: { icon?: React.ElementType; children: React.ReactNode; optional?: boolean }) => (
+  <span className="flex items-center gap-2 text-base font-semibold text-foreground">
+    {Icon && <Icon className="h-5 w-5 text-primary" aria-hidden="true" />}
+    {children}
+    {optional && (
+      <span className="text-xs font-normal uppercase tracking-wide text-muted-foreground">(opcional)</span>
+    )}
+  </span>
+);
+
+const StepTitle = ({ step, children }: { step: string; children: React.ReactNode }) => (
+  <div className="flex items-center gap-3">
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+      {step}
+    </span>
+    <h3 className="text-lg sm:text-xl font-heading font-bold text-foreground">{children}</h3>
+    <span className="h-px flex-1 bg-border" />
+  </div>
+);
 
 export function ContactFormSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -124,11 +141,11 @@ export function ContactFormSection() {
             </div>
             <h3 className="text-2xl font-bold mb-4">¡Gracias por tu mensaje!</h3>
             <p className="text-muted-foreground mb-6">
-              Te responderé personalmente en menos de 24 horas. 
+              Te responderé personalmente en menos de 24 horas.
               Si necesitas una respuesta más rápida, puedes escribirme por WhatsApp.
             </p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsSubmitted(false)}
               className="gap-2"
             >
@@ -143,22 +160,22 @@ export function ContactFormSection() {
   return (
     <section id="formulario" className="py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-10"
+            className="text-center mb-12"
           >
-            <p className="text-primary font-heading font-bold uppercase tracking-[0.2em] mb-2">
+            <p className="text-primary font-heading font-bold uppercase tracking-[0.2em] text-base sm:text-lg mb-3">
               Escríbenos
             </p>
-            <h2 className="font-heading text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-foreground mb-4">
-              O envíame un mensaje directo aquí
+            <h2 className="font-heading text-4xl sm:text-5xl font-extrabold uppercase tracking-tight text-foreground mb-4">
+              ¿Cómo te escribo?
             </h2>
-            <p className="text-muted-foreground">
-              Cuéntame qué tienes en mente y te respondo en breve
+            <p className="text-lg sm:text-xl text-muted-foreground">
+              Elige qué buscas, dinos quién eres y te respondo en breve. Sin compromiso.
             </p>
           </motion.div>
 
@@ -167,48 +184,44 @@ export function ContactFormSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-card p-6 md:p-10 border-t-8 border-primary shadow-2xl"
+            className="bg-card p-6 md:p-10 border-t-8 border-primary shadow-2xl rounded-2xl"
           >
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Nombre */}
-                <FormField
-                  control={form.control}
-                  name="nombre"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nombre *</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Tu nombre" 
-                          {...field} 
-                          className="h-12"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+                {/* Paso 1: Tu consulta */}
+                <div className="space-y-6">
+                  <StepTitle step="1">Tu consulta</StepTitle>
 
-                {/* Email y Teléfono */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
-                    name="email"
+                    name="interes"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            inputMode="email"
-                            autoComplete="email"
-                            placeholder="correo@ejemplo.com"
-                            {...field}
-                            className="h-12"
-                          />
-                        </FormControl>
+                        <FieldLabel>¿Qué buscas?</FieldLabel>
+                        <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Qué buscas">
+                          {interestOptions.map((option) => {
+                            const selected = field.value === option.value;
+                            return (
+                              <button
+                                key={option.value}
+                                type="button"
+                                role="radio"
+                                aria-checked={selected}
+                                onClick={() => field.onChange(option.value)}
+                                className={cn(
+                                  'flex flex-col items-center gap-2 rounded-xl border p-4 text-center transition-all duration-300 active:scale-95',
+                                  selected
+                                    ? 'border-primary bg-primary/15 text-primary shadow-elegant'
+                                    : 'border-border bg-background/50 text-foreground hover:border-primary/50'
+                                )}
+                              >
+                                <option.icon className="h-7 w-7" aria-hidden="true" />
+                                <span className="text-sm sm:text-base font-semibold leading-tight">{option.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -216,170 +229,211 @@ export function ContactFormSection() {
 
                   <FormField
                     control={form.control}
-                    name="phone"
+                    name="personas"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Teléfono *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="tel"
-                            inputMode="tel"
-                            autoComplete="tel"
-                            placeholder="+34 600 000 000"
-                            {...field}
-                            className="h-12"
-                          />
-                        </FormControl>
+                        <FieldLabel icon={Users} optional>¿Cuántos sois?</FieldLabel>
+                        <div className="flex flex-wrap gap-3" role="radiogroup" aria-label="Número de personas">
+                          {peopleOptions.map((n) => {
+                            const selected = field.value === n;
+                            return (
+                              <button
+                                key={n}
+                                type="button"
+                                role="radio"
+                                aria-checked={selected}
+                                onClick={() => field.onChange(selected ? '' : n)}
+                                className={cn(
+                                  'h-12 w-12 rounded-xl border text-base font-bold transition-all duration-300 active:scale-95',
+                                  selected
+                                    ? 'border-primary bg-primary text-primary-foreground shadow-elegant'
+                                    : 'border-border bg-background/50 text-foreground hover:border-primary/50'
+                                )}
+                              >
+                                {n}
+                              </button>
+                            );
+                          })}
+                          <button
+                            type="button"
+                            role="radio"
+                            aria-checked={field.value === 'Más de 6'}
+                            onClick={() => field.onChange(field.value === 'Más de 6' ? '' : 'Más de 6')}
+                            className={cn(
+                              'h-12 rounded-xl border px-5 text-sm font-semibold transition-all duration-300 active:scale-95',
+                              field.value === 'Más de 6'
+                                ? 'border-primary bg-primary text-primary-foreground shadow-elegant'
+                                : 'border-border bg-background/50 text-foreground hover:border-primary/50'
+                            )}
+                          >
+                            Grupo (+6)
+                          </button>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
 
-                {/* ¿Qué buscas? */}
-                <FormField
-                  control={form.control}
-                  name="interes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>¿Qué buscas? *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                {/* Paso 2: Tus datos */}
+                <div className="space-y-6">
+                  <StepTitle step="2">Tus datos</StepTitle>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="nombre"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-foreground">
+                            <FieldLabel icon={Users}>Nombre</FieldLabel>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Tu nombre"
+                              autoComplete="name"
+                              className={inputClasses}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-foreground">
+                            <FieldLabel icon={Mail}>Email</FieldLabel>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              inputMode="email"
+                              autoComplete="email"
+                              placeholder="correo@ejemplo.com"
+                              className={inputClasses}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-foreground">
+                            <FieldLabel icon={Phone}>Teléfono</FieldLabel>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="tel"
+                              inputMode="tel"
+                              autoComplete="tel"
+                              placeholder="+34 600 000 000"
+                              className={inputClasses}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="mensaje"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-foreground">
+                          <FieldLabel icon={MessageSquare} optional>Mensaje</FieldLabel>
+                        </FormLabel>
                         <FormControl>
-                          <SelectTrigger className="h-12">
-                            <SelectValue placeholder="Selecciona una opción" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {interestOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Nº de personas */}
-                <FormField
-                  control={form.control}
-                  name="personas"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nº de personas (opcional)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          type="number" 
-                          placeholder="¿Cuántas personas sois?" 
-                          min="1"
-                          max="50"
-                          {...field}
-                          className="h-12"
-                        />
-                      </FormControl>
-                      <p className="text-xs text-muted-foreground">
-                        Las reservas estándar son de 1 a 6 personas. Si sois más, indícalo aquí y
-                        te preparamos una propuesta de grupo.
-                      </p>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Mensaje */}
-                <FormField
-                  control={form.control}
-                  name="mensaje"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mensaje (opcional)</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Cuéntame en 2–3 frases qué tienes en mente: fechas, nivel de experiencia, actividad que te interesa..."
-                          rows={4}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Consentimiento RGPD */}
-                <FormField
-                  control={form.control}
-                  name="rgpd"
-                  render={({ field }) => (
-                    <FormItem className="rounded-lg border border-border bg-background/50 p-4">
-                      <div className="flex items-start gap-3">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            className="mt-0.5"
+                          <Textarea
+                            placeholder="Fechas, nivel, lo que te interesa..."
+                            className="bg-background/50 border-border text-base min-h-[80px] resize-none placeholder:text-muted-foreground/70"
+                            {...field}
                           />
                         </FormControl>
-                        <FormLabel className="text-xs font-normal leading-relaxed text-muted-foreground">
-                          He leído y acepto la{' '}
-                          <Link to="/privacidad" className="text-primary hover:underline">
-                            Política de Privacidad
-                          </Link>
-                          . Responsable: Naturaleza Sin Límites. Finalidad: responder a tu consulta y
-                          gestionar tu reserva. Legitimación: tu consentimiento. No cedemos tus datos
-                          a terceros salvo obligación legal. Puedes ejercer tus derechos de acceso,
-                          rectificación y supresión escribiendo a{' '}
-                          <a
-                            href="mailto:naturaleza.s.limites@gmail.com"
-                            className="text-primary hover:underline"
-                          >
-                            naturaleza.s.limites@gmail.com
-                          </a>
-                          .
-                        </FormLabel>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                {/* Submit button */}
-                <Button 
-                  type="submit" 
-                  variant="hero" 
-                  size="lg" 
-                  className="w-full gap-2"
+                  {/* Consentimiento RGPD */}
+                  <FormField
+                    control={form.control}
+                    name="rgpd"
+                    render={({ field }) => (
+                      <FormItem className="rounded-xl border border-border bg-background/40 p-4">
+                        <div className="flex items-start gap-3">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              className="mt-0.5"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal leading-relaxed text-muted-foreground">
+                            He leído y acepto la{' '}
+                            <Link to="/privacidad" className="text-primary hover:underline">
+                              Política de Privacidad
+                            </Link>
+                            . Responsable: Naturaleza Sin Límites. Finalidad: responder a tu consulta y
+                            gestionar tu reserva. Legitimación: tu consentimiento. No cedemos tus datos
+                            a terceros salvo obligación legal. Puedes ejercer tus derechos de acceso,
+                            rectificación y supresión escribiendo a{' '}
+                            <a
+                              href="mailto:naturaleza.s.limites@gmail.com"
+                              className="text-primary hover:underline"
+                            >
+                              naturaleza.s.limites@gmail.com
+                            </a>
+                            .
+                          </FormLabel>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="hero"
+                  size="lg"
+                  className="w-full text-lg font-bold"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="sm:hidden">Enviando...</span>
-                      <span className="hidden sm:inline">Enviando...</span>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Enviando...
                     </>
                   ) : (
                     <>
-                      <Send className="w-4 h-4" />
-                      <span className="sm:hidden">Enviar mensaje</span>
-                      <span className="hidden sm:inline">Enviar y te respondo pronto</span>
+                      <Send className="w-5 h-5" />
+                      Enviar solicitud
                     </>
                   )}
                 </Button>
               </form>
             </Form>
 
-            {/* Help text */}
-            <p className="text-sm text-muted-foreground text-center mt-6">
-              Cuanta más información me des, mejor podré adaptarme a tu nivel, necesidades y fechas.
-            </p>
-
             {/* WhatsApp alternative */}
-            <div className="mt-6 pt-6 border-t border-border text-center">
-              <p className="text-sm text-muted-foreground mb-3">
+            <div className="mt-8 pt-6 border-t border-border text-center">
+              <p className="text-base text-muted-foreground mb-3">
                 Si prefieres, puedes escribirme directamente por WhatsApp
               </p>
-              <a 
+              <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
