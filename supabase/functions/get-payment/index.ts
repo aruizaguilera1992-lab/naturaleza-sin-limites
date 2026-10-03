@@ -2,7 +2,6 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
-import { approvedOrigin } from "../_shared/allowedOrigins.ts";
 
 const BodySchema = z.object({
   token: z.string().regex(/^[a-f0-9]{16,80}$/),
@@ -169,8 +168,8 @@ Deno.serve(async (req) => {
 
   // Stable, server-derived return URL: the caller only influences the origin,
   // which is validated and folded into the idempotency key.
-  const origin = approvedOrigin(returnUrl);
-  if (!origin) {
+  const origin = new URL(returnUrl).origin;
+  if (!/^https:\/\/|^http:\/\/localhost(:\d+)?$/.test(origin)) {
     return json({ payment, error: "invalid_return_url" }, 400);
   }
   const canonicalReturnUrl = `${origin}/pago/${token}?session_id={CHECKOUT_SESSION_ID}`;

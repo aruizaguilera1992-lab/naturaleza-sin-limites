@@ -3,7 +3,6 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 import { PLAN_CATALOG } from "../_shared/planCatalog.ts";
-import { approvedOrigin } from "../_shared/allowedOrigins.ts";
 
 const phoneRegex = /^[+]?[\d\s()./-]{9,20}$/;
 
@@ -40,8 +39,8 @@ Deno.serve(async (req) => {
   const plan = PLAN_CATALOG[body.priceId];
   if (!plan) return json({ error: "Plan no disponible" }, 404);
 
-  const origin = approvedOrigin(body.returnUrl);
-  if (!origin) {
+  const origin = new URL(body.returnUrl).origin;
+  if (!/^https:\/\/|^http:\/\/localhost(:\d+)?$/.test(origin)) {
     return json({ error: "returnUrl no válida" }, 400);
   }
 
