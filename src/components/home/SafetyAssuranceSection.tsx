@@ -160,15 +160,7 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
               </button>
             }
           >
-            <span className="flex flex-wrap justify-center gap-2">
-              <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold text-foreground">RC 1.000.000 €</span>
-              <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold text-foreground">Asistencia hasta 6.000 €</span>
-              <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold text-foreground">Rescate hasta 12.000 €</span>
-            </span>
-            <span className="mt-3 block text-xs">
-              Límites generales por persona para accidentes, sujetos a condiciones, exclusiones y restricciones por edad.
-            </span>
-            <span className="mt-2 block">
+            <span className="mt-3 block">
               Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY} · RC · Póliza {rcPolicy || FALLBACK_RC_POLICY}
             </span>
             <span className="mt-1 block">{insurer || FALLBACK_INSURER}.</span>
