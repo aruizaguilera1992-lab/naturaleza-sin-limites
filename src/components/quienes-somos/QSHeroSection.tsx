@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { User, MessageCircle, Leaf } from 'lucide-react';
 import { media } from '@/data/media';
+import guidePortrait from '@/assets/guia-retrato.png.asset.json';
 
 const bullets = [
   { icon: User, text: "Proyecto de autor, no una agencia masiva." },
@@ -68,8 +69,8 @@ export function QSHeroSection() {
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src={media.ropeDetail.src}
-                alt={media.ropeDetail.alt}
+                src={guidePortrait.url}
+                alt="Guía de Naturaleza Sin Límites junto a una cascada de barranco"
                 loading="lazy"
                 decoding="async"
                 className="w-full h-auto object-cover aspect-[4/5]"
