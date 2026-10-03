@@ -56,8 +56,6 @@ const secondaryLinkClasses = 'text-xs font-semibold text-primary hover:underline
 export function SafetyAssuranceSection({ className }: { className?: string }) {
   const { insurer, rcPolicy, accidentPolicy, tourismRegistry } = useBusinessSettings();
 
-  const VALIDITY = POLICY_VALIDITY_PERIOD;
-
   return (
     <section
       aria-labelledby="seguridad-titulo"
