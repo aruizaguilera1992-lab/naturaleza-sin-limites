@@ -137,27 +137,6 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           </Block>
         </div>
 
-        <div id="coberturas-seguro" className="mt-12 scroll-mt-32">
-          <button
-            type="button"
-            onClick={() => setCoverageOpen((v) => !v)}
-            aria-expanded={coverageOpen}
-            aria-controls="detalle-coberturas-seguro"
-            className="mx-auto flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-center transition-all duration-300 hover:text-primary active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <span className="font-heading text-lg font-bold uppercase tracking-wide text-foreground sm:text-xl">
-              Ver coberturas y condiciones
-            </span>
-            <ChevronDown aria-hidden="true" className={cn('h-5 w-5 shrink-0 text-primary transition-transform duration-300', coverageOpen && 'rotate-180')} />
-          </button>
-          <p className="mt-1 text-center text-xs text-muted-foreground">{COVERAGE_CHECKED_LABEL}</p>
-          {coverageOpen && (
-            <div id="detalle-coberturas-seguro" className="mx-auto mt-6 max-w-5xl">
-              <InsuranceCoverageDetails showCheckedLabel />
-            </div>
-          )}
-        </div>
-
         <div id="marcas-equipamiento" className="mt-12 scroll-mt-32">
           <button
             type="button"
