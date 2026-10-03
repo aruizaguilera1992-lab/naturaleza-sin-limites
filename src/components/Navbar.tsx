@@ -43,13 +43,31 @@ const navLinks = [
 ];
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isNearTop, setIsNearTop] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const autoHideEnabled = useRef(false);
+  // Escritorio: la cabecera se oculta al hacer scroll y reaparece cuando
+  // el ratón se acerca a la parte superior de la página.
+  const isHidden = isScrolled && autoHideEnabled.current && !isNearTop && !isMobileMenuOpen;
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    const media = window.matchMedia("(pointer: fine)");
+    const updatePointer = () => {
+      autoHideEnabled.current = media.matches;
+    };
+    updatePointer();
+    media.addEventListener("change", updatePointer);
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleMouse = (event: MouseEvent) => {
+      if (!autoHideEnabled.current) return;
+      setIsNearTop(event.clientY <= 70);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouse);
+    return () => {
+      media.removeEventListener("change", updatePointer);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouse);
+    };
   }, []);
   return (
     <motion.header
@@ -57,10 +75,12 @@ export function Navbar() {
         y: -100,
       }}
       animate={{
-        y: 0,
+        y: isHidden ? "-100%" : 0,
+        opacity: isHidden ? 0 : 1,
       }}
       transition={{
-        duration: 0.5,
+        duration: 0.35,
+        ease: "easeOut",
       }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "nav-scrolled py-2" : "bg-transparent py-4"}`}
     >
