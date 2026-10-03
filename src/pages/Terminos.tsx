@@ -20,6 +20,15 @@ const sections = [
           El presente sitio web es operado por <strong className="text-foreground">Naturaleza Sin Límites</strong>, un proyecto personal de guiado y entrenamiento en deportes de aventura con sede en Málaga, Andalucía, España.
         </p>
         <BusinessLegalData />
+        <div className="mt-8 rounded-2xl border border-primary/30 bg-primary/5 p-5 md:p-6">
+          <h3 className="font-heading text-xl font-bold text-foreground">Coberturas del seguro y condiciones</h3>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Detalle de las coberturas de las pólizas de responsabilidad civil y de accidentes contratadas por Naturaleza Sin Límites.
+          </p>
+          <div className="mt-4">
+            <InsuranceCoverageDetails />
+          </div>
+        </div>
         <p className="mb-4">
           Puedes contactar con nosotros a través de:
         </p>
