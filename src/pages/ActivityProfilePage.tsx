@@ -162,7 +162,7 @@ export default function ActivityProfilePage() {
                 )}
                 <AccordionItem value="faq">
                   <AccordionTrigger className={trigger}>Preguntas frecuentes</AccordionTrigger>
-                  <AccordionContent className="space-y-4">{activity.faqs.map((faq) => <div key={faq.question}><h3 className="font-semibold">{faq.question}</h3><p className="mt-1 text-sm leading-7 text-muted-foreground">{faq.answer}</p></div>)}</AccordionContent>
+                  <AccordionContent className="space-y-4">{faqs.map((faq) => <div key={faq.question}><h3 className="font-semibold">{faq.question}</h3><p className="mt-1 text-sm leading-7 text-muted-foreground">{summarize(faq.answer, 2, 240)}</p></div>)}</AccordionContent>
                 </AccordionItem>
               </Accordion>
             </section>
