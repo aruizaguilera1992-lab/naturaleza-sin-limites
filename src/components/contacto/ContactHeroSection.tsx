@@ -62,11 +62,14 @@ export function ContactHeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+            className="font-heading text-2xl md:text-3xl font-bold text-foreground max-w-3xl mx-auto mb-10 leading-snug"
           >
-            Cada persona, grupo y objetivo es distinto. Por eso el contacto es directo:
-            te escucho, te hago 2–3 preguntas clave y diseñamos juntos la experiencia
-            o el proceso de entrenamiento que mejor encaje contigo.
+            Me escribes y te respondo{' '}
+            <span className="text-primary relative inline-block">
+              yo, personalmente
+              <span className="absolute left-0 -bottom-1 w-full h-1 bg-primary/40 rounded-full" aria-hidden="true" />
+            </span>
+            : juntos diseñamos la salida perfecta para ti.
           </motion.p>
 
           <motion.div
