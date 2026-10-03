@@ -102,8 +102,8 @@ export function HeroSection() {
             </span>
           </motion.h1>
 
-          {/* Subtitle */}
-          <motion.p initial={{
+          {/* Subtitle — frases rotativas (texto completo para buscadores/lectores de pantalla) */}
+          <motion.div initial={{
           opacity: 0,
           y: 20
         }} animate={{
@@ -112,9 +112,35 @@ export function HeroSection() {
         }} transition={{
           delay: 0.5,
           duration: 0.6
-        }} className="text-hero-sub text-foreground/80 max-w-2xl mx-auto mb-10">
-            Descubre y explora los lugares más exclusivos de la costa del Sol. Aventura y experiencias únicas, grupos reducidos, naturaleza en estado puro y recuerdos que se quedan contigo.
-          </motion.p>
+        }} className="mb-10">
+            {reduceMotion ? (
+              <p className="text-hero-sub text-foreground/80 max-w-2xl mx-auto">
+                {HERO_DESCRIPTION_FULL}
+              </p>
+            ) : (
+              <>
+                <p className="sr-only">{HERO_DESCRIPTION_FULL}</p>
+                <div aria-hidden="true" className="max-w-2xl mx-auto flex items-center justify-center min-h-[7.5rem] sm:min-h-[5.5rem] md:min-h-[4.5rem]">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={phraseIndex}
+                      initial={{ opacity: 0, letterSpacing: '0.3em' }}
+                      animate={{ opacity: 1, letterSpacing: '0.01em' }}
+                      exit={{ opacity: 0, letterSpacing: '0.18em' }}
+                      transition={{ duration: 0.7, ease: 'easeOut' }}
+                      className={
+                        HERO_PHRASES[phraseIndex].big
+                          ? 'font-heading text-3xl sm:text-4xl md:text-5xl leading-tight text-foreground/95'
+                          : 'text-hero-sub text-foreground/80'
+                      }
+                    >
+                      {HERO_PHRASES[phraseIndex].text}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </>
+            )}
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div initial={{
