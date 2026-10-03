@@ -89,7 +89,7 @@ function AccidentInsuranceCard({ insurer, rcPolicy }: BusinessSettings) {
         className="font-semibold text-primary hover:underline underline-offset-2"
       >
         Formulario de declaración de accidentes
-      </a>{' '}
+      </a>{' · '}
       <Link
         to="/terminos#identificacion"
         className="font-semibold text-primary hover:underline underline-offset-2"
