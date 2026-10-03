@@ -171,6 +171,7 @@ function buildEditorial(
  */
 const CONSULT = "se confirma al reservar";
 const NO_PRICE = "Consultar precio";
+const FALLBACK_WEATHER_POLICY = "Si la meteorología o las condiciones del recorrido no son seguras, proponemos nueva fecha, otra actividad o la devolución del importe.";
 
 const clean = (value: string) =>
   value
