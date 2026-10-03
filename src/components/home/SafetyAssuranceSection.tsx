@@ -75,22 +75,8 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
-          <Block
-            title="Federación Andaluza de Espeleología"
-            visual={
-              <img
-                src="/images/brands/fae.png"
-                alt="Federación Andaluza de Espeleología"
-                loading="lazy"
-                width={816}
-                height={816}
-                className="h-28 w-auto opacity-80 transition-opacity duration-300 group-hover:opacity-100"
-              />
-            }
-          >
-            Actividades avaladas por los estándares de la federación.
-          </Block>
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:mt-12 md:grid-cols-3">
+
 
           <Block
             title="Material técnico homologado"
