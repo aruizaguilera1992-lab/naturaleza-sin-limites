@@ -35,10 +35,23 @@ const Barranquismo = () => {
     provincia: null,
   });
 
-  // Scroll to top on page load
+  // Scroll to top on page load; with a URL hash, scroll to the target section instead.
+  const { hash } = useLocation();
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+    if (!hash) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const scrollToHash = () => {
+      document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView({ block: 'start' });
+    };
+    const frame = window.requestAnimationFrame(scrollToHash);
+    const settledLayout = window.setTimeout(scrollToHash, 450);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(settledLayout);
+    };
+  }, [hash]);
 
   const handleQuestionnaireComplete = (answers: FilterAnswers) => {
     setFilters(answers);
