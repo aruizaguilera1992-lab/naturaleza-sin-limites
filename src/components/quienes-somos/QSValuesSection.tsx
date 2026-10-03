@@ -42,7 +42,7 @@ export function QSValuesSection() {
         transition={{ duration: 28, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background/90" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/70 to-background/85" />
 
       <div className="relative container mx-auto px-4">
         <motion.div

@@ -49,7 +49,7 @@ export function QSCTASection() {
         transition={{ duration: 30, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background/95" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/75 to-background/90" />
 
       <div className="relative container mx-auto px-4">
         <motion.div
