@@ -65,7 +65,14 @@ export default function ActivityProfilePage() {
   const technicalRows = ([
     ['Tipo de actividad', activity.type], ['Duración total', activity.totalDuration], ['Duración efectiva', activity.effectiveDuration], ['Nivel técnico', activity.technicalLevel], ['Nivel físico', activity.physicalLevel], ['Temporada', activity.season], ['Grupo mínimo/máximo', activity.group], ['Ratio guía-participantes', activity.guideRatio], ['Aproximación y retorno', activity.approachReturn], ['Elementos técnicos', activity.technicalElements.join(', ')], ['Zona de encuentro', activity.meetingPoint],
   ] as [string, string][]).filter(([, value]) => Boolean(value?.trim()));
-  const list = (items: string[], Icon = Check) => <ul className="space-y-3 text-sm text-muted-foreground">{items.map((item) => <li key={item} className="flex gap-2"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul>;
+  const list = (items: string[], Icon = Check, compact = false) => <ul className={compact ? 'grid gap-2 text-sm text-muted-foreground sm:grid-cols-2' : 'space-y-3 text-sm text-muted-foreground'}>{items.map((item) => <li key={item} className="flex gap-2"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul>;
+  const extraSafety = activity.safetyRequirements.filter((item) =>
+    !['Edad mínima', 'Nivel físico', 'Experiencia previa'].some((l) => item.startsWith(`${l}:`)) &&
+    !/^(Seguro y acreditación profesional|Permisos y regulación):/i.test(item) &&
+    !/^La salida queda condicionada a la meteorología/i.test(item),
+  );
+  const visibleFaqs = activity.faqs.filter((faq) => /^(¿Dónde se realiza|¿Cuánto dura|¿Necesito experiencia|¿Qué edad mínima|¿Qué ocurre si cambia el tiempo)/.test(faq.question));
+  const faqs = visibleFaqs.length > 0 ? visibleFaqs : activity.faqs.slice(0, 5);
   const trigger = 'min-h-14 font-heading text-lg text-left';
 
   return (
