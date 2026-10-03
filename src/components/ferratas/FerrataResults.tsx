@@ -234,13 +234,6 @@ export function FerrataResults({ filters, onReset }: FerrataResultsProps) {
         </motion.div>
       )}
 
-      {/* Detail Modal */}
-      <FerrataDetailModal
-        ferrata={selectedFerrata}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        userLevel={nivelLabel}
-      />
     </div>
   );
 }

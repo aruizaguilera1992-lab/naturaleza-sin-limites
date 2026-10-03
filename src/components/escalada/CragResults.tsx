@@ -109,16 +109,6 @@ export function CragResults({ filters, onReset }: CragResultsProps) {
     return result;
   }, [filters, sortBy]);
 
-  const handleOpenDetail = (crag: Crag) => {
-    setSelectedCrag(crag);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedCrag(null);
-  };
-
   const nivelLabels: Record<string, string> = {
     principiante: 'Principiante',
     iniciacion: 'Iniciación',
@@ -227,14 +217,6 @@ export function CragResults({ filters, onReset }: CragResultsProps) {
           </Button>
         </motion.div>
       )}
-
-      {/* Detail Modal */}
-      <CragDetailModal
-        crag={selectedCrag}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        userLevel={nivelLabels[filters.nivel] || 'No especificado'}
-      />
     </div>
   );
 }
