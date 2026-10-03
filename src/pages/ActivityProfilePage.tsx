@@ -144,11 +144,11 @@ export default function ActivityProfilePage() {
                 </AccordionItem>
                 <AccordionItem value="condiciones">
                   <AccordionTrigger className={trigger}>Condiciones</AccordionTrigger>
-                  <AccordionContent className="space-y-4 text-sm leading-7 text-muted-foreground">
-                    {activity.weatherPolicy && <div><h3 className="font-semibold text-foreground">Meteorología</h3><p>{activity.weatherPolicy}</p></div>}
-                    {activity.cancellationPolicy && <div><h3 className="font-semibold text-foreground">Cancelación</h3><p>{activity.cancellationPolicy}</p></div>}
-                    {activity.insurancePermits.length > 0 && <div><h3 className="font-semibold text-foreground">Seguros y permisos</h3>{list(activity.insurancePermits, ShieldCheck)}</div>}
-                    <p>Señal del 30 % para confirmar la plaza.</p>
+                  <AccordionContent className="space-y-3 text-sm leading-7 text-muted-foreground">
+                    {activity.weatherPolicy && <p><span className="font-semibold text-foreground">Meteorología: </span>{summarize(activity.weatherPolicy, 1)}</p>}
+                    {activity.cancellationPolicy && <p><span className="font-semibold text-foreground">Cancelación: </span>{summarize(activity.cancellationPolicy, 1)}</p>}
+                    {activity.insurancePermits.length > 0 && <p><ShieldCheck className="mr-2 inline h-4 w-4 text-primary" /><span className="font-semibold text-foreground">Seguros y permisos: </span>{activity.insurancePermits.join(' · ')}</p>}
+                    <p><span className="font-semibold text-foreground">Reserva: </span>señal del 30 % para confirmar la plaza.</p>
                   </AccordionContent>
                 </AccordionItem>
                 {activity.localSeoSections.length > 0 && (
