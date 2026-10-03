@@ -183,25 +183,32 @@ export function HeroSection() {
 
           {/* Trust Badges */}
           <motion.div initial={{
-          opacity: 0
+          opacity: 0,
+          y: 16
         }} animate={{
-          opacity: 1
+          opacity: 1,
+          y: 0
         }} transition={{
           delay: 1,
           duration: 0.6
-        }} className="mt-16 flex flex-wrap justify-center gap-8 text-foreground/60">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-accent rounded-full" />
-              <span className="text-sm">Formación técnica en montaña</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-primary rounded-full" />
-              <span className="text-sm">Pasión por la aventura</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-accent rounded-full" />
-              <span className="text-sm">Compromiso con la seguridad</span>
-            </div>
+        }} className="mt-16 flex flex-col sm:flex-row flex-wrap justify-center items-stretch sm:items-center gap-3 sm:gap-4">
+            {[
+              { text: 'Formación técnica en montaña', icon: GraduationCap },
+              { text: 'Pasión por la aventura', icon: Flame },
+              { text: 'Compromiso con la seguridad', icon: ShieldCheck },
+            ].map(({ text, icon: Icon }) => (
+              <div
+                key={text}
+                className="group flex items-center gap-3 rounded-xl bg-secondary/80 border-l-4 border-primary px-4 py-3 shadow-lg shadow-black/20 transition-all duration-300 hover:bg-secondary active:scale-95"
+              >
+                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary/20">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span className="font-heading text-sm font-semibold tracking-tight text-foreground/90 sm:text-base">
+                  {text}
+                </span>
+              </div>
+            ))}
           </motion.div>
         </motion.div>
       </div>
