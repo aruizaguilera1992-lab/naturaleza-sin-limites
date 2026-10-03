@@ -3,8 +3,6 @@ import { FileText, HardHat, ChevronDown, ShieldCheck } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { technicalBrands } from '@/data/technicalBrands';
-import { COVERAGE_CHECKED_LABEL } from '@/data/insuranceCoverage';
-import { InsuranceCoverageDetails } from '@/components/legal/InsuranceCoverageDetails';
 import { secondaryLinkClasses } from '@/components/legal/linkStyles';
 import {
   FALLBACK_ACCIDENT_POLICY,
