@@ -28,36 +28,6 @@ const ACCIDENT_FORM_URL =
 /** Vigencia de la póliza de Responsabilidad Civil (póliza real facilitada). */
 const RC_VALIDITY_PERIOD = '18/09/2026–17/09/2027';
 
-export function useBusinessSettings(): BusinessSettings {
-  const [settings, setSettings] = useState<BusinessSettings>({
-    insurer: null,
-    rcPolicy: null,
-    tourismRegistry: null,
-  });
-
-  useEffect(() => {
-    let active = true;
-    supabase
-      .from('business_settings')
-      .select('insurer, rc_policy, tourism_registry')
-      .maybeSingle()
-      .then(({ data }) => {
-        if (active) {
-          setSettings({
-            insurer: data?.insurer?.trim() || null,
-            rcPolicy: data?.rc_policy?.trim() || null,
-            tourismRegistry: data?.tourism_registry?.trim() || null,
-          });
-        }
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  return settings;
-}
-
 function TourismRegistryCard({ registry }: { registry: string | null }) {
   return (
     <span>
