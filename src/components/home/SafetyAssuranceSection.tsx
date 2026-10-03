@@ -52,6 +52,20 @@ const secondaryLinkClasses = 'text-xs font-semibold text-primary hover:underline
 
 export function SafetyAssuranceSection({ className }: { className?: string }) {
   const { insurer, rcPolicy, accidentPolicy, tourismRegistry } = useBusinessSettings();
+  const { hash } = useLocation();
+  const [brandsOpen, setBrandsOpen] = useState(false);
+
+  // Si se llega por enlace directo al bloque de marcas, se abre desplegado.
+  useEffect(() => {
+    if (hash === '#marcas-equipamiento') setBrandsOpen(true);
+  }, [hash]);
+
+  const openBrands = () => {
+    setBrandsOpen(true);
+    requestAnimationFrame(() =>
+      document.getElementById('marcas-equipamiento')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    );
+  };
 
   return (
     <section
