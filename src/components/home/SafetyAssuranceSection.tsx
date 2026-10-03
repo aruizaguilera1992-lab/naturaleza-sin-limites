@@ -27,12 +27,12 @@ function Block({ visual, title, children, footer }: BlockProps) {
   return (
     <article
       className={cn(
-        'group flex h-full flex-col rounded-2xl border border-border bg-card/60 p-6 sm:p-8',
+        'group flex h-full flex-col items-center rounded-2xl border border-border bg-card/60 p-6 text-center sm:p-8',
         'transition-all duration-300 hover:border-primary/40 hover:bg-card',
         'active:scale-[0.98]'
       )}
     >
-      <div className="flex min-h-[72px] flex-wrap items-center gap-4">{visual}</div>
+      <div className="flex min-h-[96px] flex-wrap items-center justify-center gap-5">{visual}</div>
       <h3 className="mt-6 font-heading text-lg font-bold uppercase tracking-wide text-foreground sm:text-xl">
         {title}
       </h3>
@@ -54,10 +54,11 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
             id="seguridad-titulo"
             className="font-heading text-2xl font-bold leading-tight text-foreground sm:text-3xl lg:text-4xl"
           >
-            Aventura con seguridad, material profesional y garantías reales
+            Seguridad, Material y trato profesional
           </h2>
           <p className="mt-4 text-sm leading-6 text-muted-foreground sm:text-base">
-            Material homologado, guías cualificadas y seguro de accidentes.
+            Solo trabajamos con las mejores marcas, guías cualificados y seguros en cada
+            actividad para que tu única preocupación sea disfrutar.
           </p>
         </div>
 
@@ -71,7 +72,7 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
                 loading="lazy"
                 width={816}
                 height={816}
-                className="h-16 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                className="h-28 w-auto opacity-80 transition-opacity duration-300 group-hover:opacity-100"
               />
             }
           >
@@ -81,7 +82,7 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           <Block
             title="Material técnico homologado"
             visual={
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center justify-center gap-6">
                 {brands.map((brand) => (
                   <img
                     key={brand.alt}
@@ -90,7 +91,7 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
                     loading="lazy"
                     width={816}
                     height={816}
-                    className="h-8 w-auto opacity-70 transition-opacity duration-300 group-hover:opacity-100"
+                    className="h-14 w-auto opacity-80 transition-opacity duration-300 group-hover:opacity-100"
                   />
                 ))}
               </div>
@@ -102,8 +103,8 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           <Block
             title="Seguro de accidentes"
             visual={
-              <span className="inline-flex items-center justify-center rounded-xl border border-primary/30 bg-primary/10 p-3">
-                <ShieldCheck className="h-8 w-8 text-primary" aria-hidden="true" />
+              <span className="inline-flex items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 p-4">
+                <ShieldCheck className="h-12 w-12 text-primary" aria-hidden="true" />
               </span>
             }
             footer={
