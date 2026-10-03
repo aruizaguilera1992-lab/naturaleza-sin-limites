@@ -1,8 +1,22 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Mountain, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import heroVideoAsset from '@/assets/photography/naturaleza-sin-limites-hero.mp4.asset.json';
+
+const HERO_DESCRIPTION_FULL =
+  'Descubre y explora los lugares más exclusivos de la costa del Sol. Aventura y experiencias únicas, grupos reducidos, naturaleza en estado puro y recuerdos que se quedan contigo.';
+
+// Frases rotativas de la descripción; la primera lleva su tamaño propio (más larga).
+const HERO_PHRASES: { text: string; big?: boolean }[] = [
+  { text: 'Descubre y explora los lugares más exclusivos de la costa del Sol.' },
+  { text: 'Aventura y experiencias únicas', big: true },
+  { text: 'Grupos reducidos', big: true },
+  { text: 'Naturaleza en estado puro', big: true },
+  { text: 'Recuerdos que se quedan contigo', big: true },
+];
+
+const PHRASE_HOLD_MS = 3400;
 
 export function HeroSection() {
   const [reduceMotion, setReduceMotion] = useState(() =>
