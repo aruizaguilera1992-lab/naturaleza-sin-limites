@@ -299,7 +299,7 @@ export const BookingForm = () => {
                           <FormLabel className="text-foreground">
                             <FieldLabel icon={Sparkles} optional>Nivel de experiencia</FieldLabel>
                           </FormLabel>
-                          <div className="flex flex-wrap gap-3 h-12 items-start" role="radiogroup" aria-label="Nivel de experiencia">
+                          <div className="flex flex-wrap gap-3" role="radiogroup" aria-label="Nivel de experiencia">
                             {experienceLevels.map((level) => {
                               const selected = field.value === level.value;
                               return (
@@ -310,7 +310,7 @@ export const BookingForm = () => {
                                   aria-checked={selected}
                                   onClick={() => field.onChange(selected ? '' : level.value)}
                                   className={cn(
-                                    'h-12 rounded-xl border px-4 text-sm sm:text-base font-semibold transition-all duration-300 active:scale-95',
+                                    'h-12 rounded-xl border px-5 text-sm sm:text-base font-semibold transition-all duration-300 active:scale-95',
                                     selected
                                       ? 'border-primary bg-primary text-primary-foreground shadow-elegant'
                                       : 'border-border bg-background/50 text-foreground hover:border-primary/50'
