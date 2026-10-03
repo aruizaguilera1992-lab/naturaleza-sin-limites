@@ -167,52 +167,8 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           </button>
           <p className="mt-1 text-center text-xs text-muted-foreground">{COVERAGE_CHECKED_LABEL}</p>
           {coverageOpen && (
-            <div id="detalle-coberturas-seguro" className="mx-auto mt-6 grid max-w-5xl gap-5 text-left lg:grid-cols-2">
-              <div className="min-w-0 rounded-2xl border border-border bg-card/60 p-5 lg:col-span-2">
-                <h3 className="font-heading text-base font-bold text-foreground">Norma vs. contrato</h3>
-                <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-primary/40 bg-primary/10 p-3">
-                    <dt className="text-xs text-muted-foreground">RC contratada</dt>
-                    <dd className="font-heading text-lg font-bold text-foreground">1.000.000 € por siniestro</dd>
-                  </div>
-                  <div className="rounded-xl border border-border bg-secondary/40 p-3">
-                    <dt className="text-xs text-muted-foreground">Mínimo normativo</dt>
-                    <dd className="font-heading text-lg font-bold text-foreground">600.000 € por siniestro</dd>
-                  </div>
-                </dl>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{NORMATIVE_REQUIREMENT}</p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  La comparación de importes es informativa; no constituye certificado de cumplimiento ni aval de la Junta de Andalucía.{' '}
-                  <a href={NORMATIVE_SOURCE.url} target="_blank" rel="noopener noreferrer" className={secondaryLinkClasses}>
-                    {NORMATIVE_SOURCE.label}
-                  </a>
-                </p>
-              </div>
-
-              <CoverageTable
-                title={`Responsabilidad civil · Póliza ${rcPolicy || FALLBACK_RC_POLICY}`}
-                rows={RC_ROWS}
-              />
-              <div className="min-w-0">
-                <CoverageTable
-                  title={`Accidentes · Póliza ${accidentPolicy || FALLBACK_ACCIDENT_POLICY}`}
-                  rows={ACCIDENT_ROWS}
-                  caption="Límites generales por persona"
-                />
-                <p role="note" className="mt-3 rounded-xl border border-primary/50 bg-primary/10 p-3 text-sm font-semibold leading-6 text-foreground">
-                  {AGE_RESTRICTION}
-                </p>
-              </div>
-
-              <div className="min-w-0 rounded-2xl border border-border bg-card/60 p-5 lg:col-span-2">
-                <h3 className="font-heading text-base font-bold text-foreground">Precisiones del seguro de accidentes</h3>
-                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
-                  {ACCIDENT_NOTES.map((n) => <li key={n}>{n}</li>)}
-                </ul>
-                <p className="mt-4 text-sm text-muted-foreground">
-                  Aseguradora: {insurer || FALLBACK_INSURER} · Vigencia de ambas pólizas: {POLICY_PERIOD}
-                </p>
-              </div>
+            <div id="detalle-coberturas-seguro" className="mx-auto mt-6 max-w-5xl">
+              <InsuranceCoverageDetails showCheckedLabel />
             </div>
           )}
         </div>
