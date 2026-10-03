@@ -122,3 +122,11 @@
 - [x] Aumentar tamaño del eyebrow «Por qué Naturaleza Sin Límites» (WhyChooseUs)
 - [x] Mejorar teaser Vértigo Sapiens con CTA y nueva imagen de atleta (dirección Commercial conversion split)
 - [x] Pie de página: «Turismo activo sostenible y entrenamiento funcional en deportes de aventura»
+
+## Hero contacto integrado + cabecera (03/10/2026)
+- [x] Hero /contacto: retrato del guía recortado e integrado en la escena del Caminito (dirección v3 elegida)
+- [ ] Cabecera: al bajar, transparente (que se vea el fondo y no tape las secciones)
+
+## Cabecera auto-ocultable (03/10/2026)
+- [x] Hero de contacto integrado con el guía en la escena
+- [x] Menú de navegación: se oculta al hacer scroll (escritorio) y reaparece al acercar el ratón a la cabecera
