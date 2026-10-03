@@ -1,7 +1,7 @@
 import { useCookieConsent } from "@/context/CookieConsentContext";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Mail, Phone, Instagram, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, Instagram, MapPin } from "lucide-react";
 
 const contactItems = [
   {
@@ -79,7 +79,7 @@ export function ContactInfoSection() {
                       <p className="text-xs text-primary font-bold uppercase tracking-widest mb-2">
                         {item.label}
                       </p>
-                      <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors break-words">
+                      <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors break-words">
                         {item.value}
                       </p>
                     </a>
@@ -88,7 +88,7 @@ export function ContactInfoSection() {
                       <p className="text-xs text-primary font-bold uppercase tracking-widest mb-2">
                         {item.label}
                       </p>
-                      <p className="text-sm font-semibold text-foreground">{item.value}</p>
+                      <p className="text-base font-semibold text-foreground">{item.value}</p>
                     </div>
                   )}
                 </motion.div>
