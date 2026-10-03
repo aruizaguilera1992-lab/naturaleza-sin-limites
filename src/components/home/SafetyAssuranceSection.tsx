@@ -149,11 +149,17 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
             }
           >
             <span className="block">
-              Seguro de accidentes incluido en todas las actividades.
+              Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}.
+            </span>
+            <span className="mt-1 block">
+              Responsabilidad civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}.
             </span>
             <span className="mt-2 block">
-              Responsabilidad civil · {insurer || FALLBACK_INSURER} · Póliza{' '}
-              {rcPolicy || FALLBACK_RC_POLICY} · Vigencia {RC_VALIDITY_PERIOD}.
+              {insurer || FALLBACK_INSURER} · Vigencia {VALIDITY}.
+            </span>
+            <span className="mt-2 block">
+              Cobertura para participantes durante las actividades aseguradas, según las
+              condiciones de la póliza.
             </span>
           </Block>
 
