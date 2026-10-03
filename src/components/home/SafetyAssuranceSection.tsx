@@ -49,7 +49,7 @@ function Block({ visual, title, children, footer }: BlockProps) {
 }
 
 export function SafetyAssuranceSection({ className }: { className?: string }) {
-  const { insurer, rcPolicy, accidentPolicy, tourismRegistry } = useBusinessSettings();
+  const { insurer, tourismRegistry } = useBusinessSettings();
 
   return (
     <section
