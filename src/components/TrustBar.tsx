@@ -48,23 +48,7 @@ function AccidentInsuranceCard({
   return (
     <span>
       Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}. Responsabilidad
-      civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}. {insurer || FALLBACK_INSURER} ·
-      Vigencia {POLICY_VALIDITY_PERIOD}. Cobertura para participantes durante las
-      actividades aseguradas, según las condiciones de la póliza.{' '}
-      <a
-        href={ACCIDENT_FORM_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-semibold text-primary hover:underline underline-offset-2"
-      >
-        Formulario de declaración de accidentes
-      </a>{' · '}
-      <Link
-        to="/terminos#identificacion"
-        className="font-semibold text-primary hover:underline underline-offset-2"
-      >
-        Datos del seguro
-      </Link>
+      civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}. {insurer || FALLBACK_INSURER}.
     </span>
   );
 }
