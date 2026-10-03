@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Cable,
   CalendarDays,
+  CalendarPlus,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -177,6 +178,10 @@ export function AgendaAventuras() {
 
   const monthLabel = `${MONTHS[visibleMonth.month]} ${visibleMonth.year}`;
 
+  const requestDateWhatsApp = `https://wa.me/34685609542?text=${encodeURIComponent(
+    "Hola, no encuentro en la agenda la fecha o actividad que busco y me gustaría solicitar una salida en otra fecha.",
+  )}`;
+
   return (
     <div>
       {/* Filtros por tipo de actividad */}
@@ -244,6 +249,38 @@ export function AgendaAventuras() {
           ))}
         </div>
       )}
+
+      {/* Aviso: solicitar una fecha concreta si no hay una salida que encaje */}
+      <div className="mt-10 rounded-2xl border border-primary/30 bg-gradient-to-r from-secondary/80 via-card to-secondary/60 px-6 py-8 text-center">
+        <CalendarPlus
+          className="mx-auto mb-3 h-8 w-8 text-primary"
+          aria-hidden="true"
+        />
+        <p className="font-heading text-xl font-bold text-foreground sm:text-2xl">
+          ¿No encuentras lo que buscas?
+        </p>
+        <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
+          Solicita una fecha: organizamos tu salida privada el día que mejor te venga, con grupo
+          reducido y a tu ritmo.
+        </p>
+        <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a
+            href={requestDateWhatsApp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-heading text-sm font-bold text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 active:scale-95 sm:text-base"
+          >
+            <CalendarPlus className="h-4 w-4" aria-hidden="true" />
+            Solicitar una fecha
+          </a>
+          <Link
+            to="/contacto"
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-6 py-3 font-heading text-sm font-semibold text-foreground transition-all duration-300 hover:border-primary/60 active:scale-95 sm:text-base"
+          >
+            Escribir por formulario
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
