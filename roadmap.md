@@ -111,3 +111,9 @@
 ## Estabilización (01/10/2026)
 - [x] Paso 1: RPC de plazas solo backend (service_role) y lectura pública de salidas mediante vista `activity_events_public` sin campos privados; regresión SQL en `supabase/tests/step1_event_privacy.sql`
 - [ ] Paso 2: pendiente (no iniciado)
+
+## Ajustes hero y tarjetas (03/10/2026)
+- [x] Quitar badge «Deportes de aventura…» del hero y quitar el punto de «costa del Sol»
+- [x] Badges de confianza del hero más grandes, estilo chips con icono (v1 aprobada)
+- [x] Imagen de tarjetas abre la ficha (barranquismo/escalada/ferratas: modal; espeleología: ficha)
+- [ ] Quitar TrustBar (Guía TD2, Máx. 6, material, seguro, registro) de la página /calendario
