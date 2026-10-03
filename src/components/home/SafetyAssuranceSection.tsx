@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import { FileText, HardHat, ChevronDown, ShieldCheck } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { FileText, HardHat, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { technicalBrands } from '@/data/technicalBrands';
 import { secondaryLinkClasses } from '@/components/legal/linkStyles';
