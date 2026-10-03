@@ -45,20 +45,18 @@ export function ContactInfoSection() {
               transition={{ duration: 0.6 }}
               className="mb-10"
             >
-              <p className="text-primary font-heading font-bold uppercase tracking-[0.2em] mb-2">
+              <p className="text-primary font-heading font-bold uppercase tracking-[0.2em] text-base sm:text-lg mb-3">
                 Contacto directo
               </p>
-              <h2 className="font-heading text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-foreground mb-4">
-                Cómo y cuándo te respondo
+              <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase tracking-tight text-foreground mb-6 leading-tight">
+                ¿En cuánto me contestas?
               </h2>
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
-                <Clock className="w-4 h-4" />
-                <span className="text-sm font-medium">Respuesta habitual en 24–48 h laborables</span>
-              </div>
-              <p className="text-muted-foreground leading-relaxed">
-                Respondo personalmente a todos los mensajes y consultas. Suelo contestar en 24–48 horas
-                laborables. Si tienes dudas sobre qué actividad o nivel elegir, cuéntame tu experiencia
-                previa y te orientaré sin compromiso.
+              <p className="text-2xl sm:text-3xl font-heading font-bold text-foreground mb-4">
+                En 24–48 h laborables, personalmente.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                Contesto yo mismo a todos los mensajes. Si no sabes qué actividad elegir, cuéntame tu
+                experiencia y te oriento sin compromiso.
               </p>
             </motion.div>
 
