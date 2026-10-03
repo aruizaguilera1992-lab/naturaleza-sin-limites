@@ -9,9 +9,7 @@ import {
   RC_ROWS,
 } from '@/data/insuranceCoverage';
 import {
-  FALLBACK_ACCIDENT_POLICY,
   FALLBACK_INSURER,
-  FALLBACK_RC_POLICY,
   useBusinessSettings,
 } from '@/hooks/useBusinessSettings';
 import { secondaryLinkClasses } from '@/components/legal/linkStyles';
