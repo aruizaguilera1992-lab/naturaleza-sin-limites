@@ -139,7 +139,7 @@ export default function ActivityProfilePage() {
                   <AccordionTrigger className={trigger}>Requisitos</AccordionTrigger>
                   <AccordionContent className="space-y-4">
                     <dl className="grid gap-3 text-sm sm:grid-cols-3">{([['Edad mínima', activity.minimumAge], ['Nivel físico', activity.physicalLevel], ['Experiencia previa', activity.previousExperience]] as [string, string][]).filter(([, v]) => v?.trim()).map(([l, v]) => <div key={l}><dt className="text-xs text-muted-foreground">{l}</dt><dd className="font-semibold">{v}</dd></div>)}</dl>
-                    {list(activity.safetyRequirements, AlertTriangle)}
+                    {extraSafety.length > 0 && list(extraSafety, AlertTriangle)}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="condiciones">
