@@ -137,6 +137,15 @@ export default function ActivityProfilePage() {
                     <p>Señal del 30 % para confirmar la plaza.</p>
                   </AccordionContent>
                 </AccordionItem>
+                {activity.localSeoSections.length > 0 && (
+                  <AccordionItem value="zona">
+                    <AccordionTrigger className={trigger}>Sobre la zona y la actividad</AccordionTrigger>
+                    <AccordionContent className="space-y-5 text-sm leading-7 text-muted-foreground">
+                      {activity.commercialDescription && <p>{activity.commercialDescription}</p>}
+                      {activity.localSeoSections.map((section) => <div key={section.heading}><h3 className="mb-2 font-semibold text-foreground">{section.heading}</h3><div className="space-y-3">{section.paragraphs.map((p) => <p key={p}>{p}</p>)}</div></div>)}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
                 <AccordionItem value="faq">
                   <AccordionTrigger className={trigger}>Preguntas frecuentes</AccordionTrigger>
                   <AccordionContent className="space-y-4">{activity.faqs.map((faq) => <div key={faq.question}><h3 className="font-semibold">{faq.question}</h3><p className="mt-1 text-sm leading-7 text-muted-foreground">{faq.answer}</p></div>)}</AccordionContent>
