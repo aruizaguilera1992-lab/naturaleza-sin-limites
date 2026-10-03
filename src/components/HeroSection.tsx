@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ChevronDown, Flame, GraduationCap, Mountain, ShieldCheck, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import heroVideoAsset from '@/assets/photography/naturaleza-sin-limites-hero.mp4.asset.json';
 import { officialYoutubeVideos } from '@/data/youtubeVideos';
 
 // Cuestionarios por disciplina: cada enlace abre el cuestionario de esa disciplina.
