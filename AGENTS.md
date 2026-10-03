@@ -1,3 +1,4 @@
 # AGENTS
 - Public reads of outings go through the activity_events_public view (fixed column allowlist); the base table is admin/service_role only. Why: keeps private meeting points and notes off the public API.
 - Compact surfaces (calendar cells, chips) must use `getActivityCatalogImage` (activityProfiles.ts), which reads the pre-CDN local snapshots (barrancosImagenLocal / cragsImagenLocal / ferratasImagenLocal) instead of `profile.image`. Why: the catalog files overwrite `imagenGrande` with CDN assets at module load, and the asset proxy serves HTML in the dev preview, so only local /images/ paths render reliably everywhere.
+- Adventure recommendation questionnaires share `AdventureQuestionnaire`; discipline files provide only their questions, answers, and completion behavior. Why: keeps visual structure and accessibility consistent without duplicating the flow UI.
