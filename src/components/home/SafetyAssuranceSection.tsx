@@ -3,8 +3,6 @@ import { FileText, HardHat, ChevronDown, ShieldCheck } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { technicalBrands } from '@/data/technicalBrands';
-import { COVERAGE_CHECKED_LABEL } from '@/data/insuranceCoverage';
-import { InsuranceCoverageDetails } from '@/components/legal/InsuranceCoverageDetails';
 import { secondaryLinkClasses } from '@/components/legal/linkStyles';
 import {
   FALLBACK_ACCIDENT_POLICY,
@@ -55,24 +53,15 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
   const { insurer, rcPolicy, accidentPolicy, tourismRegistry } = useBusinessSettings();
   const { hash } = useLocation();
   const [brandsOpen, setBrandsOpen] = useState(false);
-  const [coverageOpen, setCoverageOpen] = useState(false);
 
   useEffect(() => {
     if (hash === '#marcas-equipamiento') setBrandsOpen(true);
-    if (hash === '#coberturas-seguro') setCoverageOpen(true);
   }, [hash]);
 
   const openBrands = () => {
     setBrandsOpen(true);
     requestAnimationFrame(() =>
       document.getElementById('marcas-equipamiento')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-    );
-  };
-
-  const openCoverage = () => {
-    setCoverageOpen(true);
-    requestAnimationFrame(() =>
-      document.getElementById('coberturas-seguro')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
     );
   };
 
@@ -124,11 +113,6 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
                 <ShieldCheck className="h-12 w-12 text-primary" aria-hidden="true" />
               </span>
             }
-            footer={
-              <button type="button" onClick={openCoverage} className={cn(secondaryLinkClasses, 'cursor-pointer')}>
-                Ver coberturas y condiciones
-              </button>
-            }
           >
             <span className="mt-3 block">
               Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY} · RC · Póliza {rcPolicy || FALLBACK_RC_POLICY}
@@ -151,27 +135,6 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           >
             Registro de Turismo de Andalucía · {tourismRegistry || FALLBACK_TOURISM_REGISTRY}.
           </Block>
-        </div>
-
-        <div id="coberturas-seguro" className="mt-12 scroll-mt-32">
-          <button
-            type="button"
-            onClick={() => setCoverageOpen((v) => !v)}
-            aria-expanded={coverageOpen}
-            aria-controls="detalle-coberturas-seguro"
-            className="mx-auto flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-center transition-all duration-300 hover:text-primary active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <span className="font-heading text-lg font-bold uppercase tracking-wide text-foreground sm:text-xl">
-              Ver coberturas y condiciones
-            </span>
-            <ChevronDown aria-hidden="true" className={cn('h-5 w-5 shrink-0 text-primary transition-transform duration-300', coverageOpen && 'rotate-180')} />
-          </button>
-          <p className="mt-1 text-center text-xs text-muted-foreground">{COVERAGE_CHECKED_LABEL}</p>
-          {coverageOpen && (
-            <div id="detalle-coberturas-seguro" className="mx-auto mt-6 max-w-5xl">
-              <InsuranceCoverageDetails showCheckedLabel />
-            </div>
-          )}
         </div>
 
         <div id="marcas-equipamiento" className="mt-12 scroll-mt-32">
