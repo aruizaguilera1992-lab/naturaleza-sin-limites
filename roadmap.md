@@ -118,3 +118,4 @@
 - [x] Imagen de tarjetas abre la ficha (barranquismo/escalada/ferratas: modal; espeleología: ficha)
 - [ ] Quitar TrustBar (Guía TD2, Máx. 6, material, seguro, registro) de la página /calendario
 - [x] Quitar los detalles del seguro (vigencia, cobertura, formulario, «Datos del seguro») de la tarjeta de seguro en portada y TrustBar
+- [x] Quitar tarjeta FAE de la sección de confianza de la portada
