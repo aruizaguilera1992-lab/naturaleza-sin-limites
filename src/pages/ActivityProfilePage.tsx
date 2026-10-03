@@ -84,7 +84,7 @@ export default function ActivityProfilePage() {
       </Helmet>
       <Navbar />
       <main className="pt-28 sm:pt-32">
-        <ActivityHeroCarousel title={activity.name} media={gallery} fallbackSrc={getActivityCatalogImage(activity.category, activity.slug) ?? undefined} />
+        <ActivityHeroCarousel key={`${activity.category}/${activity.slug}`} title={activity.name} media={gallery} fallbackSrc={getActivityCatalogImage(activity.category, activity.slug) ?? undefined} />
 
         <div className="container mx-auto grid min-w-0 gap-10 px-4 py-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:py-12">
           <article className="min-w-0 space-y-10">
