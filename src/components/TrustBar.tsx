@@ -78,7 +78,7 @@ interface TrustItem {
   description: React.ReactNode;
 }
 
-export function TrustItems({ registry }: { registry: string | null }): TrustItem[] {
+export function buildTrustItems(registry: string | null): TrustItem[] {
   return [
     {
       icon: BadgeCheck,
@@ -116,7 +116,7 @@ interface TrustBarProps {
 
 export function TrustBar({ className, variant = 'section' }: TrustBarProps) {
   const registry = useTourismRegistry();
-  const items = TrustItems({ registry });
+  const items = buildTrustItems(registry);
 
   if (variant === 'compact') {
     return (
