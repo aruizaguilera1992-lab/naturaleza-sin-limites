@@ -36,21 +36,8 @@ function TourismRegistryCard({ registry }: { registry: string | null }) {
   );
 }
 
-function AccidentInsuranceCard({
-  insurer,
-  rcPolicy,
-  accidentPolicy,
-}: {
-  insurer: string | null;
-  rcPolicy: string | null;
-  accidentPolicy: string | null;
-}) {
-  return (
-    <span>
-      Accidentes · Póliza {accidentPolicy || FALLBACK_ACCIDENT_POLICY}. Responsabilidad
-      civil · Póliza {rcPolicy || FALLBACK_RC_POLICY}. {insurer || FALLBACK_INSURER}.
-    </span>
-  );
+function AccidentInsuranceCard({ insurer }: { insurer: string | null }) {
+  return <span>Accidentes · Responsabilidad civil · {insurer || FALLBACK_INSURER}.</span>;
 }
 
 interface TrustItem {
