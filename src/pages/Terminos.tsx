@@ -1,5 +1,7 @@
 import { absoluteUrl } from '@/lib/site';
 import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -187,6 +189,28 @@ const sections = [
 ];
 
 export default function Terminos() {
+  const { hash } = useLocation();
+
+  // Con ancla, desplaza al destino respetando el scroll-margin de cada sección;
+  // sin ancla, vuelve arriba. Dos pases por si el layout asienta tarde.
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      return;
+    }
+    const jump = () => {
+      const el = document.querySelector(hash);
+      el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    const raf = requestAnimationFrame(() => {
+      jump();
+      window.setTimeout(jump, 450);
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+    };
+  }, [hash]);
+
   return (
     <>
       <Helmet>

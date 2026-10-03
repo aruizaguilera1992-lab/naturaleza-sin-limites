@@ -1,14 +1,27 @@
-import { ShieldCheck } from 'lucide-react';
+import { FileText, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import {
+  FALLBACK_INSURER,
+  FALLBACK_RC_POLICY,
+  FALLBACK_TOURISM_REGISTRY,
+  useBusinessSettings,
+} from '@/hooks/useBusinessSettings';
 
 /**
  * Sección de confianza y seguridad.
  *
- * IMPORTANTE: no incluir números de póliza, coberturas ni datos legales que
- * no estén verificados. Los logotipos son versiones monocromas generadas
- * como placeholder hasta contar con los archivos oficiales de cada marca.
+ * IMPORTANTE: solo se afirman datos verificados. La Responsabilidad Civil está
+ * acreditada con la póliza real (nº y vigencia); el seguro de accidentes está
+ * contratado según informa el titular, pero aún no hay certificado aportado, así
+ * que no se presentan número de póliza, condiciones ni coberturas de accidentes.
+ * Los logotipos son versiones monocromas generadas como placeholder hasta contar
+ * con los archivos oficiales de cada marca. «Datos del seguro» lleva al Aviso
+ * Legal; nunca se enlaza el contrato completo (contiene datos personales).
  */
+
+const ACCIDENT_FORM_URL =
+  'https://drive.google.com/file/d/1PvunUN7hG8bt3BFFXpxxFN5Wubvt4bUJ/view?usp=sharing';
 
 const brands = [
   { src: '/images/brands/petzl.png', alt: 'Petzl' },
@@ -27,7 +40,7 @@ function Block({ visual, title, children, footer }: BlockProps) {
   return (
     <article
       className={cn(
-        'group flex h-full flex-col items-center rounded-2xl border border-border bg-card/60 p-6 text-center sm:p-8',
+        'group flex h-full min-w-0 flex-col items-center rounded-2xl border border-border bg-card/60 p-6 text-center sm:p-8',
         'transition-all duration-300 hover:border-primary/40 hover:bg-card',
         'active:scale-[0.98]'
       )}
@@ -36,13 +49,25 @@ function Block({ visual, title, children, footer }: BlockProps) {
       <h3 className="mt-6 font-heading text-lg font-bold uppercase tracking-wide text-foreground sm:text-xl">
         {title}
       </h3>
-      <p className="mt-2 flex-1 text-sm leading-6 text-muted-foreground">{children}</p>
-      {footer && <div className="mt-6">{footer}</div>}
+      <p className="mt-2 flex-1 text-sm leading-6 text-muted-foreground break-words">{children}</p>
+      {footer && <div className="mt-6 flex flex-wrap items-center justify-center gap-3">{footer}</div>}
     </article>
   );
 }
 
+const legalLinkClasses =
+  'inline-flex items-center gap-2 rounded-full border border-primary/40 px-5 py-2.5 text-sm font-semibold text-primary transition-all duration-300 hover:bg-primary/10 active:scale-95';
+
+const secondaryLinkClasses = 'text-xs font-semibold text-primary hover:underline underline-offset-2';
+
 export function SafetyAssuranceSection({ className }: { className?: string }) {
+  const { insurer, rcPolicy, tourismRegistry } = useBusinessSettings();
+
+  const FALLBACK_INSURER = 'W. R. Berkley Europe AG, Sucursal en España';
+  const FALLBACK_RC_POLICY = '1500175606';
+  const RC_VALIDITY_PERIOD = '18/09/2026–17/09/2027';
+  const FALLBACK_TOURISM_REGISTRY = 'AT/MA/00508';
+
   return (
     <section
       aria-labelledby="seguridad-titulo"
@@ -62,7 +87,7 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:mt-12 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
           <Block
             title="Federación Andaluza de Espeleología"
             visual={
@@ -101,22 +126,51 @@ export function SafetyAssuranceSection({ className }: { className?: string }) {
           </Block>
 
           <Block
-            title="Seguro de accidentes"
+            title="Seguro de accidentes y RC"
             visual={
               <span className="inline-flex items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 p-4">
                 <ShieldCheck className="h-12 w-12 text-primary" aria-hidden="true" />
               </span>
             }
             footer={
-              <Link
-                to="/contacto"
-                className="inline-flex items-center gap-2 rounded-full border border-primary/40 px-5 py-2.5 text-sm font-semibold text-primary transition-all duration-300 hover:bg-primary/10 active:scale-95"
-              >
-                Ver condiciones del seguro
+              <>
+                <Link to="/terminos#identificacion" className={legalLinkClasses}>
+                  Datos del seguro
+                </Link>
+                <a
+                  href={ACCIDENT_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={secondaryLinkClasses}
+                >
+                  Formulario de declaración de accidentes
+                </a>
+              </>
+            }
+          >
+            <span className="block">
+              Seguro de accidentes incluido en todas las actividades.
+            </span>
+            <span className="mt-2 block">
+              Responsabilidad civil · {insurer || FALLBACK_INSURER} · Póliza{' '}
+              {rcPolicy || FALLBACK_RC_POLICY} · Vigencia {RC_VALIDITY_PERIOD}.
+            </span>
+          </Block>
+
+          <Block
+            title="Turismo activo registrado"
+            visual={
+              <span className="inline-flex items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 p-4">
+                <FileText className="h-12 w-12 text-primary" aria-hidden="true" />
+              </span>
+            }
+            footer={
+              <Link to="/terminos#identificacion" className={secondaryLinkClasses}>
+                Ver datos legales
               </Link>
             }
           >
-            Incluido en todas las actividades.
+            Registro de Turismo de Andalucía · {tourismRegistry || FALLBACK_TOURISM_REGISTRY}.
           </Block>
         </div>
       </div>
