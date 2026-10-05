@@ -11,7 +11,6 @@ import {
   Dumbbell,
   Gauge,
   Grip,
-  HeartPulse,
   LineChart,
   Mountain,
   Route,
