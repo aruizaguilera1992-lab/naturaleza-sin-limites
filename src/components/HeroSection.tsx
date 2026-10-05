@@ -77,7 +77,7 @@ export function HeroSection() {
             ref={iframeRef}
             title={youtubeVideo.title}
             onLoad={() => iframeRef.current?.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: 1 }), '*')}
-            src={`https://www.youtube-nocookie.com/embed/${youtubeVideo.youtubeId}?autoplay=1&mute=1&start=60&loop=1&playlist=${youtubeVideo.youtubeId}&controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&disablekb=1&enablejsapi=1`}
+            src={`https://www.youtube-nocookie.com/embed/${youtubeVideo.youtubeId}?autoplay=1&mute=1&start=${youtubeVideo.heroStart ?? 60}&loop=1&playlist=${youtubeVideo.youtubeId}&controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&disablekb=1&enablejsapi=1`}
             allow="autoplay; encrypted-media; picture-in-picture"
             tabIndex={-1}
             className={`absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.78vh] min-w-full -translate-x-1/2 -translate-y-1/2 scale-[1.15] border-0 transition-opacity duration-1000 ${videoPlaying ? 'opacity-100' : 'opacity-0'}`}
