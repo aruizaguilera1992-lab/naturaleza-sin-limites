@@ -6,16 +6,12 @@ import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import {
   OnlineHero,
-  OnlineProblem,
-  VertigoTest,
-  OnlineMethod,
-  OnlineTransfer,
-  OnlineDisciplines,
-  VertigoProfile,
+  OnlineBenefits,
+  OnlineValue,
   OnlineProgram,
+  OnlineMethod,
   OnlineCoach,
-  OnlineFAQ,
-  OnlineFinalCTA,
+  OnlineStart,
 } from '@/components/vertigo-sapiens/online/OnlineSections';
 
 // Las secciones de los planes presenciales (VSPlansSection, etc.) se conservan en el
@@ -35,16 +31,12 @@ const VertigoSapiensPage = () => {
       <Navbar />
       <main>
         <OnlineHero />
-        <OnlineProblem />
-        <VertigoTest />
-        <OnlineMethod />
-        <OnlineTransfer />
-        <OnlineDisciplines />
-        <VertigoProfile />
+        <OnlineBenefits />
+        <OnlineValue />
         <OnlineProgram />
+        <OnlineMethod />
         <OnlineCoach />
-        <OnlineFAQ />
-        <OnlineFinalCTA />
+        <OnlineStart />
       </main>
       <Footer />
       <WhatsAppButton />
