@@ -285,7 +285,7 @@ export function OnlineDisciplines() {
 }
 
 const profileBars = [
-  ['Fuerza', 78], ['Resistencia', 66], ['Movilidad', 54], ['Agarre', 72], ['Core / estabilidad', 82], ['Capacidad aeróbica', 62],
+  ['Fuerza', 'w-[78%]'], ['Resistencia', 'w-[66%]'], ['Movilidad', 'w-[54%]'], ['Agarre', 'w-[72%]'], ['Core / estabilidad', 'w-[82%]'], ['Capacidad aeróbica', 'w-[62%]'],
 ];
 
 export function VertigoProfile() {
@@ -304,10 +304,10 @@ export function VertigoProfile() {
               <Activity className="h-8 w-8 text-primary" aria-hidden />
             </div>
             <div className="mt-7 space-y-5">
-              {profileBars.map(([label, value]) => (
-                <div key={label as string}>
+              {profileBars.map(([label, widthClass]) => (
+                <div key={label}>
                   <div className="mb-2 flex justify-between text-sm font-semibold"><span>{label}</span><span aria-hidden className="text-muted-foreground">Referencia visual</span></div>
-                  <div className="h-2 overflow-hidden bg-muted"><div className="h-full bg-primary" style={{ width: `${value}%` }} /></div>
+                  <div className="h-2 overflow-hidden bg-muted"><div className={`h-full bg-primary ${widthClass}`} /></div>
                 </div>
               ))}
             </div>

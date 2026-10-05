@@ -135,4 +135,4 @@
 - [x] Landing visual orientada a preparación física para montaña y deportes verticales
 - [x] Test Vértigo interactivo conectado con el formulario existente
 - [x] Método, transferencia, disciplinas, seguimiento, oferta, entrenador y FAQ renovados
-- [ ] Verificación TypeScript, build y navegador a 1280 px y 390 px, sin enviar solicitudes
+- [x] Verificación TypeScript, build y navegador a 1280 px y 390 px, sin enviar solicitudes
