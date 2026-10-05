@@ -130,3 +130,9 @@
 ## Cabecera auto-ocultable (03/10/2026)
 - [x] Hero de contacto integrado con el guía en la escena
 - [x] Menú de navegación: se oculta al hacer scroll (escritorio) y reaparece al acercar el ratón a la cabecera
+
+## Rediseño Vértigo Sapiens (05/10/2026)
+- [ ] Landing visual orientada a preparación física para montaña y deportes verticales
+- [ ] Test Vértigo interactivo conectado con el formulario existente
+- [ ] Método, transferencia, disciplinas, seguimiento, oferta, entrenador y FAQ renovados
+- [ ] Verificación TypeScript, build y navegador a 1280 px y 390 px, sin enviar solicitudes
