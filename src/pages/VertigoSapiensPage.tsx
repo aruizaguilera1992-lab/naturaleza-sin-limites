@@ -7,8 +7,11 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import {
   OnlineHero,
   OnlineProblem,
-  OnlineAudience,
+  VertigoTest,
   OnlineMethod,
+  OnlineTransfer,
+  OnlineDisciplines,
+  VertigoProfile,
   OnlineProgram,
   OnlineCoach,
   OnlineFAQ,
@@ -25,16 +28,19 @@ const VertigoSapiensPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="Vértigo Sapiens Online | Preparación física para barranquismo y espeleología"
-        description="Programa online de 8 semanas de fuerza funcional, resistencia y movilidad para barranquismo, espeleología y actividades verticales. Solicita tu evaluación inicial."
+        title="Vértigo Sapiens | Preparación física para montaña y deportes verticales"
+        description="Programa online de 8 semanas de fuerza funcional, resistencia y movilidad para barranquismo, espeleología, escalada recreativa, vías ferratas y montaña."
         path="/vertigo-sapiens"
       />
       <Navbar />
       <main>
         <OnlineHero />
         <OnlineProblem />
-        <OnlineAudience />
+        <VertigoTest />
         <OnlineMethod />
+        <OnlineTransfer />
+        <OnlineDisciplines />
+        <VertigoProfile />
         <OnlineProgram />
         <OnlineCoach />
         <OnlineFAQ />

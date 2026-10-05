@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Loader2, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,8 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  readVertigoAssessment,
+  VERTIGO_ASSESSMENT_EVENT,
+  type VertigoAssessment,
+} from './assessment';
 
-const disciplinas = ['Barranquismo', 'Espeleología', 'Actividades verticales'] as const;
+const disciplinas = ['Barranquismo', 'Espeleología', 'Escalada', 'Vías ferratas', 'Montaña'] as const;
 const disponibilidades = ['2 días por semana', '3 días por semana', '4 o más días por semana', 'Aún no lo sé'];
 const WHATSAPP = 'https://wa.me/34685609542?text=' + encodeURIComponent('Hola, me interesa Vértigo Sapiens Online.');
 
@@ -17,6 +22,24 @@ export function OnlineRequestForm() {
   const [rgpd, setRgpd] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const applyAssessment = (assessment: VertigoAssessment) => {
+      setForm((current) => ({
+        ...current,
+        disciplina: assessment.disciplina || current.disciplina,
+        disponibilidad: assessment.disponibilidad || current.disponibilidad,
+        objetivo: assessment.limitacion
+          ? `Quiero trabajar principalmente: ${assessment.limitacion.toLowerCase()}.`
+          : current.objetivo,
+      }));
+    };
+
+    applyAssessment(readVertigoAssessment());
+    const onAssessment = (event: Event) => applyAssessment((event as CustomEvent<VertigoAssessment>).detail);
+    window.addEventListener(VERTIGO_ASSESSMENT_EVENT, onAssessment);
+    return () => window.removeEventListener(VERTIGO_ASSESSMENT_EVENT, onAssessment);
+  }, []);
 
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -59,7 +82,7 @@ export function OnlineRequestForm() {
     'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-5 rounded-lg border border-border bg-card p-6 sm:p-8">
+    <form onSubmit={submit} noValidate className="space-y-5 border border-border border-t-4 border-t-primary bg-background p-6 shadow-card sm:p-8">
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="vs-nombre">Nombre</Label>
@@ -101,7 +124,7 @@ export function OnlineRequestForm() {
       )}
       <Button type="submit" variant="hero" size="lg" className="w-full" disabled={status === 'sending'}>
         {status === 'sending' ? <Loader2 className="h-5 w-5 animate-spin motion-reduce:animate-none" /> : <Send className="h-5 w-5" />}
-        Solicitar evaluación inicial
+        Solicitar mi evaluación
       </Button>
       <p className="text-center text-xs text-muted-foreground">Solicitud de información sin pago ni compromiso. No es una reserva ni una contratación.</p>
     </form>
