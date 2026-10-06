@@ -69,6 +69,14 @@ export default function ReservarActividad() {
   }, [selectedEvent]);
 
   const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
+  // Keep the chosen participant count within the available seats.
+  useEffect(() => {
+    setForm((prev) =>
+      prev.participants > maxPeople
+        ? { ...prev, participants: Math.max(1, maxPeople) }
+        : prev,
+    );
+  }, [maxPeople]);
   const unitPrice = selectedEvent?.pricePerPerson ?? activity?.priceValue ?? 0;
   const total = unitPrice * form.participants;
   const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
@@ -247,21 +255,30 @@ export default function ReservarActividad() {
             )}
           </div>
           <div>
-            <Label htmlFor="participants">Participantes</Label>
-            <Input
-              id="participants"
-              type="number"
-              min={1}
-              max={maxPeople}
-              className="mt-2 min-h-12 text-foreground"
-              value={form.participants}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  participants: Math.min(maxPeople, Math.max(1, Number(e.target.value) || 1)),
-                })
-              }
-            />
+            <Label>Participantes</Label>
+            <div id="participants" role="radiogroup" aria-label="Participantes" className="mt-2 flex flex-wrap gap-2">
+              {[2, 3, 4, 5, 6].map((count) => {
+                const isSelected = form.participants === count;
+                const isDisabled = count > maxPeople;
+                return (
+                  <button
+                    key={count}
+                    type="button"
+                    role="radio"
+                    aria-checked={isSelected}
+                    disabled={isDisabled}
+                    onClick={() => setForm({ ...form, participants: count })}
+                    className={`min-h-12 min-w-12 rounded-full border px-5 text-base font-semibold transition-all duration-300 active:scale-95 ${
+                      isSelected
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background text-foreground hover:border-primary"
+                    } ${isDisabled ? "cursor-not-allowed opacity-40" : ""}`}
+                  >
+                    {count}
+                  </button>
+                );
+              })}
+            </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {selectedEvent
                 ? `Quedan ${selectedEvent.freeSeats} plaza(s) en esta salida.`
