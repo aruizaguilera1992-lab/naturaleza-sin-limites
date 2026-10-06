@@ -69,6 +69,14 @@ export default function ReservarActividad() {
   }, [selectedEvent]);
 
   const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
+  // Keep the chosen participant count within the available seats.
+  useEffect(() => {
+    setForm((prev) =>
+      prev.participants > maxPeople
+        ? { ...prev, participants: Math.max(1, maxPeople) }
+        : prev,
+    );
+  }, [maxPeople]);
   const unitPrice = selectedEvent?.pricePerPerson ?? activity?.priceValue ?? 0;
   const total = unitPrice * form.participants;
   const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
