@@ -68,15 +68,6 @@ export default function ReservarActividad() {
     if (selectedEvent) setForm((prev) => ({ ...prev, date: toDateInput(selectedEvent.startDate) }));
   }, [selectedEvent]);
 
-  // Keep the chosen participant count within the available seats.
-  useEffect(() => {
-    setForm((prev) =>
-      prev.participants > maxPeople
-        ? { ...prev, participants: Math.max(1, maxPeople) }
-        : prev,
-    );
-  }, [maxPeople]);
-
   const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
   const unitPrice = selectedEvent?.pricePerPerson ?? activity?.priceValue ?? 0;
   const total = unitPrice * form.participants;
