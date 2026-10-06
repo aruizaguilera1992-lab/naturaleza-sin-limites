@@ -52,11 +52,8 @@ export function Navbar() {
   // hacer scroll hacia arriba.
   const [scrollingUp, setScrollingUp] = useState(false);
   const isHidden =
-    isScrolled &&
-    !isMobileMenuOpen &&
-    (autoHideEnabled.current ? !isNearTop : scrollingUp === false && !isMenuInteraction.current);
+    isScrolled && !isMobileMenuOpen && (autoHideEnabled.current ? !isNearTop : !scrollingUp);
   const lastScrollY = useRef(0);
-  const isMenuInteraction = useRef(false);
   useEffect(() => {
     const media = window.matchMedia("(pointer: fine)");
     const updatePointer = () => {
