@@ -278,20 +278,6 @@ const Actividades = () => {
                         </Button>
                       </div>
                     )}
-                    {activeTab === "todas" && (
-                      <div className="mb-5 flex flex-col gap-4 rounded-md border border-primary/30 bg-primary/10 p-5 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex min-w-0 gap-3">
-                          <GraduationCap className="mt-1 h-6 w-6 shrink-0 text-primary" />
-                          <div>
-                            <h2 className="font-heading text-lg font-bold text-foreground">¿Quieres formarte en espeleología?</h2>
-                            <p className="mt-1 text-sm leading-6 text-muted-foreground">Itinerario propio NSL E1–E3 y prácticas tutorizadas.</p>
-                          </div>
-                        </div>
-                        <Button variant="outline" className="shrink-0 gap-2" asChild>
-                          <Link to="/espeleologia#formacion">Ver formación <ArrowRight className="h-4 w-4" /></Link>
-                        </Button>
-                      </div>
-                    )}
                     <ActivitiesToolbar
                       totalCount={filteredActivities.length}
                       viewMode={viewMode}
