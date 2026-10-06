@@ -141,3 +141,4 @@
 - [x] Corregir el acceso a `/pago/demo` en la vista previa sin habilitarlo en producción
 - [x] Aplicar el lenguaje visual premium de pago a `/reservar/:category/:slug`
 - [x] Verificar reserva y pago de demostración en móvil y escritorio sin enviar datos ni iniciar cobros
+- [x] Mostrar un calendario mensual desplegable al pulsar el campo de fecha de la reserva

@@ -6,8 +6,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getActivityCatalogImage, getActivityProfile, PENDING } from "@/data/activityProfiles";
@@ -24,6 +26,12 @@ const euros = (value: number) =>
   new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(value);
 const toDateInput = (date: Date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+const fromDateInput = (value: string) => {
+  if (!value) return undefined;
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return undefined;
+  return new Date(year, month - 1, day, 12);
+};
 
 export default function ReservarActividad() {
   const { category = "", slug = "" } = useParams();
@@ -200,14 +208,38 @@ export default function ReservarActividad() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <Label htmlFor="date">Fecha deseada</Label>
-            <Input
-              id="date"
-              type="date"
-              className="mt-2 min-h-12 text-foreground"
-              value={form.date}
-              disabled={Boolean(selectedEvent)}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  type="button"
+                  variant="outline"
+                  disabled={Boolean(selectedEvent)}
+                  className="mt-2 min-h-12 w-full justify-start gap-3 px-3 text-left font-normal"
+                >
+                  <CalendarDays className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                  {form.date
+                    ? fromDateInput(form.date)?.toLocaleDateString("es-ES", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })
+                    : <span className="text-muted-foreground">Selecciona una fecha</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto max-w-[calc(100vw-2rem)] p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={fromDateInput(form.date)}
+                  onSelect={(date) => {
+                    if (date) setForm({ ...form, date: toDateInput(date) });
+                  }}
+                  disabled={{ before: new Date() }}
+                  initialFocus
+                  className="pointer-events-auto p-3"
+                />
+              </PopoverContent>
+            </Popover>
             {selectedEvent && (
               <p className="mt-1 text-xs text-muted-foreground">
                 Fecha fijada por la salida programada que has elegido.
