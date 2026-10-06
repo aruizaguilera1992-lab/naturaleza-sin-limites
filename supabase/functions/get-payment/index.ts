@@ -7,7 +7,24 @@ const BodySchema = z.object({
   token: z.string().regex(/^[a-f0-9]{16,80}$/),
   action: z.enum(["status", "checkout"]).default("status"),
   returnUrl: z.string().url().max(400).optional(),
+  checkSession: z.boolean().optional(),
 });
+
+const ALLOWED_RETURN_ORIGINS = new Set([
+  "https://naturalezasinlimites.es",
+  "https://www.naturalezasinlimites.es",
+]);
+const isAllowedOrigin = (origin: string): boolean => {
+  try {
+    const url = new URL(origin);
+    if (ALLOWED_RETURN_ORIGINS.has(url.origin)) return true;
+    if (url.protocol === "https:" && url.hostname.endsWith(".lovable.app")) return true;
+    if (url.protocol === "http:" && (url.hostname === "localhost" || url.hostname === "127.0.0.1")) return true;
+    return false;
+  } catch {
+    return false;
+  }
+};
 
 const ALLOWED_CURRENCIES = new Set(["eur"]);
 
@@ -29,7 +46,7 @@ Deno.serve(async (req) => {
   }
   const parsed = BodySchema.safeParse(raw);
   if (!parsed.success) return json({ error: "Solicitud no válida" }, 400);
-  const { token, action, returnUrl } = parsed.data;
+  const { token, action, returnUrl, checkSession } = parsed.data;
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -79,10 +96,62 @@ Deno.serve(async (req) => {
     }
   }
 
+  // Scheduled outing: seat state decides whether the booking is confirmed.
+  let hasEvent = false;
+  let seatState: string | null = null;
+  if (pr.booking_id) {
+    const { data: link } = await supabase
+      .from("activity_event_bookings")
+      .select("state, event_id")
+      .eq("booking_id", pr.booking_id)
+      .maybeSingle();
+    if (link) {
+      hasEvent = true;
+      seatState = link.state;
+      const { data: ev } = await supabase
+        .from("activity_events")
+        .select("starts_at")
+        .eq("id", link.event_id)
+        .maybeSingle();
+      if (ev?.starts_at) date = ev.starts_at;
+    }
+  }
+
   const expired = new Date(pr.expires_at).getTime() < Date.now();
-  const status: string = pr.status === "pendiente" && expired ? "caducado" : pr.status;
+  let status: string = pr.status === "pendiente" && expired ? "caducado" : pr.status;
+
+  // After returning from checkout, ask the payment provider about THIS
+  // session only to tell "processing" apart; confirmation is still webhook-only.
+  let sessionState: "procesando" | "confirmando" | null = null;
+  if (checkSession && pr.status === "pendiente" && pr.stripe_session_id &&
+      (pr.environment === "sandbox" || pr.environment === "live")) {
+    try {
+      const s = await createStripeClient(pr.environment as StripeEnv)
+        .checkout.sessions.retrieve(pr.stripe_session_id);
+      if (s.status === "complete") {
+        sessionState = s.payment_status === "unpaid" ? "procesando" : "confirmando";
+      }
+    } catch (e) {
+      console.error("session status check failed", e);
+    }
+  }
+  if (sessionState && status === "caducado") status = "pendiente";
+
+  // Booking state, separate from payment state.
+  let bookingState: "confirmada" | "fecha_pendiente" | "en_revision" | null = null;
+  if (pr.status === "pagado") {
+    if (!pr.booking_id) bookingState = null;
+    else if (!hasEvent) bookingState = "fecha_pendiente";
+    else bookingState = seatState === "confirmada" ? "confirmada" : "en_revision";
+  }
 
   const payment = {
+    kind: pr.kind === "senal" ? "senal" : "manual",
+    totalCents: pr.kind === "senal" && Number.isInteger(pr.total_cents) ? pr.total_cents : null,
+    environment: pr.environment,
+    sessionState,
+    bookingState,
+    hasEvent,
     concept: pr.concept,
     amountCents: pr.amount_cents,
     currency: pr.currency,
@@ -169,7 +238,7 @@ Deno.serve(async (req) => {
   // Stable, server-derived return URL: the caller only influences the origin,
   // which is validated and folded into the idempotency key.
   const origin = new URL(returnUrl).origin;
-  if (!/^https:\/\/|^http:\/\/localhost(:\d+)?$/.test(origin)) {
+  if (!isAllowedOrigin(origin)) {
     return json({ payment, error: "invalid_return_url" }, 400);
   }
   const canonicalReturnUrl = `${origin}/pago/${token}?session_id={CHECKOUT_SESSION_ID}`;

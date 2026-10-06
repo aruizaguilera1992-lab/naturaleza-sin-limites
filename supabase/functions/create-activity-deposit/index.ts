@@ -118,6 +118,8 @@ Deno.serve(async (req) => {
     .insert({
       booking_id: booking.id,
       amount_cents: depositCents,
+      total_cents: totalCents,
+      kind: "senal",
       currency: "eur",
       concept,
       customer_email: body.email,
