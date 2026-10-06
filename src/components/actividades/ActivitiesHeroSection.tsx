@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Shield, Clock, Wallet } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { HeroYoutubeBackground } from "@/components/HeroYoutubeBackground";
 
 interface ActivitiesHeroSectionProps {
   onSearch: (query: string) => void;
-  onQuickFilter: (type: "principiante" | "media-jornada" | "economico") => void;
 }
 
-export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHeroSectionProps) {
+export function ActivitiesHeroSection({ onSearch }: ActivitiesHeroSectionProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
@@ -37,8 +36,8 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white mb-4">
             NUESTRAS <span className="text-gradient">ACTIVIDADES</span>
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-3">Descubre tu Próxima Aventura</p>
-          <p className="text-sm sm:text-base text-white/70 mb-8">Barranquismo · Escalada · Vías Ferratas</p>
+          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-8">Descubre tu Próxima Aventura</p>
+
 
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
