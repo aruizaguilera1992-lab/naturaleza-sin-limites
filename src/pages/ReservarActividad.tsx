@@ -91,7 +91,7 @@ export default function ReservarActividad() {
       <div className="mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
         <header className="mb-5 flex min-h-14 items-center lg:mb-7">
           <Link to="/" aria-label="Naturaleza Sin Límites, inicio" className="inline-flex min-h-12 items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-            <img src={logoAsset} alt="Naturaleza Sin Límites" className="h-16 w-auto object-contain sm:h-20" />
+            <img src={logoAsset} alt="Naturaleza Sin Límites" className="h-20 w-auto object-contain sm:h-24" />
           </Link>
         </header>
         <div className="grid overflow-hidden rounded-lg border border-border bg-card shadow-card lg:grid-cols-[minmax(0,0.9fr)_minmax(520px,1.1fr)]">
@@ -102,12 +102,14 @@ export default function ReservarActividad() {
               <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-background" />
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-background/10" />
-            <img
-              src={logoAsset}
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-10 w-72 opacity-25 sm:w-96 lg:-right-24 lg:top-8 lg:w-[30rem] lg:opacity-30"
-            />
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-8">
+              <img
+                src={logoAsset}
+                alt=""
+                aria-hidden="true"
+                className="max-h-[70%] w-auto max-w-[80%] object-contain opacity-20 lg:opacity-25"
+              />
+            </div>
             <div className="relative flex h-full min-h-56 flex-col justify-end p-6 sm:min-h-72 sm:p-9 lg:min-h-[780px] lg:p-12">
               <p className="mb-3 text-sm font-semibold uppercase text-primary">{activity?.categoryLabel ?? "Naturaleza Sin Límites"}</p>
               <p className="max-w-lg font-heading text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">Tu próxima aventura te espera</p>
