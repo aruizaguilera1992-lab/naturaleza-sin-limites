@@ -1,18 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { CalendarDays, ChevronLeft, ChevronRight, Clock, MessageCircle, Users } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Clock, MessageCircle, Plus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { EventCard } from "@/components/calendario/EventCard";
 import { getActivityCatalogImage } from "@/data/activityProfiles";
 import { useActivityEvents, type ActivityEvent } from "@/hooks/useActivityEvents";
 
-const categoryStyles: Record<string, { bar: string; text: string; overlay: string }> = {
-  barranquismo: { bar: "bg-cyan-500", text: "text-cyan-500", overlay: "from-cyan-950/95" },
-  escalada: { bar: "bg-emerald-500", text: "text-emerald-500", overlay: "from-emerald-950/95" },
-  "vias-ferratas": { bar: "bg-purple-500", text: "text-purple-500", overlay: "from-purple-950/95" },
-};
+type View = "dia" | "semana" | "mes";
 
 const categoryDot: Record<string, string> = {
   barranquismo: "bg-cyan-500",
@@ -21,443 +16,304 @@ const categoryDot: Record<string, string> = {
 };
 
 const WEEKDAYS = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB", "DOM"];
-const MONTHS = [
-  "Enero",
-  "Febrero",
-  "Marzo",
-  "Abril",
-  "Mayo",
-  "Junio",
-  "Julio",
-  "Agosto",
-  "Septiembre",
-  "Octubre",
-  "Noviembre",
-  "Diciembre",
-];
+const MONTHS = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 const toIso = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-
-const euros = (value: number) =>
-  new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(value);
-
+const sameDay = (a: Date, b: Date) => toIso(a) === toIso(b);
+const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const startOfWeek = (d: Date) => {
+  const s = startOfDay(d);
+  const wd = s.getDay() === 0 ? 6 : s.getDay() - 1;
+  s.setDate(s.getDate() - wd);
+  return s;
+};
+const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
 const formatTime = (date: Date) => date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+const fichaUrl = (e: ActivityEvent) => `/actividades/${e.category}/${e.slug}`;
+const isPastDay = (d: Date) => startOfDay(d) < startOfDay(new Date());
 
-/** Día sin salida abierta: invita a pedir una salida privada en esa fecha. */
-function FreeDayCard({ date }: { date: Date }) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (date < today) {
-    return <p className="text-muted-foreground text-center py-8">Esta fecha ya ha pasado.</p>;
+const defaultView = (): View => {
+  if (typeof window === "undefined") return "mes";
+  if (window.innerWidth < 640) return "dia";
+  if (window.innerWidth < 1024) return "semana";
+  return "mes";
+};
+
+const requestDate = (date: Date) => {
+  window.dispatchEvent(new CustomEvent("nsl:prefill-date", { detail: toIso(date) }));
+  const form = document.getElementById("contacto");
+  if (form) form.scrollIntoView({ behavior: "smooth" });
+  else window.location.href = `/#contacto`;
+};
+
+/** Tarjeta mínima: color de disciplina, hora y título. Al pulsar abre la ficha técnica. */
+function EventChip({ event, size = "sm" }: { event: ActivityEvent; size?: "sm" | "lg" }) {
+  const image = getActivityCatalogImage(event.category, event.slug);
+  if (size === "lg") {
+    return (
+      <Link
+        to={fichaUrl(event)}
+        className="group relative flex h-40 overflow-hidden rounded-xl border border-border transition-all duration-300 hover:border-primary active:scale-95 sm:h-48"
+      >
+        {image && <img src={image} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="relative z-10 mt-auto w-full p-4">
+          <span className={cn("mb-2 inline-block h-1.5 w-8 rounded-full", categoryDot[event.category] ?? "bg-primary")} />
+          <h4 className="font-heading text-lg font-black uppercase leading-tight text-foreground">{event.title}</h4>
+          <p className="mt-1 flex gap-3 text-sm font-semibold text-foreground/90">
+            <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{formatTime(event.startDate)}</span>
+            <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{event.isFull ? "Completa" : `${event.freeSeats} plazas`}</span>
+          </p>
+          <span className="mt-2 inline-block text-xs font-bold uppercase tracking-wide text-primary">Ver ficha técnica →</span>
+        </div>
+      </Link>
+    );
+  }
+  return (
+    <Link
+      to={fichaUrl(event)}
+      onClick={(e) => e.stopPropagation()}
+      title={`${event.title} · ${formatTime(event.startDate)}`}
+      className={cn(
+        "flex min-w-0 items-center gap-1.5 rounded-md bg-muted px-1.5 py-1 text-left transition-all duration-300 hover:bg-primary/20 active:scale-95",
+        event.isFull && "opacity-60",
+      )}
+    >
+      <span className={cn("h-full min-h-[1.5rem] w-1 shrink-0 rounded-full", categoryDot[event.category] ?? "bg-primary")} />
+      <span className="min-w-0">
+        <span className="block text-[10px] font-bold text-muted-foreground">{formatTime(event.startDate)}</span>
+        <span className="block truncate text-[11px] font-bold leading-tight text-foreground">{event.title}</span>
+      </span>
+    </Link>
+  );
+}
+
+function RequestCta({ date, compact = false }: { date: Date; compact?: boolean }) {
+  if (isPastDay(date)) return null;
+  if (compact) {
+    return (
+      <button
+        type="button"
+        onClick={() => requestDate(date)}
+        aria-label={`Solicitar actividad el ${date.toLocaleDateString("es-ES")}`}
+        className="mt-auto flex w-full items-center justify-center gap-1 rounded-md border border-dashed border-border py-1 text-[10px] font-bold uppercase text-muted-foreground opacity-70 transition-all duration-300 hover:border-primary hover:text-primary hover:opacity-100 active:scale-95 group-hover:opacity-100"
+      >
+        <Plus className="h-3 w-3" /> <span className="hidden lg:inline">Solicitar</span>
+      </button>
+    );
   }
   const label = date.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
   const wa = `https://wa.me/34685609542?text=${encodeURIComponent(
-    `¡Hola Antonio! He visto que el ${label} está libre en el calendario y me gustaría consultar una salida privada.`,
+    `¡Hola Antonio! Me gustaría solicitar una actividad para el ${label}.`,
   )}`;
-  const requestDate = () => {
-    window.dispatchEvent(new CustomEvent("nsl:prefill-date", { detail: toIso(date) }));
-    const form = document.getElementById("contacto");
-    if (form) form.scrollIntoView({ behavior: "smooth" });
-    else window.location.href = `/#contacto`;
-  };
   return (
-    <div className="rounded-xl border border-primary/40 bg-card p-6 text-center">
+    <div className="rounded-xl border border-dashed border-primary/50 bg-card p-6 text-center">
       <CalendarDays className="mx-auto h-8 w-8 text-primary" />
-      <p className="mt-3 font-heading font-semibold text-foreground">Fecha disponible para tu grupo</p>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Este día no hay salida abierta. Podemos organizar una salida privada para ti.
-      </p>
+      <p className="mt-3 font-heading font-bold text-foreground">Sin salidas este día</p>
+      <p className="mt-1 text-sm text-muted-foreground">Organizamos una actividad para tu grupo en esta fecha.</p>
       <div className="mt-4 flex flex-wrap justify-center gap-2">
-        <Button onClick={requestDate} className="transition-all duration-300 active:scale-95">
-          Solicitar salida en esta fecha
-        </Button>
+        <Button onClick={() => requestDate(date)} className="transition-all duration-300 active:scale-95">Solicitar actividad</Button>
         <Button asChild variant="outline" className="gap-2 transition-all duration-300 active:scale-95">
-          <a href={wa} target="_blank" rel="noopener noreferrer">
-            <MessageCircle className="h-4 w-4" /> Preguntar por WhatsApp
-          </a>
+          <a href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-4 w-4" /> WhatsApp</a>
         </Button>
       </div>
     </div>
   );
 }
 
-interface DayCellProps {
-  day: number;
-  month: number;
-  year: number;
-  events: ActivityEvent[];
-  selected: boolean;
-  isToday: boolean;
-  isPast: boolean;
-  onSelect: (date: Date) => void;
-}
-
-/** Celda de día tipo tablón visual: foto a sangre, sello de categoría y llamada a la acción grande. */
-function CalendarDayCell({ day, month, year, events, selected, isToday, isPast, onSelect }: DayCellProps) {
-  const [hovered, setHovered] = useState(false);
-  const date = new Date(year, month, day);
-  const featured = events[0];
-  const extras = events.length - 1;
-  const featuredStyle = featured ? categoryStyles[featured.category] : null;
-  const cellImage = featured ? getActivityCatalogImage(featured.category, featured.slug) : null;
-  const full = featured ? featured.isFull : false;
-
-  const handleClick = () => onSelect(date);
-  const handleKey = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleClick();
-    }
-  };
-
-  return (
-    <motion.div
-      role="button"
-      tabIndex={0}
-      aria-label={`${day} de ${MONTHS[month]} de ${year}: ${events.length > 0 ? `${events.length} salidas` : "día libre"}`}
-      aria-pressed={selected}
-      aria-current={isToday ? "date" : undefined}
-      onClick={handleClick}
-      onKeyDown={handleKey}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      whileTap={{ scale: 0.95 }}
-      className={cn(
-        "group relative flex h-32 cursor-pointer flex-col overflow-hidden rounded-xl text-left outline-none sm:h-44 lg:h-52",
-        "transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary active:scale-95",
-        featured
-          ? cn("border-2", selected ? "border-primary ring-2 ring-primary" : isToday ? "border-primary/60" : "border-transparent hover:border-primary")
-          : cn(
-              "border border-dashed p-2",
-              selected
-                ? "border-primary bg-primary/10 ring-2 ring-primary"
-                : isToday
-                  ? "border-primary/50 bg-muted"
-                  : "border-border/60 bg-card hover:border-primary/50",
-            ),
-        isPast && "opacity-40 grayscale",
-      )}
-    >
-      {/* Foto de fondo a sangre en días con salida */}
-      {cellImage && (
-        <img
-          src={cellImage}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
-        />
-      )}
-      {featured && (
-        <div
-          className={cn(
-            "absolute inset-0 bg-gradient-to-t",
-            featuredStyle?.overlay ?? "from-primary/95",
-            "via-background/50 to-background/40",
-          )}
-        />
-      )}
-
-      {/* Número del día */}
-      <span
-        className={cn(
-          "relative z-10 px-2 pt-1.5 text-lg font-black drop-shadow-md sm:text-xl",
-          featured ? "text-white" : selected || isToday ? "text-primary" : "text-muted-foreground",
-        )}
-      >
-        {day}
-      </span>
-
-      {/* Sello en móvil: puntos de categoría (el detalle aparece al tocar) */}
-      {events.length > 0 && (
-        <div className="relative z-10 mt-auto flex gap-1 pb-2 pl-2 sm:hidden">
-          {events.slice(0, 3).map((event) => (
-            <span
-              key={event.id}
-              className={cn("h-1.5 w-4 rounded-full", categoryDot[event.category] ?? "bg-primary")}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Etiqueta del plan sobre la foto (tablet y escritorio) */}
-      {featured && (
-        <div className="relative z-10 mt-auto hidden min-w-0 flex-col gap-1 px-2 pb-2 sm:flex">
-          <div className="flex flex-wrap items-center gap-1">
-            <span
-              className={cn(
-                "rounded px-1.5 py-0.5 text-[9px] font-black uppercase tracking-tight text-primary-foreground",
-                featuredStyle?.bar ?? "bg-primary",
-              )}
-            >
-              {featured.profile?.categoryLabel}
-            </span>
-            <span className="rounded bg-background/40 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-tight text-foreground backdrop-blur-sm">
-              Niv. {featured.profile?.technicalLevel}
-            </span>
-          </div>
-          <h3 className="truncate text-sm font-black uppercase leading-tight tracking-tight text-white drop-shadow-lg lg:text-base">
-            {featured.title}
-          </h3>
-          {extras > 0 && <p className="text-[10px] font-bold text-white/90">+{extras} más</p>}
-        </div>
-      )}
-
-      {/* Llamada a la acción con precio: aparece al pasar el ratón (escritorio) */}
-      {featured && (
-        <div
-          className={cn(
-            "absolute inset-0 z-20 hidden flex-col justify-end gap-1 bg-gradient-to-t from-background via-background/85 to-transparent p-2.5 transition-opacity duration-200 sm:flex",
-            hovered ? "opacity-100" : "pointer-events-none opacity-0",
-          )}
-        >
-          <p className={cn("truncate text-[9px] font-black uppercase tracking-widest", featuredStyle?.text ?? "text-primary")}>
-            {featured.profile?.categoryLabel} · {featured.profile?.zone}
-          </p>
-          <p className="truncate text-sm font-black uppercase leading-tight text-foreground lg:text-base">
-            {featured.title}
-          </p>
-          <p className="flex flex-wrap items-center gap-x-2.5 text-[11px] font-semibold text-foreground/90">
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3" aria-hidden="true" /> {formatTime(featured.startDate)}
-            </span>
-            <span className="flex items-center gap-1">
-              <Users className="h-3 w-3" aria-hidden="true" />
-              {featured.isFull ? "Sin plazas" : `${featured.freeSeats} plazas`}
-            </span>
-          </p>
-          {full ? (
-            <span className="mt-0.5 rounded-lg bg-muted px-2 py-2 text-center text-xs font-black uppercase tracking-wide text-muted-foreground">
-              Completa
-            </span>
-          ) : (
-            <Link
-              to={`/reservar/${featured.category}/${featured.slug}?evento=${featured.id}`}
-              onClick={(e) => e.stopPropagation()}
-              className="mt-0.5 block whitespace-nowrap rounded-lg bg-primary px-2 py-2.5 text-center text-sm font-black uppercase tracking-wide text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 active:scale-95 lg:text-base"
-            >
-              Reservar
-              {featured.pricePerPerson > 0 && featured.pricePerPerson < 1000
-                ? ` · ${euros(featured.pricePerPerson)}`
-                : ""}
-            </Link>
-          )}
-        </div>
-      )}
-
-      {/* Pista en días libres (escritorio) */}
-      {!featured && !isPast && (
-        <div className="relative z-10 mt-auto hidden pb-2 px-2 sm:block">
-          <p className="text-[10px] font-bold uppercase italic leading-tight tracking-tight text-muted-foreground">
-            Día disponible
-          </p>
-          <p className="mt-0.5 rounded border border-dashed border-border/80 py-1 text-center text-[9px] font-bold uppercase text-primary/80 transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-            Solicitar privada
-          </p>
-        </div>
-      )}
-    </motion.div>
-  );
-}
-
 export function ActivitiesCalendar() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [view, setView] = useState<View>(defaultView);
+  const [cursor, setCursor] = useState(() => startOfDay(new Date()));
   const { events, loading, error } = useActivityEvents();
 
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth < 640) setView((v) => (v === "mes" ? "dia" : v)); };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+  const eventsByDay = useMemo(() => {
+    const map = new Map<string, ActivityEvent[]>();
+    for (const e of events) {
+      const k = toIso(e.startDate);
+      map.set(k, [...(map.get(k) ?? []), e]);
+    }
+    map.forEach((list) => list.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()));
+    return map;
+  }, [events]);
+  const dayEvents = (d: Date) => eventsByDay.get(toIso(d)) ?? [];
 
-  const calendarDays = useMemo(() => {
-    const days: (number | null)[] = [];
-    for (let i = 0; i < adjustedFirstDay; i++) days.push(null);
-    for (let i = 1; i <= daysInMonth; i++) days.push(i);
+  const move = (dir: 1 | -1) => {
+    if (view === "dia") setCursor(addDays(cursor, dir));
+    else if (view === "semana") setCursor(addDays(cursor, 7 * dir));
+    else setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + dir, 1));
+  };
+
+  const weekStart = startOfWeek(cursor);
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
+  const monthDays = useMemo(() => {
+    const first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+    const start = startOfWeek(first);
+    const last = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0);
+    const end = addDays(startOfWeek(last), 6);
+    const days: Date[] = [];
+    for (let d = start; d <= end; d = addDays(d, 1)) days.push(d);
     return days;
-  }, [daysInMonth, adjustedFirstDay]);
+  }, [cursor]);
 
-  const getEventsForDay = (day: number) =>
-    events.filter(
-      (event) =>
-        event.startDate.getDate() === day &&
-        event.startDate.getMonth() === currentMonth &&
-        event.startDate.getFullYear() === currentYear,
-    );
+  const title =
+    view === "dia"
+      ? cursor.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })
+      : view === "semana"
+        ? `${weekDays[0].getDate()} ${MONTHS[weekDays[0].getMonth()].slice(0, 3)} – ${weekDays[6].getDate()} ${MONTHS[weekDays[6].getMonth()].slice(0, 3)}`
+        : MONTHS[cursor.getMonth()];
 
-  const selectedEvents = selectedDate
-    ? events.filter(
-        (event) =>
-          event.startDate.getDate() === selectedDate.getDate() &&
-          event.startDate.getMonth() === selectedDate.getMonth() &&
-          event.startDate.getFullYear() === selectedDate.getFullYear(),
-      )
-    : [];
-
-  const goToPreviousMonth = () => {
-    setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
-    setSelectedDate(null);
-  };
-
-  const goToNextMonth = () => {
-    setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
-    setSelectedDate(null);
-  };
-
-  const goToToday = () => {
-    const now = new Date();
-    setCurrentDate(new Date(now.getFullYear(), now.getMonth(), 1));
-    setSelectedDate(null);
-  };
+  const today = new Date();
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
-      >
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4 sm:p-6">
-          <div>
-            <h2 className="font-heading text-3xl font-black uppercase tracking-tight text-foreground sm:text-4xl">
-              {MONTHS[currentMonth]} <span className="text-primary">{currentYear}</span>
+    <div className="mx-auto w-full max-w-7xl">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-3 sm:p-5">
+          <div className="min-w-0">
+            <h2 className="font-heading text-2xl font-black uppercase tracking-tight text-foreground first-letter:uppercase sm:text-3xl">
+              {title} <span className="text-primary">{cursor.getFullYear()}</span>
             </h2>
-            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-muted-foreground sm:text-sm">
-              Salidas con plazas reales · Málaga
-            </p>
+            <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Salidas con plazas reales · Málaga</p>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Button variant="outline" size="icon" onClick={goToPreviousMonth} aria-label="Mes anterior">
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            <Button variant="outline" size="sm" onClick={goToToday}>
-              Hoy
-            </Button>
-            <Button variant="outline" size="icon" onClick={goToNextMonth} aria-label="Mes siguiente">
-              <ChevronRight className="h-5 w-5" />
-            </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <div role="tablist" aria-label="Vista del calendario" className="flex rounded-lg border border-border p-0.5">
+              {(["dia", "semana", "mes"] as View[]).map((v) => (
+                <button
+                  key={v}
+                  role="tab"
+                  aria-selected={view === v}
+                  onClick={() => setView(v)}
+                  className={cn(
+                    "rounded-md px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition-all duration-300 active:scale-95",
+                    view === v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+                    v === "mes" && "hidden sm:block",
+                  )}
+                >
+                  {v === "dia" ? "Día" : v === "semana" ? "Semana" : "Mes"}
+                </button>
+              ))}
+            </div>
+            <Button variant="outline" size="icon" onClick={() => move(-1)} aria-label="Anterior"><ChevronLeft className="h-5 w-5" /></Button>
+            <Button variant="outline" size="sm" onClick={() => setCursor(startOfDay(new Date()))}>Hoy</Button>
+            <Button variant="outline" size="icon" onClick={() => move(1)} aria-label="Siguiente"><ChevronRight className="h-5 w-5" /></Button>
           </div>
         </div>
 
         <div className="p-2 sm:p-4">
-          <div className="mb-1 grid grid-cols-7 gap-1">
-            {WEEKDAYS.map((day, i) => (
-              <div
-                key={day}
-                className={cn(
-                  "py-2 text-center text-[10px] font-bold uppercase tracking-widest sm:text-xs",
-                  i >= 5 ? "text-primary" : "text-muted-foreground",
-                )}
-              >
-                {day}
-              </div>
-            ))}
-          </div>
+          {loading && <p className="py-4 text-center text-muted-foreground">Cargando salidas…</p>}
+          {error && <p className="py-4 text-center text-destructive">{error}</p>}
 
-          <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
-            {calendarDays.map((day, index) =>
-              day === null ? (
-                <div key={`empty-${index}`} className="h-32 sm:h-44 lg:h-52" />
+          {view === "dia" && (
+            <div>
+              {dayEvents(cursor).length > 0 ? (
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {dayEvents(cursor).map((e) => <EventChip key={e.id} event={e} size="lg" />)}
+                </div>
+              ) : isPastDay(cursor) ? (
+                <p className="py-8 text-center text-muted-foreground">Esta fecha ya ha pasado.</p>
               ) : (
-                <CalendarDayCell
-                  key={day}
-                  day={day}
-                  month={currentMonth}
-                  year={currentYear}
-                  events={getEventsForDay(day)}
-                  selected={
-                    selectedDate?.getDate() === day &&
-                    selectedDate?.getMonth() === currentMonth &&
-                    selectedDate?.getFullYear() === currentYear
-                  }
-                  isToday={
-                    new Date().getDate() === day &&
-                    new Date().getMonth() === currentMonth &&
-                    new Date().getFullYear() === currentYear
-                  }
-                  isPast={new Date(currentYear, currentMonth, day) < new Date(new Date().setHours(0, 0, 0, 0))}
-                  onSelect={setSelectedDate}
-                />
-              ),
-            )}
-          </div>
+                <RequestCta date={cursor} />
+              )}
+            </div>
+          )}
+
+          {view === "semana" && (
+            <div className="grid gap-2 md:grid-cols-7">
+              {weekDays.map((d) => {
+                const list = dayEvents(d);
+                const isToday = sameDay(d, today);
+                return (
+                  <div
+                    key={toIso(d)}
+                    className={cn(
+                      "group flex flex-col gap-1.5 rounded-xl border p-2 md:min-h-[14rem]",
+                      isToday ? "border-primary/60 bg-primary/5" : "border-border/60",
+                      isPastDay(d) && "opacity-40",
+                    )}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => { setCursor(d); setView("dia"); }}
+                      className="flex items-baseline gap-2 text-left md:flex-col md:gap-0"
+                    >
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{WEEKDAYS[(d.getDay() + 6) % 7]}</span>
+                      <span className={cn("text-xl font-black", isToday ? "text-primary" : "text-foreground")}>{d.getDate()}</span>
+                    </button>
+                    {list.map((e) => <EventChip key={e.id} event={e} />)}
+                    {list.length === 0 && <RequestCta date={d} compact />}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {view === "mes" && (
+            <>
+              <div className="mb-1 grid grid-cols-7 gap-1">
+                {WEEKDAYS.map((day, i) => (
+                  <div key={day} className={cn("py-2 text-center text-[10px] font-bold uppercase tracking-widest sm:text-xs", i >= 5 ? "text-primary" : "text-muted-foreground")}>{day}</div>
+                ))}
+              </div>
+              <div className="grid grid-cols-7 gap-1">
+                {monthDays.map((d) => {
+                  const list = dayEvents(d);
+                  const outside = d.getMonth() !== cursor.getMonth();
+                  const isToday = sameDay(d, today);
+                  return (
+                    <div
+                      key={toIso(d)}
+                      className={cn(
+                        "group flex h-28 flex-col gap-1 overflow-hidden rounded-lg border p-1.5 lg:h-32",
+                        isToday ? "border-primary/60 bg-primary/5" : "border-border/50",
+                        list.length === 0 && "border-dashed",
+                        (outside || isPastDay(d)) && "opacity-40",
+                      )}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => { setCursor(d); setView("dia"); }}
+                        aria-label={`Ver ${d.toLocaleDateString("es-ES")}`}
+                        className={cn("self-start text-sm font-black", isToday ? "text-primary" : "text-muted-foreground hover:text-foreground")}
+                      >
+                        {d.getDate()}
+                      </button>
+                      {list.slice(0, 2).map((e) => <EventChip key={e.id} event={e} />)}
+                      {list.length > 2 && (
+                        <button type="button" onClick={() => { setCursor(d); setView("dia"); }} className="text-left text-[10px] font-bold text-primary">
+                          +{list.length - 2} más
+                        </button>
+                      )}
+                      {list.length === 0 && !outside && <RequestCta date={d} compact />}
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground sm:px-6 sm:text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground sm:px-6">
           <div className="flex flex-wrap items-center gap-3 sm:gap-5">
-            <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas
-            </span>
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo</span>
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada</span>
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas</span>
           </div>
-          <p className="font-bold uppercase tracking-wide">
-            Grupos máx. 6 personas · Reserva con señal 30%
-          </p>
+          <p className="font-bold uppercase tracking-wide">Grupos máx. 6 personas · Reserva con señal 30%</p>
         </div>
       </motion.div>
 
-      <div className="mt-6">
-        {loading && <p className="text-muted-foreground text-center py-4">Cargando salidas…</p>}
-        {error && <p className="text-destructive text-center py-4">{error}</p>}
-
-        {!loading && !error && events.length === 0 && (
-          <div className="rounded-xl border border-border bg-card p-6 text-center">
-            <p className="text-foreground">Todavía no hay salidas publicadas.</p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Elige cualquier experiencia del catálogo y proponnos tu fecha.
-            </p>
-          </div>
-        )}
-
-        {selectedDate && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h3 className="text-lg font-heading font-bold text-foreground mb-4">
-              {selectedDate.toLocaleDateString("es-ES", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-              })}
-              {selectedEvents.length > 0 && (
-                <span className="text-muted-foreground font-normal ml-2">
-                  - {selectedEvents.length} salida{selectedEvents.length > 1 ? "s" : ""} programada
-                  {selectedEvents.length > 1 ? "s" : ""}
-                </span>
-              )}
-            </h3>
-
-            {selectedEvents.length === 0 ? (
-              <FreeDayCard date={selectedDate} />
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {selectedEvents.map((event) => (
-                  <EventCard key={event.id} event={event} showDate={false} />
-                ))}
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        {events.length > 0 && (
-          <div className="mt-6 text-center">
-            <Button asChild variant="outline" size="sm">
-              <Link to="/calendario">Ver todas las salidas</Link>
-            </Button>
-          </div>
-        )}
-      </div>
+      {events.length > 0 && (
+        <div className="mt-6 text-center">
+          <Button asChild variant="outline" size="sm"><Link to="/calendario">Ver todas las salidas</Link></Button>
+        </div>
+      )}
     </div>
   );
 }
