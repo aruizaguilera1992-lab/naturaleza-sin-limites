@@ -84,7 +84,8 @@ const getVerifiedActivityImage = (activity?: string) => {
 export default function Pago() {
   const { token = "" } = useParams();
   const [searchParams] = useSearchParams();
-  const isDesignDemo = import.meta.env.DEV && token === "demo";
+  const isPreviewHost = window.location.hostname.endsWith(".lovable.app") || window.location.hostname === "localhost";
+  const isDesignDemo = token === "demo" && (import.meta.env.DEV || isPreviewHost);
   const designState = searchParams.get("state");
   const justReturned = !!searchParams.get("session_id") || (isDesignDemo && designState === "processing");
 

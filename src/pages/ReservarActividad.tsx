@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { AlertTriangle, Mountain, ShieldCheck, Loader2 } from "lucide-react";
+import { AlertTriangle, CalendarDays, ShieldCheck, Loader2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -10,10 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getActivityProfile, PENDING } from "@/data/activityProfiles";
-import { TrustBar } from "@/components/TrustBar";
+import { getActivityCatalogImage, getActivityProfile, PENDING } from "@/data/activityProfiles";
 import { ActivityEventPicker } from "@/components/actividades/ActivityEventPicker";
 import { useActivityEvents } from "@/hooks/useActivityEvents";
+import logoAsset from "@/assets/logo.png";
 
 
 const DEPOSIT_RATE = 0.3;
@@ -66,32 +66,50 @@ export default function ReservarActividad() {
   const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
 
   const wrapper = (children: React.ReactNode) => (
-    <div className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
       <Helmet>
         <title>Reservar {activity?.name ?? "actividad"} | Naturaleza Sin Límites</title>
         <meta name="robots" content="noindex, follow" />
       </Helmet>
       <PaymentTestModeBanner />
-      <div className="container mx-auto max-w-3xl px-4 pt-16 pb-20">
-        <div className="mb-8 flex items-center gap-3">
-          <Mountain className="h-7 w-7 text-primary" />
-          <span className="font-heading text-lg font-bold">Naturaleza Sin Límites</span>
+      <div className="mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
+        <header className="mb-5 flex min-h-14 items-center lg:mb-7">
+          <Link to="/" aria-label="Naturaleza Sin Límites, inicio" className="inline-flex min-h-12 items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+            <img src={logoAsset} alt="Naturaleza Sin Límites" className="h-16 w-auto object-contain sm:h-20" />
+          </Link>
+        </header>
+        <div className="grid overflow-hidden rounded-lg border border-border bg-card shadow-card lg:grid-cols-[minmax(0,0.9fr)_minmax(520px,1.1fr)]">
+          <aside className="relative min-h-56 overflow-hidden bg-secondary sm:min-h-72 lg:min-h-[780px]">
+            {activity && getActivityCatalogImage(activity.category, activity.slug) ? (
+              <img src={getActivityCatalogImage(activity.category, activity.slug) ?? undefined} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-background" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-background/10" />
+            <div className="relative flex h-full min-h-56 flex-col justify-end p-6 sm:min-h-72 sm:p-9 lg:min-h-[780px] lg:p-12">
+              <p className="mb-3 text-sm font-semibold uppercase text-primary">{activity?.categoryLabel ?? "Naturaleza Sin Límites"}</p>
+              <p className="max-w-lg font-heading text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">Reserva tu próxima aventura</p>
+              {activity && <p className="mt-3 text-lg font-semibold text-foreground/90">{activity.name}</p>}
+            </div>
+          </aside>
+          <section className="min-w-0 px-5 py-8 sm:px-9 lg:px-12 lg:py-12">
+            <div className="mx-auto w-full max-w-2xl">{children}</div>
+          </section>
         </div>
-        {children}
       </div>
-    </div>
+    </main>
   );
 
   if (!activity || !activity.priceValue || activity.price === PENDING) {
     return wrapper(
-      <div className="rounded-xl border border-border bg-card p-8 text-center">
-        <AlertTriangle className="mx-auto mb-4 h-8 w-8 text-primary" />
-        <h1 className="mb-2 font-heading text-2xl font-bold">Reserva no disponible online</h1>
-        <p className="mb-6 text-muted-foreground">
+      <div className="flex min-h-[520px] flex-col items-center justify-center py-10 text-center">
+        <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10"><AlertTriangle className="h-8 w-8 text-primary" /></span>
+        <h1 className="mb-3 font-heading text-3xl font-extrabold sm:text-4xl">Reserva no disponible online</h1>
+        <p className="mb-7 max-w-md text-base leading-7 text-muted-foreground sm:text-lg">
           Esta actividad todavía no se puede reservar y pagar desde la web. Escríbenos y la
           organizamos contigo.
         </p>
-        <Button asChild>
+        <Button size="lg" asChild>
           <Link to="/contacto">Contactar</Link>
         </Button>
       </div>,
@@ -141,39 +159,36 @@ export default function ReservarActividad() {
   };
 
   return wrapper(
-    <div className="space-y-6">
-      <div className="rounded-xl border border-border bg-card p-6">
-        <p className="text-xs uppercase tracking-wide text-muted-foreground">
+    <div className="space-y-8">
+      <header>
+        <p className="mb-2 text-sm font-semibold uppercase text-primary">
           {activity.categoryLabel} · {activity.zone}
         </p>
-        <h1 className="mt-1 font-heading text-2xl font-bold">{activity.name}</h1>
-        <p className="mt-1 text-muted-foreground">{activity.shortDescription}</p>
-        <div className="mt-6 space-y-2 border-t border-border pt-4 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">
-              {euros(unitPrice)} × {form.participants} persona(s)
-            </span>
-            <span className="font-semibold">{euros(total)}</span>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-muted-foreground">Señal a pagar ahora (30%)</span>
-            <span className="font-heading text-2xl font-bold text-primary">{euros(deposit)}</span>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            El resto ({euros(total - deposit)}) se abona el día de la actividad. IVA incluido.
-          </p>
+        <h1 className="font-heading text-4xl font-extrabold leading-[1.08] text-foreground sm:text-5xl lg:text-[3.25rem]">Completa tu reserva</h1>
+        <p className="mt-4 font-heading text-xl font-bold text-foreground">{activity.name}</p>
+        <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-base text-muted-foreground">
+          {form.date && <span className="flex items-center gap-2"><CalendarDays className="h-5 w-5 text-primary" />{new Date(`${form.date}T12:00:00`).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}</span>}
+          <span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" />{form.participants} participante(s)</span>
         </div>
-        <div className="mt-6 border-t border-border pt-4">
-          <TrustBar variant="compact" />
-        </div>
-      </div>
+        <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
+          <div>
+            <dt className="text-sm font-semibold uppercase text-muted-foreground">Pagas ahora · señal 30 %</dt>
+            <dd className="mt-1 font-heading text-[2.75rem] font-extrabold leading-none text-primary sm:text-5xl">{euros(deposit)}</dd>
+          </div>
+          <div className="flex justify-between gap-4 text-muted-foreground">
+            <dt>Precio total · {euros(unitPrice)} × {form.participants}</dt>
+            <dd>{euros(total)}</dd>
+          </div>
+          <div className="flex justify-between gap-4 text-muted-foreground"><dt>Saldo el día de la actividad</dt><dd>{euros(total - deposit)}</dd></div>
+          <div className="flex justify-between gap-4 text-muted-foreground"><dt>Impuestos</dt><dd>IVA incluido</dd></div>
+        </dl>
+      </header>
 
+      <div>
+        <h2 className="mb-5 font-heading text-2xl font-bold">Elige los detalles</h2>
 
-      <div className="rounded-xl border border-border bg-card p-6">
-        <h2 className="mb-4 font-heading text-lg font-bold">Tu reserva</h2>
-
-        <div className="mb-5">
-          <Label className="mb-2 block">Salidas programadas</Label>
+        <div className="mb-7">
+          <Label className="mb-3 block text-base">Salidas programadas</Label>
           <ActivityEventPicker
             events={events}
             loading={eventsLoading}
@@ -182,13 +197,13 @@ export default function ReservarActividad() {
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <Label htmlFor="date">Fecha deseada</Label>
             <Input
               id="date"
               type="date"
-              className="mt-1 text-foreground"
+              className="mt-2 min-h-12 text-foreground"
               value={form.date}
               disabled={Boolean(selectedEvent)}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
@@ -206,7 +221,7 @@ export default function ReservarActividad() {
               type="number"
               min={1}
               max={maxPeople}
-              className="mt-1 text-foreground"
+              className="mt-2 min-h-12 text-foreground"
               value={form.participants}
               onChange={(e) =>
                 setForm({
@@ -232,7 +247,7 @@ export default function ReservarActividad() {
             <Label htmlFor="name">Nombre y apellidos</Label>
             <Input
               id="name"
-              className="mt-1 text-foreground"
+              className="mt-2 min-h-12 text-foreground"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               autoComplete="name"
@@ -243,7 +258,7 @@ export default function ReservarActividad() {
             <Input
               id="email"
               type="email"
-              className="mt-1 text-foreground"
+              className="mt-2 min-h-12 text-foreground"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               autoComplete="email"
@@ -254,7 +269,7 @@ export default function ReservarActividad() {
             <Input
               id="phone"
               type="tel"
-              className="mt-1 text-foreground"
+              className="mt-2 min-h-12 text-foreground"
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
               autoComplete="tel"
@@ -264,7 +279,7 @@ export default function ReservarActividad() {
             <Label htmlFor="message">Comentarios (opcional)</Label>
             <Textarea
               id="message"
-              className="mt-1 text-foreground"
+              className="mt-2 min-h-24 text-foreground"
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
               placeholder="Experiencia previa, alergias, horario preferido..."
@@ -272,7 +287,7 @@ export default function ReservarActividad() {
           </div>
         </div>
 
-        <label className="mt-4 flex items-start gap-3 text-sm text-muted-foreground">
+        <label className="mt-6 flex min-h-12 items-start gap-3 text-sm leading-6 text-muted-foreground">
           <Checkbox
             checked={form.rgpd}
             onCheckedChange={(v) => setForm({ ...form, rgpd: v === true })}
@@ -291,23 +306,24 @@ export default function ReservarActividad() {
           </span>
         </label>
 
-        {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
+        {error && <p role="alert" className="mt-4 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-foreground">{error}</p>}
 
-        <p className="mt-4 flex items-start gap-2 text-sm text-muted-foreground">
+        <p className="mt-5 flex items-start gap-2 text-sm leading-6 text-muted-foreground">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           Pago seguro. Revisamos la disponibilidad de la fecha tras el pago: si no pudiéramos
           realizar la salida, te devolvemos la señal íntegra.
         </p>
 
         <Button
-          className="mt-5 w-full transition-all duration-300 active:scale-95"
+          className="mt-5 min-h-12 w-full text-base transition-all duration-300 active:scale-95 sm:text-lg"
           size="lg"
           disabled={submitting}
           onClick={submit}
         >
-          {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {submitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
           Pagar señal de {euros(deposit)}
         </Button>
+        <p className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-primary" />Pago seguro con Stripe</p>
       </div>
     </div>,
   );

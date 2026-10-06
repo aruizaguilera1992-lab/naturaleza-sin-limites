@@ -138,6 +138,6 @@
 - [x] Verificación TypeScript, build y navegador a 1280 px y 390 px, sin enviar solicitudes
 
 ## Reserva y pago visual (06/10/2026)
-- [ ] Corregir el acceso a `/pago/demo` en la vista previa sin habilitarlo en producción
-- [ ] Aplicar el lenguaje visual premium de pago a `/reservar/:category/:slug`
-- [ ] Verificar reserva y pago de demostración en móvil y escritorio sin enviar datos ni iniciar cobros
+- [x] Corregir el acceso a `/pago/demo` en la vista previa sin habilitarlo en producción
+- [x] Aplicar el lenguaje visual premium de pago a `/reservar/:category/:slug`
+- [x] Verificar reserva y pago de demostración en móvil y escritorio sin enviar datos ni iniciar cobros
