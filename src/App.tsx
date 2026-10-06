@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { CookieConsentProvider } from "./context/CookieConsentContext";
 import { CookieBanner } from "./components/CookieBanner";
@@ -39,6 +39,17 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Al cambiar de página, vuelve arriba del todo. Si la URL lleva ancla
+// (p. ej. /espeleologia#experiencias), no se toca el scroll: lo gestiona la página.
+function ScrollToTopOnRouteChange() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (hash) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  }, [pathname, hash]);
+  return null;
+}
+
 // Tras volver de Google, la sesión llega a la raíz; si había un destino
 // guardado (p. ej. /admin), redirige una vez confirmada la sesión.
 function AuthRedirectHandler() {
@@ -64,6 +75,7 @@ const App = () => (
           <Sonner />
           <AnalyticsLoader />
           <BrowserRouter>
+            <ScrollToTopOnRouteChange />
             <AuthRedirectHandler />
             <CookieBanner />
             <CookiePreferencesModal />

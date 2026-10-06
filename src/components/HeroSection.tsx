@@ -8,10 +8,10 @@ import { HeroYoutubeBackground } from '@/components/HeroYoutubeBackground';
 
 // Cuestionarios por disciplina: cada enlace abre el cuestionario de esa disciplina.
 const DISCIPLINE_QUESTIONNAIRES = [
-  { label: 'Barranquismo', to: '/barranquismo#cuestionario' },
-  { label: 'Escalada', to: '/escalada#cuestionario' },
-  { label: 'Vía ferrata', to: '/vias-ferratas#cuestionario' },
-  { label: 'Espeleología', to: '/espeleologia#experiencias' },
+  { label: 'Barranquismo', to: '/barranquismo' },
+  { label: 'Escalada', to: '/escalada' },
+  { label: 'Vía ferrata', to: '/vias-ferratas' },
+  { label: 'Espeleología', to: '/espeleologia' },
 ];
 
 const HERO_DESCRIPTION_FULL =
