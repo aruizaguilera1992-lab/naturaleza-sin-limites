@@ -1,18 +1,29 @@
 import { useActivitiesData } from "@/hooks/useActivitiesData";
-import { ChevronDown, X } from "lucide-react";
+import { Calendar, ChevronDown, GitBranch, Mountain, Waves, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import type { Filters } from "@/pages/Actividades";
+import type { ActivityType, Filters } from "@/pages/Actividades";
 
 interface ActivitiesFiltersProps {
   filters: Filters;
   counts: Record<string, number>;
+  activeTab: ActivityType;
+  onTabChange: (tab: ActivityType) => void;
   onFilterChange: (filters: Partial<Filters>) => void;
   onClearFilters: () => void;
 }
+
+const tabs: { id: ActivityType; label: string; icon: React.ElementType; emoji: string }[] = [
+  { id: "todas", label: "Todas", icon: Mountain, emoji: "🎯" },
+  { id: "barranquismo", label: "Barranquismo", icon: Waves, emoji: "🌊" },
+  { id: "escalada", label: "Escalada", icon: Mountain, emoji: "🧗" },
+  { id: "ferratas", label: "Ferratas", icon: GitBranch, emoji: "🪜" },
+  { id: "espeleologia", label: "Espeleología", icon: Mountain, emoji: "🕯️" },
+  { id: "calendario", label: "Calendario", icon: Calendar, emoji: "📅" },
+];
 
 interface CheckboxItemProps {
   id: string;
