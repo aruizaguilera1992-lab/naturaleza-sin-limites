@@ -75,10 +75,13 @@ const DESIGN_PAYMENT: Payment = {
 
 const normalize = (value: string) => value.trim().toLocaleLowerCase("es-ES");
 
-const getVerifiedActivityImage = (activity?: string) => {
+const getVerifiedActivityProfile = (activity?: string) => {
   if (!activity) return null;
-  const match = activityProfiles.find((profile) => normalize(profile.name) === normalize(activity));
-  return match ? getActivityCatalogImage(match.category, match.slug) : null;
+  const target = normalize(activity);
+  return (
+    activityProfiles.find((profile) => normalize(profile.name) === target) ??
+    activityProfiles.find((profile) => target.includes(normalize(profile.name)))
+  );
 };
 
 export default function Pago() {
@@ -197,7 +200,11 @@ export default function Pago() {
           </div>
         </header>
         <div className="grid flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-card lg:grid-cols-[minmax(0,0.92fr)_minmax(480px,1.08fr)]">
-          <PaymentVisual activity={payment?.activity} image={getVerifiedActivityImage(payment?.activity)} />
+          <PaymentVisual
+            activity={payment.activity}
+            image={matchedProfile ? getActivityCatalogImage(matchedProfile.category, matchedProfile.slug) : null}
+            categoryLabel={matchedProfile?.categoryLabel}
+          />
           <section className="flex min-w-0 flex-col justify-center px-5 py-6 sm:px-9 sm:py-8 lg:px-12 lg:py-12">
             <div className="mx-auto w-full max-w-xl space-y-5 sm:space-y-6">
               {children}
@@ -306,6 +313,7 @@ export default function Pago() {
   }
 
   const date = formatDate(payment.date);
+  const matchedProfile = getVerifiedActivityProfile(payment.activity);
   const payLabel = isDeposit ? `Pagar señal de ${amount}` : `Pagar ${amount}`;
   const balance = isDeposit && payment.totalCents !== null && payment.totalCents >= payment.amountCents
     ? payment.totalCents - payment.amountCents : null;
@@ -392,21 +400,44 @@ export default function Pago() {
   );
 }
 
-function PaymentVisual({ activity, image }: { activity?: string; image: string | null }) {
+function PaymentVisual({ activity, image, categoryLabel }: { activity?: string; image: string | null; categoryLabel?: string }) {
   return (
-    <aside className="relative min-h-48 overflow-hidden bg-secondary sm:min-h-72 lg:min-h-[680px]">
+    <aside className="relative min-h-56 overflow-hidden bg-secondary sm:min-h-80 lg:min-h-[680px]">
       {image ? (
-        <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={image} alt="" className="nsl-visual-drift absolute inset-0 h-full w-full object-cover" />
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-background" />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-background/10" />
-      <div className="relative flex h-full min-h-48 flex-col justify-end p-5 sm:min-h-72 sm:p-9 lg:min-h-[680px] lg:p-12">
-        <p className="mb-3 text-sm font-semibold uppercase text-primary">Naturaleza Sin Límites</p>
-        <p className="max-w-lg font-heading text-[2rem] font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">
-          Tu próxima aventura empieza aquí
-        </p>
-        {activity && <p className="mt-2 text-base font-semibold text-foreground/90 sm:mt-4 sm:text-lg">{activity}</p>}
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-transparent to-transparent" />
+      <div className="relative flex h-full min-h-56 flex-col justify-between p-5 sm:min-h-80 sm:p-8 lg:min-h-[680px] lg:p-10">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary sm:text-xs">
+              Naturaleza Sin Límites
+            </p>
+            <div className="mt-1.5 h-0.5 w-12 bg-primary" />
+          </div>
+          {categoryLabel && (
+            <span className="rounded-full border border-foreground/15 bg-background/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground backdrop-blur-sm">
+              {categoryLabel}
+            </span>
+          )}
+        </div>
+
+        <div>
+          <h2 className="font-heading text-[2.6rem] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:text-6xl lg:text-[4.1rem]">
+            <span className="block">Tu próxima</span>
+            <span className="block text-primary">aventura</span>
+            <span className="block">empieza aquí</span>
+          </h2>
+          {activity && (
+            <div className="mt-5 inline-flex max-w-full flex-col gap-1 rounded-2xl border border-foreground/10 bg-background/45 px-5 py-4 backdrop-blur-md sm:mt-7">
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Actividad</span>
+              <span className="font-heading text-xl font-bold leading-tight text-foreground sm:text-2xl">{activity}</span>
+            </div>
+          )}
+        </div>
       </div>
     </aside>
   );

@@ -309,3 +309,7 @@
   body::before, #root > *, main section, #root section { animation: none !important; }
   html { scroll-behavior: auto; }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .nsl-visual-drift { animation: nsl-ambient 36s ease-in-out infinite alternate; }
+}
