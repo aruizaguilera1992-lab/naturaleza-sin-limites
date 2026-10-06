@@ -19,6 +19,11 @@ const isAllowedOrigin = (origin: string): boolean => {
     const url = new URL(origin);
     if (ALLOWED_RETURN_ORIGINS.has(url.origin)) return true;
     if (url.protocol === "https:" && url.hostname.endsWith(".lovable.app")) return true;
+    if (
+      url.protocol === "https:" &&
+      (url.hostname === "e8067521-0f87-494a-b789-e89c9f7b9922.lovableproject.com" ||
+        url.hostname === "id-preview--e8067521-0f87-494a-b789-e89c9f7b9922.lovable.app")
+    ) return true;
     if (url.protocol === "http:" && (url.hostname === "localhost" || url.hostname === "127.0.0.1")) return true;
     return false;
   } catch {
