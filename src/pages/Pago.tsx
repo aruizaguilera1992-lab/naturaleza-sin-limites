@@ -174,6 +174,7 @@ export default function Pago() {
     </p>
   );
 
+  const visualProfile = payment?.activity ? getVerifiedActivityProfile(payment.activity) : null;
   const wrapper = (children: React.ReactNode) => (
     <main className="min-h-screen bg-background">
       <Helmet>
@@ -201,9 +202,9 @@ export default function Pago() {
         </header>
         <div className="grid flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-card lg:grid-cols-[minmax(0,0.92fr)_minmax(480px,1.08fr)]">
           <PaymentVisual
-            activity={payment.activity}
-            image={matchedProfile ? getActivityCatalogImage(matchedProfile.category, matchedProfile.slug) : null}
-            categoryLabel={matchedProfile?.categoryLabel}
+            activity={payment?.activity}
+            image={visualProfile ? getActivityCatalogImage(visualProfile.category, visualProfile.slug) : null}
+            categoryLabel={visualProfile?.categoryLabel}
           />
           <section className="flex min-w-0 flex-col justify-center px-5 py-6 sm:px-9 sm:py-8 lg:px-12 lg:py-12">
             <div className="mx-auto w-full max-w-xl space-y-5 sm:space-y-6">
