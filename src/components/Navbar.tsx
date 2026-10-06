@@ -48,7 +48,15 @@ export function Navbar() {
   const autoHideEnabled = useRef(false);
   // Escritorio: la cabecera se oculta al hacer scroll y reaparece cuando
   // el ratón se acerca a la parte superior de la página.
-  const isHidden = isScrolled && autoHideEnabled.current && !isNearTop && !isMobileMenuOpen;
+  // Móvil y tablet: se oculta al hacer scroll hacia abajo y reaparece al
+  // hacer scroll hacia arriba.
+  const [scrollingUp, setScrollingUp] = useState(false);
+  const isHidden =
+    isScrolled &&
+    !isMobileMenuOpen &&
+    (autoHideEnabled.current ? !isNearTop : scrollingUp === false && !isMenuInteraction.current);
+  const lastScrollY = useRef(0);
+  const isMenuInteraction = useRef(false);
   useEffect(() => {
     const media = window.matchMedia("(pointer: fine)");
     const updatePointer = () => {
@@ -56,7 +64,12 @@ export function Navbar() {
     };
     updatePointer();
     media.addEventListener("change", updatePointer);
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      setIsScrolled(currentY > 50);
+      setScrollingUp(currentY < lastScrollY.current);
+      lastScrollY.current = currentY;
+    };
     const handleMouse = (event: MouseEvent) => {
       if (!autoHideEnabled.current) return;
       setIsNearTop(event.clientY <= 70);
