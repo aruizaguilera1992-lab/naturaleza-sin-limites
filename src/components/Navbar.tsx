@@ -102,7 +102,7 @@ export function Navbar() {
               alt="Naturaleza Sin Límites"
               loading="eager"
               decoding="async"
-              className="h-32 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110"
+              className="h-40 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110"
             />
           </Link>
 
