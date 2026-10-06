@@ -142,3 +142,5 @@
 - [x] Aplicar el lenguaje visual premium de pago a `/reservar/:category/:slug`
 - [x] Verificar reserva y pago de demostración en móvil y escritorio sin enviar datos ni iniciar cobros
 - [x] Mostrar un calendario mensual desplegable al pulsar el campo de fecha de la reserva
+- [x] Botones de disciplinas del hero abren la página desde arriba (scroll al inicio global + enlaces sin ancla)
+- [x] Eliminado el logotipo de fondo (marca de agua) del panel de reserva
