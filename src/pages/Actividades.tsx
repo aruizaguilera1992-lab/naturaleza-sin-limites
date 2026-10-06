@@ -175,19 +175,6 @@ const Actividades = () => {
     setFilters(initialFilters);
   }, []);
 
-  const handleQuickFilter = useCallback((type: "principiante" | "media-jornada" | "economico") => {
-    switch (type) {
-      case "principiante":
-        setFilters((prev) => ({ ...prev, levels: ["principiante"] }));
-        break;
-      case "media-jornada":
-        setFilters((prev) => ({ ...prev, durations: ["2-4h"] }));
-        break;
-      case "economico":
-        setFilters((prev) => ({ ...prev, priceRange: [0, 60] }));
-        break;
-    }
-  }, []);
 
   const handleToggleCompare = useCallback((activity: UnifiedActivity) => {
     setCompareList((prev) => {
@@ -229,7 +216,6 @@ const Actividades = () => {
       <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
         <ActivitiesHeroSection
           onSearch={(search) => handleFilterChange({ search })}
-          onQuickFilter={handleQuickFilter}
         />
 
         <section id="activities-results" className="py-8 lg:py-12">
