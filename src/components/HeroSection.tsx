@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ChevronDown, Flame, GraduationCap, Mountain, ShieldCheck, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { officialYoutubeVideos } from '@/data/youtubeVideos';
+import { HeroYoutubeBackground } from '@/components/HeroYoutubeBackground';
 
 // Cuestionarios por disciplina: cada enlace abre el cuestionario de esa disciplina.
 const DISCIPLINE_QUESTIONNAIRES = [

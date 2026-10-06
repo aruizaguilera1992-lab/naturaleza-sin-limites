@@ -4,6 +4,7 @@ import { Search, Shield, Clock, Wallet } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { media } from "@/data/media";
+import { HeroYoutubeBackground } from "@/components/HeroYoutubeBackground";
 
 interface ActivitiesHeroSectionProps {
   onSearch: (query: string) => void;
