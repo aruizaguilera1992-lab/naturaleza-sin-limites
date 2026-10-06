@@ -1,10 +1,9 @@
-import { useState } from "react";
 import { useActivitiesData } from "@/hooks/useActivitiesData";
-import { motion, AnimatePresence } from "framer-motion";
-import { SlidersHorizontal, X, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import type { Filters } from "@/pages/Actividades";
 
@@ -13,41 +12,6 @@ interface ActivitiesFiltersProps {
   counts: Record<string, number>;
   onFilterChange: (filters: Partial<Filters>) => void;
   onClearFilters: () => void;
-}
-
-interface FilterSectionProps {
-  title: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}
-
-function FilterSection({ title, children, defaultOpen = true }: FilterSectionProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  return (
-    <div className="border-b border-border pb-4">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full py-2 text-sm font-semibold text-foreground"
-      >
-        {title}
-        {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-      </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="pt-2 space-y-2">{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
 }
 
 interface CheckboxItemProps {
@@ -62,7 +26,7 @@ function CheckboxItem({ id, label, count, checked, onCheckedChange }: CheckboxIt
   return (
     <label
       htmlFor={id}
-      className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 rounded-md p-1.5 -mx-1.5 transition-colors"
+      className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 rounded-md px-2 py-1.5 -mx-2 transition-colors"
     >
       <Checkbox id={id} checked={checked} onCheckedChange={(checked) => onCheckedChange(checked === true)} />
       <span className="text-sm text-foreground flex-1">{label}</span>
@@ -71,8 +35,42 @@ function CheckboxItem({ id, label, count, checked, onCheckedChange }: CheckboxIt
   );
 }
 
+interface FilterDropdownProps {
+  label: string;
+  activeCount: number;
+  children: React.ReactNode;
+  contentClassName?: string;
+}
+
+function FilterDropdown({ label, activeCount, children, contentClassName }: FilterDropdownProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-border bg-card text-sm font-medium text-foreground hover:border-primary/50 hover:bg-muted/60 transition-colors",
+            activeCount > 0 && "border-primary/60 text-primary",
+          )}
+          aria-label={`Filtrar por ${label.toLowerCase()}`}
+        >
+          {label}
+          {activeCount > 0 && (
+            <span className="bg-primary text-primary-foreground rounded-full px-1.5 py-0.5 text-xs leading-none font-semibold">
+              {activeCount}
+            </span>
+          )}
+          <ChevronDown className="h-4 w-4 opacity-60" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className={cn("w-64 p-3", contentClassName)}>
+        {children}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilters }: ActivitiesFiltersProps) {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { activities } = useActivitiesData();
   const provinces = [...new Set(activities.map((activity) => activity.province))].sort((a, b) =>
     a.localeCompare(b, "es"),
@@ -113,95 +111,105 @@ export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilt
     onFilterChange({ characteristics: newChars });
   };
 
-  const filterContent = (
-    <div className="space-y-4">
+  return (
+    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-6" role="group" aria-label="Filtros del catálogo">
       {/* Type of Activity */}
-      <FilterSection title="Tipo de Actividad">
-        <CheckboxItem
-          id="type-barranquismo"
-          label="Barranquismo"
-          count={counts.barranquismo}
-          checked={filters.types.includes("barranquismo")}
-          onCheckedChange={(checked) => handleTypeChange("barranquismo", checked)}
-        />
-        <CheckboxItem
-          id="type-escalada"
-          label="Escalada"
-          count={counts.escalada}
-          checked={filters.types.includes("escalada")}
-          onCheckedChange={(checked) => handleTypeChange("escalada", checked)}
-        />
-        <CheckboxItem
-          id="type-ferratas"
-          label="Vías Ferratas"
-          count={counts.ferratas}
-          checked={filters.types.includes("ferratas")}
-          onCheckedChange={(checked) => handleTypeChange("ferratas", checked)}
-        />
-        {/* La espeleología solo aparece cuando hay propuestas con precio publicado */}
-        {counts.espeleologia > 0 && (
+      <FilterDropdown label="Tipo de Actividad" activeCount={filters.types.length}>
+        <div className="space-y-1">
           <CheckboxItem
-            id="type-espeleologia"
-            label="Espeleología"
-            count={counts.espeleologia}
-            checked={filters.types.includes("espeleologia")}
-            onCheckedChange={(checked) => handleTypeChange("espeleologia", checked)}
+            id="type-barranquismo"
+            label="Barranquismo"
+            count={counts.barranquismo}
+            checked={filters.types.includes("barranquismo")}
+            onCheckedChange={(checked) => handleTypeChange("barranquismo", checked)}
           />
-        )}
-      </FilterSection>
+          <CheckboxItem
+            id="type-escalada"
+            label="Escalada"
+            count={counts.escalada}
+            checked={filters.types.includes("escalada")}
+            onCheckedChange={(checked) => handleTypeChange("escalada", checked)}
+          />
+          <CheckboxItem
+            id="type-ferratas"
+            label="Vías Ferratas"
+            count={counts.ferratas}
+            checked={filters.types.includes("ferratas")}
+            onCheckedChange={(checked) => handleTypeChange("ferratas", checked)}
+          />
+          {/* La espeleología solo aparece cuando hay propuestas con precio publicado */}
+          {counts.espeleologia > 0 && (
+            <CheckboxItem
+              id="type-espeleologia"
+              label="Espeleología"
+              count={counts.espeleologia}
+              checked={filters.types.includes("espeleologia")}
+              onCheckedChange={(checked) => handleTypeChange("espeleologia", checked)}
+            />
+          )}
+        </div>
+      </FilterDropdown>
 
       {/* Level */}
-      <FilterSection title="Nivel">
-        <CheckboxItem
-          id="level-principiante"
-          label="Principiante"
-          checked={filters.levels.includes("principiante")}
-          onCheckedChange={(checked) => handleLevelChange("principiante", checked)}
-        />
-        <CheckboxItem
-          id="level-intermedio"
-          label="Intermedio"
-          checked={filters.levels.includes("intermedio")}
-          onCheckedChange={(checked) => handleLevelChange("intermedio", checked)}
-        />
-        <CheckboxItem
-          id="level-avanzado"
-          label="Avanzado"
-          checked={filters.levels.includes("avanzado")}
-          onCheckedChange={(checked) => handleLevelChange("avanzado", checked)}
-        />
-        <CheckboxItem
-          id="level-experto"
-          label="Experto"
-          checked={filters.levels.includes("experto")}
-          onCheckedChange={(checked) => handleLevelChange("experto", checked)}
-        />
-      </FilterSection>
+      <FilterDropdown label="Nivel" activeCount={filters.levels.length}>
+        <div className="space-y-1">
+          <CheckboxItem
+            id="level-principiante"
+            label="Principiante"
+            checked={filters.levels.includes("principiante")}
+            onCheckedChange={(checked) => handleLevelChange("principiante", checked)}
+          />
+          <CheckboxItem
+            id="level-intermedio"
+            label="Intermedio"
+            checked={filters.levels.includes("intermedio")}
+            onCheckedChange={(checked) => handleLevelChange("intermedio", checked)}
+          />
+          <CheckboxItem
+            id="level-avanzado"
+            label="Avanzado"
+            checked={filters.levels.includes("avanzado")}
+            onCheckedChange={(checked) => handleLevelChange("avanzado", checked)}
+          />
+          <CheckboxItem
+            id="level-experto"
+            label="Experto"
+            checked={filters.levels.includes("experto")}
+            onCheckedChange={(checked) => handleLevelChange("experto", checked)}
+          />
+        </div>
+      </FilterDropdown>
 
       {/* Duration */}
-      <FilterSection title="Duración">
-        <CheckboxItem
-          id="duration-2-4"
-          label="2-4 horas"
-          checked={filters.durations.includes("2-4h")}
-          onCheckedChange={(checked) => handleDurationChange("2-4h", checked)}
-        />
-        <CheckboxItem
-          id="duration-4-6"
-          label="4-6 horas"
-          checked={filters.durations.includes("4-6h")}
-          onCheckedChange={(checked) => handleDurationChange("4-6h", checked)}
-        />
-        <CheckboxItem
-          id="duration-6plus"
-          label="+6 horas"
-          checked={filters.durations.includes("6h+")}
-          onCheckedChange={(checked) => handleDurationChange("6h+", checked)}
-        />
-      </FilterSection>
+      <FilterDropdown label="Duración" activeCount={filters.durations.length}>
+        <div className="space-y-1">
+          <CheckboxItem
+            id="duration-2-4"
+            label="2-4 horas"
+            checked={filters.durations.includes("2-4h")}
+            onCheckedChange={(checked) => handleDurationChange("2-4h", checked)}
+          />
+          <CheckboxItem
+            id="duration-4-6"
+            label="4-6 horas"
+            checked={filters.durations.includes("4-6h")}
+            onCheckedChange={(checked) => handleDurationChange("4-6h", checked)}
+          />
+          <CheckboxItem
+            id="duration-6plus"
+            label="+6 horas"
+            checked={filters.durations.includes("6h+")}
+            onCheckedChange={(checked) => handleDurationChange("6h+", checked)}
+          />
+        </div>
+      </FilterDropdown>
 
       {/* Price */}
-      <FilterSection title="Precio">
+      <FilterDropdown
+        label="Precio"
+        activeCount={filters.priceRange[0] > 0 || filters.priceRange[1] < 200 ? 1 : 0}
+        contentClassName="w-72"
+      >
         <div className="px-2 pt-2">
           <Slider
             value={filters.priceRange}
@@ -216,97 +224,60 @@ export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilt
             <span>{filters.priceRange[1]}€</span>
           </div>
         </div>
-      </FilterSection>
+      </FilterDropdown>
 
       {/* Province */}
-      <FilterSection title="Provincia">
-        {provinces.map((province) => (
-          <CheckboxItem
-            key={province}
-            id={"province-" + province}
-            label={province}
-            checked={filters.provinces.includes(province)}
-            onCheckedChange={(checked) => handleProvinceChange(province, checked)}
-          />
-        ))}
-      </FilterSection>
+      <FilterDropdown label="Provincia" activeCount={filters.provinces.length} contentClassName="w-64 max-h-72 overflow-y-auto">
+        <div className="space-y-1">
+          {provinces.map((province) => (
+            <CheckboxItem
+              key={province}
+              id={"province-" + province}
+              label={province}
+              checked={filters.provinces.includes(province)}
+              onCheckedChange={(checked) => handleProvinceChange(province, checked)}
+            />
+          ))}
+        </div>
+      </FilterDropdown>
 
       {/* Characteristics */}
-      <FilterSection title="Características" defaultOpen={false}>
-        <CheckboxItem
-          id="char-rapeles"
-          label="Rapeles"
-          checked={filters.characteristics.includes("rapeles")}
-          onCheckedChange={(checked) => handleCharacteristicChange("rapeles", checked)}
-        />
-        <CheckboxItem
-          id="char-saltos"
-          label="Saltos"
-          checked={filters.characteristics.includes("saltos")}
-          onCheckedChange={(checked) => handleCharacteristicChange("saltos", checked)}
-        />
-        <CheckboxItem
-          id="char-agua"
-          label="Agua"
-          checked={filters.characteristics.includes("nado")}
-          onCheckedChange={(checked) => handleCharacteristicChange("nado", checked)}
-        />
-        <CheckboxItem
-          id="char-vertical"
-          label="Vertical"
-          checked={filters.characteristics.includes("vertical")}
-          onCheckedChange={(checked) => handleCharacteristicChange("vertical", checked)}
-        />
-      </FilterSection>
+      <FilterDropdown label="Características" activeCount={filters.characteristics.length}>
+        <div className="space-y-1">
+          <CheckboxItem
+            id="char-rapeles"
+            label="Rapeles"
+            checked={filters.characteristics.includes("rapeles")}
+            onCheckedChange={(checked) => handleCharacteristicChange("rapeles", checked)}
+          />
+          <CheckboxItem
+            id="char-saltos"
+            label="Saltos"
+            checked={filters.characteristics.includes("saltos")}
+            onCheckedChange={(checked) => handleCharacteristicChange("saltos", checked)}
+          />
+          <CheckboxItem
+            id="char-agua"
+            label="Agua"
+            checked={filters.characteristics.includes("nado")}
+            onCheckedChange={(checked) => handleCharacteristicChange("nado", checked)}
+          />
+          <CheckboxItem
+            id="char-vertical"
+            label="Vertical"
+            checked={filters.characteristics.includes("vertical")}
+            onCheckedChange={(checked) => handleCharacteristicChange("vertical", checked)}
+          />
+        </div>
+      </FilterDropdown>
 
       {/* Clear Filters */}
       {hasActiveFilters && (
-        <Button variant="outline" onClick={onClearFilters} className="w-full">
-          <X className="h-4 w-4 mr-2" />
+        <Button variant="ghost" size="sm" onClick={onClearFilters} className="gap-1.5 text-muted-foreground hover:text-foreground">
+          <X className="h-4 w-4" />
           Limpiar filtros
         </Button>
       )}
     </div>
-  );
-
-  return (
-    <>
-      {/* Mobile Filter Toggle */}
-      <div className="lg:hidden mb-4">
-        <Button variant="outline" onClick={() => setIsMobileOpen(!isMobileOpen)} className="w-full justify-between">
-          <span className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4" />
-            Filtros
-          </span>
-          {hasActiveFilters && (
-            <span className="bg-primary text-primary-foreground px-2 py-0.5 rounded-full text-xs">Activos</span>
-          )}
-        </Button>
-
-        <AnimatePresence>
-          {isMobileOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden mt-4"
-            >
-              <div className="bg-card border border-border rounded-xl p-4">{filterContent}</div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:block sticky top-32">
-        <div className="bg-card border border-border rounded-xl p-5">
-          <div className="flex items-center gap-2 mb-4 pb-4 border-b border-border">
-            <SlidersHorizontal className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-foreground">Filtros</h3>
-          </div>
-          {filterContent}
-        </div>
-      </div>
-    </>
   );
 }

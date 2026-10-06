@@ -253,17 +253,15 @@ const Actividades = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="flex flex-col lg:flex-row gap-6"
+                  className="flex flex-col gap-6"
                 >
-                  {/* Filters Sidebar */}
-                  <aside className="w-full lg:w-72 xl:w-80 flex-shrink-0">
-                    <ActivitiesFilters
-                      filters={filters}
-                      counts={counts}
-                      onFilterChange={handleFilterChange}
-                      onClearFilters={handleClearFilters}
-                    />
-                  </aside>
+                  {/* Horizontal Filters Bar */}
+                  <ActivitiesFilters
+                    filters={filters}
+                    counts={counts}
+                    onFilterChange={handleFilterChange}
+                    onClearFilters={handleClearFilters}
+                  />
 
                   {/* Main Content */}
                   <div className="flex-1 min-w-0">
