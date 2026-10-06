@@ -49,7 +49,7 @@ const OnlineSchema = z.object({
   type: z.literal("online_request"),
   nombre: z.string().trim().min(2).max(120),
   email: z.string().trim().email().max(150),
-  disciplina: z.enum(["Barranquismo", "Espeleología", "Actividades verticales"]),
+  disciplina: z.enum(["Barranquismo", "Espeleología", "Escalada", "Vías ferratas", "Montaña"]),
   objetivo: z.string().trim().min(3).max(600),
   disponibilidad: z.string().trim().min(1).max(60),
   rgpd: z.literal(true),
