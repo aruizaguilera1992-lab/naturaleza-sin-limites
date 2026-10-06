@@ -81,7 +81,7 @@ function FilterDropdown({ label, activeCount, children, contentClassName }: Filt
   );
 }
 
-export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilters }: ActivitiesFiltersProps) {
+export function ActivitiesFilters({ filters, counts, activeTab, onTabChange, onFilterChange, onClearFilters }: ActivitiesFiltersProps) {
   const { activities } = useActivitiesData();
   const provinces = [...new Set(activities.map((activity) => activity.province))].sort((a, b) =>
     a.localeCompare(b, "es"),
