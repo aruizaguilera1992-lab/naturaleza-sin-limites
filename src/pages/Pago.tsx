@@ -413,20 +413,20 @@ function PaymentVisual({ activity, image, categoryLabel }: { activity?: string; 
       <div className="relative flex h-full min-h-56 flex-col justify-between p-5 sm:min-h-80 sm:p-8 lg:min-h-[680px] lg:p-10">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary sm:text-xs">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary sm:tracking-[0.3em] sm:text-xs">
               Naturaleza Sin Límites
             </p>
             <div className="mt-1.5 h-0.5 w-12 bg-primary" />
           </div>
           {categoryLabel && (
-            <span className="rounded-full border border-foreground/15 bg-background/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground backdrop-blur-sm">
+            <span className="shrink-0 rounded-full border border-foreground/15 bg-background/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground backdrop-blur-sm">
               {categoryLabel}
             </span>
           )}
         </div>
 
         <div>
-          <h2 className="font-heading text-[2.6rem] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:text-6xl lg:text-[4.1rem]">
+          <h2 className="font-heading text-[2.1rem] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:text-6xl lg:text-[4.1rem]">
             <span className="block">Tu próxima</span>
             <span className="block text-primary">aventura</span>
             <span className="block">empieza aquí</span>
