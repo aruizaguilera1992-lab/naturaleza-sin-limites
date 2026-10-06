@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { getActivityCatalogImage, getActivityProfile, PENDING } from "@/data/activityProfiles";
 import { ActivityEventPicker } from "@/components/actividades/ActivityEventPicker";
 import { useActivityEvents } from "@/hooks/useActivityEvents";
-import logoAsset from "@/assets/logo.png";
+import logoAsset from "@/assets/logo-integrated.png";
 
 
 const DEPOSIT_RATE = 0.3;
@@ -102,9 +102,16 @@ export default function ReservarActividad() {
               <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-background" />
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-background/10" />
+            <img
+              src={logoAsset}
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-10 w-72 opacity-25 sm:w-96 lg:-right-24 lg:top-8 lg:w-[30rem] lg:opacity-30"
+            />
             <div className="relative flex h-full min-h-56 flex-col justify-end p-6 sm:min-h-72 sm:p-9 lg:min-h-[780px] lg:p-12">
               <p className="mb-3 text-sm font-semibold uppercase text-primary">{activity?.categoryLabel ?? "Naturaleza Sin Límites"}</p>
-              <p className="max-w-lg font-heading text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">Reserva tu próxima aventura</p>
+              <p className="max-w-lg font-heading text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">Tu próxima aventura te espera</p>
+              <p className="mt-2 max-w-md text-base text-foreground/80 sm:text-lg">Elige tu fecha, reserva tu plaza y solo piensa en la montaña.</p>
               {activity && <p className="mt-3 text-lg font-semibold text-foreground/90">{activity.name}</p>}
             </div>
           </aside>
