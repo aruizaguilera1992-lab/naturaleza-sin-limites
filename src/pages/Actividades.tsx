@@ -262,14 +262,6 @@ const Actividades = () => {
                   exit={{ opacity: 0, y: -20 }}
                   className="flex flex-col gap-6"
                 >
-                  {/* Horizontal Filters Bar */}
-                  <ActivitiesFilters
-                    filters={filters}
-                    counts={counts}
-                    onFilterChange={handleFilterChange}
-                    onClearFilters={handleClearFilters}
-                  />
-
                   {/* Main Content */}
                   <div className="flex-1 min-w-0">
                     {activeTab === "escalada" && (
