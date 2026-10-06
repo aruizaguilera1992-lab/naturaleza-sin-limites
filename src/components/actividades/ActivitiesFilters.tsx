@@ -1,18 +1,29 @@
 import { useActivitiesData } from "@/hooks/useActivitiesData";
-import { ChevronDown, X } from "lucide-react";
+import { Calendar, ChevronDown, GitBranch, Mountain, Waves, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import type { Filters } from "@/pages/Actividades";
+import type { ActivityType, Filters } from "@/pages/Actividades";
 
 interface ActivitiesFiltersProps {
   filters: Filters;
   counts: Record<string, number>;
+  activeTab: ActivityType;
+  onTabChange: (tab: ActivityType) => void;
   onFilterChange: (filters: Partial<Filters>) => void;
   onClearFilters: () => void;
 }
+
+const tabs: { id: ActivityType; label: string; icon: React.ElementType; emoji: string }[] = [
+  { id: "todas", label: "Todas", icon: Mountain, emoji: "🎯" },
+  { id: "barranquismo", label: "Barranquismo", icon: Waves, emoji: "🌊" },
+  { id: "escalada", label: "Escalada", icon: Mountain, emoji: "🧗" },
+  { id: "ferratas", label: "Ferratas", icon: GitBranch, emoji: "🪜" },
+  { id: "espeleologia", label: "Espeleología", icon: Mountain, emoji: "🕯️" },
+  { id: "calendario", label: "Calendario", icon: Calendar, emoji: "📅" },
+];
 
 interface CheckboxItemProps {
   id: string;
@@ -70,7 +81,7 @@ function FilterDropdown({ label, activeCount, children, contentClassName }: Filt
   );
 }
 
-export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilters }: ActivitiesFiltersProps) {
+export function ActivitiesFilters({ filters, counts, activeTab, onTabChange, onFilterChange, onClearFilters }: ActivitiesFiltersProps) {
   const { activities } = useActivitiesData();
   const provinces = [...new Set(activities.map((activity) => activity.province))].sort((a, b) =>
     a.localeCompare(b, "es"),
@@ -113,6 +124,43 @@ export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilt
 
   return (
     <div className="mx-auto mb-6 flex w-full max-w-6xl flex-wrap items-center justify-center gap-2 rounded-2xl border border-border bg-card/60 p-2 sm:gap-3 sm:p-3" role="group" aria-label="Filtros del catálogo">
+      {/* Discipline tabs */}
+      {tabs
+        .filter((tab) => tab.id === "todas" || tab.id === "calendario" || (counts[tab.id] || 0) > 0)
+        .map((tab) => {
+          const isActive = activeTab === tab.id;
+          const count = tab.id === "calendario" ? null : counts[tab.id] || 0;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => onTabChange(tab.id)}
+              className={cn(
+                "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 active:scale-95",
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                  : "bg-muted/50 text-muted-foreground border border-border hover:border-primary/50 hover:text-foreground",
+              )}
+            >
+              <span className="text-base sm:hidden">{tab.emoji}</span>
+              <tab.icon className="hidden sm:block h-4 w-4" />
+              <span>{tab.label}</span>
+              {count !== null && (
+                <span
+                  className={cn(
+                    "ml-1 px-1.5 py-0.5 rounded-full text-xs font-semibold",
+                    isActive ? "bg-primary-foreground/20 text-primary-foreground" : "bg-background text-muted-foreground",
+                  )}
+                >
+                  {count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+
+      <span className="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
+
       {/* Type of Activity */}
       <FilterDropdown label="Tipo de Actividad" activeCount={filters.types.length}>
         <div className="space-y-1">
