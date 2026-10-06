@@ -216,7 +216,6 @@ const Actividades = () => {
       <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
         <ActivitiesHeroSection
           onSearch={(search) => handleFilterChange({ search })}
-          onQuickFilter={handleQuickFilter}
         />
 
         <section id="activities-results" className="py-8 lg:py-12">
