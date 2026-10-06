@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { MessageCircle } from 'lucide-react';
 
 export function WhatsAppButton() {
   const phoneNumber = '34685609542';
