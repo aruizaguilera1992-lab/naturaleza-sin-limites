@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Clock, TrendingDown, ArrowDown, Info, MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Clock, TrendingDown, ArrowDown, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { Barranco } from '@/data/barrancos';
@@ -28,10 +29,7 @@ const nivelColors: Record<string, string> = {
 };
 
 export function CanyonCard({ barranco, index, userLevel, onOpenDetail }: CanyonCardProps) {
-  const whatsappMessage = encodeURIComponent(
-    `¡Hola! Me interesa el barranco ${barranco.nombre} en ${barranco.provincia}. Mi nivel es ${userLevel}. ¿Tenéis disponibilidad?`
-  );
-  const whatsappUrl = `https://wa.me/34685609542?text=${whatsappMessage}`;
+  const bookingUrl = `/reservar/barranquismo/${barranco.id}`;
 
   return (
     <motion.div
@@ -131,10 +129,9 @@ export function CanyonCard({ barranco, index, userLevel, onOpenDetail }: CanyonC
             className="flex-1 gap-2"
             asChild
           >
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="h-4 w-4" />
+            <Link to={bookingUrl}>
               Reservar
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

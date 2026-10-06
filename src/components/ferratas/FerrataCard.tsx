@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Clock, Ruler, Mountain, Info, MessageCircle, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Clock, Ruler, Mountain, Info, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { Ferrata } from '@/data/ferratas';
@@ -59,10 +60,7 @@ const clasificacionColors: Record<string, string> = {
 };
 
 export function FerrataCard({ ferrata, index, userLevel, onOpenDetail }: FerrataCardProps) {
-  const whatsappMessage = encodeURIComponent(
-    `¡Hola! Me interesa la vía ferrata ${ferrata.nombre} en ${ferrata.zona}. Mi nivel es ${userLevel}. ¿Tenéis disponibilidad?`
-  );
-  const whatsappUrl = `https://wa.me/34685609542?text=${whatsappMessage}`;
+  const bookingUrl = `/reservar/vias-ferratas/${ferrata.id}`;
 
   const isHighExposure = ferrata.exposicion === 'Alta' || ferrata.exposicion === 'Muy Alta';
 
@@ -174,10 +172,9 @@ export function FerrataCard({ ferrata, index, userLevel, onOpenDetail }: Ferrata
             className="flex-1 gap-2"
             asChild
           >
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="h-4 w-4" />
+            <Link to={bookingUrl}>
               Reservar
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

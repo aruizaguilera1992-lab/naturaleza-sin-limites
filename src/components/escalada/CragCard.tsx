@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Clock, Mountain, Compass, Ruler, Info, MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Clock, Mountain, Compass, Ruler, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { Crag } from '@/data/crags';
@@ -23,10 +24,7 @@ const caracteristicaLabels: Record<string, string> = {
 };
 
 export function CragCard({ crag, index, userLevel, onOpenDetail }: CragCardProps) {
-  const whatsappMessage = encodeURIComponent(
-    `¡Hola! Quiero reservar escalada en ${crag.nombre} en ${crag.zona}. Mi nivel es ${userLevel}. ¿Tienen disponibilidad?`
-  );
-  const whatsappUrl = `https://wa.me/34685609542?text=${whatsappMessage}`;
+  const bookingUrl = `/reservar/escalada/${crag.id}`;
 
   return (
     <motion.div
@@ -130,10 +128,9 @@ export function CragCard({ crag, index, userLevel, onOpenDetail }: CragCardProps
             className="flex-1 gap-2"
             asChild
           >
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="h-4 w-4" />
+            <Link to={bookingUrl}>
               Reservar
-            </a>
+            </Link>
           </Button>
         </div>
       </div>
