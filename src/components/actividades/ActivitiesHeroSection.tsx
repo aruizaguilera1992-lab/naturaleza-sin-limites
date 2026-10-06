@@ -4,6 +4,7 @@ import { Search, Shield, Clock, Wallet } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { media } from "@/data/media";
+import { HeroYoutubeBackground } from "@/components/HeroYoutubeBackground";
 
 interface ActivitiesHeroSectionProps {
   onSearch: (query: string) => void;
@@ -20,7 +21,7 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
 
   return (
     <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
+      {/* Background Image (fallback visible hasta que empieza el vídeo y con prefers-reduced-motion) */}
       <div className="absolute inset-0">
         <img
           src={media.canyoning.src}
@@ -29,8 +30,10 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
           decoding="async"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
       </div>
+      {/* Vídeo aleatorio del canal oficial, igual que en el hero de la portada */}
+      <HeroYoutubeBackground />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 pt-44 md:pt-40 pb-16 text-center">
