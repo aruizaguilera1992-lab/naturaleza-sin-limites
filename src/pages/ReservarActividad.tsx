@@ -102,12 +102,14 @@ export default function ReservarActividad() {
               <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-background" />
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-background/10" />
-            <img
-              src={logoAsset}
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-10 w-72 opacity-25 sm:w-96 lg:-right-24 lg:top-8 lg:w-[30rem] lg:opacity-30"
-            />
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-8">
+              <img
+                src={logoAsset}
+                alt=""
+                aria-hidden="true"
+                className="max-h-[70%] w-auto max-w-[80%] object-contain opacity-20 lg:opacity-25"
+              />
+            </div>
             <div className="relative flex h-full min-h-56 flex-col justify-end p-6 sm:min-h-72 sm:p-9 lg:min-h-[780px] lg:p-12">
               <p className="mb-3 text-sm font-semibold uppercase text-primary">{activity?.categoryLabel ?? "Naturaleza Sin Límites"}</p>
               <p className="max-w-lg font-heading text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">Tu próxima aventura te espera</p>
