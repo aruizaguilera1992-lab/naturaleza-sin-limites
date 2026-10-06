@@ -197,8 +197,8 @@ export default function Pago() {
         </header>
         <div className="grid flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-card lg:grid-cols-[minmax(0,0.92fr)_minmax(480px,1.08fr)]">
           <PaymentVisual activity={payment?.activity} image={getVerifiedActivityImage(payment?.activity)} />
-          <section className="flex min-w-0 flex-col justify-center px-5 py-8 sm:px-9 lg:px-12 lg:py-12">
-            <div className="mx-auto w-full max-w-xl space-y-6">
+          <section className="flex min-w-0 flex-col justify-center px-5 py-6 sm:px-9 sm:py-8 lg:px-12 lg:py-12">
+            <div className="mx-auto w-full max-w-xl space-y-5 sm:space-y-6">
               {children}
               {help}
             </div>
@@ -314,7 +314,7 @@ export default function Pago() {
       <div>
         <p className="mb-2 text-sm font-semibold uppercase text-primary">Pago de reserva</p>
         <h1 className="font-heading text-4xl font-extrabold leading-[1.08] text-foreground sm:text-5xl lg:text-[3.25rem]">Completa tu reserva</h1>
-        <p className="mt-5 font-heading text-xl font-bold leading-snug text-foreground">{payment.activity}</p>
+        <p className="mt-4 font-heading text-xl font-bold leading-snug text-foreground sm:mt-5">{payment.activity}</p>
 
         <div className="mt-4 grid gap-3 text-base text-muted-foreground sm:grid-cols-2">
           {date && (
@@ -330,7 +330,7 @@ export default function Pago() {
           )}
         </div>
 
-        <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
+        <dl className="mt-5 space-y-2.5 border-y border-border py-4 text-sm sm:mt-7 sm:space-y-3 sm:py-6">
           <div>
             <dt className="text-sm font-semibold uppercase text-muted-foreground">Pagas ahora</dt>
             <dd className="mt-1 font-heading text-[2.75rem] font-extrabold leading-none text-primary sm:text-5xl">{amount}</dd>
@@ -393,19 +393,19 @@ export default function Pago() {
 
 function PaymentVisual({ activity, image }: { activity?: string; image: string | null }) {
   return (
-    <aside className="relative min-h-56 overflow-hidden bg-secondary sm:min-h-72 lg:min-h-[680px]">
+    <aside className="relative min-h-48 overflow-hidden bg-secondary sm:min-h-72 lg:min-h-[680px]">
       {image ? (
         <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-background" />
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-background/10" />
-      <div className="relative flex h-full min-h-56 flex-col justify-end p-6 sm:min-h-72 sm:p-9 lg:min-h-[680px] lg:p-12">
+      <div className="relative flex h-full min-h-48 flex-col justify-end p-5 sm:min-h-72 sm:p-9 lg:min-h-[680px] lg:p-12">
         <p className="mb-3 text-sm font-semibold uppercase text-primary">Naturaleza Sin Límites</p>
-        <p className="max-w-lg font-heading text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">
+        <p className="max-w-lg font-heading text-[2rem] font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">
           Tu próxima aventura empieza aquí
         </p>
-        {activity && <p className="mt-4 text-base font-semibold text-foreground/90 sm:text-lg">{activity}</p>}
+        {activity && <p className="mt-2 text-base font-semibold text-foreground/90 sm:mt-4 sm:text-lg">{activity}</p>}
       </div>
     </aside>
   );
