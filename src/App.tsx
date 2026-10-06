@@ -75,6 +75,7 @@ const App = () => (
           <Sonner />
           <AnalyticsLoader />
           <BrowserRouter>
+            <ScrollToTopOnRouteChange />
             <AuthRedirectHandler />
             <CookieBanner />
             <CookiePreferencesModal />
