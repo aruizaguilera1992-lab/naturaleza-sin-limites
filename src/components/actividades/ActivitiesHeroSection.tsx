@@ -61,39 +61,6 @@ export function ActivitiesHeroSection({ onSearch }: ActivitiesHeroSectionProps) 
             </div>
           </form>
 
-          {/* Quick Filters */}
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Filtrar actividades para principiantes"
-              onClick={() => onQuickFilter("principiante")}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-sm hover:bg-white/20 transition-colors"
-            >
-              <Shield className="h-4 w-4 text-green-400" />
-              <span className="inline">Principiante</span>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Filtrar actividades de media jornada"
-              onClick={() => onQuickFilter("media-jornada")}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-sm hover:bg-white/20 transition-colors"
-            >
-              <Clock className="h-4 w-4 text-yellow-400" />
-              <span className="inline">Media jornada</span>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Filtrar actividades de menos de 60 euros"
-              onClick={() => onQuickFilter("economico")}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-sm hover:bg-white/20 transition-colors"
-            >
-              <Wallet className="h-4 w-4 text-emerald-400" />
-              <span className="inline">&lt;60€</span>
-            </motion.button>
-          </div>
         </motion.div>
       </div>
     </section>
