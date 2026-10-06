@@ -7,7 +7,7 @@ import { getStripe } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Button } from "@/components/ui/button";
 import { activityProfiles, getActivityCatalogImage } from "@/data/activityProfiles";
-import logoAsset from "@/assets/naturaleza-sin-limites-logo.webp.asset.json";
+import logoAsset from "@/assets/logo.png";
 import {
   AlertTriangle,
   CalendarDays,
@@ -85,9 +85,18 @@ export default function Pago() {
   const { token = "" } = useParams();
   const [searchParams] = useSearchParams();
   const isDesignDemo = import.meta.env.DEV && token === "demo";
-  const justReturned = !!searchParams.get("session_id");
+  const designState = searchParams.get("state");
+  const justReturned = !!searchParams.get("session_id") || (isDesignDemo && designState === "processing");
 
-  const [payment, setPayment] = useState<Payment | null>(isDesignDemo ? DESIGN_PAYMENT : null);
+  const demoPayment = designState === "paid"
+    ? { ...DESIGN_PAYMENT, status: "pagado", bookingState: "confirmada" as const }
+    : designState === "expired"
+      ? { ...DESIGN_PAYMENT, status: "caducado" }
+      : designState === "processing"
+        ? { ...DESIGN_PAYMENT, sessionState: "confirmando" as const }
+        : DESIGN_PAYMENT;
+
+  const [payment, setPayment] = useState<Payment | null>(isDesignDemo ? demoPayment : null);
   const [loading, setLoading] = useState(!isDesignDemo);
   const [error, setError] = useState<"invalid" | "not_found" | "load" | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -97,7 +106,7 @@ export default function Pago() {
 
   const loadStatus = useCallback(async () => {
     if (isDesignDemo) {
-      setPayment(DESIGN_PAYMENT);
+      setPayment(demoPayment);
       setLoading(false);
       return;
     }
@@ -117,7 +126,7 @@ export default function Pago() {
       setError(status === 404 ? "not_found" : "load");
     }
     setLoading(false);
-  }, [token, justReturned, isDesignDemo]);
+  }, [token, justReturned, isDesignDemo, designState]);
 
   useEffect(() => { loadStatus(); }, [loadStatus]);
 
@@ -171,7 +180,7 @@ export default function Pago() {
       <div className="mx-auto flex min-h-[calc(100vh-41px)] max-w-[1440px] flex-col px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
         <header className="mb-5 flex min-h-14 items-center justify-between gap-4 lg:mb-7">
           <Link to="/" aria-label="Naturaleza Sin Límites, inicio" className="inline-flex min-h-12 items-center rounded-md focus-visible:ring-offset-background">
-            <img src={logoAsset.url} alt="Naturaleza Sin Límites" className="h-16 w-auto object-contain sm:h-20" />
+            <img src={logoAsset} alt="Naturaleza Sin Límites" className="h-16 w-auto object-contain sm:h-20" />
           </Link>
           <div className="flex flex-col items-end gap-2">
             {isDesignDemo && (
