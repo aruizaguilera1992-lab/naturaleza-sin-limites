@@ -410,7 +410,7 @@ function PaymentVisual({ activity, image, categoryLabel }: { activity?: string; 
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-transparent to-transparent" />
-      <div className="relative flex h-full min-h-56 flex-col justify-between p-5 sm:min-h-80 sm:p-8 lg:min-h-[680px] lg:p-10">
+      <div className="relative flex h-full min-h-56 flex-col p-5 sm:min-h-80 sm:p-8 lg:min-h-[680px] lg:p-10">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary sm:tracking-[0.3em] sm:text-xs">
@@ -425,14 +425,14 @@ function PaymentVisual({ activity, image, categoryLabel }: { activity?: string; 
           )}
         </div>
 
-        <div>
+        <div className="mt-6 text-justify sm:mt-8">
           <h2 className="font-heading text-[2.1rem] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:text-6xl lg:text-[4.1rem]">
             <span className="block">Tu próxima</span>
             <span className="block text-primary">aventura</span>
             <span className="block">empieza aquí</span>
           </h2>
           {activity && (
-            <div className="mt-5 inline-flex max-w-full flex-col gap-1 rounded-2xl border border-foreground/10 bg-background/45 px-5 py-4 backdrop-blur-md sm:mt-7">
+            <div className="mt-5 flex w-full flex-wrap items-baseline justify-between gap-x-6 gap-y-1 rounded-2xl border border-foreground/10 bg-background/45 px-5 py-4 text-justify backdrop-blur-md sm:mt-7">
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Actividad</span>
               <span className="font-heading text-xl font-bold leading-tight text-foreground sm:text-2xl">{activity}</span>
             </div>
