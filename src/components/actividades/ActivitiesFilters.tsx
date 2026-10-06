@@ -49,7 +49,7 @@ function FilterDropdown({ label, activeCount, children, contentClassName }: Filt
         <button
           type="button"
           className={cn(
-            "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-border bg-card text-sm font-medium text-foreground hover:border-primary/50 hover:bg-muted/60 transition-colors",
+            "flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-border bg-muted/50 text-sm font-medium text-foreground hover:border-primary/50 hover:bg-muted/60 transition-colors",
             activeCount > 0 && "border-primary/60 text-primary",
           )}
           aria-label={`Filtrar por ${label.toLowerCase()}`}
@@ -112,7 +112,7 @@ export function ActivitiesFilters({ filters, counts, onFilterChange, onClearFilt
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-6" role="group" aria-label="Filtros del catálogo">
+    <div className="mx-auto mb-6 flex w-full max-w-6xl flex-wrap items-center justify-center gap-2 rounded-2xl border border-border bg-card/60 p-2 sm:gap-3 sm:p-3" role="group" aria-label="Filtros del catálogo">
       {/* Type of Activity */}
       <FilterDropdown label="Tipo de Actividad" activeCount={filters.types.length}>
         <div className="space-y-1">
