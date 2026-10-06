@@ -3,6 +3,7 @@ import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
 import {
   businessRecipients,
   dispatchPendingForPayment,
+  enqueueNotification,
   escapeHtml,
   formatAmount,
   layout,
@@ -24,56 +25,69 @@ function getSupabase() {
   return _supabase;
 }
 
-function buildIntents(opts: {
+type CustomerVariant = "confirmada" | "fecha_pendiente" | "pago_recibido";
+
+function customerIntent(opts: {
+  paymentRequestId: string;
+  concept: string;
+  amount: string;
+  reference: string;
+  email: string;
+  variant: CustomerVariant;
+}): NotificationIntent {
+  const { concept, amount, reference } = opts;
+  const details = `<p><strong>${escapeHtml(concept)}</strong><br/>Importe pagado: <strong>${escapeHtml(amount)}</strong><br/>Referencia: ${escapeHtml(reference)}</p>`;
+  const contact = `<p>Cualquier duda, respóndenos a este email o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>`;
+  if (opts.variant === "confirmada") {
+    return {
+      kind: "pago_confirmado_cliente",
+      dedupeKey: `payment_confirmed_customer:${opts.paymentRequestId}`,
+      recipients: [opts.email],
+      subject: `Reserva confirmada · ${concept}`,
+      html: layout("¡Tu reserva está confirmada!", `
+        <p>Hemos recibido tu pago y tu plaza en la salida queda <strong>confirmada</strong>.</p>
+        ${details}
+        <p>Te enviaremos el punto de encuentro y la hora exacta con antelación.</p>
+        ${contact}`),
+    };
+  }
+  const pendingDate = opts.variant === "fecha_pendiente";
+  return {
+    kind: "pago_recibido_cliente",
+    dedupeKey: `payment_received_customer:${opts.paymentRequestId}`,
+    recipients: [opts.email],
+    subject: `Pago recibido · ${concept}`,
+    html: layout("Hemos recibido tu pago", `
+      <p>Tu pago se ha registrado correctamente.${pendingDate ? " La fecha solicitada está <strong>pendiente de confirmación</strong>: te escribiremos para confirmarla." : ""}</p>
+      ${details}
+      ${contact}`),
+  };
+}
+
+function businessIntent(opts: {
   paymentRequestId: string;
   concept: string;
   amount: string;
   reference: string;
   customerEmail: string | null;
   env: StripeEnv;
-  isBooking: boolean;
-}): NotificationIntent[] {
-  const intents: NotificationIntent[] = [];
-  const { concept, amount, reference } = opts;
-
-  if (opts.customerEmail) {
-    intents.push({
-      kind: "pago_confirmado_cliente",
-      dedupeKey: `payment_confirmed_customer:${opts.paymentRequestId}`,
-      recipients: [opts.customerEmail],
-      subject: `Reserva confirmada · ${concept}`,
-      html: layout("¡Tu reserva está confirmada!", `
-        <p>Hemos recibido tu pago correctamente y tu plaza queda <strong>confirmada</strong>.</p>
-        <p><strong>${escapeHtml(concept)}</strong><br/>Importe pagado: <strong>${escapeHtml(amount)}</strong><br/>Referencia: ${escapeHtml(reference)}</p>
-        <p><strong>Antes de la actividad:</strong></p>
-        <ul>
-          <li>Te enviaremos el punto de encuentro y la hora exacta con antelación.</li>
-          <li>Lleva ropa deportiva, calzado adecuado, agua y algo de comida.</li>
-          <li>El material técnico y los seguros están incluidos.</li>
-          <li>Si la meteorología obliga a cancelar, reprogramamos o devolvemos el importe.</li>
-        </ul>
-        <p>Cualquier duda, respóndenos a este email o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>
-      `),
-    });
-  }
-
-  const subject = `Pago recibido: ${concept}`;
-  intents.push({
+  type: string;
+}): NotificationIntent {
+  const subject = `Pago recibido: ${opts.concept}`;
+  return {
     kind: "pago_confirmado_negocio",
     dedupeKey: `payment_confirmed_business:${opts.paymentRequestId}`,
     recipients: businessRecipients(),
     subject,
     html: listLayout(subject, [
-      `Concepto: ${concept}`,
-      `Importe: ${amount}`,
+      `Concepto: ${opts.concept}`,
+      `Importe: ${opts.amount}`,
       `Cliente: ${opts.customerEmail ?? "-"}`,
-      `Referencia: ${reference}`,
+      `Referencia: ${opts.reference}`,
       `Entorno: ${opts.env}`,
-      `Tipo: ${opts.isBooking ? "reserva" : "contacto"}`,
+      `Tipo: ${opts.type}`,
     ]),
-  });
-
-  return intents;
+  };
 }
 
 /**
@@ -311,15 +325,45 @@ async function fulfill(session: any, env: StripeEnv) {
     return;
   }
 
-  const intents = buildIntents({
+  // Does this booking hold seats on a scheduled outing?
+  let hasEvent = false;
+  if (pr.booking_id) {
+    const { data: link, error: linkError } = await supabase
+      .from("activity_event_bookings")
+      .select("id")
+      .eq("booking_id", pr.booking_id)
+      .maybeSingle();
+    if (linkError) {
+      console.error("event link read failed", linkError);
+      throw new Error("read_failed");
+    }
+    hasEvent = Boolean(link);
+  }
+
+  const base = {
     paymentRequestId: pr.id as string,
     concept: (pr.concept as string) ?? "Actividad",
     amount: formatAmount(amountCents, currency),
     reference,
-    customerEmail: (pr.customer_email as string | null) ?? customerEmail,
-    env,
-    isBooking: Boolean(pr.booking_id),
-  });
+  };
+  const email = (pr.customer_email as string | null) ?? customerEmail;
+  const intents: NotificationIntent[] = [
+    businessIntent({
+      ...base,
+      customerEmail: email,
+      env,
+      type: pr.booking_id ? (hasEvent ? "reserva en salida programada" : "reserva con fecha solicitada") : "contacto",
+    }),
+  ];
+  // Seat-confirmed email for scheduled outings is only queued AFTER the seats
+  // are confirmed below; other payments get a truthful "payment received".
+  if (email && !hasEvent) {
+    intents.push(customerIntent({
+      ...base,
+      email,
+      variant: pr.booking_id ? "fecha_pendiente" : "pago_recibido",
+    }));
+  }
 
   // Atomic confirmation: validates session, payment status, livemode,
   // environment, currency and the EXACT amount, updates payment_requests +
@@ -362,14 +406,45 @@ async function fulfill(session: any, env: StripeEnv) {
 
   // Turn the temporary seat hold on a scheduled outing into a confirmed seat.
   const confirmedBookingId: string | null = outcome.booking_id ?? pr.booking_id ?? null;
-  if (confirmedBookingId) {
+  if (confirmedBookingId && hasEvent) {
     const { data: seats, error: seatError } = await supabase.rpc("confirm_event_seats", {
       _booking_id: confirmedBookingId,
     });
-    if (seatError) {
-      console.error("confirm_event_seats failed (payment kept confirmed)", seatError);
+    // deno-lint-ignore no-explicit-any
+    const seatOutcome = seats as any;
+    if (seatError || !seatOutcome?.ok) {
+      const why = seatError?.message ?? seatOutcome?.reason ?? "desconocido";
+      console.error("confirm_event_seats failed (payment kept)", why);
+      await supabase
+        .from("payment_requests")
+        .update({ last_error: `plazas: ${why}` })
+        .eq("id", paymentRequestId);
+      const subject = `INCIDENCIA: pago recibido sin plaza · ${base.concept}`;
+      await enqueueNotification(supabase, {
+        kind: "incidencia_plazas_negocio",
+        dedupeKey: `seat_incident_business:${paymentRequestId}`,
+        recipients: businessRecipients(),
+        subject,
+        paymentRequestId,
+        bookingId: confirmedBookingId,
+        html: listLayout(subject, [
+          `Concepto: ${base.concept}`,
+          `Importe: ${base.amount}`,
+          `Cliente: ${email ?? "-"}`,
+          `Motivo: ${why}`,
+          `Entorno: ${env}`,
+          "Revisa la reserva y contacta con el cliente (no se le ha confirmado la plaza).",
+        ]),
+      });
     } else {
-      console.log("confirm_event_seats", JSON.stringify(seats));
+      console.log("confirm_event_seats", JSON.stringify(seatOutcome));
+      if (email) {
+        await enqueueNotification(supabase, {
+          ...customerIntent({ ...base, email, variant: "confirmada" }),
+          paymentRequestId,
+          bookingId: confirmedBookingId,
+        });
+      }
     }
   }
   try {
