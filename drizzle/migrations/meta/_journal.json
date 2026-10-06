@@ -71,6 +71,13 @@
       "when": 1790854302173,
       "tag": "0009_business_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791277620786,
+      "tag": "0010_payment_request_kind_total",
+      "breakpoints": true
     }
   ]
 }
