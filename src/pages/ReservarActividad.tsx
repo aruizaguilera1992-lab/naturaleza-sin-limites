@@ -91,7 +91,7 @@ export default function ReservarActividad() {
       <div className="mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
         <header className="mb-5 flex min-h-14 items-center lg:mb-7">
           <Link to="/" aria-label="Naturaleza Sin Límites, inicio" className="inline-flex min-h-12 items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-            <img src={logoAsset} alt="Naturaleza Sin Límites" className="h-16 w-auto object-contain sm:h-20" />
+            <img src={logoAsset} alt="Naturaleza Sin Límites" className="h-20 w-auto object-contain sm:h-24" />
           </Link>
         </header>
         <div className="grid overflow-hidden rounded-lg border border-border bg-card shadow-card lg:grid-cols-[minmax(0,0.9fr)_minmax(520px,1.1fr)]">
