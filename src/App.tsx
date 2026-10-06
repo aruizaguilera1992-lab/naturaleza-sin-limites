@@ -39,6 +39,17 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Al cambiar de página, vuelve arriba del todo. Si la URL lleva ancla
+// (p. ej. /espeleologia#experiencias), no se toca el scroll: lo gestiona la página.
+function ScrollToTopOnRouteChange() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (hash) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  }, [pathname, hash]);
+  return null;
+}
+
 // Tras volver de Google, la sesión llega a la raíz; si había un destino
 // guardado (p. ej. /admin), redirige una vez confirmada la sesión.
 function AuthRedirectHandler() {
