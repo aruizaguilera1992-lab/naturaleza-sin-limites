@@ -6,7 +6,6 @@ import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ActivitiesHeroSection } from "@/components/actividades/ActivitiesHeroSection";
-import { ActivitiesTabs } from "@/components/actividades/ActivitiesTabs";
 import { ActivitiesFilters } from "@/components/actividades/ActivitiesFilters";
 import { ActivitiesGrid } from "@/components/actividades/ActivitiesGrid";
 import { ActivitiesToolbar } from "@/components/actividades/ActivitiesToolbar";
@@ -233,10 +232,18 @@ const Actividades = () => {
           onQuickFilter={handleQuickFilter}
         />
 
-        <ActivitiesTabs activeTab={activeTab} onTabChange={handleTabChange} counts={counts} />
-
         <section id="activities-results" className="py-8 lg:py-12">
           <div className="container mx-auto px-2 sm:px-4">
+            {/* Unified tabs + filters bar */}
+            <ActivitiesFilters
+              filters={filters}
+              counts={counts}
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              onFilterChange={handleFilterChange}
+              onClearFilters={handleClearFilters}
+            />
+
             <AnimatePresence mode="wait">
               {activeTab === "calendario" ? (
                 <motion.div
