@@ -175,19 +175,6 @@ const Actividades = () => {
     setFilters(initialFilters);
   }, []);
 
-  const handleQuickFilter = useCallback((type: "principiante" | "media-jornada" | "economico") => {
-    switch (type) {
-      case "principiante":
-        setFilters((prev) => ({ ...prev, levels: ["principiante"] }));
-        break;
-      case "media-jornada":
-        setFilters((prev) => ({ ...prev, durations: ["2-4h"] }));
-        break;
-      case "economico":
-        setFilters((prev) => ({ ...prev, priceRange: [0, 60] }));
-        break;
-    }
-  }, []);
 
   const handleToggleCompare = useCallback((activity: UnifiedActivity) => {
     setCompareList((prev) => {
