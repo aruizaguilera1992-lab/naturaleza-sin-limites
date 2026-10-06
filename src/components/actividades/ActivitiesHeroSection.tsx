@@ -21,16 +21,8 @@ export function ActivitiesHeroSection({ onSearch, onQuickFilter }: ActivitiesHer
 
   return (
     <section className="relative min-h-[60vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
-      {/* Background Image (fallback visible hasta que empieza el vídeo y con prefers-reduced-motion) */}
-      <div className="absolute inset-0">
-        <img
-          src={media.canyoning.src}
-          alt={media.canyoning.alt}
-          loading="eager"
-          decoding="async"
-          className="w-full h-full object-cover"
-        />
-      </div>
+      {/* Fondo negro (visible hasta que empieza el vídeo y con prefers-reduced-motion) */}
+      <div className="absolute inset-0 bg-black" />
       {/* Vídeo aleatorio del canal oficial, igual que en el hero de la portada */}
       <HeroYoutubeBackground />
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
