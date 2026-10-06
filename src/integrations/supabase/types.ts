@@ -430,6 +430,7 @@ export type Database = {
           environment: string
           expires_at: string
           id: string
+          kind: string
           last_error: string | null
           paid_at: string | null
           payment_reference: string | null
@@ -437,6 +438,7 @@ export type Database = {
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
           token: string
+          total_cents: number | null
           updated_at: string
         }
         Insert: {
@@ -453,6 +455,7 @@ export type Database = {
           environment?: string
           expires_at?: string
           id?: string
+          kind?: string
           last_error?: string | null
           paid_at?: string | null
           payment_reference?: string | null
@@ -460,6 +463,7 @@ export type Database = {
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           token?: string
+          total_cents?: number | null
           updated_at?: string
         }
         Update: {
@@ -476,6 +480,7 @@ export type Database = {
           environment?: string
           expires_at?: string
           id?: string
+          kind?: string
           last_error?: string | null
           paid_at?: string | null
           payment_reference?: string | null
@@ -483,6 +488,7 @@ export type Database = {
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           token?: string
+          total_cents?: number | null
           updated_at?: string
         }
         Relationships: [
