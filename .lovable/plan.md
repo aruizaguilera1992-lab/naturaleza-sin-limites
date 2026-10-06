@@ -1,23 +1,20 @@
-# Rediseño de Vértigo Sapiens
+# Rediseño visual de `/pago/:token`
 
-## Resultado
-Convertir `/vertigo-sapiens` en una landing editorial y visual que posicione el programa como preparación física para montaña y deportes verticales, manteniendo la oferta online de 8 semanas, el precio propuesto de 179 € y la solicitud actual sin pago.
+## Alcance
+- Rediseñar únicamente la presentación de la página de pago, sin cambiar consultas, estados, importes ni apertura de Stripe.
+- Mantener el aviso de pruebas, textos legales, ayuda y todos los estados funcionales existentes.
 
-## Implementación
-- Crear un hero fotográfico de gran formato con el nuevo mensaje, dos llamadas a la acción y los tres atributos clave.
-- Sustituir los bloques genéricos por una secuencia de conversión: limitaciones habituales, Test Vértigo interactivo, método en cuatro pasos y transferencia del gimnasio a la montaña.
-- Añadir selector accesible por disciplinas, un perfil visual de seguimiento claramente marcado como ejemplo y una oferta única más compacta.
-- Rehacer el bloque de Antonio Ruiz con fotografía real y únicamente las credenciales existentes.
-- Acortar las preguntas frecuentes y cerrar con el formulario actual, preservando su envío a `submit-request`.
-- Pasar las respuestas del Test Vértigo al formulario mediante estado local del navegador, sin modificar la base de datos ni la lógica de clientes.
+## Diseño
+- Crear una composición premium en carbón y naranja: fotografía local vinculada por coincidencia exacta con la actividad o fondo abstracto sobrio.
+- Usar dos columnas en escritorio y una portada compacta sobre la tarjeta en móvil.
+- Dar protagonismo a actividad, datos reales disponibles, importe y una única acción de pago.
+- Al abrir Stripe, retirar la acción inicial y mostrar solo `EmbeddedCheckout`, sin modificar su iframe.
+- Unificar carga, error, caducado, procesamiento y pagado con el mismo lenguaje visual y controles accesibles.
 
-## Alcance técnico
-- Refactorizar `OnlineSections.tsx` en componentes más pequeños cuando ayude a mantener la página.
-- Ampliar las opciones visibles del formulario para las cinco disciplinas solicitadas, conservando exactamente su contrato de envío.
-- Mantener Navbar, Footer, WhatsApp, SEO, accesibilidad, navegación por anclas y reducción de movimiento.
-- No tocar pagos, suscripciones, contratación, rutas de clientes ni componentes heredados.
+## Vista de demostración
+- Habilitar solo en desarrollo/vista previa `/pago/demo` con datos visuales aislados.
+- Identificarla como `Vista de diseño · sin pago`, desactivar el pago y no consultar ni escribir datos ni crear sesiones Stripe.
 
-## Verificación
-- Comprobar TypeScript y compilación con código de salida real.
-- Validar en navegador a 1280 px y 390 px: composición, ausencia de desbordes, tabs, Test Vértigo, traspaso al formulario, anclas, foco y reducción de movimiento.
-- No enviar solicitudes reales y no publicar.
+## Validación
+- Comprobar compilación y revisar visualmente `/pago/demo` en escritorio y móvil, incluida una captura de cada tamaño.
+- No publicar.
