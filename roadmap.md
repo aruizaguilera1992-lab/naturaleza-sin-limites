@@ -144,3 +144,10 @@
 - [x] Mostrar un calendario mensual desplegable al pulsar el campo de fecha de la reserva
 - [x] Botones de disciplinas del hero abren la página desde arriba (scroll al inicio global + enlaces sin ancla)
 - [x] Eliminado el logotipo de fondo (marca de agua) del panel de reserva
+
+## Auditoría prioridad alta (07/10/2026)
+- [x] Guadalmina edad mínima 14
+- [x] Solicitud sin pago vs salida programada con señal
+- [x] Backend exige salida válida para señal; get-payment bloquea señales antiguas sin salida
+- [x] Términos y FAQ con los dos caminos de reserva
+- [x] Vía Ferrata El Chorro K3 y artículo de ferratas sin Caminito
