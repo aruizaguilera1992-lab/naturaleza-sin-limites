@@ -76,7 +76,7 @@ export function ActivityEventPicker({
             selectedId === null ? "border-primary bg-primary/10" : "border-border bg-background hover:bg-muted/50",
           )}
         >
-          No me encaja ninguna fecha: proponer otra
+          Solicitar otra fecha o salida privada (sin pago)
         </button>
       )}
     </div>
