@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { AlertTriangle, CalendarDays, ShieldCheck, Loader2, Users } from "lucide-react";
+import { AlertTriangle, CalendarDays, CheckCircle2, Info, ShieldCheck, Loader2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -38,7 +38,7 @@ export default function ReservarActividad() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activity = useMemo(() => getActivityProfile(category, slug), [category, slug]);
-  const { events, loading: eventsLoading } = useActivityEvents({ category, slug });
+  const { events, loading: eventsLoading, error: eventsError, reload: reloadEvents } = useActivityEvents({ category, slug });
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -52,31 +52,61 @@ export default function ReservarActividad() {
   });
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
+  const [eventNotice, setEventNotice] = useState<string | null>(null);
 
-  const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null;
+  // Only a loaded, bookable outing counts as selected. Anything else is a request.
+  const selectedEvent =
+    events.find((event) => event.id === selectedEventId && !event.isFull) ?? null;
+  const isEventBooking = Boolean(selectedEvent) && !eventsLoading && !eventsError;
 
-  // Preselect the outing coming from the calendar link, once it is loaded.
+  // Outing coming from the calendar link: select it only if it is still bookable.
   const requestedEventId = searchParams.get("evento");
+  const [requestHandled, setRequestHandled] = useState(false);
   useEffect(() => {
-    if (!requestedEventId) return;
-    const match = events.find((event) => event.id === requestedEventId && !event.isFull);
-    if (match) setSelectedEventId(match.id);
-  }, [requestedEventId, events]);
+    if (!requestedEventId || requestHandled || eventsLoading) return;
+    setRequestHandled(true);
+    if (eventsError) {
+      setEventNotice("No hemos podido comprobar la salida que elegiste. Puedes solicitar una fecha sin pago o reintentarlo más tarde.");
+      return;
+    }
+    const match = events.find((event) => event.id === requestedEventId);
+    if (match && !match.isFull) {
+      chooseEvent(match.id);
+    } else {
+      setEventNotice(
+        match
+          ? "La salida que elegiste está completa. Puedes elegir otra salida o solicitar una salida privada (sin pago); aunque propongas la misma fecha, será una solicitud distinta pendiente de confirmación."
+          : "La salida que elegiste ya no está disponible (ha pasado, se ha cancelado o no existe). Puedes elegir otra salida o solicitar una fecha sin pago.",
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedEventId, requestHandled, eventsLoading, eventsError, events]);
 
-  // A chosen outing fixes the date; free dates keep the manual field.
-  useEffect(() => {
-    if (selectedEvent) setForm((prev) => ({ ...prev, date: toDateInput(selectedEvent.startDate) }));
-  }, [selectedEvent]);
+  /** Selecting an outing fixes its real date; switching to a request clears it. */
+  function chooseEvent(eventId: string | null) {
+    setError(null);
+    const ev = eventId ? events.find((e) => e.id === eventId && !e.isFull) : null;
+    if (ev) {
+      setSelectedEventId(ev.id);
+      setForm((prev) => ({ ...prev, date: toDateInput(ev.startDate) }));
+    } else {
+      setSelectedEventId(null);
+      setForm((prev) => ({ ...prev, date: "" }));
+    }
+  }
 
   const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
-  // Keep the chosen participant count within the available seats.
+  const participantOptions = maxPeople < 2 ? [1] : [2, 3, 4, 5, 6].filter((n) => n <= MAX_PEOPLE);
+  // Keep the chosen participant count within the available seats and visible options.
   useEffect(() => {
-    setForm((prev) =>
-      prev.participants > maxPeople
-        ? { ...prev, participants: Math.max(1, maxPeople) }
-        : prev,
-    );
+    setForm((prev) => {
+      if (prev.participants > maxPeople) return { ...prev, participants: Math.max(1, maxPeople) };
+      if (maxPeople >= 2 && prev.participants < 2) return { ...prev, participants: 2 };
+      return prev;
+    });
   }, [maxPeople]);
+
   const unitPrice = selectedEvent?.pricePerPerson ?? activity?.priceValue ?? 0;
   const total = unitPrice * form.participants;
   const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
@@ -133,26 +163,67 @@ export default function ReservarActividad() {
     );
   }
 
-  const submit = async () => {
-    if (!form.date) return setError("Elige una fecha para la actividad.");
-    if (new Date(form.date) < new Date(new Date().toDateString()))
-      return setError("La fecha debe ser futura.");
+  const readFnError = async (fnError: unknown): Promise<{ reason?: string; error?: string } | null> => {
+    try {
+      const ctx = (fnError as { context?: Response } | null)?.context;
+      return ctx && typeof ctx.json === "function" ? await ctx.json() : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const validate = () => {
+    if (!form.date) return isEventBooking ? "Elige una salida." : "Elige la fecha que prefieres.";
+    if (new Date(`${form.date}T23:59:59`) < new Date()) return "La fecha debe ser futura.";
     if (selectedEvent && form.participants > selectedEvent.freeSeats)
-      return setError(`Esa salida solo tiene ${selectedEvent.freeSeats} plaza(s) libres.`);
-    if (form.name.trim().length < 2) return setError("Escribe tu nombre completo.");
-    if (!emailRegex.test(form.email.trim())) return setError("Revisa tu email.");
-    if (!phoneRegex.test(form.phone.trim())) return setError("Revisa tu teléfono.");
-    if (!form.rgpd) return setError("Debes aceptar la política de privacidad.");
+      return `Esa salida solo tiene ${selectedEvent.freeSeats} plaza(s) libres.`;
+    if (form.name.trim().length < 2) return "Escribe tu nombre completo.";
+    if (!emailRegex.test(form.email.trim())) return "Revisa tu email.";
+    if (!phoneRegex.test(form.phone.trim())) return "Revisa tu teléfono.";
+    if (!form.rgpd) return "Debes aceptar la política de privacidad.";
+    return null;
+  };
+
+  const submit = async () => {
+    const problem = validate();
+    if (problem) return setError(problem);
     setError(null);
     setSubmitting(true);
 
+    // ---- Custom date: availability request, never a payment ----
+    if (!isEventBooking || !selectedEvent) {
+      try {
+        const { data, error: fnError } = await supabase.functions.invoke("submit-request", {
+          body: {
+            type: "booking",
+            activity: `${activity.categoryLabel} · ${activity.name}`,
+            preferredDate: form.date,
+            numberOfPeople: form.participants,
+            name: form.name.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            message: form.message.trim() || null,
+            rgpd: true,
+          },
+        });
+        if (fnError || data?.ok !== true) throw new Error("request_failed");
+        setRequestSent(true);
+        window.scrollTo({ top: 0 });
+      } catch {
+        setError("No hemos podido enviar tu solicitud. No se ha registrado nada: revisa tu conexión e inténtalo de nuevo, o escríbenos por WhatsApp.");
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
+    // ---- Scheduled outing: server checks and holds seats, then payment ----
     const { data, error: fnError } = await supabase.functions.invoke("create-activity-deposit", {
       body: {
         category,
         slug,
         participants: form.participants,
-        preferredDate: form.date,
-        eventId: selectedEventId,
+        eventId: selectedEvent.id,
         name: form.name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
@@ -165,15 +236,43 @@ export default function ReservarActividad() {
 
     setSubmitting(false);
     if (fnError || !data?.token) {
-      setError(
-        selectedEventId
-          ? "No hemos podido bloquear la plaza en esa salida. Puede que acaben de ocuparse: prueba con otra fecha."
-          : "No hemos podido preparar el pago ahora mismo. Inténtalo en unos minutos o escríbenos por WhatsApp.",
-      );
+      const detail = fnError ? await readFnError(fnError) : null;
+      if (detail?.reason && detail.reason !== "requires_confirmation") {
+        chooseEvent(null);
+        void reloadEvents();
+        setEventNotice(
+          detail.reason === "sin_plazas"
+            ? "Esa salida acaba de quedarse sin plazas suficientes. Elige otra salida o solicita una fecha sin pago."
+            : "Esa salida ya no admite reservas. Elige otra salida o solicita una fecha sin pago.",
+        );
+        setError("No se ha bloqueado ninguna plaza ni se ha realizado ningún cargo.");
+      } else {
+        setError("No hemos podido preparar el pago. No se ha realizado ningún cargo: inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.");
+      }
       return;
     }
     navigate(`/pago/${data.token}`);
   };
+
+  if (requestSent) {
+    return wrapper(
+      <div className="flex min-h-[520px] flex-col items-center justify-center py-10 text-center" role="status">
+        <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10"><CheckCircle2 className="h-8 w-8 text-primary" /></span>
+        <h1 className="mb-3 font-heading text-3xl font-extrabold sm:text-4xl">Solicitud recibida</h1>
+        <p className="mb-3 max-w-md text-base leading-7 text-muted-foreground sm:text-lg">
+          Hemos recibido tu solicitud para <strong className="text-foreground">{activity.name}</strong> el{" "}
+          {fromDateInput(form.date)?.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })} ({form.participants} participante(s)).
+        </p>
+        <p className="mb-7 max-w-md text-base leading-7 text-muted-foreground">
+          Todavía no es una reserva confirmada y no se ha cobrado nada. Antonio revisará la
+          disponibilidad y, si es posible, te enviará un enlace de pago.
+        </p>
+        <Button size="lg" asChild>
+          <Link to={`/actividades/${category}/${slug}`}>Volver a la actividad</Link>
+        </Button>
+      </div>,
+    );
+  }
 
   return wrapper(
     <div className="space-y-8">
