@@ -663,8 +663,8 @@ var barrancos = [
     rapelMaximo: "5m",
     numRapeles: 1,
     caracteristicas: ["nado", "toboganes"],
-    descripcionCorta: "Paseo acu\xE1tico ideal para familias. M\xE1s que un barranco, es un parque acu\xE1tico natural con un solo r\xE1pel.",
-    descripcionLarga: "El R\xEDo Guadalmina en Benahav\xEDs es un recorrido acu\xE1tico perfecto para iniciaci\xF3n y familias. Realmente no es un barranco al uso, sino un paseo por un r\xEDo con un solo r\xE1pel de 5 metros. En \xE9poca de lluvias la zona engorgada puede ser m\xE1s interesante, pero el resto del tiempo funciona como un divertido parque acu\xE1tico natural. Su acceso inmediato y retorno r\xE1pido lo hacen ideal para media jornada.",
+    descripcionCorta: "Paseo acu\xE1tico de iniciaci\xF3n desde 14 a\xF1os. M\xE1s que un barranco, es un parque acu\xE1tico natural con un solo r\xE1pel.",
+    descripcionLarga: "El R\xEDo Guadalmina en Benahav\xEDs es un recorrido acu\xE1tico perfecto para iniciaci\xF3n, con una edad m\xEDnima de 14 a\xF1os. Realmente no es un barranco al uso, sino un paseo por un r\xEDo con un solo r\xE1pel de 5 metros. En \xE9poca de lluvias la zona engorgada puede ser m\xE1s interesante, pero el resto del tiempo funciona como un divertido parque acu\xE1tico natural. Su acceso inmediato y retorno r\xE1pido lo hacen ideal para media jornada.",
     urlInfo: "https://www.docuwiki.infobarrancos.es/doku.php?id=barrancos:malaga:guadalmina",
     imagen: "/images/barrancos/guadalmina.jpg",
     imagenGrande: "/images/barrancos/guadalmina.jpg",
@@ -676,7 +676,7 @@ var barrancos = [
     acceso: "facil",
     requisitos: {
       saberNadar: true,
-      edadMinima: 8,
+      edadMinima: 14,
       condicionFisica: "basica",
       vertigo: false
     },

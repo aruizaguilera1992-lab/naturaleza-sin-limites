@@ -367,7 +367,7 @@ function fromFerrata(item: Ferrata): ActivityProfile {
     price: item.precio || PENDING,
     priceValue: parsePrice(item.precio),
     totalDuration: item.duracion,
-    effectiveDuration: item.duracionEfectiva || PENDING,
+    effectiveDuration: item.duracionEfectiva || item.desarrollo || PENDING,
     technicalLevel: `${item.clasificacion} · ${item.dificultad}`,
     physicalLevel: cap(item.requisitos.condicionFisica),
     minimumAge: `${item.requisitos.edadMinima} años`,
@@ -377,7 +377,7 @@ function fromFerrata(item: Ferrata): ActivityProfile {
     approachReturn: `Aproximación ${item.aproximacion}; retorno ${PENDING}`,
     technicalElements: [
       `desnivel ${item.desnivel}`,
-      `recorrido ${item.desarrollo}`,
+      ...(item.duracionEfectiva ? [`recorrido ${item.desarrollo}`] : []),
       ...(item.alturaMaxima.startsWith("Sin dato") ? [] : [`altura máxima ${item.alturaMaxima}`]),
       `exposición ${item.exposicion}`,
       `${item.elementosDestacados.puentes} puente(s)`,
