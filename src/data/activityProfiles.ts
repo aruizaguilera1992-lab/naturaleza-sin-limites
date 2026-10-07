@@ -118,6 +118,10 @@ function buildEditorial(
       answer: `La edad mínima indicada es ${profile.minimumAge}. La participación de menores también depende de talla, autonomía, condiciones del recorrido y autorización responsable.`,
     },
     {
+      question: "¿Cómo se reserva?",
+      answer: "Si eliges una salida programada, comprobamos y bloqueamos tu plaza, pagas la señal y la reserva queda confirmada con el pago. Si prefieres otra fecha o una salida privada, envías una solicitud sin pago; validamos la disponibilidad y, si es posible, te enviamos un enlace de pago. Siempre sujeto a la meteorología y a las condiciones publicadas.",
+    },
+    {
       question: "¿Qué material está incluido?",
       answer: profile.included.length ? profile.included.join(". ") : PENDING,
     },
