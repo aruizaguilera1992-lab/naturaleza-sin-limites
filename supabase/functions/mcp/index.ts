@@ -402,7 +402,7 @@ var activityMedia = {
   },
   "ferrata-el-chorro": {
     src: "/__l5e/assets-v1/f50defed-08b8-4501-972a-217d23b336e1/ferrata-el-chorro.webp",
-    alt: "V\xEDa Ferrata El Chorro (Caminito del Rey): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    alt: "V\xEDa Ferrata El Chorro: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Above_the_clouds_on_Mt_Kinabalu.jpg",
     sourceTitle: "Above the clouds on Mt Kinabalu.jpg",
     license: "CC BY-SA 4.0",
@@ -663,8 +663,8 @@ var barrancos = [
     rapelMaximo: "5m",
     numRapeles: 1,
     caracteristicas: ["nado", "toboganes"],
-    descripcionCorta: "Paseo acu\xE1tico ideal para familias. M\xE1s que un barranco, es un parque acu\xE1tico natural con un solo r\xE1pel.",
-    descripcionLarga: "El R\xEDo Guadalmina en Benahav\xEDs es un recorrido acu\xE1tico perfecto para iniciaci\xF3n y familias. Realmente no es un barranco al uso, sino un paseo por un r\xEDo con un solo r\xE1pel de 5 metros. En \xE9poca de lluvias la zona engorgada puede ser m\xE1s interesante, pero el resto del tiempo funciona como un divertido parque acu\xE1tico natural. Su acceso inmediato y retorno r\xE1pido lo hacen ideal para media jornada.",
+    descripcionCorta: "Paseo acu\xE1tico de iniciaci\xF3n desde 14 a\xF1os. M\xE1s que un barranco, es un parque acu\xE1tico natural con un solo r\xE1pel.",
+    descripcionLarga: "El R\xEDo Guadalmina en Benahav\xEDs es un recorrido acu\xE1tico perfecto para iniciaci\xF3n, con una edad m\xEDnima de 14 a\xF1os. Realmente no es un barranco al uso, sino un paseo por un r\xEDo con un solo r\xE1pel de 5 metros. En \xE9poca de lluvias la zona engorgada puede ser m\xE1s interesante, pero el resto del tiempo funciona como un divertido parque acu\xE1tico natural. Su acceso inmediato y retorno r\xE1pido lo hacen ideal para media jornada.",
     urlInfo: "https://www.docuwiki.infobarrancos.es/doku.php?id=barrancos:malaga:guadalmina",
     imagen: "/images/barrancos/guadalmina.jpg",
     imagenGrande: "/images/barrancos/guadalmina.jpg",
@@ -676,7 +676,7 @@ var barrancos = [
     acceso: "facil",
     requisitos: {
       saberNadar: true,
-      edadMinima: 8,
+      edadMinima: 14,
       condicionFisica: "basica",
       vertigo: false
     },
@@ -2309,23 +2309,28 @@ var ferratas = [
   // ===================== MÁLAGA =====================
   {
     id: "ferrata-el-chorro",
-    nombre: "V\xEDa Ferrata El Chorro (Caminito del Rey)",
+    nombre: "V\xEDa Ferrata El Chorro",
     tipo: "via-ferrata",
     provincia: "M\xE1laga",
     zona: "El Chorro - Desfiladero de los Gaitanes",
     clasificacion: "K3",
     dificultad: "Media",
-    desnivel: "+200m",
-    desarrollo: "150 min v\xEDa",
-    alturaMaxima: "105m sobre el r\xEDo",
+    desnivel: "+250 m aprox.",
+    desarrollo: "650 m aprox.",
+    alturaMaxima: "Sin dato oficial",
     exposicion: "Alta",
-    duracion: "4-5 horas",
+    duracion: "4-5 horas (jornada guiada completa)",
     duracionHoras: 4.5,
+    duracionEfectiva: "Unas 3 h de recorrido (ida y vuelta)",
+    fuentesTecnicas: [
+      "https://juventud.malaga.eu/opencms/export/sites/juventud/.content/galerias/ocio/20260425_ALUA-GUIA-VF-EL-CHORRO_-ARDALES.pdf",
+      "https://blog.visitacostadelsol.com/es/vias-ferratas-malaga"
+    ],
     aproximacion: "15 min",
     precio: "55\u20AC",
-    descripcionCorta: "Ferrata cl\xE1sica junto al Desfiladero de los Gaitanes",
-    descripcionLarga: "La v\xEDa ferrata del Chorro recorre las paredes del impresionante Desfiladero de los Gaitanes, junto al famoso Caminito del Rey. Con escaleras verticales, traves\xEDas a\xE9reas y magn\xEDficas vistas al desfiladero, ofrece una experiencia completa de ferrata. Clasificada K3 por rocjumper.com, es ideal para quienes buscan dar el paso siguiente en ferratas.",
-    caracteristicas: ["clasica", "escaleras", "travesias", "panoramica"],
+    descripcionCorta: "Ferrata K3 muy a\xE9rea en El Chorro, con puente tibetano, puente nepal\xED y tirolina",
+    descripcionLarga: "La V\xEDa Ferrata El Chorro es un recorrido muy a\xE9reo de dificultad intermedia K3, con unos 650 m equipados y unos 250 m de desnivel positivo. Combina subidas de pelda\xF1os, tramos horizontales y verticales, puente tibetano, puente nepal\xED y una tirolina de unos 35 m. No es apta para personas con v\xE9rtigo. Es una actividad distinta del Caminito del Rey: el Caminito es un sendero de pasarelas con entrada propia y no est\xE1 clasificado como v\xEDa ferrata; esta ferrata no incluye la entrada al Caminito del Rey.",
+    caracteristicas: ["clasica", "escaleras", "puente-tibetano", "tirolina", "panoramica"],
     imagen: media.ferrata.src,
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Octubre - Mayo",
@@ -2359,16 +2364,16 @@ var ferratas = [
       "Reportaje fotogr\xE1fico"
     ],
     destacados: [
-      "Combinable con Caminito del Rey",
+      "No incluye entrada al Caminito del Rey (sendero de pasarelas, no ferrata)",
       "Vistas espectaculares al desfiladero",
       "Dificultad progresiva",
       "Ideal para iniciarse en ferrata t\xE9cnica"
     ],
     elementosDestacados: {
-      puentes: 0,
-      tirolinas: 0,
-      escaleras: 3,
-      pasarelas: "100m",
+      puentes: 2,
+      tirolinas: 1,
+      escaleras: 0,
+      pasarelas: "",
       desplomes: false,
       techos: false
     },
@@ -4635,9 +4640,9 @@ En Naturaleza Sin L\xEDmites te acompa\xF1amos en cada paso, garantizando una ex
   },
   {
     id: "2",
-    title: "Las 5 V\xEDas Ferratas m\xE1s Espectaculares de Andaluc\xEDa",
+    title: "3 V\xEDas Ferratas Espectaculares de Andaluc\xEDa (y por qu\xE9 el Caminito del Rey no es una)",
     slug: "5-vias-ferratas-mas-espectaculares-andalucia",
-    excerpt: "Recorremos las v\xEDas ferratas m\xE1s impresionantes del sur de Espa\xF1a. Desde el m\xEDtico Caminito del Rey hasta joyas ocultas que solo conocen los locales.",
+    excerpt: "Tres v\xEDas ferratas del sur de Espa\xF1a, con datos de fuentes oficiales, y por qu\xE9 el Caminito del Rey es un sendero de pasarelas y no una ferrata.",
     content: `
 ## El Auge de las V\xEDas Ferratas en Andaluc\xEDa
 
@@ -4653,67 +4658,43 @@ Para los no iniciados, una v\xEDa ferrata es un itinerario vertical u horizontal
 
 > "Las v\xEDas ferratas democratizan la monta\xF1a, permitiendo a personas sin experiencia en escalada disfrutar de la verticalidad."
 
-## Las 5 Imprescindibles
+## Primero, una aclaraci\xF3n: el Caminito del Rey no es una v\xEDa ferrata
 
-### 1. Caminito del Rey - El Chorro, M\xE1laga
+El Caminito del Rey es un **sendero de pasarelas** con entrada y horarios propios ([informaci\xF3n oficial](https://www.caminitodelrey.info/es/tu-visita/acceso-recorrido)). No se recorre con disipador ni cable de vida y no tiene clasificaci\xF3n K de ferrata, por eso no lo incluimos en esta comparativa. La V\xEDa Ferrata El Chorro es otra actividad distinta y **no incluye la entrada al Caminito del Rey**.
 
-Sin duda la m\xE1s famosa. Aunque t\xE9cnicamente es una pasarela y no una v\xEDa ferrata tradicional, merece el primer puesto por su historia y espectacularidad.
+## 3 ferratas imprescindibles
 
-**Datos clave:**
-- Longitud: 7.7 km
-- Desnivel: 300 m
-- Dificultad: K1 (muy f\xE1cil)
-- Mejor \xE9poca: Todo el a\xF1o
+### 1. V\xEDa Ferrata El Chorro (M\xE1laga)
 
-### 2. V\xEDa Ferrata del Tajo de Ronda
+Muy a\xE9rea y no apta para personas con v\xE9rtigo. Combina subidas de pelda\xF1os, puente tibetano, puente nepal\xED y una tirolina de unos 35 m.
 
-Una experiencia \xFAnica que te permite ver Ronda desde una perspectiva completamente diferente. Pasas literalmente por debajo del Puente Nuevo.
+**Datos clave** (gu\xEDa t\xE9cnica del Ayuntamiento de M\xE1laga y Visit Costa del Sol):
+- Dificultad: K3
+- Recorrido equipado: unos 650 m
+- Desnivel positivo: unos 250 m
+- Recorrido: unas 3 h (ida y vuelta). La jornada guiada completa, con briefing y equipaci\xF3n, es m\xE1s larga.
 
-**Datos clave:**
-- Longitud: 500 m
-- Desnivel: 105 m
-- Dificultad: K3 (intermedia)
-- Mejor \xE9poca: Primavera y oto\xF1o
+[Ver ficha de la V\xEDa Ferrata El Chorro](/actividades/vias-ferratas/ferrata-el-chorro)
+
+### 2. V\xEDas ferratas del Tajo de Ronda
+
+Ronda vista desde una perspectiva completamente diferente. En el Tajo hay m\xE1s de una variante, con dificultades distintas, as\xED que no damos una cifra \xFAnica: consulta la ficha de la variante que ofrecemos.
+
+[Ver ficha de la V\xEDa Ferrata Tajo de Ronda I (La Sevillana)](/actividades/vias-ferratas/ferrata-tajo-ronda-sevillana)
 
 ### 3. V\xEDa Ferrata de Atajate
 
-Una joya escondida en la Serran\xEDa de Ronda. Menos conocida pero igualmente impresionante, con vistas al valle del Genal.
+Una joya escondida en la Serran\xEDa de Ronda, con vistas al valle del Genal. Los datos t\xE9cnicos y la clasificaci\xF3n est\xE1n en su ficha del cat\xE1logo.
 
-**Datos clave:**
-- Longitud: 350 m
-- Desnivel: 80 m
-- Dificultad: K2 (f\xE1cil)
-- Mejor \xE9poca: Todo el a\xF1o
+[Ver ficha de la V\xEDa Ferrata de Atajate](/actividades/vias-ferratas/ferrata-atajate)
 
-### 4. V\xEDa Ferrata de El Chorro
+## Comparativa r\xE1pida
 
-Junto al embalse, ofrece una experiencia m\xE1s t\xE9cnica con tramos desplomados y un puente tibetano impresionante.
-
-**Datos clave:**
-- Longitud: 400 m
-- Desnivel: 120 m
-- Dificultad: K4 (dif\xEDcil)
-- Mejor \xE9poca: Primavera y oto\xF1o
-
-### 5. V\xEDa Ferrata de la Escalera \xC1rabe - Comares
-
-Una v\xEDa ferrata con historia, siguiendo el antiguo acceso al pueblo. Las vistas a la Axarqu\xEDa son incre\xEDbles.
-
-**Datos clave:**
-- Longitud: 280 m
-- Desnivel: 95 m
-- Dificultad: K3 (intermedia)
-- Mejor \xE9poca: Todo el a\xF1o
-
-## Comparativa R\xE1pida
-
-| V\xEDa Ferrata | Dificultad | Tiempo | Para Principiantes |
-|-------------|------------|--------|---------------------|
-| Caminito del Rey | K1 | 4h | \u2705 S\xED |
-| Tajo de Ronda | K3 | 2h | \u26A0\uFE0F Con gu\xEDa |
-| Atajate | K2 | 1.5h | \u2705 S\xED |
-| El Chorro | K4 | 2.5h | \u274C No |
-| Comares | K3 | 1.5h | \u26A0\uFE0F Con gu\xEDa |
+| V\xEDa ferrata | Dificultad | Ficha |
+|-------------|------------|-------|
+| El Chorro | K3 | [Ver ficha](/actividades/vias-ferratas/ferrata-el-chorro) |
+| Tajo de Ronda | Seg\xFAn variante | [Ver ficha](/actividades/vias-ferratas/ferrata-tajo-ronda-sevillana) |
+| Atajate | Ver ficha | [Ver ficha](/actividades/vias-ferratas/ferrata-atajate) |
 
 ## Preparaci\xF3n y Seguridad
 
@@ -4735,7 +4716,7 @@ Realizar estas v\xEDas con un gu\xEDa profesional te permite:
 
 ## Conclusi\xF3n
 
-Andaluc\xEDa ofrece un abanico de posibilidades para disfrutar de las v\xEDas ferratas. Desde la accesible espectacularidad del Caminito del Rey hasta la t\xE9cnica exigente de El Chorro, hay opciones para todos los niveles y gustos.
+Andaluc\xEDa ofrece un abanico de posibilidades para disfrutar de las v\xEDas ferratas. Antes de elegir, revisa la clasificaci\xF3n y los requisitos de cada ficha: no todas son para el mismo nivel.
 
 \xBFCu\xE1l ser\xE1 tu pr\xF3xima aventura vertical?
     `,
@@ -4747,8 +4728,8 @@ Andaluc\xEDa ofrece un abanico de posibilidades para disfrutar de las v\xEDas fe
     readTime: 10,
     views: 2340,
     seo: {
-      metaTitle: "Las 5 V\xEDas Ferratas m\xE1s Espectaculares de Andaluc\xEDa | Naturaleza Sin L\xEDmites",
-      metaDescription: "Descubre las mejores v\xEDas ferratas de Andaluc\xEDa: Caminito del Rey, Tajo de Ronda, Atajate, El Chorro y Comares. Gu\xEDa completa con dificultad, tiempos y consejos.",
+      metaTitle: "3 V\xEDas Ferratas Espectaculares de Andaluc\xEDa | Naturaleza Sin L\xEDmites",
+      metaDescription: "V\xEDa Ferrata El Chorro (K3), Tajo de Ronda y Atajate, con datos oficiales. Y por qu\xE9 el Caminito del Rey es un sendero de pasarelas, no una ferrata.",
       ogImage: media.ferrata.src
     }
   },

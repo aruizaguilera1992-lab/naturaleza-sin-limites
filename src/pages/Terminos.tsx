@@ -68,6 +68,15 @@ const sections = [
             Para confirmar la plaza es necesario abonar el importe total de la actividad o la señal acordada previamente.
           </li>
           <li>
+            <strong>Salida programada:</strong> al reservar online se comprueba y se bloquea temporalmente el cupo de la salida, se abona la señal y, recibido el pago, la plaza queda confirmada.
+          </li>
+          <li>
+            <strong>Fecha personalizada o salida privada:</strong> se envía una solicitud sin pago; Naturaleza Sin Límites valida la disponibilidad y, si es posible, remite un enlace de pago. No hay reserva confirmada hasta ese pago.
+          </li>
+          <li>
+            En ambos casos la actividad queda sujeta a las condiciones meteorológicas y a las condiciones publicadas.
+          </li>
+          <li>
             La edad mínima para participar es de <strong>14 años</strong>. Los menores de edad deberán contar con autorización expresa del tutor legal y estar acompañados por él durante la actividad.
           </li>
           <li>

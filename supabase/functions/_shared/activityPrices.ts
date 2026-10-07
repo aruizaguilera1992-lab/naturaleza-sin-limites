@@ -48,7 +48,7 @@ export const ACTIVITY_PRICES: Record<string, ActivityPriceEntry> = {
   "escalada/despeñaperros": { name: "Despeñaperros", category: "Escalada", pricePerPerson: 48 },
   "escalada/cazorla": { name: "Sierra de Cazorla", category: "Escalada", pricePerPerson: 42 },
   "escalada/ardales": { name: "Ardales", category: "Escalada", pricePerPerson: 35 },
-  "vias-ferratas/ferrata-el-chorro": { name: "Vía Ferrata El Chorro (Caminito del Rey)", category: "Vía ferrata", pricePerPerson: 55 },
+  "vias-ferratas/ferrata-el-chorro": { name: "Vía Ferrata El Chorro", category: "Vía ferrata", pricePerPerson: 55 },
   "vias-ferratas/ferrata-atajate": { name: "Vía Ferrata de Atajate", category: "Vía ferrata", pricePerPerson: 45 },
   "vias-ferratas/ferrata-benadalid": { name: "Vía Ferrata de Benadalid (del Techo)", category: "Vía ferrata", pricePerPerson: 50 },
   "vias-ferratas/ferrata-benalauria": { name: "Vía Ferrata de Benalauría (del Canal)", category: "Vía ferrata", pricePerPerson: 40 },

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { AlertTriangle, CalendarDays, ShieldCheck, Loader2, Users } from "lucide-react";
+import { AlertTriangle, CalendarDays, CheckCircle2, Info, ShieldCheck, Loader2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -38,7 +38,7 @@ export default function ReservarActividad() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activity = useMemo(() => getActivityProfile(category, slug), [category, slug]);
-  const { events, loading: eventsLoading } = useActivityEvents({ category, slug });
+  const { events, loading: eventsLoading, error: eventsError, reload: reloadEvents } = useActivityEvents({ category, slug });
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -52,31 +52,61 @@ export default function ReservarActividad() {
   });
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
+  const [eventNotice, setEventNotice] = useState<string | null>(null);
 
-  const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null;
+  // Only a loaded, bookable outing counts as selected. Anything else is a request.
+  const selectedEvent =
+    events.find((event) => event.id === selectedEventId && !event.isFull) ?? null;
+  const isEventBooking = Boolean(selectedEvent) && !eventsLoading && !eventsError;
 
-  // Preselect the outing coming from the calendar link, once it is loaded.
+  // Outing coming from the calendar link: select it only if it is still bookable.
   const requestedEventId = searchParams.get("evento");
+  const [requestHandled, setRequestHandled] = useState(false);
   useEffect(() => {
-    if (!requestedEventId) return;
-    const match = events.find((event) => event.id === requestedEventId && !event.isFull);
-    if (match) setSelectedEventId(match.id);
-  }, [requestedEventId, events]);
+    if (!requestedEventId || requestHandled || eventsLoading) return;
+    setRequestHandled(true);
+    if (eventsError) {
+      setEventNotice("No hemos podido comprobar la salida que elegiste. Puedes solicitar una fecha sin pago o reintentarlo más tarde.");
+      return;
+    }
+    const match = events.find((event) => event.id === requestedEventId);
+    if (match && !match.isFull) {
+      chooseEvent(match.id);
+    } else {
+      setEventNotice(
+        match
+          ? "La salida que elegiste está completa. Puedes elegir otra salida o solicitar una salida privada (sin pago); aunque propongas la misma fecha, será una solicitud distinta pendiente de confirmación."
+          : "La salida que elegiste ya no está disponible (ha pasado, se ha cancelado o no existe). Puedes elegir otra salida o solicitar una fecha sin pago.",
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedEventId, requestHandled, eventsLoading, eventsError, events]);
 
-  // A chosen outing fixes the date; free dates keep the manual field.
-  useEffect(() => {
-    if (selectedEvent) setForm((prev) => ({ ...prev, date: toDateInput(selectedEvent.startDate) }));
-  }, [selectedEvent]);
+  /** Selecting an outing fixes its real date; switching to a request clears it. */
+  function chooseEvent(eventId: string | null) {
+    setError(null);
+    const ev = eventId ? events.find((e) => e.id === eventId && !e.isFull) : null;
+    if (ev) {
+      setSelectedEventId(ev.id);
+      setForm((prev) => ({ ...prev, date: toDateInput(ev.startDate) }));
+    } else {
+      setSelectedEventId(null);
+      setForm((prev) => ({ ...prev, date: "" }));
+    }
+  }
 
   const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
-  // Keep the chosen participant count within the available seats.
+  const participantOptions = maxPeople < 2 ? [1] : [2, 3, 4, 5, 6].filter((n) => n <= MAX_PEOPLE);
+  // Keep the chosen participant count within the available seats and visible options.
   useEffect(() => {
-    setForm((prev) =>
-      prev.participants > maxPeople
-        ? { ...prev, participants: Math.max(1, maxPeople) }
-        : prev,
-    );
+    setForm((prev) => {
+      if (prev.participants > maxPeople) return { ...prev, participants: Math.max(1, maxPeople) };
+      if (maxPeople >= 2 && prev.participants < 2) return { ...prev, participants: 2 };
+      return prev;
+    });
   }, [maxPeople]);
+
   const unitPrice = selectedEvent?.pricePerPerson ?? activity?.priceValue ?? 0;
   const total = unitPrice * form.participants;
   const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
@@ -133,26 +163,67 @@ export default function ReservarActividad() {
     );
   }
 
-  const submit = async () => {
-    if (!form.date) return setError("Elige una fecha para la actividad.");
-    if (new Date(form.date) < new Date(new Date().toDateString()))
-      return setError("La fecha debe ser futura.");
+  const readFnError = async (fnError: unknown): Promise<{ reason?: string; error?: string } | null> => {
+    try {
+      const ctx = (fnError as { context?: Response } | null)?.context;
+      return ctx && typeof ctx.json === "function" ? await ctx.json() : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const validate = () => {
+    if (!form.date) return isEventBooking ? "Elige una salida." : "Elige la fecha que prefieres.";
+    if (new Date(`${form.date}T23:59:59`) < new Date()) return "La fecha debe ser futura.";
     if (selectedEvent && form.participants > selectedEvent.freeSeats)
-      return setError(`Esa salida solo tiene ${selectedEvent.freeSeats} plaza(s) libres.`);
-    if (form.name.trim().length < 2) return setError("Escribe tu nombre completo.");
-    if (!emailRegex.test(form.email.trim())) return setError("Revisa tu email.");
-    if (!phoneRegex.test(form.phone.trim())) return setError("Revisa tu teléfono.");
-    if (!form.rgpd) return setError("Debes aceptar la política de privacidad.");
+      return `Esa salida solo tiene ${selectedEvent.freeSeats} plaza(s) libres.`;
+    if (form.name.trim().length < 2) return "Escribe tu nombre completo.";
+    if (!emailRegex.test(form.email.trim())) return "Revisa tu email.";
+    if (!phoneRegex.test(form.phone.trim())) return "Revisa tu teléfono.";
+    if (!form.rgpd) return "Debes aceptar la política de privacidad.";
+    return null;
+  };
+
+  const submit = async () => {
+    const problem = validate();
+    if (problem) return setError(problem);
     setError(null);
     setSubmitting(true);
 
+    // ---- Custom date: availability request, never a payment ----
+    if (!isEventBooking || !selectedEvent) {
+      try {
+        const { data, error: fnError } = await supabase.functions.invoke("submit-request", {
+          body: {
+            type: "booking",
+            activity: `${activity.categoryLabel} · ${activity.name}`,
+            preferredDate: form.date,
+            numberOfPeople: form.participants,
+            name: form.name.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            message: form.message.trim() || null,
+            rgpd: true,
+          },
+        });
+        if (fnError || data?.ok !== true) throw new Error("request_failed");
+        setRequestSent(true);
+        window.scrollTo({ top: 0 });
+      } catch {
+        setError("No hemos podido enviar tu solicitud. No se ha registrado nada: revisa tu conexión e inténtalo de nuevo, o escríbenos por WhatsApp.");
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
+    // ---- Scheduled outing: server checks and holds seats, then payment ----
     const { data, error: fnError } = await supabase.functions.invoke("create-activity-deposit", {
       body: {
         category,
         slug,
         participants: form.participants,
-        preferredDate: form.date,
-        eventId: selectedEventId,
+        eventId: selectedEvent.id,
         name: form.name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
@@ -165,15 +236,43 @@ export default function ReservarActividad() {
 
     setSubmitting(false);
     if (fnError || !data?.token) {
-      setError(
-        selectedEventId
-          ? "No hemos podido bloquear la plaza en esa salida. Puede que acaben de ocuparse: prueba con otra fecha."
-          : "No hemos podido preparar el pago ahora mismo. Inténtalo en unos minutos o escríbenos por WhatsApp.",
-      );
+      const detail = fnError ? await readFnError(fnError) : null;
+      if (detail?.reason && detail.reason !== "requires_confirmation") {
+        chooseEvent(null);
+        void reloadEvents();
+        setEventNotice(
+          detail.reason === "sin_plazas"
+            ? "Esa salida acaba de quedarse sin plazas suficientes. Elige otra salida o solicita una fecha sin pago."
+            : "Esa salida ya no admite reservas. Elige otra salida o solicita una fecha sin pago.",
+        );
+        setError("No se ha bloqueado ninguna plaza ni se ha realizado ningún cargo.");
+      } else {
+        setError("No hemos podido preparar el pago. No se ha realizado ningún cargo: inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.");
+      }
       return;
     }
     navigate(`/pago/${data.token}`);
   };
+
+  if (requestSent) {
+    return wrapper(
+      <div className="flex min-h-[520px] flex-col items-center justify-center py-10 text-center" role="status">
+        <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10"><CheckCircle2 className="h-8 w-8 text-primary" /></span>
+        <h1 className="mb-3 font-heading text-3xl font-extrabold sm:text-4xl">Solicitud recibida</h1>
+        <p className="mb-3 max-w-md text-base leading-7 text-muted-foreground sm:text-lg">
+          Hemos recibido tu solicitud para <strong className="text-foreground">{activity.name}</strong> el{" "}
+          {fromDateInput(form.date)?.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })} ({form.participants} participante(s)).
+        </p>
+        <p className="mb-7 max-w-md text-base leading-7 text-muted-foreground">
+          Todavía no es una reserva confirmada y no se ha cobrado nada. Antonio revisará la
+          disponibilidad y, si es posible, te enviará un enlace de pago.
+        </p>
+        <Button size="lg" asChild>
+          <Link to={`/actividades/${category}/${slug}`}>Volver a la actividad</Link>
+        </Button>
+      </div>,
+    );
+  }
 
   return wrapper(
     <div className="space-y-8">
@@ -181,42 +280,73 @@ export default function ReservarActividad() {
         <p className="mb-2 text-sm font-semibold uppercase text-primary">
           {activity.categoryLabel} · {activity.zone}
         </p>
-        <h1 className="font-heading text-4xl font-extrabold leading-[1.08] text-foreground sm:text-5xl lg:text-[3.25rem]">Completa tu reserva</h1>
+        <h1 className="font-heading text-4xl font-extrabold leading-[1.08] text-foreground sm:text-5xl lg:text-[3.25rem]">{isEventBooking ? "Completa tu reserva" : "Solicita tu fecha"}</h1>
         <p className="mt-4 font-heading text-xl font-bold text-foreground">{activity.name}</p>
         <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-base text-muted-foreground">
           {form.date && <span className="flex items-center gap-2"><CalendarDays className="h-5 w-5 text-primary" />{new Date(`${form.date}T12:00:00`).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}</span>}
           <span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" />{form.participants} participante(s)</span>
         </div>
-        <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
-          <div>
-            <dt className="text-sm font-semibold uppercase text-muted-foreground">Pagas ahora · señal 30 %</dt>
-            <dd className="mt-1 font-heading text-[2.75rem] font-extrabold leading-none text-primary sm:text-5xl">{euros(deposit)}</dd>
-          </div>
-          <div className="flex justify-between gap-4 text-muted-foreground">
-            <dt>Precio total · {euros(unitPrice)} × {form.participants}</dt>
-            <dd>{euros(total)}</dd>
-          </div>
-          <div className="flex justify-between gap-4 text-muted-foreground"><dt>Saldo el día de la actividad</dt><dd>{euros(total - deposit)}</dd></div>
-          <div className="flex justify-between gap-4 text-muted-foreground"><dt>Impuestos</dt><dd>IVA incluido</dd></div>
-        </dl>
+        {isEventBooking ? (
+          <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
+            <div>
+              <dt className="text-sm font-semibold uppercase text-muted-foreground">Pagas ahora · señal 30 %</dt>
+              <dd className="mt-1 font-heading text-[2.75rem] font-extrabold leading-none text-primary sm:text-5xl">{euros(deposit)}</dd>
+            </div>
+            <div className="flex justify-between gap-4 text-muted-foreground">
+              <dt>Precio total · {euros(unitPrice)} × {form.participants}</dt>
+              <dd>{euros(total)}</dd>
+            </div>
+            <div className="flex justify-between gap-4 text-muted-foreground"><dt>Saldo el día de la actividad</dt><dd>{euros(total - deposit)}</dd></div>
+            <div className="flex justify-between gap-4 text-muted-foreground"><dt>Impuestos</dt><dd>IVA incluido</dd></div>
+          </dl>
+        ) : (
+          <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
+            <div>
+              <dt className="text-sm font-semibold uppercase text-muted-foreground">Pagas ahora</dt>
+              <dd className="mt-1 font-heading text-[2.75rem] font-extrabold leading-none text-primary sm:text-5xl">0 €</dd>
+            </div>
+            <div className="flex justify-between gap-4 text-muted-foreground">
+              <dt>Precio estimado · {euros(unitPrice)} × {form.participants}</dt>
+              <dd>{euros(total)}</dd>
+            </div>
+            <p className="text-muted-foreground">Solicitud sin pago: primero confirmamos la disponibilidad contigo.</p>
+          </dl>
+        )}
       </header>
 
       <div>
         <h2 className="mb-5 font-heading text-2xl font-bold">Elige los detalles</h2>
 
+        {eventNotice && (
+          <div role="alert" className="mb-6 rounded-md border border-primary/40 bg-primary/10 p-4 text-sm leading-6 text-foreground">
+            <p>{eventNotice}</p>
+            {selectedEventId === null && (
+              <p className="mt-2 font-semibold">Ahora estás en modo solicitud: elige la fecha que prefieres (sin pago).</p>
+            )}
+          </div>
+        )}
+
         <div className="mb-7">
           <Label className="mb-3 block text-base">Salidas programadas</Label>
-          <ActivityEventPicker
-            events={events}
-            loading={eventsLoading}
-            selectedId={selectedEventId}
-            onSelect={setSelectedEventId}
-          />
+          {eventsError ? (
+            <div className="rounded-md border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
+              No hemos podido cargar las salidas programadas, así que no podemos ofrecer pago online
+              ahora. Puedes enviar una solicitud de fecha sin pago o{" "}
+              <button type="button" onClick={() => void reloadEvents()} className="text-primary underline">reintentar</button>.
+            </div>
+          ) : (
+            <ActivityEventPicker
+              events={events}
+              loading={eventsLoading}
+              selectedId={selectedEvent ? selectedEvent.id : null}
+              onSelect={chooseEvent}
+            />
+          )}
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <Label htmlFor="date">Fecha deseada</Label>
+            <Label htmlFor="date">{isEventBooking ? "Fecha de la salida" : "Fecha que prefieres"}</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -254,11 +384,16 @@ export default function ReservarActividad() {
                 Fecha fijada por la salida programada que has elegido.
               </p>
             )}
+            {!selectedEvent && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Fecha propuesta: queda pendiente de confirmar disponibilidad.
+              </p>
+            )}
           </div>
           <div>
             <Label>Participantes</Label>
             <div id="participants" role="radiogroup" aria-label="Participantes" className="mt-2 flex flex-wrap gap-2">
-              {[2, 3, 4, 5, 6].map((count) => {
+              {participantOptions.map((count) => {
                 const isSelected = form.participants === count;
                 const isDisabled = count > maxPeople;
                 return (
@@ -282,7 +417,9 @@ export default function ReservarActividad() {
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {selectedEvent
-                ? `Quedan ${selectedEvent.freeSeats} plaza(s) en esta salida.`
+                ? selectedEvent.freeSeats === 1
+                  ? "Queda 1 plaza en esta salida: reserva individual."
+                  : `Quedan ${selectedEvent.freeSeats} plaza(s) en esta salida.`
                 : null}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -358,22 +495,34 @@ export default function ReservarActividad() {
 
         {error && <p role="alert" className="mt-4 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-foreground">{error}</p>}
 
-        <p className="mt-5 flex items-start gap-2 text-sm leading-6 text-muted-foreground">
+        <p className="mt-5 flex items-start gap-2 rounded-md border border-border bg-muted/30 p-4 text-sm leading-6 text-foreground">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+          <span>
+            <strong>Edad mínima: {activity.minimumAge}.</strong> Los menores necesitan autorización y,
+            en su caso, acompañamiento según los{" "}
+            <Link to="/terminos" className="text-primary underline">términos</Link>.
+          </span>
+        </p>
+
+        <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-muted-foreground">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-          Pago seguro. Revisamos la disponibilidad de la fecha tras el pago: si no pudiéramos
-          realizar la salida, te devolvemos la señal íntegra.
+          {isEventBooking
+            ? "Al continuar comprobamos y bloqueamos tus plazas durante 30 minutos mientras pagas la señal. La reserva se confirma con el pago y queda sujeta a la meteorología y a las condiciones publicadas."
+            : "No se cobra nada ahora. Antonio revisará la disponibilidad de la fecha y, si es posible, te enviará un enlace de pago. Sujeto a la meteorología y a las condiciones publicadas."}
         </p>
 
         <Button
           className="mt-5 min-h-12 w-full text-base transition-all duration-300 active:scale-95 sm:text-lg"
           size="lg"
-          disabled={submitting}
+          disabled={submitting || (eventsLoading && Boolean(selectedEventId))}
           onClick={submit}
         >
           {submitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-          Pagar señal de {euros(deposit)}
+          {isEventBooking ? `Pagar señal de ${euros(deposit)}` : "Solicitar disponibilidad sin pago"}
         </Button>
-        <p className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-primary" />Pago seguro con Stripe</p>
+        {isEventBooking && (
+          <p className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-primary" />Pago seguro con Stripe</p>
+        )}
       </div>
     </div>,
   );

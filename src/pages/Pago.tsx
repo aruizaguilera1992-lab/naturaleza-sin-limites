@@ -288,6 +288,14 @@ export default function Pago() {
   }
 
   if (payment.status !== "pendiente") {
+    if (payment.status === "en_validacion") {
+      return card(
+        warn,
+        "Pendiente de confirmar disponibilidad",
+        "Esta solicitud no está asociada a una salida programada. Antonio revisará la disponibilidad y, si se confirma, te enviará un nuevo enlace de pago. No hagas ningún pago por ahora.",
+        contactButtons,
+      );
+    }
     const title = payment.status === "caducado" ? "Enlace caducado"
       : payment.status === "cancelado" ? "Cobro cancelado" : "Cobro no disponible";
     return card(warn, title, "Este enlace ya no admite pagos. Escríbenos y te ayudamos.", contactButtons);

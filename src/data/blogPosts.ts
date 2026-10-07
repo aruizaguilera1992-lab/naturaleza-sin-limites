@@ -157,10 +157,10 @@ En Naturaleza Sin Límites te acompañamos en cada paso, garantizando una experi
   },
   {
     id: "2",
-    title: "Las 5 Vías Ferratas más Espectaculares de Andalucía",
+    title: "3 Vías Ferratas Espectaculares de Andalucía (y por qué el Caminito del Rey no es una)",
     slug: "5-vias-ferratas-mas-espectaculares-andalucia",
     excerpt:
-      "Recorremos las vías ferratas más impresionantes del sur de España. Desde el mítico Caminito del Rey hasta joyas ocultas que solo conocen los locales.",
+      "Tres vías ferratas del sur de España, con datos de fuentes oficiales, y por qué el Caminito del Rey es un sendero de pasarelas y no una ferrata.",
     content: `
 ## El Auge de las Vías Ferratas en Andalucía
 
@@ -176,67 +176,43 @@ Para los no iniciados, una vía ferrata es un itinerario vertical u horizontal e
 
 > "Las vías ferratas democratizan la montaña, permitiendo a personas sin experiencia en escalada disfrutar de la verticalidad."
 
-## Las 5 Imprescindibles
+## Primero, una aclaración: el Caminito del Rey no es una vía ferrata
 
-### 1. Caminito del Rey - El Chorro, Málaga
+El Caminito del Rey es un **sendero de pasarelas** con entrada y horarios propios ([información oficial](https://www.caminitodelrey.info/es/tu-visita/acceso-recorrido)). No se recorre con disipador ni cable de vida y no tiene clasificación K de ferrata, por eso no lo incluimos en esta comparativa. La Vía Ferrata El Chorro es otra actividad distinta y **no incluye la entrada al Caminito del Rey**.
 
-Sin duda la más famosa. Aunque técnicamente es una pasarela y no una vía ferrata tradicional, merece el primer puesto por su historia y espectacularidad.
+## 3 ferratas imprescindibles
 
-**Datos clave:**
-- Longitud: 7.7 km
-- Desnivel: 300 m
-- Dificultad: K1 (muy fácil)
-- Mejor época: Todo el año
+### 1. Vía Ferrata El Chorro (Málaga)
 
-### 2. Vía Ferrata del Tajo de Ronda
+Muy aérea y no apta para personas con vértigo. Combina subidas de peldaños, puente tibetano, puente nepalí y una tirolina de unos 35 m.
 
-Una experiencia única que te permite ver Ronda desde una perspectiva completamente diferente. Pasas literalmente por debajo del Puente Nuevo.
+**Datos clave** (guía técnica del Ayuntamiento de Málaga y Visit Costa del Sol):
+- Dificultad: K3
+- Recorrido equipado: unos 650 m
+- Desnivel positivo: unos 250 m
+- Recorrido: unas 3 h (ida y vuelta). La jornada guiada completa, con briefing y equipación, es más larga.
 
-**Datos clave:**
-- Longitud: 500 m
-- Desnivel: 105 m
-- Dificultad: K3 (intermedia)
-- Mejor época: Primavera y otoño
+[Ver ficha de la Vía Ferrata El Chorro](/actividades/vias-ferratas/ferrata-el-chorro)
+
+### 2. Vías ferratas del Tajo de Ronda
+
+Ronda vista desde una perspectiva completamente diferente. En el Tajo hay más de una variante, con dificultades distintas, así que no damos una cifra única: consulta la ficha de la variante que ofrecemos.
+
+[Ver ficha de la Vía Ferrata Tajo de Ronda I (La Sevillana)](/actividades/vias-ferratas/ferrata-tajo-ronda-sevillana)
 
 ### 3. Vía Ferrata de Atajate
 
-Una joya escondida en la Serranía de Ronda. Menos conocida pero igualmente impresionante, con vistas al valle del Genal.
+Una joya escondida en la Serranía de Ronda, con vistas al valle del Genal. Los datos técnicos y la clasificación están en su ficha del catálogo.
 
-**Datos clave:**
-- Longitud: 350 m
-- Desnivel: 80 m
-- Dificultad: K2 (fácil)
-- Mejor época: Todo el año
+[Ver ficha de la Vía Ferrata de Atajate](/actividades/vias-ferratas/ferrata-atajate)
 
-### 4. Vía Ferrata de El Chorro
+## Comparativa rápida
 
-Junto al embalse, ofrece una experiencia más técnica con tramos desplomados y un puente tibetano impresionante.
-
-**Datos clave:**
-- Longitud: 400 m
-- Desnivel: 120 m
-- Dificultad: K4 (difícil)
-- Mejor época: Primavera y otoño
-
-### 5. Vía Ferrata de la Escalera Árabe - Comares
-
-Una vía ferrata con historia, siguiendo el antiguo acceso al pueblo. Las vistas a la Axarquía son increíbles.
-
-**Datos clave:**
-- Longitud: 280 m
-- Desnivel: 95 m
-- Dificultad: K3 (intermedia)
-- Mejor época: Todo el año
-
-## Comparativa Rápida
-
-| Vía Ferrata | Dificultad | Tiempo | Para Principiantes |
-|-------------|------------|--------|---------------------|
-| Caminito del Rey | K1 | 4h | ✅ Sí |
-| Tajo de Ronda | K3 | 2h | ⚠️ Con guía |
-| Atajate | K2 | 1.5h | ✅ Sí |
-| El Chorro | K4 | 2.5h | ❌ No |
-| Comares | K3 | 1.5h | ⚠️ Con guía |
+| Vía ferrata | Dificultad | Ficha |
+|-------------|------------|-------|
+| El Chorro | K3 | [Ver ficha](/actividades/vias-ferratas/ferrata-el-chorro) |
+| Tajo de Ronda | Según variante | [Ver ficha](/actividades/vias-ferratas/ferrata-tajo-ronda-sevillana) |
+| Atajate | Ver ficha | [Ver ficha](/actividades/vias-ferratas/ferrata-atajate) |
 
 ## Preparación y Seguridad
 
@@ -258,7 +234,7 @@ Realizar estas vías con un guía profesional te permite:
 
 ## Conclusión
 
-Andalucía ofrece un abanico de posibilidades para disfrutar de las vías ferratas. Desde la accesible espectacularidad del Caminito del Rey hasta la técnica exigente de El Chorro, hay opciones para todos los niveles y gustos.
+Andalucía ofrece un abanico de posibilidades para disfrutar de las vías ferratas. Antes de elegir, revisa la clasificación y los requisitos de cada ficha: no todas son para el mismo nivel.
 
 ¿Cuál será tu próxima aventura vertical?
     `,
@@ -270,9 +246,9 @@ Andalucía ofrece un abanico de posibilidades para disfrutar de las vías ferrat
     readTime: 10,
     views: 2340,
     seo: {
-      metaTitle: "Las 5 Vías Ferratas más Espectaculares de Andalucía | Naturaleza Sin Límites",
+      metaTitle: "3 Vías Ferratas Espectaculares de Andalucía | Naturaleza Sin Límites",
       metaDescription:
-        "Descubre las mejores vías ferratas de Andalucía: Caminito del Rey, Tajo de Ronda, Atajate, El Chorro y Comares. Guía completa con dificultad, tiempos y consejos.",
+        "Vía Ferrata El Chorro (K3), Tajo de Ronda y Atajate, con datos oficiales. Y por qué el Caminito del Rey es un sendero de pasarelas, no una ferrata.",
       ogImage: media.ferrata.src,
     },
   },

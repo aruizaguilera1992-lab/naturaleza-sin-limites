@@ -58,8 +58,8 @@ export const barrancos: Barranco[] = [
     rapelMaximo: '5m',
     numRapeles: 1,
     caracteristicas: ['nado', 'toboganes'],
-    descripcionCorta: 'Paseo acuático ideal para familias. Más que un barranco, es un parque acuático natural con un solo rápel.',
-    descripcionLarga: 'El Río Guadalmina en Benahavís es un recorrido acuático perfecto para iniciación y familias. Realmente no es un barranco al uso, sino un paseo por un río con un solo rápel de 5 metros. En época de lluvias la zona engorgada puede ser más interesante, pero el resto del tiempo funciona como un divertido parque acuático natural. Su acceso inmediato y retorno rápido lo hacen ideal para media jornada.',
+    descripcionCorta: 'Paseo acuático de iniciación desde 14 años. Más que un barranco, es un parque acuático natural con un solo rápel.',
+    descripcionLarga: 'El Río Guadalmina en Benahavís es un recorrido acuático perfecto para iniciación, con una edad mínima de 14 años. Realmente no es un barranco al uso, sino un paseo por un río con un solo rápel de 5 metros. En época de lluvias la zona engorgada puede ser más interesante, pero el resto del tiempo funciona como un divertido parque acuático natural. Su acceso inmediato y retorno rápido lo hacen ideal para media jornada.',
     urlInfo: 'https://www.docuwiki.infobarrancos.es/doku.php?id=barrancos:malaga:guadalmina',
     imagen: '/images/barrancos/guadalmina.jpg',
     imagenGrande: '/images/barrancos/guadalmina.jpg',
@@ -71,7 +71,7 @@ export const barrancos: Barranco[] = [
     acceso: 'facil',
     requisitos: {
       saberNadar: true,
-      edadMinima: 8,
+      edadMinima: 14,
       condicionFisica: 'basica',
       vertigo: false
     },

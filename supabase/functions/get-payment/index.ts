@@ -142,6 +142,13 @@ Deno.serve(async (req) => {
   }
   if (sessionState && status === "caducado") status = "pendiente";
 
+  // Legacy automatic deposits created without a scheduled outing need a manual
+  // availability check first: never open a new automatic checkout for them.
+  // Manual admin payment requests (kind = 'manual') are unaffected.
+  if (pr.kind === "senal" && pr.booking_id && !hasEvent && status === "pendiente" && !sessionState) {
+    status = "en_validacion";
+  }
+
   // Booking state, separate from payment state.
   let bookingState: "confirmada" | "fecha_pendiente" | "en_revision" | null = null;
   if (pr.status === "pagado") {
