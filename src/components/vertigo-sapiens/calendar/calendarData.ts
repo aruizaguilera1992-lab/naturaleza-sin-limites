@@ -269,7 +269,7 @@ export const calendarActivities: CalendarActivity[] = [
   {
     id: 'fer-feb-6',
     date: d(2, 22, 8, 0),
-    title: 'Vía Ferrata Caminito del Rey',
+    title: 'Vía Ferrata El Chorro',
     type: 'ferrata',
     time: '08:00',
     duration: '5h',
@@ -277,7 +277,7 @@ export const calendarActivities: CalendarActivity[] = [
     spots: 8,
     difficulty: 'K3',
     technicalInfo: {
-      description: 'La ferrata más emblemática de Málaga junto al famoso Caminito. Experiencia única.',
+      description: 'Ferrata K3 muy aérea en El Chorro. No incluye entrada al Caminito del Rey.',
       requirements: ['Forma física media', 'Sin vértigo severo'],
       equipment: ['Casco', 'Arnés', 'Disipador'],
       physicalLevel: 'medio',

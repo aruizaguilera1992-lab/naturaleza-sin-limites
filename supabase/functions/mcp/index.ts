@@ -402,7 +402,7 @@ var activityMedia = {
   },
   "ferrata-el-chorro": {
     src: "/__l5e/assets-v1/f50defed-08b8-4501-972a-217d23b336e1/ferrata-el-chorro.webp",
-    alt: "V\xEDa Ferrata El Chorro (Caminito del Rey): fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
+    alt: "V\xEDa Ferrata El Chorro: fotograf\xEDa documental de ferrata en entorno natural de monta\xF1a",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Above_the_clouds_on_Mt_Kinabalu.jpg",
     sourceTitle: "Above the clouds on Mt Kinabalu.jpg",
     license: "CC BY-SA 4.0",
@@ -2309,23 +2309,28 @@ var ferratas = [
   // ===================== MÁLAGA =====================
   {
     id: "ferrata-el-chorro",
-    nombre: "V\xEDa Ferrata El Chorro (Caminito del Rey)",
+    nombre: "V\xEDa Ferrata El Chorro",
     tipo: "via-ferrata",
     provincia: "M\xE1laga",
     zona: "El Chorro - Desfiladero de los Gaitanes",
     clasificacion: "K3",
     dificultad: "Media",
-    desnivel: "+200m",
-    desarrollo: "150 min v\xEDa",
-    alturaMaxima: "105m sobre el r\xEDo",
+    desnivel: "+250 m aprox.",
+    desarrollo: "650 m aprox.",
+    alturaMaxima: "Sin dato oficial",
     exposicion: "Alta",
-    duracion: "4-5 horas",
+    duracion: "4-5 horas (jornada guiada completa)",
     duracionHoras: 4.5,
+    duracionEfectiva: "Unas 3 h de recorrido (ida y vuelta)",
+    fuentesTecnicas: [
+      "https://juventud.malaga.eu/opencms/export/sites/juventud/.content/galerias/ocio/20260425_ALUA-GUIA-VF-EL-CHORRO_-ARDALES.pdf",
+      "https://blog.visitacostadelsol.com/es/vias-ferratas-malaga"
+    ],
     aproximacion: "15 min",
     precio: "55\u20AC",
-    descripcionCorta: "Ferrata cl\xE1sica junto al Desfiladero de los Gaitanes",
-    descripcionLarga: "La v\xEDa ferrata del Chorro recorre las paredes del impresionante Desfiladero de los Gaitanes, junto al famoso Caminito del Rey. Con escaleras verticales, traves\xEDas a\xE9reas y magn\xEDficas vistas al desfiladero, ofrece una experiencia completa de ferrata. Clasificada K3 por rocjumper.com, es ideal para quienes buscan dar el paso siguiente en ferratas.",
-    caracteristicas: ["clasica", "escaleras", "travesias", "panoramica"],
+    descripcionCorta: "Ferrata K3 muy a\xE9rea en El Chorro, con puente tibetano, puente nepal\xED y tirolina",
+    descripcionLarga: "La V\xEDa Ferrata El Chorro es un recorrido muy a\xE9reo de dificultad intermedia K3, con unos 650 m equipados y unos 250 m de desnivel positivo. Combina subidas de pelda\xF1os, tramos horizontales y verticales, puente tibetano, puente nepal\xED y una tirolina de unos 35 m. No es apta para personas con v\xE9rtigo. Es una actividad distinta del Caminito del Rey: el Caminito es un sendero de pasarelas con entrada propia y no est\xE1 clasificado como v\xEDa ferrata; esta ferrata no incluye la entrada al Caminito del Rey.",
+    caracteristicas: ["clasica", "escaleras", "puente-tibetano", "tirolina", "panoramica"],
     imagen: media.ferrata.src,
     imagenGrande: media.ferrata.src,
     mejorEpoca: "Octubre - Mayo",
@@ -2359,16 +2364,16 @@ var ferratas = [
       "Reportaje fotogr\xE1fico"
     ],
     destacados: [
-      "Combinable con Caminito del Rey",
+      "No incluye entrada al Caminito del Rey (sendero de pasarelas, no ferrata)",
       "Vistas espectaculares al desfiladero",
       "Dificultad progresiva",
       "Ideal para iniciarse en ferrata t\xE9cnica"
     ],
     elementosDestacados: {
-      puentes: 0,
-      tirolinas: 0,
-      escaleras: 3,
-      pasarelas: "100m",
+      puentes: 2,
+      tirolinas: 1,
+      escaleras: 0,
+      pasarelas: "",
       desplomes: false,
       techos: false
     },

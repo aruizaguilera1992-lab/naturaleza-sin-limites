@@ -367,7 +367,7 @@ function fromFerrata(item: Ferrata): ActivityProfile {
     price: item.precio || PENDING,
     priceValue: parsePrice(item.precio),
     totalDuration: item.duracion,
-    effectiveDuration: item.desarrollo || PENDING,
+    effectiveDuration: item.duracionEfectiva || PENDING,
     technicalLevel: `${item.clasificacion} · ${item.dificultad}`,
     physicalLevel: cap(item.requisitos.condicionFisica),
     minimumAge: `${item.requisitos.edadMinima} años`,
@@ -377,7 +377,8 @@ function fromFerrata(item: Ferrata): ActivityProfile {
     approachReturn: `Aproximación ${item.aproximacion}; retorno ${PENDING}`,
     technicalElements: [
       `desnivel ${item.desnivel}`,
-      `altura máxima ${item.alturaMaxima}`,
+      `recorrido ${item.desarrollo}`,
+      ...(item.alturaMaxima.startsWith("Sin dato") ? [] : [`altura máxima ${item.alturaMaxima}`]),
       `exposición ${item.exposicion}`,
       `${item.elementosDestacados.puentes} puente(s)`,
       `${item.elementosDestacados.tirolinas} tirolina(s)`,
@@ -401,8 +402,8 @@ function fromFerrata(item: Ferrata): ActivityProfile {
       : "personas con condición física adecuada que quieren conocer la progresión por cable y peldaños.",
     differentiator: item.destacados[0] || `Itinerario ${item.clasificacion} en ${item.zona}`,
     shortDescription: item.descripcionCorta,
-    sourceUrl: item.urlInfo,
-    sourceLabel: "RocJumper (referencia técnica)",
+    sourceUrl: item.fuentesTecnicas?.[0] ?? item.urlInfo,
+    sourceLabel: item.fuentesTecnicas ? "Guía técnica oficial (Ayuntamiento de Málaga)" : "RocJumper (referencia técnica)",
   });
 }
 

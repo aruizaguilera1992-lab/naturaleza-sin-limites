@@ -317,7 +317,7 @@ export const activityMedia: Record<string, ActivityMediaAsset> = {
   },
   'ferrata-el-chorro': {
     src: '/__l5e/assets-v1/f50defed-08b8-4501-972a-217d23b336e1/ferrata-el-chorro.webp',
-    alt: 'Vía Ferrata El Chorro (Caminito del Rey): fotografía documental de ferrata en entorno natural de montaña',
+    alt: 'Vía Ferrata El Chorro: fotografía documental de ferrata en entorno natural de montaña',
     sourceUrl: 'https://commons.wikimedia.org/wiki/File:Above_the_clouds_on_Mt_Kinabalu.jpg',
     sourceTitle: 'Above the clouds on Mt Kinabalu.jpg',
     license: 'CC BY-SA 4.0',
