@@ -300,7 +300,7 @@ export default function Pago() {
       return card(
         warn,
         "El bloqueo de tu plaza ha caducado",
-        "Este enlace ya no admite pagos y no se ha cobrado nada. Si quieres esa salida, vuelve a reservarla desde la ficha de la actividad (si aún quedan plazas) o escríbenos.",
+        "Este enlace ya no admite nuevos pagos. Si estabas pagando o acabas de pagar, el cargo puede tardar unos minutos en registrarse: no repitas el pago y escríbenos para revisarlo. Si no llegaste a pagar, vuelve a reservar desde la ficha de la actividad (si aún quedan plazas).",
         contactButtons,
       );
     }
