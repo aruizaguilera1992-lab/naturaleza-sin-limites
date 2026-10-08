@@ -36,8 +36,16 @@ export default function Contratar() {
       },
     });
     if (error || !data?.clientSecret) {
+      let code: string | undefined;
+      try {
+        code = (await (error as { context?: Response })?.context?.json?.())?.error;
+      } catch {
+        code = undefined;
+      }
       throw new Error(
-        "No hemos podido iniciar el pago ahora mismo. Inténtalo en unos minutos o escríbenos por WhatsApp.",
+        code === "already_subscribed"
+          ? "Ya tienes este plan activo con este correo. Puedes gestionarlo desde el enlace que te enviamos al contratarlo."
+          : "No hemos podido iniciar el pago ahora mismo. Inténtalo en unos minutos o escríbenos por WhatsApp.",
       );
     }
     return data.clientSecret as string;
