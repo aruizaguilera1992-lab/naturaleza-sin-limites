@@ -163,3 +163,7 @@
 - [x] Texto plaza_liberada sin afirmar ausencia de cargo
 - [x] Migración aplicada y get-payment + create-activity-deposit desplegadas (08/10/2026)
 - [ ] Publicar la web (lo hace el usuario)
+
+## Bloque «¿Qué estás buscando ahora mismo?» (08/10/2026)
+- [x] Fichas con foto grande, titular sobre la imagen y listado corto de 4 beneficios por servicio
+- [x] Texto largo eliminado y CTA naranja a ancho completo; verificado en 1280 y 390 px (sin publicar)
