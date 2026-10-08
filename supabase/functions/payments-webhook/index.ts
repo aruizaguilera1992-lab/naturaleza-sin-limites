@@ -198,23 +198,41 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
   });
 }
 
+const SUBSCRIPTION_STATUS: Record<string, string> = {
+  active: "activo",
+  trialing: "activo",
+  past_due: "pago_fallido",
+  unpaid: "impagado",
+  canceled: "cancelado",
+  incomplete: "pendiente",
+  incomplete_expired: "caducado",
+  paused: "pausado",
+};
+
 // deno-lint-ignore no-explicit-any
 async function updateSubscription(subscription: any, env: StripeEnv, canceled = false) {
   const item = subscription.items?.data?.[0];
   const periodEnd = item?.current_period_end ?? subscription.current_period_end;
-  const { error } = await getSupabase()
+  const rawStatus = canceled ? "canceled" : String(subscription.status ?? "active");
+  const { data, error } = await getSupabase()
     .from("plan_orders")
     .update({
-      status: canceled ? "cancelado" : String(subscription.status ?? "activo"),
+      status: SUBSCRIPTION_STATUS[rawStatus] ?? rawStatus,
       cancel_at_period_end: subscription.cancel_at_period_end === true,
       current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
       ...(item?.price?.lookup_key ? { price_id: item.price.lookup_key } : {}),
     })
     .eq("stripe_subscription_id", subscription.id)
-    .eq("environment", env);
+    .eq("environment", env)
+    .select("id");
   if (error) {
     console.error("subscription update failed", error);
     throw new Error("subscription_update_failed");
+  }
+  // The subscription event can arrive before checkout.session.completed links
+  // the subscription id: fail so Stripe retries once the order is linked.
+  if ((data ?? []).length === 0 && subscription.metadata?.plan_price_id) {
+    throw new Error("plan_order_not_linked_yet");
   }
 }
 
@@ -245,6 +263,18 @@ async function handleInvoice(invoice: any, env: StripeEnv, paid: boolean) {
       ...(paid ? {} : { status: "pago_fallido" }),
     })
     .eq("stripe_subscription_id", subscriptionId)
+    .eq("environment", env)
+    .select("id, product_name, customer_email, status")
+    .maybeSingle();
+
+  if (error) {
+    console.error("invoice update failed", error);
+    throw new Error("invoice_update_failed");
+  }
+  if (paid && order && ["pago_fallido", "impagado"].includes(order.status as string)) {
+    await supabase.from("plan_orders").update({ status: "activo" }).eq("id", order.id);
+  }
+  if (false) await supabase.from("plan_orders").select("id")
     .eq("environment", env)
     .select("id, product_name, customer_email")
     .maybeSingle();
