@@ -151,3 +151,9 @@
 - [x] Backend exige salida válida para señal; get-payment bloquea señales antiguas sin salida
 - [x] Términos y FAQ con los dos caminos de reserva
 - [x] Vía Ferrata El Chorro K3 y artículo de ferratas sin Caminito
+
+## Remates revisión b66ba5c7 (08/10/2026)
+- [x] Mensajes honestos y try/finally en reservas; salida inválida limpia fecha
+- [x] get-payment: cobro de señal solo con bloqueo vigente; sesión 31 min
+- [x] Limpieza segura si falla liberar plazas; solo salidas open_group
+- [ ] Desplegar create-activity-deposit y get-payment (pendiente de tu aprobación)
