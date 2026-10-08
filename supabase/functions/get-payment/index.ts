@@ -238,7 +238,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
     return data ?? null;
   };
-  const handOut = async (s: { id: string; status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null }) => {
+  const handOut = async (s: { id: string; status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null; payment_intent?: unknown }) => {
     const decision = assessReusableSession(s, isDeposit, await freshHold());
     if (decision === "paid") return json({ payment, error: "already_paid" }, 409);
     if (decision === "reuse") return json({ payment, clientSecret: s.client_secret, reused: true });

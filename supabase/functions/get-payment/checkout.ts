@@ -129,12 +129,14 @@ export type ReuseDecision = "reuse" | "paid" | "close" | "unavailable";
  * Paid / processing sessions are never closed (no second payment invited).
  */
 export function assessReusableSession(
-  s: { status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null },
+  s: { status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null; payment_intent?: unknown },
   isDeposit: boolean,
   hold: { state: string; hold_expires_at: string | null } | null,
   nowMs = Date.now(),
 ): ReuseDecision {
   if (s.status === "complete" || s.payment_status === "paid") return "paid";
+  // A payment attempt already exists (possibly processing): never close it.
+  if (s.payment_intent) return "paid";
   if (s.status !== "open" || !s.client_secret) return "unavailable";
   if (!isDeposit) return "reuse";
   const holdMs = hold?.state === "bloqueada" && hold.hold_expires_at ? new Date(hold.hold_expires_at).getTime() : NaN;
