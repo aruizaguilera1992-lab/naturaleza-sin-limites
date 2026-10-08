@@ -43,7 +43,6 @@ Deno.test("dos llamadas que cruzan minuto usan misma clave y mismos parámetros"
   assert(r1.ok && r2.ok);
   assertEquals(calls.create[0].key, calls.create[1].key);
   assertEquals(JSON.stringify(calls.create[0].params), JSON.stringify(calls.create[1].params));
-  assert(!calls.create[0].key.includes(String(Math.floor(Date.now() / 1000)).slice(0, 6)) || true);
   assertEquals(calls.create[0].params.expires_at, T0 + 1860);
 });
 
