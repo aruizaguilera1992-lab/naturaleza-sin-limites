@@ -185,8 +185,16 @@ export default function ReservarActividad() {
   };
 
   const submit = async () => {
+    if (submitting) return;
     const problem = validate();
     if (problem) return setError(problem);
+    // A previously chosen outing that vanished on reload must never be sent
+    // silently as a custom-date request with its inherited date.
+    if (selectedEventId && !isEventBooking) {
+      chooseEvent(null);
+      setEventNotice("La salida que habías elegido ya no está disponible. Elige otra salida o indica una fecha para enviar una solicitud sin pago.");
+      return;
+    }
     setError(null);
     setSubmitting(true);
 
@@ -210,7 +218,8 @@ export default function ReservarActividad() {
         setRequestSent(true);
         window.scrollTo({ top: 0 });
       } catch {
-        setError("No hemos podido enviar tu solicitud. No se ha registrado nada: revisa tu conexión e inténtalo de nuevo, o escríbenos por WhatsApp.");
+        // A lost response may hide a request that WAS stored: be honest.
+        setError("No hemos podido confirmar la recepción de tu solicitud. Si vuelves a enviarla podría llegarnos duplicada; si prefieres, escríbenos por WhatsApp y lo comprobamos.");
       } finally {
         setSubmitting(false);
       }
@@ -218,41 +227,57 @@ export default function ReservarActividad() {
     }
 
     // ---- Scheduled outing: server checks and holds seats, then payment ----
-    const { data, error: fnError } = await supabase.functions.invoke("create-activity-deposit", {
-      body: {
-        category,
-        slug,
-        participants: form.participants,
-        eventId: selectedEvent.id,
-        name: form.name.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        message: form.message.trim() || null,
-        rgpd: true,
-        environment: getStripeEnvironment(),
-        origin: window.location.origin,
-      },
-    });
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("create-activity-deposit", {
+        body: {
+          category,
+          slug,
+          participants: form.participants,
+          eventId: selectedEvent.id,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          message: form.message.trim() || null,
+          rgpd: true,
+          environment: getStripeEnvironment(),
+          origin: window.location.origin,
+        },
+      });
 
-    setSubmitting(false);
-    if (fnError || !data?.token) {
-      const detail = fnError ? await readFnError(fnError) : null;
-      if (detail?.reason && detail.reason !== "requires_confirmation") {
-        chooseEvent(null);
-        void reloadEvents();
-        setEventNotice(
-          detail.reason === "sin_plazas"
-            ? "Esa salida acaba de quedarse sin plazas suficientes. Elige otra salida o solicita una fecha sin pago."
-            : "Esa salida ya no admite reservas. Elige otra salida o solicita una fecha sin pago.",
-        );
-        setError("No se ha bloqueado ninguna plaza ni se ha realizado ningún cargo.");
-      } else {
-        setError("No hemos podido preparar el pago. No se ha realizado ningún cargo: inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.");
+      if (fnError || !data?.token) {
+        const detail = fnError ? await readFnError(fnError) : null;
+        if (detail?.reason && detail.reason !== "requires_confirmation") {
+          chooseEvent(null);
+          void reloadEvents();
+          setEventNotice(
+            detail.reason === "sin_plazas"
+              ? "Esa salida acaba de quedarse sin plazas suficientes. Elige otra salida o solicita una fecha sin pago."
+              : "Esa salida ya no admite reservas. Elige otra salida o solicita una fecha sin pago.",
+          );
+          setError("No se ha bloqueado ninguna plaza ni se ha realizado ningún cargo.");
+        } else {
+          setError("No hemos podido preparar el pago. No se ha realizado ningún cargo: inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.");
+        }
+        return;
       }
-      return;
+      navigate(`/pago/${data.token}`);
+    } catch {
+      // Network failure: a hold may exist server-side; it expires on its own.
+      setError("No hemos podido confirmar tu reserva. No se ha realizado ningún cargo; si se llegó a bloquear una plaza se liberará sola en unos minutos. Inténtalo de nuevo o escríbenos por WhatsApp.");
+    } finally {
+      setSubmitting(false);
     }
-    navigate(`/pago/${data.token}`);
   };
+
+  // Outing that disappears/fills on reload: clear it and explain the switch.
+  useEffect(() => {
+    if (!selectedEventId || eventsLoading) return;
+    if (eventsError || !events.some((e) => e.id === selectedEventId && !e.isFull)) {
+      setSelectedEventId(null);
+      setForm((prev) => ({ ...prev, date: "" }));
+      setEventNotice("La salida que habías elegido ya no está disponible. Elige otra salida o indica una fecha para enviar una solicitud sin pago.");
+    }
+  }, [selectedEventId, eventsLoading, eventsError, events]);
 
   if (requestSent) {
     return wrapper(
