@@ -287,7 +287,7 @@ export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
       <div style="font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;line-height:1.6">
         <h2 style="color:#FF6B35">Ya casi está, ${escapeHtml(body.name)}</h2>
         <p>Hemos bloqueado temporalmente ${body.participants} plaza(s) en la salida programada de <strong>${escapeHtml(activityLabel)}</strong> del ${escapeHtml(eventLabel)}.</p>
-        <p>El bloqueo dura ${HOLD_MINUTES} minutos y queda pendiente del pago de la señal de <strong>${formatAmount(depositCents, "eur")}</strong> (${pct}% del total de ${formatAmount(totalCents, "eur")}). Si no se completa el pago, las plazas se liberan. El resto se abona el día de la actividad.</p>
+        <p>Tienes ${HOLD_MINUTES} minutos para iniciar el pago de la señal de <strong>${formatAmount(depositCents, "eur")}</strong> (${pct}% del total de ${formatAmount(totalCents, "eur")}); al iniciarlo, el bloqueo se mantiene durante el plazo de pago. Si no se completa el pago, las plazas se liberan. El resto se abona el día de la actividad.</p>
         <p><a href="${payUrl}" style="background:#FF6B35;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none">Pagar la señal</a></p>
         <p>Si el enlace no funciona, copia esta dirección: ${payUrl}</p>
         <p>La reserva se confirma cuando recibimos el pago y siempre está sujeta a las condiciones meteorológicas y a las condiciones publicadas.</p>
