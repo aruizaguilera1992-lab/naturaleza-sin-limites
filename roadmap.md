@@ -156,9 +156,10 @@
 - [x] Mensajes honestos y try/finally en reservas; salida inválida limpia fecha
 - [x] get-payment: cobro de señal solo con bloqueo vigente; sesión 31 min
 - [x] Limpieza segura si falla liberar plazas; solo salidas open_group
-- [ ] Desplegar create-activity-deposit y get-payment (pendiente de tu aprobación)
+- [x] Desplegar create-activity-deposit y get-payment (08/10/2026)
 
 ## Cobro de señal ligado al bloqueo (08/10/2026)
-- [x] RPC prepare_deposit_checkout (pendiente en supabase/pending, no aplicada) + checkout.ts con expires_at persistido
+- [x] RPC prepare_deposit_checkout (migración 0011 aplicada 08/10/2026) + checkout.ts con expires_at persistido
 - [x] Texto plaza_liberada sin afirmar ausencia de cargo
-- [ ] Despliegue coordinado: migración → get-payment + create-activity-deposit → publicar web (espera aprobación)
+- [x] Migración aplicada y get-payment + create-activity-deposit desplegadas (08/10/2026)
+- [ ] Publicar la web (lo hace el usuario)
