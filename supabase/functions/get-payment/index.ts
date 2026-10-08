@@ -2,7 +2,8 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
-import { checkDepositEligibility, depositSessionExpiry, type DepositEligibility } from "./eligibility.ts";
+import { checkDepositEligibility, type DepositEligibility } from "./eligibility.ts";
+import { openCheckout } from "./checkout.ts";
 
 const BodySchema = z.object({
   token: z.string().regex(/^[a-f0-9]{16,80}$/),
@@ -285,71 +286,24 @@ Deno.serve(async (req) => {
   let originHash = 0;
   for (const ch of origin) originHash = (originHash * 33 + ch.charCodeAt(0)) >>> 0;
 
-  // Deposits: shortest session Stripe allows (see eligibility.ts). Manual
-  // admin requests keep Stripe's default expiry.
-  const depositExpiry = eligibility?.ok ? depositSessionExpiry() : null;
-  const sessionParams = {
-    line_items: [
-      {
-        price_data: {
-          currency,
-          product_data: { name: pr.concept, tax_code: "txcd_20030000" },
-          unit_amount: pr.amount_cents,
-          tax_behavior: "inclusive",
-        },
-        quantity: 1,
-      },
-    ],
-    mode: "payment",
-    ui_mode: "embedded_page",
-    return_url: canonicalReturnUrl,
-    payment_intent_data: { description: pr.concept },
-    ...(pr.customer_email ? { customer_email: pr.customer_email } : {}),
-    automatic_tax: { enabled: true },
-    metadata: { payment_request_token: pr.token, environment: env },
-    ...(depositExpiry ? { expires_at: depositExpiry } : {}),
-  };
-
-  let session;
-  try {
-    // No silent fallback: a tax configuration problem must surface.
-    // Key is stable per (request, generation, amount, currency, origin), so
-    // concurrent calls and retries resolve to ONE chargeable session.
-    // PARAMS_VERSION must be bumped whenever sessionParams change, or Stripe
-    // rejects the reused key with "same parameters" errors.
-    session = await stripe.checkout.sessions.create(sessionParams as never, {
-      idempotencyKey:
-        `pr_${pr.id}_g${generation}_${pr.amount_cents}_${currency}_${originHash.toString(16)}_${depositExpiry ?? 0}_v3`,
-    });
-  } catch (e) {
-    const message = String((e as { message?: string })?.message ?? e).slice(0, 400);
-    console.error("Checkout session creation failed", message);
-    await supabase
-      .from("payment_requests")
-      .update({ last_error: message })
-      .eq("id", pr.id);
-    return json({ payment, error: "checkout_failed", detail: message }, 502);
-  }
-
-  const { data: recorded, error: recordError } = await supabase.rpc("record_checkout_session", {
-    _token: token,
-    _generation: generation,
-    _session_id: session.id,
+  const result = await openCheckout({
+    rpc: (name, args) => supabase.rpc(name, args) as never,
+    createSession: (params, idempotencyKey) =>
+      stripe.checkout.sessions.create(params as never, { idempotencyKey }) as never,
+    expireSession: (id) => stripe.checkout.sessions.expire(id),
+    setLastError: (message) => supabase.from("payment_requests").update({ last_error: message }).eq("id", pr.id) as never,
+  }, {
+    pr,
+    currency,
+    env,
+    generation,
+    returnUrl: canonicalReturnUrl,
+    originHash: originHash.toString(16),
   });
-
-  if (recordError) {
-    console.error("Could not persist checkout session id", recordError);
-    return json({ payment, error: "server_error" }, 500);
+  if (!result.ok) {
+    if (result.status >= 500) console.error("checkout preparation failed", result.error, result.detail ?? "");
+    const shown = result.holdReleased ? { ...payment, status: "plaza_liberada" } : payment;
+    return json({ payment: shown, error: result.error, ...(result.detail ? { detail: result.detail } : {}) }, result.status);
   }
-  if (!recorded?.ok) {
-    // Someone else won the race; expire ours so only one session is payable.
-    try {
-      await stripe.checkout.sessions.expire(session.id);
-    } catch (e) {
-      console.error("Could not expire losing session", e);
-    }
-    return json({ payment, error: recorded?.reason ?? "checkout_unavailable" }, 409);
-  }
-
-  return json({ payment, clientSecret: session.client_secret });
+  return json({ payment, clientSecret: result.clientSecret });
 });
