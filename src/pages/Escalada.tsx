@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowRight, Compass, Mountain, Users } from "lucide-react";
+import { ArrowDown, ArrowRight, Compass } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { Seo } from "@/components/Seo";
 import { Navbar } from "@/components/Navbar";
