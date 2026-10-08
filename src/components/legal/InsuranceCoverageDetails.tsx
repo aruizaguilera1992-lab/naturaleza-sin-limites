@@ -1,13 +1,10 @@
 import {
-  ACCIDENT_NOTES,
-  ACCIDENT_ROWS,
   AGE_RESTRICTION,
   COVERAGE_CHECKED_LABEL,
   NORMATIVE_REQUIREMENT,
   NORMATIVE_SOURCE,
-  POLICY_PERIOD,
-  RC_ROWS,
 } from '@/data/insuranceCoverage';
+
 import {
   FALLBACK_INSURER,
   useBusinessSettings,
@@ -81,33 +78,15 @@ export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showChe
         </p>
       </div>
 
-      <CoverageTable title="Responsabilidad civil" rows={RC_ROWS} />
-
       <div className="min-w-0">
-        <CoverageTable
-          title="Accidentes"
-          rows={ACCIDENT_ROWS}
-          caption="Límites generales por persona"
-        />
         <p
           role="note"
-          className="mt-3 rounded-xl border border-primary/50 bg-primary/10 p-3 text-sm font-semibold leading-6 text-foreground"
+          className="rounded-xl border border-primary/50 bg-primary/10 p-3 text-sm font-semibold leading-6 text-foreground"
         >
           {AGE_RESTRICTION}
-        </p>
-      </div>
-
-      <div className="min-w-0 rounded-2xl border border-border bg-card/60 p-5 lg:col-span-2">
-        <h3 className="font-heading text-base font-bold text-foreground">Precisiones del seguro de accidentes</h3>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
-          {ACCIDENT_NOTES.map((n) => (
-            <li key={n}>{n}</li>
-          ))}
-        </ul>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Aseguradora: {insurer || FALLBACK_INSURER} · Vigencia de ambas pólizas: {POLICY_PERIOD}
         </p>
       </div>
     </div>
   );
 }
+

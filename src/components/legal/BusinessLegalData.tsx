@@ -29,7 +29,7 @@ export function BusinessLegalData({ includeTourism = true }: { includeTourism?: 
     ["Titular", row.legal_name],
     ["Nombre comercial", row.trade_name],
     ["NIF/CIF", row.tax_id],
-    ["Domicilio", row.address],
+
     ...(includeTourism
       ? ([
           ["Registro de Turismo de Andalucía", row.tourism_registry],
