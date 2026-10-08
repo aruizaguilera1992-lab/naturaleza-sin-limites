@@ -187,7 +187,7 @@ export const espeleologiaPublicada = () =>
 
 /** Contenido editorial de la página /espeleologia */
 export const espeleologiaContenido = {
-  titulo: 'Espeleología en Málaga y Andalucía',
+  titulo: 'Espeleología: un mundo subterráneo por conocer',
   subtitulo:
     'Explora el mundo subterráneo con seguridad, técnica y respeto por el medio natural.',
   introduccion:
