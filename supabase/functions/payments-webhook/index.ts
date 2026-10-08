@@ -13,6 +13,7 @@ import {
   toRpcNotification,
 } from "../_shared/email.ts";
 import { PLAN_CATALOG } from "../_shared/planCatalog.ts";
+import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
@@ -119,7 +120,7 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
   const { data: order, error } = await supabase
     .from("plan_orders")
     .update({
-      status: "pagado",
+      status: subscriptionId ? "activo" : "pagado",
       amount_cents: amountCents,
       currency,
       ...(subscriptionId ? { stripe_subscription_id: subscriptionId } : {}),
@@ -151,6 +152,8 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
     let origin: string | null = null;
     try {
       origin = session?.return_url ? new URL(session.return_url).origin : null;
+      // Only trusted origins may appear in emailed links.
+      if (origin && !isTrustedSiteOrigin(origin)) origin = "https://naturalezasinlimites.es";
     } catch {
       origin = null;
     }
@@ -500,6 +503,11 @@ Deno.serve(async (req) => {
         break;
       case "checkout.session.async_payment_failed":
         console.log("Async payment failed for session", event.data.object?.id);
+        if (event.data.object?.metadata?.plan_order === "1") {
+          await getSupabase().from("plan_orders").update({ status: "pago_fallido" })
+            .eq("stripe_session_id", event.data.object.id).eq("environment", env)
+            .eq("status", "pendiente");
+        }
         break;
       case "customer.subscription.created":
       case "customer.subscription.updated":
