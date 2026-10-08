@@ -12,7 +12,7 @@ COMMENT ON COLUMN public.payment_requests.hold_extended_at IS
   'Señal: momento de la única extensión del bloqueo de plazas para cubrir el checkout.';
 
 -- Orden de bloqueo: payment_requests -> activity_event_bookings (igual que
--- begin_checkout_generation / release_event_seats; activity_events solo se lee).
+-- begin_checkout_generation / release_event_seats; activity_events con FOR SHARE).
 CREATE OR REPLACE FUNCTION public.prepare_deposit_checkout(
   _token text,
   _generation integer,
