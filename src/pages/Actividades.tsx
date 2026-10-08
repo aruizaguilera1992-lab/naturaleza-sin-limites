@@ -22,7 +22,6 @@ export type ViewMode = "grid" | "list" | "map";
 export type SortOption = "recomendados" | "precio-asc" | "precio-desc" | "duracion" | "popularidad" | "nivel";
 
 export interface Filters {
-  types: ActivityType[];
   levels: string[];
   durations: string[];
   priceRange: [number, number];
@@ -32,7 +31,6 @@ export interface Filters {
 }
 
 const initialFilters: Filters = {
-  types: [],
   levels: [],
   durations: [],
   priceRange: [0, 200],
@@ -71,11 +69,6 @@ const Actividades = () => {
     // Filter by active tab
     if (activeTab !== "todas" && activeTab !== "calendario") {
       result = result.filter((a) => a.activityType === activeTab);
-    }
-
-    // Filter by type checkboxes
-    if (filters.types.length > 0) {
-      result = result.filter((a) => filters.types.includes(a.activityType as ActivityType));
     }
 
     // Filter by level
