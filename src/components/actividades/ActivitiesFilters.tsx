@@ -89,18 +89,12 @@ export function ActivitiesFilters({ filters, counts, activeTab, onTabChange, onF
 
   const hasActiveFilters =
     filters.search.trim().length > 0 ||
-    filters.types.length > 0 ||
     filters.levels.length > 0 ||
     filters.durations.length > 0 ||
     filters.provinces.length > 0 ||
     filters.characteristics.length > 0 ||
     filters.priceRange[0] > 0 ||
     filters.priceRange[1] < 200;
-
-  const handleTypeChange = (type: string, checked: boolean) => {
-    const newTypes = checked ? [...filters.types, type] : filters.types.filter((t) => t !== type);
-    onFilterChange({ types: newTypes as Filters["types"] });
-  };
 
   const handleLevelChange = (level: string, checked: boolean) => {
     const newLevels = checked ? [...filters.levels, level] : filters.levels.filter((l) => l !== level);
@@ -160,43 +154,6 @@ export function ActivitiesFilters({ filters, counts, activeTab, onTabChange, onF
         })}
 
       <span className="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
-
-      {/* Type of Activity */}
-      <FilterDropdown label="Tipo de Actividad" activeCount={filters.types.length}>
-        <div className="space-y-1">
-          <CheckboxItem
-            id="type-barranquismo"
-            label="Barranquismo"
-            count={counts.barranquismo}
-            checked={filters.types.includes("barranquismo")}
-            onCheckedChange={(checked) => handleTypeChange("barranquismo", checked)}
-          />
-          <CheckboxItem
-            id="type-escalada"
-            label="Escalada"
-            count={counts.escalada}
-            checked={filters.types.includes("escalada")}
-            onCheckedChange={(checked) => handleTypeChange("escalada", checked)}
-          />
-          <CheckboxItem
-            id="type-ferratas"
-            label="Vías Ferratas"
-            count={counts.ferratas}
-            checked={filters.types.includes("ferratas")}
-            onCheckedChange={(checked) => handleTypeChange("ferratas", checked)}
-          />
-          {/* La espeleología solo aparece cuando hay propuestas con precio publicado */}
-          {counts.espeleologia > 0 && (
-            <CheckboxItem
-              id="type-espeleologia"
-              label="Espeleología"
-              count={counts.espeleologia}
-              checked={filters.types.includes("espeleologia")}
-              onCheckedChange={(checked) => handleTypeChange("espeleologia", checked)}
-            />
-          )}
-        </div>
-      </FilterDropdown>
 
       {/* Level */}
       <FilterDropdown label="Nivel" activeCount={filters.levels.length}>
