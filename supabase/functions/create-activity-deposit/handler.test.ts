@@ -13,6 +13,7 @@ const baseEvent = (o: Partial<EventRow> = {}): EventRow => ({
   capacity_total: 6,
   seats_reserved: 0,
   price_cents: null,
+  event_type: "open_group",
   ...o,
 });
 
@@ -32,7 +33,7 @@ const body = (o: Record<string, unknown> = {}) => ({
 });
 
 /** In-memory fake: records every write, never touches the network. */
-function fakeDb(event: EventRow | null, opts: { seatOk?: boolean; prFail?: boolean } = {}) {
+function fakeDb(event: EventRow | null, opts: { seatOk?: boolean; prFail?: boolean; releaseFail?: "error" | "not_ok" } = {}) {
   const writes: string[] = [];
   const inserted: Record<string, unknown>[] = [];
   const db = {
@@ -51,6 +52,11 @@ function fakeDb(event: EventRow | null, opts: { seatOk?: boolean; prFail?: boole
           inserted.push({ table, ...row });
           return chain;
         },
+        update: (row: Record<string, unknown>) => {
+          writes.push(`update:${table}`);
+          inserted.push({ table, op: "update", ...row });
+          return chain;
+        },
         delete: () => {
           writes.push(`delete:${table}`);
           return chain;
@@ -65,6 +71,8 @@ function fakeDb(event: EventRow | null, opts: { seatOk?: boolean; prFail?: boole
       if (name === "reserve_event_seats") {
         return { data: opts.seatOk === false ? { ok: false, reason: "sin_plazas", free_seats: 0 } : { ok: true }, error: null };
       }
+      if (name === "release_event_seats" && opts.releaseFail === "error") return { data: null, error: { message: "db down" } };
+      if (name === "release_event_seats" && opts.releaseFail === "not_ok") return { data: { ok: false, reason: "no_event" }, error: null };
       return { data: { ok: true }, error: null };
     },
   };
@@ -95,6 +103,8 @@ for (const [label, ev, reason] of [
   ["slug ajeno", baseEvent({ slug: "sima-diablo" }), "wrong_activity"],
   ["sin cupo suficiente", baseEvent({ seats_reserved: 5 }), "sin_plazas"],
   ["inexistente", null, "not_found"],
+  ["privada (no open_group)", baseEvent({ event_type: "private" }), "not_bookable"],
+  ["sin event_type", baseEvent({ event_type: null }), "not_bookable"],
 ] as const) {
   Deno.test(`salida ${label} se rechaza sin escrituras`, async () => {
     const f = fakeDb(ev);
@@ -148,3 +158,22 @@ Deno.test("si falla preparar el pago se libera el bloqueo y se limpia lo creado"
   ]);
   assertEquals(sent.length, 0);
 });
+
+for (const mode of ["error", "not_ok"] as const) {
+  Deno.test(`si la liberación falla (${mode}) se conserva enlace y reserva marcada para revisión`, async () => {
+    const f = fakeDb(baseEvent(), { prFail: true, releaseFail: mode });
+    const sent: unknown[] = [];
+    const r = await handleDeposit(body(), deps(f.db, sent));
+    assertEquals(r.status, 500);
+    assertEquals(f.writes, [
+      "insert:bookings",
+      "rpc:reserve_event_seats",
+      "insert:payment_requests",
+      "rpc:release_event_seats",
+      "update:bookings",
+    ]);
+    const upd = f.inserted.find((i) => i.op === "update")!;
+    assertEquals(upd.status, "incidencia_plazas");
+    assertEquals(sent.length, 0);
+  });
+}

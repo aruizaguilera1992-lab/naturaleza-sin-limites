@@ -34,6 +34,7 @@ export interface EventRow {
   capacity_total: number;
   seats_reserved: number;
   price_cents: number | null;
+  event_type?: string | null;
 }
 
 export type EventCheck =
@@ -50,6 +51,8 @@ export function checkEvent(
 ): EventCheck {
   if (!ev) return { ok: false, reason: "not_found" };
   if (ev.category !== category || ev.slug !== slug) return { ok: false, reason: "wrong_activity" };
+  // Only open group outings are publicly bookable with an automatic deposit.
+  if ((ev.event_type ?? null) !== "open_group") return { ok: false, reason: "not_bookable" };
   if (ev.status !== "publicada") {
     return ev.status === "completa"
       ? { ok: false, reason: "sin_plazas", freeSeats: 0 }
@@ -139,7 +142,7 @@ export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
 
   const { data: ev, error: evError } = await db
     .from("activity_events")
-    .select("id, category, slug, status, starts_at, capacity_total, seats_reserved, price_cents")
+    .select("id, category, slug, status, starts_at, capacity_total, seats_reserved, price_cents, event_type")
     .eq("id", body.eventId)
     .maybeSingle();
   if (evError) {
@@ -227,9 +230,26 @@ export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
   if (requestError || !request) {
     console.error("deposit payment_request insert failed", requestError);
     // Controlled rollback of the records created by this call only.
-    await db.rpc("release_event_seats", { _booking_id: booking.id, _reason: "payment_prepare_failed" });
-    await db.from("activity_event_bookings").delete().eq("booking_id", booking.id);
-    await db.from("bookings").delete().eq("id", booking.id);
+    const { data: rel, error: relError } = await db.rpc("release_event_seats", {
+      _booking_id: booking.id,
+      _reason: "payment_prepare_failed",
+    });
+    const released = !relError && (rel as { ok?: boolean } | null)?.ok === true;
+    if (released) {
+      await db.from("activity_event_bookings").delete().eq("booking_id", booking.id);
+      await db.from("bookings").delete().eq("id", booking.id);
+    } else {
+      // Seats could NOT be released: keep link + booking so the counter can be
+      // repaired by an admin. Never claim the seats were freed.
+      console.error("release_event_seats failed after payment prepare failure", relError, rel);
+      await db
+        .from("bookings")
+        .update({
+          status: "incidencia_plazas",
+          admin_notes: `Fallo al preparar el pago y al liberar plazas (${now.toISOString()}). Revisar contador de la salida ${event.id}.`,
+        })
+        .eq("id", booking.id);
+    }
     return { status: 500, body: { error: "No se pudo preparar el pago. No se ha realizado ningún cargo." } };
   }
 
