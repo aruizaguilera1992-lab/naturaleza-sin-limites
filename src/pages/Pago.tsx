@@ -296,6 +296,14 @@ export default function Pago() {
         contactButtons,
       );
     }
+    if (payment.status === "plaza_liberada") {
+      return card(
+        warn,
+        "El bloqueo de tu plaza ha caducado",
+        "Este enlace ya no admite pagos y no se ha cobrado nada. Si quieres esa salida, vuelve a reservarla desde la ficha de la actividad (si aún quedan plazas) o escríbenos.",
+        contactButtons,
+      );
+    }
     const title = payment.status === "caducado" ? "Enlace caducado"
       : payment.status === "cancelado" ? "Cobro cancelado" : "Cobro no disponible";
     return card(warn, title, "Este enlace ya no admite pagos. Escríbenos y te ayudamos.", contactButtons);

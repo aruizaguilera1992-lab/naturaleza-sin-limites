@@ -2,6 +2,7 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import { checkDepositEligibility, depositSessionExpiry, type DepositEligibility } from "./eligibility.ts";
 
 const BodySchema = z.object({
   token: z.string().regex(/^[a-f0-9]{16,80}$/),
@@ -104,20 +105,24 @@ Deno.serve(async (req) => {
   // Scheduled outing: seat state decides whether the booking is confirmed.
   let hasEvent = false;
   let seatState: string | null = null;
+  let link: { state: string; hold_expires_at: string | null; event_id: string } | null = null;
+  let evInfo: { status: string; starts_at: string } | null = null;
   if (pr.booking_id) {
-    const { data: link } = await supabase
+    const { data: linkRow } = await supabase
       .from("activity_event_bookings")
-      .select("state, event_id")
+      .select("state, event_id, hold_expires_at")
       .eq("booking_id", pr.booking_id)
       .maybeSingle();
+    link = linkRow;
     if (link) {
       hasEvent = true;
       seatState = link.state;
       const { data: ev } = await supabase
         .from("activity_events")
-        .select("starts_at")
+        .select("starts_at, status")
         .eq("id", link.event_id)
         .maybeSingle();
+      evInfo = ev ?? null;
       if (ev?.starts_at) date = ev.starts_at;
     }
   }
@@ -149,6 +154,14 @@ Deno.serve(async (req) => {
     status = "en_validacion";
   }
 
+  // Automatic deposit with outing: chargeable only while the seat hold is live
+  // and the outing bookable. Never re-acquire seats here.
+  const eligibility: DepositEligibility | null =
+    pr.kind === "senal" && pr.booking_id && hasEvent ? checkDepositEligibility(link, evInfo) : null;
+  if (eligibility && !eligibility.ok && status === "pendiente" && !sessionState) {
+    status = "plaza_liberada";
+  }
+
   // Booking state, separate from payment state.
   let bookingState: "confirmada" | "fecha_pendiente" | "en_revision" | null = null;
   if (pr.status === "pagado") {
@@ -177,6 +190,21 @@ Deno.serve(async (req) => {
 
   if (action === "status") return json({ payment });
 
+  if (status === "plaza_liberada" && pr.stripe_session_id &&
+      (pr.environment === "sandbox" || pr.environment === "live")) {
+    // Close any still-open session so the expired hold cannot be charged;
+    // a completed one is reported as paid/processing (no second payment).
+    try {
+      const st = createStripeClient(pr.environment as StripeEnv);
+      const s = await st.checkout.sessions.retrieve(pr.stripe_session_id);
+      if (s.status === "complete" || s.payment_status === "paid") {
+        return json({ payment, error: "already_paid" }, 409);
+      }
+      if (s.status === "open") await st.checkout.sessions.expire(s.id);
+    } catch (e) {
+      console.error("could not close session for released hold", e);
+    }
+  }
   if (status !== "pendiente") return json({ payment, error: "unavailable" }, 409);
   if (!returnUrl) return json({ error: "returnUrl requerido" }, 400);
 
@@ -257,6 +285,9 @@ Deno.serve(async (req) => {
   let originHash = 0;
   for (const ch of origin) originHash = (originHash * 33 + ch.charCodeAt(0)) >>> 0;
 
+  // Deposits: shortest session Stripe allows (see eligibility.ts). Manual
+  // admin requests keep Stripe's default expiry.
+  const depositExpiry = eligibility?.ok ? depositSessionExpiry() : null;
   const sessionParams = {
     line_items: [
       {
@@ -276,6 +307,7 @@ Deno.serve(async (req) => {
     ...(pr.customer_email ? { customer_email: pr.customer_email } : {}),
     automatic_tax: { enabled: true },
     metadata: { payment_request_token: pr.token, environment: env },
+    ...(depositExpiry ? { expires_at: depositExpiry } : {}),
   };
 
   let session;
@@ -287,7 +319,7 @@ Deno.serve(async (req) => {
     // rejects the reused key with "same parameters" errors.
     session = await stripe.checkout.sessions.create(sessionParams as never, {
       idempotencyKey:
-        `pr_${pr.id}_g${generation}_${pr.amount_cents}_${currency}_${originHash.toString(16)}_v2`,
+        `pr_${pr.id}_g${generation}_${pr.amount_cents}_${currency}_${originHash.toString(16)}_${depositExpiry ?? 0}_v3`,
     });
   } catch (e) {
     const message = String((e as { message?: string })?.message ?? e).slice(0, 400);
