@@ -32,7 +32,7 @@ export function OnlineHero() {
         <div className="max-w-4xl">
           <Eyebrow>Vértigo Sapiens · online</Eyebrow>
           <h1 className="text-4xl font-extrabold leading-[1.05] sm:text-6xl lg:text-7xl">
-            Más fuerza. Más resistencia.<br /><span className="text-primary">Mejor preparado para la montaña.</span>
+            Más fuerza.<br />Más resistencia.<br /><span className="text-primary">Mejor preparado para la montaña.</span>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-7 text-foreground/85 sm:text-xl">
             Entrenamiento online adaptado a tu disciplina, tu nivel y tu objetivo.
