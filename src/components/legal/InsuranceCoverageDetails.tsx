@@ -4,53 +4,13 @@ import {
   NORMATIVE_REQUIREMENT,
   NORMATIVE_SOURCE,
 } from '@/data/insuranceCoverage';
-
-import {
-  FALLBACK_INSURER,
-  useBusinessSettings,
-} from '@/hooks/useBusinessSettings';
 import { secondaryLinkClasses } from '@/components/legal/linkStyles';
 
-function CoverageTable({
-  title,
-  rows,
-  caption,
-}: {
-  title: string;
-  rows: { label: string; value: string }[];
-  caption?: string;
-}) {
-  return (
-    <div className="min-w-0 rounded-2xl border border-border bg-card/60 p-5">
-      <table className="w-full table-fixed text-sm">
-        <caption className="mb-3 text-left">
-          <span className="block font-heading text-base font-bold text-foreground break-words">{title}</span>
-          {caption && <span className="block text-xs text-muted-foreground">{caption}</span>}
-        </caption>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.label} className="border-t border-border">
-              <th scope="row" className="w-1/2 py-2 pr-3 text-left font-normal text-muted-foreground break-words">
-                {r.label}
-              </th>
-              <td className="py-2 text-right font-semibold text-foreground break-words">{r.value}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
 /**
- * Detalle verificado de coberturas de las pólizas (RC y accidentes).
- * Datos contrastados con los contratos aportados por el titular; no se
- * publican los contratos completos y no constituye certificado de cumplimiento.
+ * Detalle de las pólizas (bloque «Norma vs. contrato» y nota de edad).
  * Usado en la sección de confianza de portada y en /terminos#identificacion.
  */
 export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showCheckedLabel?: boolean }) {
-  const { insurer } = useBusinessSettings();
-
   return (
     <div className="grid gap-5 text-left lg:grid-cols-2">
       {showCheckedLabel && (
@@ -89,4 +49,3 @@ export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showChe
     </div>
   );
 }
-
