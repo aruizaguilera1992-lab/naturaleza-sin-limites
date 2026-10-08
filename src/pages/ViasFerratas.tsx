@@ -104,7 +104,7 @@ const ViasFerratas = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
 
         {/* Content */}
-        <div className="container mx-auto px-4 relative z-10 text-center py-44 md:py-32">
+        <div className="container mx-auto px-4 relative z-10 text-center pt-56 pb-28 md:pt-60 md:pb-24">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-6">
