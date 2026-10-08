@@ -6,7 +6,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
-import { FileText, Mail, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import { BusinessLegalData } from '@/components/legal/BusinessLegalData';
 import { InsuranceCoverageDetails } from '@/components/legal/InsuranceCoverageDetails';
 
@@ -264,10 +264,6 @@ export default function Terminos() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background pointer-events-none" />
             <div className="container mx-auto px-4 relative">
               <div className="max-w-3xl mx-auto text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
-                  <FileText className="h-4 w-4" />
-                  Condiciones de uso
-                </div>
                 <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
                   Términos y <span className="text-primary">Condiciones</span>
                 </h1>
