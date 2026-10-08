@@ -420,6 +420,8 @@ export type Database = {
           amount_cents: number
           booking_id: string | null
           checkout_created_at: string | null
+          checkout_expires_at: string | null
+          checkout_expires_generation: number | null
           checkout_generation: number
           checkout_session_expired_at: string | null
           concept: string
@@ -429,6 +431,7 @@ export type Database = {
           customer_email: string | null
           environment: string
           expires_at: string
+          hold_extended_at: string | null
           id: string
           kind: string
           last_error: string | null
@@ -445,6 +448,8 @@ export type Database = {
           amount_cents: number
           booking_id?: string | null
           checkout_created_at?: string | null
+          checkout_expires_at?: string | null
+          checkout_expires_generation?: number | null
           checkout_generation?: number
           checkout_session_expired_at?: string | null
           concept: string
@@ -454,6 +459,7 @@ export type Database = {
           customer_email?: string | null
           environment?: string
           expires_at?: string
+          hold_extended_at?: string | null
           id?: string
           kind?: string
           last_error?: string | null
@@ -470,6 +476,8 @@ export type Database = {
           amount_cents?: number
           booking_id?: string | null
           checkout_created_at?: string | null
+          checkout_expires_at?: string | null
+          checkout_expires_generation?: number | null
           checkout_generation?: number
           checkout_session_expired_at?: string | null
           concept?: string
@@ -479,6 +487,7 @@ export type Database = {
           customer_email?: string | null
           environment?: string
           expires_at?: string
+          hold_extended_at?: string | null
           id?: string
           kind?: string
           last_error?: string | null
@@ -703,6 +712,15 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      prepare_deposit_checkout: {
+        Args: {
+          _generation: number
+          _session_seconds?: number
+          _token: string
+          _webhook_margin_seconds?: number
+        }
+        Returns: Json
       }
       record_checkout_session: {
         Args: { _generation: number; _session_id: string; _token: string }

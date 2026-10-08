@@ -1,6 +1,3 @@
--- PENDIENTE DE REVISIÓN: NO APLICADA. Se moverá a supabase/migrations en el despliegue coordinado.
--- Aditiva: 3 columnas nullable + 1 función solo service_role. No toca filas existentes.
-
 ALTER TABLE public.payment_requests
   ADD COLUMN IF NOT EXISTS checkout_expires_at timestamptz,
   ADD COLUMN IF NOT EXISTS checkout_expires_generation integer,

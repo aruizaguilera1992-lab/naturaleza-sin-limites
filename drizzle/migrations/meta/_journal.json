@@ -78,6 +78,13 @@
       "when": 1791277620786,
       "tag": "0010_payment_request_kind_total",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791457717377,
+      "tag": "0011_prepare_deposit_checkout",
+      "breakpoints": true
     }
   ]
 }

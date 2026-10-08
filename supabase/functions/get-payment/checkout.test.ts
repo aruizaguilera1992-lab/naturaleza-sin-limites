@@ -116,27 +116,27 @@ const holdAt = (min: number, state = "bloqueada") => ({ state, hold_expires_at: 
 const open = (expMin: number, o = {}) => ({ status: "open", payment_status: "unpaid", client_secret: "cs_secret", expires_at: (NOW + expMin * 60e3) / 1000, ...o });
 
 Deno.test("reutilización señal cubierta por el bloqueo vigente: reuse", () => {
-  assertEquals(assessReusableSession(open(31), true, holdAt(36), NOW), "reuse");
+  assertEquals(assessReusableSession(open(31), true, holdAt(36), null, NOW), "reuse");
 });
 Deno.test("sesión heredada que sobrepasa el bloqueo: close", () => {
-  assertEquals(assessReusableSession(open(31), true, holdAt(20), NOW), "close");
+  assertEquals(assessReusableSession(open(31), true, holdAt(20), null, NOW), "close");
 });
 Deno.test("bloqueo caducado o liberado: close", () => {
-  assertEquals(assessReusableSession(open(10), true, holdAt(-1), NOW), "close");
-  assertEquals(assessReusableSession(open(10), true, holdAt(30, "liberada"), NOW), "close");
-  assertEquals(assessReusableSession(open(10), true, null, NOW), "close");
+  assertEquals(assessReusableSession(open(10), true, holdAt(-1), null, NOW), "close");
+  assertEquals(assessReusableSession(open(10), true, holdAt(30, "liberada"), null, NOW), "close");
+  assertEquals(assessReusableSession(open(10), true, null, null, NOW), "close");
 });
 Deno.test("pagada o con intento de pago en curso: nunca se cierra", () => {
-  assertEquals(assessReusableSession(open(31, { status: "complete" }), true, holdAt(-1), NOW), "paid");
-  assertEquals(assessReusableSession(open(31, { payment_status: "paid" }), true, null, NOW), "paid");
-  assertEquals(assessReusableSession(open(31, { payment_intent: "pi_1" }), true, holdAt(-1), NOW), "paid");
+  assertEquals(assessReusableSession(open(31, { status: "complete" }), true, holdAt(-1), null, NOW), "paid");
+  assertEquals(assessReusableSession(open(31, { payment_status: "paid" }), true, null, null, NOW), "paid");
+
 });
 Deno.test("manual: se reutiliza sin mirar bloqueo", () => {
-  assertEquals(assessReusableSession(open(600), false, null, NOW), "reuse");
+  assertEquals(assessReusableSession(open(600), false, null, null, NOW), "reuse");
 });
 Deno.test("sesión expirada o sin secreto: no se entrega", () => {
-  assertEquals(assessReusableSession(open(31, { status: "expired" }), true, holdAt(36), NOW), "unavailable");
-  assertEquals(assessReusableSession(open(31, { client_secret: null }), false, null, NOW), "unavailable");
+  assertEquals(assessReusableSession(open(31, { status: "expired" }), true, holdAt(36), null, NOW), "unavailable");
+  assertEquals(assessReusableSession(open(31, { client_secret: null }), false, null, null, NOW), "unavailable");
 });
 Deno.test("record_checkout_session devuelve la misma sesión (idempotente): no se expira la ganadora", async () => {
   const { deps, calls } = fakeDb();
@@ -155,4 +155,25 @@ Deno.test("record_checkout_session con otra sesión ganadora: se expira la perde
   const r = await openCheckout(deps, deposit());
   assertEquals(r.ok, false);
   assertEquals(calls.expired, ["cs_1"]);
+});
+
+Deno.test("payment_intent fallido no bloquea: se reutiliza si el cupo cubre", () => {
+  assertEquals(assessReusableSession(open(31), true, holdAt(36), "requires_payment_method", NOW), "reuse");
+  assertEquals(assessReusableSession(open(31), true, holdAt(36), "canceled", NOW), "reuse");
+  assertEquals(assessReusableSession(open(31), true, holdAt(20), "requires_payment_method", NOW), "close");
+});
+Deno.test("payment_intent procesando / requiere captura / 3DS: en curso, no se cierra", () => {
+  for (const st of ["processing", "requires_capture", "requires_action"]) {
+    assertEquals(assessReusableSession(open(31), true, holdAt(-1), st, NOW), "in_progress");
+  }
+});
+Deno.test("payment_intent succeeded: pagado", () => {
+  assertEquals(assessReusableSession(open(31), true, holdAt(-1), "succeeded", NOW), "paid");
+});
+Deno.test("estado del pago no verificable: bloqueo temporal, ni pagado ni cierre", () => {
+  assertEquals(assessReusableSession(open(31), true, holdAt(36), "unknown", NOW), "unverified");
+  assertEquals(assessReusableSession(open(600), false, null, "unknown", NOW), "unverified");
+});
+Deno.test("manual con intento fallido: se reutiliza", () => {
+  assertEquals(assessReusableSession(open(600), false, null, "requires_payment_method", NOW), "reuse");
 });

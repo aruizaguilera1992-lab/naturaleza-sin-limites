@@ -9,7 +9,7 @@ create table activity_events(id uuid primary key default gen_random_uuid(), star
 create table activity_event_bookings(id uuid primary key default gen_random_uuid(), event_id uuid, booking_id uuid unique, participants int, state text, hold_expires_at timestamptz, updated_at timestamptz);
 create table payment_requests(id uuid primary key default gen_random_uuid(), token text unique, kind text, status text, booking_id uuid, checkout_generation int default 0, stripe_session_id text);
 `);
-await sh(readFileSync("supabase/pending/20261008_prepare_deposit_checkout.sql", "utf8"));
+await sh(readFileSync("drizzle/migrations/0011_prepare_deposit_checkout.sql", "utf8"));
 let fails = 0;
 const check = (name: string, cond: boolean, info?: unknown) => { console.log((cond ? "ok  " : "FAIL") + " " + name, cond ? "" : JSON.stringify(info)); if (!cond) fails++; };
 async function setup(tok: string, hold: string, state = "bloqueada", ev = "publicada", kind = "senal", starts = "now() + interval '10 days'") {
