@@ -35,8 +35,9 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { BusinessSettingsPanel } from "@/components/admin/BusinessSettingsPanel";
+import { PlanOrdersPanel } from "@/components/admin/PlanOrdersPanel";
 
-type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings";
+type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans";
 
 
 type NotesFieldProps = {
@@ -94,6 +95,7 @@ type PaymentRequest = {
   paid_at: string | null;
   payment_reference: string | null;
   created_at: string;
+  kind?: string;
 };
 
 type Booking = {
@@ -497,6 +499,7 @@ export default function Admin() {
     { id: "bookings", label: "Reservas", icon: CalendarCheck, count: newBookings },
     { id: "contacts", label: "Contactos", icon: Inbox, count: newContacts },
     { id: "events", label: "Calendario", icon: CalendarDays },
+    { id: "plans", label: "Planes", icon: CalendarCheck },
     { id: "notifications", label: "Notificaciones", icon: Bell, count: pendingNotifications },
     { id: "settings", label: "Ajustes legales", icon: Settings },
   ];
@@ -574,6 +577,7 @@ export default function Admin() {
           )}
           {tab === "settings" && <BusinessSettingsPanel />}
           {tab === "events" && <EventsPanel />}
+          {tab === "plans" && <PlanOrdersPanel />}
           {tab === "bookings" &&
             (bookings.length === 0 ? (
               <p className="text-muted-foreground">Todavía no hay reservas.</p>
@@ -623,6 +627,12 @@ export default function Admin() {
                       </Button>
                     </div>
                   )}
+                  {!b.event_id &&
+                    payments.some((p) => p.booking_id === b.id && p.kind === "senal" && p.status === "pendiente") && (
+                      <p className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-foreground">
+                        Señal antigua sin salida concreta: no se puede pagar online. Revisa la disponibilidad y, si procede, envía un enlace de pago manual abajo.
+                      </p>
+                    )}
                   {b.message && <p className="mt-3 text-sm text-foreground">{b.message}</p>}
                   <NotesField
                     value={b.admin_notes}

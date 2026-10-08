@@ -2,26 +2,16 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
 
 const BodySchema = z.object({
   token: z.string().regex(/^[a-f0-9]{16,64}$/),
   returnUrl: z.string().url().max(400),
 });
 
-// Customers may only be sent back to our own site after managing billing.
-const ALLOWED_RETURN_ORIGINS = new Set([
-  "https://naturalezasinlimites.es",
-  "https://www.naturalezasinlimites.es",
-]);
-
 const isAllowedReturnUrl = (value: string): boolean => {
   try {
-    const url = new URL(value);
-    if (ALLOWED_RETURN_ORIGINS.has(url.origin)) return true;
-    // Lovable preview/editor origins and local development.
-    if (url.protocol === "https:" && url.hostname.endsWith(".lovable.app")) return true;
-    if (url.hostname === "localhost" || url.hostname === "127.0.0.1") return true;
-    return false;
+    return isTrustedSiteOrigin(new URL(value).origin);
   } catch {
     return false;
   }

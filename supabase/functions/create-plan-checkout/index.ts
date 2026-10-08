@@ -3,6 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 import { PLAN_CATALOG } from "../_shared/planCatalog.ts";
+import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
 
 const phoneRegex = /^[+]?[\d\s()./-]{9,20}$/;
 
@@ -40,7 +41,7 @@ Deno.serve(async (req) => {
   if (!plan) return json({ error: "Plan no disponible" }, 404);
 
   const origin = new URL(body.returnUrl).origin;
-  if (!/^https:\/\/|^http:\/\/localhost(:\d+)?$/.test(origin)) {
+  if (!isTrustedSiteOrigin(origin)) {
     return json({ error: "returnUrl no válida" }, 400);
   }
 
@@ -52,6 +53,26 @@ Deno.serve(async (req) => {
   const price = prices.data[0];
   if (!price) return json({ error: "Precio no encontrado" }, 404);
   const isRecurring = price.type === "recurring";
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  );
+
+  // Never let the same email subscribe twice to a plan that is still running.
+  if (isRecurring) {
+    const { data: running } = await supabase
+      .from("plan_orders")
+      .select("id")
+      .eq("customer_email", body.email)
+      .eq("price_id", plan.priceId)
+      .eq("environment", env)
+      .in("status", ["activo", "pagado", "pago_fallido"])
+      .limit(1);
+    if ((running ?? []).length > 0) {
+      return json({ error: "already_subscribed" }, 409);
+    }
+  }
 
   // One Stripe customer per email so renewals and the billing portal resolve.
   const existing = await stripe.customers.list({ email: body.email, limit: 1 });
@@ -92,15 +113,11 @@ Deno.serve(async (req) => {
   } catch (e) {
     const message = String((e as { message?: string })?.message ?? e).slice(0, 400);
     console.error("Plan checkout failed", message);
-    return json({ error: "checkout_failed", detail: message }, 502);
+    return json({ error: "checkout_failed" }, 502);
   }
 
   // Persist the intent immediately so the admin panel sees abandoned checkouts
   // and the webhook has a row to complete.
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-  );
   const { error: insertError } = await supabase.from("plan_orders").insert({
     stripe_session_id: session.id,
     stripe_customer_id: customer.id,

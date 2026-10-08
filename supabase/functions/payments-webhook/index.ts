@@ -13,6 +13,7 @@ import {
   toRpcNotification,
 } from "../_shared/email.ts";
 import { PLAN_CATALOG } from "../_shared/planCatalog.ts";
+import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
@@ -119,7 +120,7 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
   const { data: order, error } = await supabase
     .from("plan_orders")
     .update({
-      status: "pagado",
+      status: subscriptionId ? "activo" : "pagado",
       amount_cents: amountCents,
       currency,
       ...(subscriptionId ? { stripe_subscription_id: subscriptionId } : {}),
@@ -151,6 +152,8 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
     let origin: string | null = null;
     try {
       origin = session?.return_url ? new URL(session.return_url).origin : null;
+      // Only trusted origins may appear in emailed links.
+      if (origin && !isTrustedSiteOrigin(origin)) origin = "https://naturalezasinlimites.es";
     } catch {
       origin = null;
     }
@@ -198,23 +201,41 @@ async function fulfillPlanOrder(session: any, env: StripeEnv) {
   });
 }
 
+const SUBSCRIPTION_STATUS: Record<string, string> = {
+  active: "activo",
+  trialing: "activo",
+  past_due: "pago_fallido",
+  unpaid: "impagado",
+  canceled: "cancelado",
+  incomplete: "pendiente",
+  incomplete_expired: "caducado",
+  paused: "pausado",
+};
+
 // deno-lint-ignore no-explicit-any
 async function updateSubscription(subscription: any, env: StripeEnv, canceled = false) {
   const item = subscription.items?.data?.[0];
   const periodEnd = item?.current_period_end ?? subscription.current_period_end;
-  const { error } = await getSupabase()
+  const rawStatus = canceled ? "canceled" : String(subscription.status ?? "active");
+  const { data, error } = await getSupabase()
     .from("plan_orders")
     .update({
-      status: canceled ? "cancelado" : String(subscription.status ?? "activo"),
+      status: SUBSCRIPTION_STATUS[rawStatus] ?? rawStatus,
       cancel_at_period_end: subscription.cancel_at_period_end === true,
       current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
       ...(item?.price?.lookup_key ? { price_id: item.price.lookup_key } : {}),
     })
     .eq("stripe_subscription_id", subscription.id)
-    .eq("environment", env);
+    .eq("environment", env)
+    .select("id");
   if (error) {
     console.error("subscription update failed", error);
     throw new Error("subscription_update_failed");
+  }
+  // The subscription event can arrive before checkout.session.completed links
+  // the subscription id: fail so Stripe retries once the order is linked.
+  if ((data ?? []).length === 0 && subscription.metadata?.plan_price_id) {
+    throw new Error("plan_order_not_linked_yet");
   }
 }
 
@@ -246,12 +267,15 @@ async function handleInvoice(invoice: any, env: StripeEnv, paid: boolean) {
     })
     .eq("stripe_subscription_id", subscriptionId)
     .eq("environment", env)
-    .select("id, product_name, customer_email")
+    .select("id, product_name, customer_email, status")
     .maybeSingle();
 
   if (error) {
     console.error("invoice update failed", error);
     throw new Error("invoice_update_failed");
+  }
+  if (paid && order && ["pago_fallido", "impagado"].includes(order.status as string)) {
+    await supabase.from("plan_orders").update({ status: "activo" }).eq("id", order.id);
   }
   if (!order) return;
 
@@ -479,6 +503,11 @@ Deno.serve(async (req) => {
         break;
       case "checkout.session.async_payment_failed":
         console.log("Async payment failed for session", event.data.object?.id);
+        if (event.data.object?.metadata?.plan_order === "1") {
+          await getSupabase().from("plan_orders").update({ status: "pago_fallido" })
+            .eq("stripe_session_id", event.data.object.id).eq("environment", env)
+            .eq("status", "pendiente");
+        }
         break;
       case "customer.subscription.created":
       case "customer.subscription.updated":
