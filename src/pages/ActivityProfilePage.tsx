@@ -71,7 +71,7 @@ export default function ActivityProfilePage() {
     !/^(Seguro y acreditación profesional|Permisos y regulación):/i.test(item) &&
     !/^La salida queda condicionada a la meteorología/i.test(item),
   );
-  const visibleFaqs = activity.faqs.filter((faq) => /^(¿Dónde se realiza|¿Cuánto dura|¿Necesito experiencia|¿Qué edad mínima|¿Qué ocurre si cambia el tiempo)/.test(faq.question));
+  const visibleFaqs = activity.faqs.filter((faq) => /^(¿Dónde se realiza|¿Cuánto dura|¿Necesito experiencia|¿Qué edad mínima|¿Cómo se reserva|¿Qué ocurre si cambia el tiempo)/.test(faq.question));
   const faqs = visibleFaqs.length > 0 ? visibleFaqs : activity.faqs.slice(0, 5);
   const trigger = 'min-h-14 font-heading text-lg text-left';
 
@@ -101,6 +101,11 @@ export default function ActivityProfilePage() {
                 <span className="inline-flex items-center gap-2 text-sm"><Users className="h-5 w-5 text-primary" />Grupos reducidos</span>
                 <span className="text-2xl font-extrabold text-primary">{numericPrice ? <>{activity.price} <span className="text-sm font-normal text-muted-foreground">/ persona</span></> : <span className="text-lg">Precio a consultar</span>}</span>
               </div>
+              {activity.category === 'vias-ferratas' && activity.slug === 'ferrata-el-chorro' && (
+                <p role="note" data-testid="caminito-note" className="mt-5 rounded-md border border-primary/40 bg-primary/10 p-4 text-sm font-semibold leading-6 text-foreground">
+                  Actividad distinta del Caminito del Rey. No incluye su entrada; el Caminito es un sendero de pasarelas, no una vía ferrata.
+                </p>
+              )}
             </header>
 
             <section aria-labelledby="destacados">
