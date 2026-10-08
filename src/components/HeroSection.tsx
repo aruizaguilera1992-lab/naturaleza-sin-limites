@@ -1,18 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, ChevronDown, Flame, GraduationCap, Mountain, ShieldCheck, Users } from 'lucide-react';
+import { ChevronDown, Flame, GraduationCap, Mountain, ShieldCheck, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { HeroYoutubeBackground } from '@/components/HeroYoutubeBackground';
 
-// Cuestionarios por disciplina: cada enlace abre el cuestionario de esa disciplina.
-const DISCIPLINE_QUESTIONNAIRES = [
-  { label: 'Barranquismo', to: '/barranquismo' },
-  { label: 'Escalada', to: '/escalada' },
-  { label: 'Vía ferrata', to: '/vias-ferratas' },
-  { label: 'Espeleología', to: '/espeleologia' },
-];
 
 const HERO_DESCRIPTION_FULL =
   'Descubre y explora los lugares más exclusivos de la costa del Sol. Aventura y experiencias únicas, grupos reducidos, naturaleza en estado puro y recuerdos que se quedan contigo';
@@ -147,29 +138,14 @@ export function HeroSection() {
               <Mountain className="h-5 w-5 mr-2" />
               Reserva tu aventura
             </Button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="heroOutline" size="xl" className="w-full sm:w-auto">
-                  <Users className="h-5 w-5 mr-2" />
-                  Encuentra mi salida ideal
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="center" side="bottom" className="w-60 p-2">
-                <p className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Elige tu disciplina
-                </p>
-                {DISCIPLINE_QUESTIONNAIRES.map((item) => (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-primary/10 hover:text-primary"
-                  >
-                    {item.label}
-                    <ArrowRight className="h-4 w-4 opacity-60" />
-                  </Link>
-                ))}
-              </PopoverContent>
-            </Popover>
+            <Button variant="heroOutline" size="xl" className="w-full sm:w-auto" onClick={() => {
+            document.getElementById('actividades')?.scrollIntoView({
+              behavior: 'smooth'
+            });
+          }}>
+              <Users className="h-5 w-5 mr-2" />
+              Encuentra mi salida ideal
+            </Button>
           </motion.div>
 
           {/* Trust Badges */}
