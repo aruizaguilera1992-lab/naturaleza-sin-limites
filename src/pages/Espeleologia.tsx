@@ -69,9 +69,6 @@ const Espeleologia = () => {
               transition={{ duration: 0.6 }}
               className="max-w-3xl"
             >
-              <Badge className="mb-4 bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                🕯️ Actividad guiada
-              </Badge>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-4">
                 {c.titulo}
               </h1>
