@@ -3,7 +3,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 import { checkDepositEligibility, type DepositEligibility } from "./eligibility.ts";
-import { openCheckout } from "./checkout.ts";
+import { assessReusableSession, openCheckout } from "./checkout.ts";
 
 const BodySchema = z.object({
   token: z.string().regex(/^[a-f0-9]{16,80}$/),
@@ -226,17 +226,41 @@ Deno.serve(async (req) => {
   const stripe = createStripeClient(env);
 
   // ---- Reuse an existing open session: never create two chargeable
-  // sessions for the same payment request. ----
+  // sessions for the same payment request. Deposits: only while the session
+  // fits inside the CURRENT seat hold (fresh read; legacy sessions included).
+  const isDeposit = pr.kind === "senal";
+  const freshHold = async () => {
+    if (!isDeposit || !pr.booking_id) return null;
+    const { data } = await supabase
+      .from("activity_event_bookings")
+      .select("state, hold_expires_at")
+      .eq("booking_id", pr.booking_id)
+      .maybeSingle();
+    return data ?? null;
+  };
+  const handOut = async (s: { id: string; status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null; payment_intent?: unknown }) => {
+    const decision = assessReusableSession(s, isDeposit, await freshHold());
+    if (decision === "paid") return json({ payment, error: "already_paid" }, 409);
+    if (decision === "reuse") return json({ payment, clientSecret: s.client_secret, reused: true });
+    if (decision === "close") {
+      try {
+        await stripe.checkout.sessions.expire(s.id);
+      } catch (e) {
+        // Expire fails if it just completed: report as paid/processing, never invite a retry.
+        console.error("could not close uncovered session", e);
+        return json({ payment, error: "already_paid" }, 409);
+      }
+      return json({ payment: { ...payment, status: "plaza_liberada" }, error: "unavailable" }, 409);
+    }
+    return null;
+  };
+
   let expiredSessionId: string | null = null;
   if (pr.stripe_session_id) {
     try {
       const existing = await stripe.checkout.sessions.retrieve(pr.stripe_session_id);
-      if (existing.status === "complete" || existing.payment_status === "paid") {
-        return json({ payment, error: "already_paid" }, 409);
-      }
-      if (existing.status === "open" && existing.client_secret) {
-        return json({ payment, clientSecret: existing.client_secret, reused: true });
-      }
+      const handled = await handOut(existing);
+      if (handled) return handled;
       if (existing.status !== "expired") {
         // Unknown/intermediate state: do NOT create a second session.
         return json({ payment, error: "checkout_unavailable" }, 409);
@@ -265,9 +289,8 @@ Deno.serve(async (req) => {
   if (gen.session_id && gen.session_id !== expiredSessionId) {
     try {
       const concurrent = await stripe.checkout.sessions.retrieve(gen.session_id);
-      if (concurrent.status === "open" && concurrent.client_secret) {
-        return json({ payment, clientSecret: concurrent.client_secret, reused: true });
-      }
+      const handled = await handOut(concurrent);
+      if (handled) return handled;
     } catch (e) {
       console.error("Could not retrieve concurrent session", e);
     }

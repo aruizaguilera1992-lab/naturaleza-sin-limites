@@ -109,3 +109,50 @@ Deno.test("cobro manual del admin: sin RPC de bloqueo, sin expires_at, clave est
   assertEquals("expires_at" in calls.create[0].params, false);
   assertEquals(calls.create[0].key, "pr_p1_g0_2100_eur_ff_0_v4");
 });
+
+import { assessReusableSession } from "./checkout.ts";
+const NOW = 4_070_000_000_000;
+const holdAt = (min: number, state = "bloqueada") => ({ state, hold_expires_at: new Date(NOW + min * 60e3).toISOString() });
+const open = (expMin: number, o = {}) => ({ status: "open", payment_status: "unpaid", client_secret: "cs_secret", expires_at: (NOW + expMin * 60e3) / 1000, ...o });
+
+Deno.test("reutilización señal cubierta por el bloqueo vigente: reuse", () => {
+  assertEquals(assessReusableSession(open(31), true, holdAt(36), NOW), "reuse");
+});
+Deno.test("sesión heredada que sobrepasa el bloqueo: close", () => {
+  assertEquals(assessReusableSession(open(31), true, holdAt(20), NOW), "close");
+});
+Deno.test("bloqueo caducado o liberado: close", () => {
+  assertEquals(assessReusableSession(open(10), true, holdAt(-1), NOW), "close");
+  assertEquals(assessReusableSession(open(10), true, holdAt(30, "liberada"), NOW), "close");
+  assertEquals(assessReusableSession(open(10), true, null, NOW), "close");
+});
+Deno.test("pagada o con intento de pago en curso: nunca se cierra", () => {
+  assertEquals(assessReusableSession(open(31, { status: "complete" }), true, holdAt(-1), NOW), "paid");
+  assertEquals(assessReusableSession(open(31, { payment_status: "paid" }), true, null, NOW), "paid");
+  assertEquals(assessReusableSession(open(31, { payment_intent: "pi_1" }), true, holdAt(-1), NOW), "paid");
+});
+Deno.test("manual: se reutiliza sin mirar bloqueo", () => {
+  assertEquals(assessReusableSession(open(600), false, null, NOW), "reuse");
+});
+Deno.test("sesión expirada o sin secreto: no se entrega", () => {
+  assertEquals(assessReusableSession(open(31, { status: "expired" }), true, holdAt(36), NOW), "unavailable");
+  assertEquals(assessReusableSession(open(31, { client_secret: null }), false, null, NOW), "unavailable");
+});
+Deno.test("record_checkout_session devuelve la misma sesión (idempotente): no se expira la ganadora", async () => {
+  const { deps, calls } = fakeDb();
+  const base = deps.rpc;
+  deps.rpc = async (n, a) => n === "record_checkout_session"
+    ? { data: { ok: false, reason: "session_conflict", session_id: "cs_1" }, error: null } : base(n, a);
+  const r = await openCheckout(deps, deposit());
+  assert(r.ok);
+  assertEquals(calls.expired.length, 0);
+});
+Deno.test("record_checkout_session con otra sesión ganadora: se expira la perdedora", async () => {
+  const { deps, calls } = fakeDb();
+  const base = deps.rpc;
+  deps.rpc = async (n, a) => n === "record_checkout_session"
+    ? { data: { ok: false, reason: "session_conflict", session_id: "cs_otro" }, error: null } : base(n, a);
+  const r = await openCheckout(deps, deposit());
+  assertEquals(r.ok, false);
+  assertEquals(calls.expired, ["cs_1"]);
+});

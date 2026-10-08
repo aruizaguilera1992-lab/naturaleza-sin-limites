@@ -12,7 +12,7 @@ COMMENT ON COLUMN public.payment_requests.hold_extended_at IS
   'Señal: momento de la única extensión del bloqueo de plazas para cubrir el checkout.';
 
 -- Orden de bloqueo: payment_requests -> activity_event_bookings (igual que
--- begin_checkout_generation / release_event_seats; activity_events solo se lee).
+-- begin_checkout_generation / release_event_seats; activity_events con FOR SHARE).
 CREATE OR REPLACE FUNCTION public.prepare_deposit_checkout(
   _token text,
   _generation integer,
@@ -58,7 +58,9 @@ BEGIN
     RETURN jsonb_build_object('ok', false, 'reason', 'hold_expired');
   END IF;
 
-  SELECT * INTO ev FROM public.activity_events WHERE id = link.event_id;
+  -- Bloqueo compartido tras el enlace (orden link -> event de las RPC vigentes):
+  -- una cancelación concurrente espera a que termine esta validación.
+  SELECT * INTO ev FROM public.activity_events WHERE id = link.event_id FOR SHARE;
   IF NOT FOUND OR ev.status NOT IN ('publicada', 'completa') THEN
     RETURN jsonb_build_object('ok', false, 'reason', 'event_not_bookable');
   END IF;

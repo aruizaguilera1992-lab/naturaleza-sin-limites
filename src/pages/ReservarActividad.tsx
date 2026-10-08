@@ -533,7 +533,7 @@ export default function ReservarActividad() {
         <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-muted-foreground">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           {isEventBooking
-            ? "Al continuar comprobamos y bloqueamos tus plazas durante 30 minutos mientras pagas la señal. La reserva se confirma con el pago y queda sujeta a la meteorología y a las condiciones publicadas."
+            ? "Al continuar comprobamos y bloqueamos tus plazas: tienes 30 minutos para iniciar el pago; al iniciarlo, el bloqueo se mantiene durante el plazo de pago. La reserva se confirma con el pago y queda sujeta a la meteorología y a las condiciones publicadas."
             : "No se cobra nada ahora. Antonio revisará la disponibilidad de la fecha y, si es posible, te enviará un enlace de pago. Sujeto a la meteorología y a las condiciones publicadas."}
         </p>
 

@@ -107,7 +107,10 @@ export async function openCheckout(deps: CheckoutDeps, input: CheckoutInput): Pr
     _generation: generation,
     _session_id: session.id,
   });
-  if (recordError || !recorded?.ok) {
+  // Same idempotent session already stored by a concurrent request: it is the
+  // winner, never expire it.
+  const sameSession = !recordError && recorded && !recorded.ok && recorded.session_id === session.id;
+  if (!sameSession && (recordError || !recorded?.ok)) {
     // Untracked session must not stay payable; the secret is never returned.
     await deps.expireSession(session.id).catch(() => undefined);
     return recordError
@@ -116,4 +119,28 @@ export async function openCheckout(deps: CheckoutDeps, input: CheckoutInput): Pr
   }
   if (!session.client_secret) return { ok: false, status: 502, error: "checkout_failed" };
   return { ok: true, clientSecret: session.client_secret };
+}
+
+export type ReuseDecision = "reuse" | "paid" | "close" | "unavailable";
+
+/**
+ * Decide whether an existing Stripe session may be handed out again.
+ * Deposits: the session must not outlive the CURRENT live seat hold.
+ * Paid / processing sessions are never closed (no second payment invited).
+ */
+export function assessReusableSession(
+  s: { status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null; payment_intent?: unknown },
+  isDeposit: boolean,
+  hold: { state: string; hold_expires_at: string | null } | null,
+  nowMs = Date.now(),
+): ReuseDecision {
+  if (s.status === "complete" || s.payment_status === "paid") return "paid";
+  // A payment attempt already exists (possibly processing): never close it.
+  if (s.payment_intent) return "paid";
+  if (s.status !== "open" || !s.client_secret) return "unavailable";
+  if (!isDeposit) return "reuse";
+  const holdMs = hold?.state === "bloqueada" && hold.hold_expires_at ? new Date(hold.hold_expires_at).getTime() : NaN;
+  if (!Number.isFinite(holdMs) || holdMs <= nowMs) return "close";
+  if (!s.expires_at || s.expires_at * 1000 > holdMs) return "close";
+  return "reuse";
 }
