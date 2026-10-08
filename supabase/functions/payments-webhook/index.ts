@@ -274,15 +274,6 @@ async function handleInvoice(invoice: any, env: StripeEnv, paid: boolean) {
   if (paid && order && ["pago_fallido", "impagado"].includes(order.status as string)) {
     await supabase.from("plan_orders").update({ status: "activo" }).eq("id", order.id);
   }
-  if (false) await supabase.from("plan_orders").select("id")
-    .eq("environment", env)
-    .select("id, product_name, customer_email")
-    .maybeSingle();
-
-  if (error) {
-    console.error("invoice update failed", error);
-    throw new Error("invoice_update_failed");
-  }
   if (!order) return;
 
   if (!paid) {
