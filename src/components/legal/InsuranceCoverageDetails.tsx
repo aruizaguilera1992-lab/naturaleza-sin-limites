@@ -1,13 +1,10 @@
 import {
-  AGE_RESTRICTION,
   COVERAGE_CHECKED_LABEL,
   NORMATIVE_REQUIREMENT,
-  NORMATIVE_SOURCE,
 } from '@/data/insuranceCoverage';
-import { secondaryLinkClasses } from '@/components/legal/linkStyles';
 
 /**
- * Detalle de las pólizas (bloque «Norma vs. contrato» y nota de edad).
+ * Detalle de las pólizas (bloque «Norma vs. contrato»).
  * Usado en la sección de confianza de portada y en /terminos#identificacion.
  */
 export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showCheckedLabel?: boolean }) {
@@ -30,21 +27,6 @@ export function InsuranceCoverageDetails({ showCheckedLabel = false }: { showChe
           </div>
         </dl>
         <p className="mt-3 text-sm leading-6 text-muted-foreground">{NORMATIVE_REQUIREMENT}</p>
-        <p className="mt-2 text-xs text-muted-foreground">
-          La comparación de importes es informativa; no constituye certificado de cumplimiento ni aval de la Junta de Andalucía.{' '}
-          <a href={NORMATIVE_SOURCE.url} target="_blank" rel="noopener noreferrer" className={secondaryLinkClasses}>
-            {NORMATIVE_SOURCE.label}
-          </a>
-        </p>
-      </div>
-
-      <div className="min-w-0">
-        <p
-          role="note"
-          className="rounded-xl border border-primary/50 bg-primary/10 p-3 text-sm font-semibold leading-6 text-foreground"
-        >
-          {AGE_RESTRICTION}
-        </p>
       </div>
     </div>
   );
