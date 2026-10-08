@@ -239,8 +239,21 @@ Deno.serve(async (req) => {
     return data ?? null;
   };
   const handOut = async (s: { id: string; status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null; payment_intent?: unknown }) => {
-    const decision = assessReusableSession(s, isDeposit, await freshHold());
+    let piStatus: string | null = null;
+    if (s.payment_intent) {
+      try {
+        piStatus = typeof s.payment_intent === "object" && (s.payment_intent as { status?: string }).status
+          ? (s.payment_intent as { status: string }).status
+          : (await stripe.paymentIntents.retrieve(String(s.payment_intent))).status;
+      } catch (e) {
+        console.error("could not verify payment intent status", e);
+        piStatus = "unknown";
+      }
+    }
+    const decision = assessReusableSession(s, isDeposit, await freshHold(), piStatus);
     if (decision === "paid") return json({ payment, error: "already_paid" }, 409);
+    if (decision === "in_progress") return json({ payment, error: "payment_in_progress" }, 409);
+    if (decision === "unverified") return json({ payment, error: "payment_status_unverified" }, 503);
     if (decision === "reuse") return json({ payment, clientSecret: s.client_secret, reused: true });
     if (decision === "close") {
       try {

@@ -121,22 +121,30 @@ export async function openCheckout(deps: CheckoutDeps, input: CheckoutInput): Pr
   return { ok: true, clientSecret: session.client_secret };
 }
 
-export type ReuseDecision = "reuse" | "paid" | "close" | "unavailable";
+export type ReuseDecision = "reuse" | "paid" | "in_progress" | "unverified" | "close" | "unavailable";
+
+/** PaymentIntent statuses that prove a payment succeeded or is under way. */
+const PI_PAID = new Set(["succeeded"]);
+const PI_IN_PROGRESS = new Set(["processing", "requires_capture", "requires_action"]);
 
 /**
  * Decide whether an existing Stripe session may be handed out again.
- * Deposits: the session must not outlive the CURRENT live seat hold.
- * Paid / processing sessions are never closed (no second payment invited).
+ * `piStatus`: status of the session's PaymentIntent (null = none,
+ * "unknown" = could not be verified). Deposits: the session must not outlive
+ * the CURRENT live seat hold. Paid / processing sessions are never closed.
  */
 export function assessReusableSession(
-  s: { status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null; payment_intent?: unknown },
+  s: { status?: string | null; payment_status?: string | null; client_secret?: string | null; expires_at?: number | null },
   isDeposit: boolean,
   hold: { state: string; hold_expires_at: string | null } | null,
+  piStatus: string | null = null,
   nowMs = Date.now(),
 ): ReuseDecision {
   if (s.status === "complete" || s.payment_status === "paid") return "paid";
-  // A payment attempt already exists (possibly processing): never close it.
-  if (s.payment_intent) return "paid";
+  if (piStatus === "unknown") return "unverified";
+  if (piStatus && PI_PAID.has(piStatus)) return "paid";
+  if (piStatus && PI_IN_PROGRESS.has(piStatus)) return "in_progress";
+  // Failed / requires_payment_method / canceled attempts do not block reuse.
   if (s.status !== "open" || !s.client_secret) return "unavailable";
   if (!isDeposit) return "reuse";
   const holdMs = hold?.state === "bloqueada" && hold.hold_expires_at ? new Date(hold.hold_expires_at).getTime() : NaN;
