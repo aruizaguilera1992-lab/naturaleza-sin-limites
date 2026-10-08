@@ -50,7 +50,7 @@ const Espeleologia = () => {
 
       <main>
         {/* Hero */}
-        <section className="relative min-h-[70vh] flex items-center pt-44 pb-16 md:pt-40">
+        <section className="relative min-h-[70vh] flex items-center pt-56 pb-16 md:pt-60">
           <div className="absolute inset-0">
             <img
               src={media.espeleologiaHero.src}
