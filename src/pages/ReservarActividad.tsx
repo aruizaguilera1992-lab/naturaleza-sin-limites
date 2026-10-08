@@ -96,6 +96,16 @@ export default function ReservarActividad() {
     }
   }
 
+  // Outing that disappears/fills on reload: clear it and explain the switch.
+  useEffect(() => {
+    if (!selectedEventId || eventsLoading) return;
+    if (eventsError || !events.some((e) => e.id === selectedEventId && !e.isFull)) {
+      setSelectedEventId(null);
+      setForm((prev) => ({ ...prev, date: "" }));
+      setEventNotice("La salida que habías elegido ya no está disponible. Elige otra salida o indica una fecha para enviar una solicitud sin pago.");
+    }
+  }, [selectedEventId, eventsLoading, eventsError, events]);
+
   const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
   const participantOptions = maxPeople < 2 ? [1] : [2, 3, 4, 5, 6].filter((n) => n <= MAX_PEOPLE);
   // Keep the chosen participant count within the available seats and visible options.
@@ -269,15 +279,6 @@ export default function ReservarActividad() {
     }
   };
 
-  // Outing that disappears/fills on reload: clear it and explain the switch.
-  useEffect(() => {
-    if (!selectedEventId || eventsLoading) return;
-    if (eventsError || !events.some((e) => e.id === selectedEventId && !e.isFull)) {
-      setSelectedEventId(null);
-      setForm((prev) => ({ ...prev, date: "" }));
-      setEventNotice("La salida que habías elegido ya no está disponible. Elige otra salida o indica una fecha para enviar una solicitud sin pago.");
-    }
-  }, [selectedEventId, eventsLoading, eventsError, events]);
 
   if (requestSent) {
     return wrapper(
