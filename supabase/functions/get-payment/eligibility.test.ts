@@ -34,8 +34,8 @@ for (const [label, link, e, reason] of [
 }
 
 Deno.test("caducidad de sesión: mínimo de Stripe, redondeada y estable dentro del minuto", () => {
-  const a = depositSessionExpiry(now);
-  const b = depositSessionExpiry(new Date(now.getTime() + 20e3));
+  const a = depositSessionExpiry(new Date(now.getTime() + 5e3));
+  const b = depositSessionExpiry(new Date(now.getTime() + 25e3));
   assertEquals(a, b);
   assert(a - now.getTime() / 1000 >= STRIPE_MIN_EXPIRY_SECONDS);
   assert(a - now.getTime() / 1000 <= STRIPE_MIN_EXPIRY_SECONDS + 120);
