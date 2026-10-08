@@ -129,10 +129,6 @@ const Barranquismo = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30 mb-6">
-              <Waves className="h-5 w-5 text-primary" />
-              <span className="text-primary font-medium">Barranquismo en Andalucía</span>
-            </div>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-6">
               Descubre tu{' '}
