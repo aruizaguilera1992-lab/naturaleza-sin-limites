@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowRight, Compass, Mountain, Users } from "lucide-react";
+import { ArrowDown, ArrowRight, Compass } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { Seo } from "@/components/Seo";
 import { Navbar } from "@/components/Navbar";
@@ -95,10 +95,6 @@ export default function Escalada() {
 
           <div className="container relative z-10 mx-auto px-4">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-4xl">
-              <div className="mb-5 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-background/75 px-4 py-2 text-sm font-bold text-primary backdrop-blur-sm"><Mountain className="h-4 w-4" /> Escalada deportiva</span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/75 px-4 py-2 text-sm font-semibold text-foreground backdrop-blur-sm"><Users className="h-4 w-4 text-primary" /> Grupos reducidos</span>
-              </div>
               <h1 className="max-w-4xl font-heading text-4xl font-extrabold leading-[1.05] text-foreground sm:text-6xl lg:text-7xl">
                 Escalada deportiva: <span className="text-primary">vive, aprende y progresa</span>
               </h1>
