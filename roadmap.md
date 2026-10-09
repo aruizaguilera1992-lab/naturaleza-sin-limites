@@ -167,3 +167,9 @@
 ## Bloque «¿Qué estás buscando ahora mismo?» (08/10/2026)
 - [x] Fichas con foto grande, titular sobre la imagen y listado corto de 4 beneficios por servicio
 - [x] Texto largo eliminado y CTA naranja a ancho completo; verificado en 1280 y 390 px (sin publicar)
+
+## Barra de filtros del catálogo (09/10/2026)
+- [x] Unificado el criterio de tipo: las pestañas de disciplina son el único filtro de actividad
+- [x] Todos los apartados con el mismo formato de píldora (icono + nombre + contador), letra más grande
+- [x] Filtros activos mostrados como chips quitables uno a uno + botón «Limpiar filtros»
+- [x] Verificado en 1280 y 390 px, build y tipos limpios (sin publicar)
