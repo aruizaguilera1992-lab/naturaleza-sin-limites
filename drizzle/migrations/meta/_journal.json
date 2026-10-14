@@ -85,6 +85,13 @@
       "when": 1791457717377,
       "tag": "0011_prepare_deposit_checkout",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791972000000,
+      "tag": "0012_capacity_max_six",
+      "breakpoints": true
     }
   ]
 }
