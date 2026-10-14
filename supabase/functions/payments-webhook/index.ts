@@ -1,4 +1,5 @@
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
+import type { ServerDatabase } from "../_shared/databaseTypes.ts";
 import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
 import {
   businessRecipients,
@@ -15,10 +16,10 @@ import {
 import { PLAN_CATALOG } from "../_shared/planCatalog.ts";
 import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
 
-let _supabase: ReturnType<typeof createClient> | null = null;
+let _supabase: SupabaseClient<ServerDatabase> | null = null;
 function getSupabase() {
   if (!_supabase) {
-    _supabase = createClient(
+    _supabase = createClient<ServerDatabase>(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
