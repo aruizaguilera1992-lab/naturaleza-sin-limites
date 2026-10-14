@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import { ArrowDown, ArrowRight, Award, Check, ClipboardCheck, Dumbbell, LineChart, Mountain, ShieldCheck, SlidersHorizontal, Timer, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import athleteImage from '@/assets/atleta-reto-naturaleza.jpg';
 import coachImage from '@/assets/founder-antonio.png';
 import { OnlineRequestForm } from './OnlineRequestForm';
-import { saveVertigoAssessment, type VertigoAssessment } from './assessment';
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <p className="mb-4 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-primary">
@@ -220,65 +218,16 @@ export function OnlineCoach() {
   );
 }
 
-const disciplines = ['Barranquismo', 'Espeleología', 'Escalada', 'Vías ferratas', 'Montaña'];
-const limitations = ['Resistencia', 'Agarre y brazos', 'Piernas y desnivel', 'Movilidad', 'Core y estabilidad', 'No lo tengo claro'];
-const availability = ['2 días por semana', '3 días por semana', '4 o más días por semana', 'Aún no lo sé'];
-
-function ChoiceGroup({ legend, value, options, onChange }: { legend: string; value: string; options: string[]; onChange: (value: string) => void }) {
-  return (
-    <fieldset>
-      <legend className="mb-3 text-sm font-bold">{legend}</legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => (
-          <Button
-            key={option}
-            type="button"
-            variant={value === option ? 'default' : 'secondary'}
-            size="sm"
-            aria-pressed={value === option}
-            onClick={() => onChange(option)}
-            className="normal-case tracking-normal"
-          >
-            {value === option && <Check className="h-4 w-4" />}{option}
-          </Button>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
-
 export function OnlineStart() {
-  const [answers, setAnswers] = useState<VertigoAssessment>({ disciplina: '', limitacion: '', disponibilidad: '' });
-  const complete = Boolean(answers.disciplina && answers.limitacion && answers.disponibilidad);
-  const update = (key: keyof VertigoAssessment, value: string) => setAnswers((current) => ({ ...current, [key]: value }));
-  const finish = () => {
-    if (!complete) return;
-    saveVertigoAssessment(answers);
-    go('solicitud');
-  };
-
   return (
     <section id="punto-de-partida" className="scroll-mt-28 border-t border-border bg-card py-20 sm:py-28">
       <div className="container mx-auto max-w-5xl px-4">
         <div className="text-center">
-          <Eyebrow>Paso 1 de 2</Eyebrow>
+          <Eyebrow>Solicita tu evaluación</Eyebrow>
           <h2 className="text-3xl font-extrabold leading-tight sm:text-5xl">Encuentra tu punto de partida</h2>
           <p className="mx-auto mt-4 max-w-xl leading-7 text-muted-foreground">Cuéntame qué practicas y qué quieres mejorar. Revisaré personalmente tu caso.</p>
         </div>
-        <div className="mx-auto mt-10 max-w-3xl border-t-4 border-primary bg-background p-5 shadow-card sm:p-8">
-          <div className="space-y-7">
-            <ChoiceGroup legend="1. Disciplina principal" value={answers.disciplina} options={disciplines} onChange={(value) => update('disciplina', value)} />
-            <ChoiceGroup legend="2. Qué quieres mejorar" value={answers.limitacion} options={limitations} onChange={(value) => update('limitacion', value)} />
-            <ChoiceGroup legend="3. Días disponibles por semana" value={answers.disponibilidad} options={availability} onChange={(value) => update('disponibilidad', value)} />
-          </div>
-          <Button type="button" variant="hero" size="lg" className="mt-8 w-full" disabled={!complete} onClick={finish}>
-            Continuar <ArrowRight />
-          </Button>
-          <p className="mt-4 text-center text-xs text-muted-foreground">No es una prueba física ni un diagnóstico médico.</p>
-        </div>
-        <div id="solicitud" className="mx-auto mt-16 max-w-3xl scroll-mt-28">
-          <p className="mb-4 text-center text-xs font-bold uppercase tracking-[0.2em] text-primary">Paso 2 de 2 · Tus datos</p>
+        <div id="solicitud" className="mx-auto mt-10 max-w-3xl scroll-mt-28">
           <OnlineRequestForm />
         </div>
       </div>
