@@ -2,14 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 type Row = {
-  legal_name: string | null;
   trade_name: string | null;
-  tax_id: string | null;
-  address: string | null;
   tourism_registry: string | null;
   insurer: string | null;
-  rc_policy: string | null;
-  accident_policy: string | null;
 };
 
 /** Official business data entered in the admin panel (Ajustes legales). Renders only filled fields. */
@@ -19,16 +14,14 @@ export function BusinessLegalData({ includeTourism = true }: { includeTourism?: 
   useEffect(() => {
     supabase
       .from("business_settings")
-      .select("legal_name, trade_name, tax_id, address, tourism_registry, insurer, rc_policy, accident_policy")
+      .select("trade_name, tourism_registry, insurer")
       .maybeSingle()
       .then(({ data }) => setRow(data));
   }, []);
 
   if (!row) return null;
   const items: [string, string | null][] = [
-    ["Titular", row.legal_name],
     ["Nombre comercial", row.trade_name],
-    ["NIF/CIF", row.tax_id],
 
     ...(includeTourism
       ? ([
