@@ -27,6 +27,7 @@ Deno.serve(async (req) => {
 
   const result = await handleDeposit(raw, {
     db,
+    liveEnabled: Deno.env.get("PAYMENTS_LIVE_ENABLED"),
     businessRecipients,
     notify: (n) => sendTrackedNotification(db, n),
   });

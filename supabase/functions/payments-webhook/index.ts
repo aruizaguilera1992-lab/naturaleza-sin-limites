@@ -98,7 +98,8 @@ function businessIntent(opts: {
  */
 // deno-lint-ignore no-explicit-any
 async function fulfillPlanOrder(session: any, env: StripeEnv) {
-  if (session?.payment_status === "unpaid") {
+  if (session?.livemode !== (env === "live") ||
+      !["paid", "no_payment_required"].includes(session?.payment_status)) {
     console.log("Plan session not settled yet", session?.id);
     return;
   }
@@ -496,6 +497,9 @@ Deno.serve(async (req) => {
 
   try {
     const event = await verifyWebhook(req, env);
+    if ((event as { livemode?: boolean }).livemode !== (env === "live")) {
+      return new Response("Environment mismatch", { status: 400 });
+    }
     switch (event.type) {
       case "checkout.session.completed":
       case "checkout.session.async_payment_succeeded":

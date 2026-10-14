@@ -1,5 +1,6 @@
 import { encode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 import Stripe from "https://esm.sh/stripe@22.0.2";
+import { paymentsAllowed } from "./paymentSafety.ts";
 
 const getEnv = (key: string): string => {
   const value = Deno.env.get(key);
@@ -12,6 +13,9 @@ export type StripeEnv = "sandbox" | "live";
 const GATEWAY_STRIPE_BASE = "https://connector-gateway.lovable.dev/stripe";
 
 export function getConnectionApiKey(env: StripeEnv): string {
+  if (!paymentsAllowed(env, Deno.env.get("PAYMENTS_LIVE_ENABLED"))) {
+    throw new Error("Payments environment is disabled");
+  }
   return env === "sandbox"
     ? getEnv("STRIPE_SANDBOX_API_KEY")
     : getEnv("STRIPE_LIVE_API_KEY");
@@ -69,7 +73,7 @@ export async function verifyWebhook(
   }
 
   const age = Math.abs(Date.now() / 1000 - Number(timestamp));
-  if (age > 300) {
+  if (!Number.isFinite(age) || age > 300) {
     throw new Error("Webhook timestamp too old");
   }
 

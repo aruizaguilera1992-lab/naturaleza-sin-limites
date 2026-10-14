@@ -1,6 +1,8 @@
 // Automatic 30 % deposits exist ONLY for a concrete scheduled outing.
 // Custom dates go through submit-request (no payment) and are validated by
 // the business before a manual payment link is sent from the admin panel.
+import { paymentsAllowed } from "../_shared/paymentSafety.ts";
+import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
 import { z } from "npm:zod@3.23.8";
 import { DEPOSIT_RATE, getActivityPrice } from "../_shared/activityPrices.ts";
 import { escapeHtml, formatAmount, listLayout } from "../_shared/email.ts";
@@ -59,6 +61,7 @@ export function checkEvent(
       : { ok: false, reason: "not_bookable" };
   }
   if (new Date(ev.starts_at).getTime() <= now.getTime()) return { ok: false, reason: "past_event" };
+  if (!Number.isInteger(ev.capacity_total) || ev.capacity_total < 1 || ev.capacity_total > MAX_STANDARD_GROUP) return { ok: false, reason: "not_bookable" };
   const free = Math.max(ev.capacity_total - ev.seats_reserved, 0);
   if (participants > free) return { ok: false, reason: "sin_plazas", freeSeats: free };
   return { ok: true };
@@ -103,6 +106,7 @@ export interface Deps {
   notify: (n: Notification) => Promise<unknown>;
   businessRecipients: () => string[];
   now?: () => Date;
+  liveEnabled?: string;
 }
 
 export interface Result {
@@ -122,6 +126,12 @@ export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
   const parsed = BodySchema.safeParse(raw);
   if (!parsed.success) return { status: 400, body: { error: "Datos no válidos" } };
   const body = parsed.data;
+  if (!paymentsAllowed(body.environment, deps.liveEnabled)) {
+    return { status: 403, body: { error: "Los pagos reales están deshabilitados" } };
+  }
+  if (!isTrustedSiteOrigin(body.origin)) {
+    return { status: 400, body: { error: "Origen no permitido" } };
+  }
 
   // No outing => no automatic charge. Checked BEFORE any write.
   if (!body.eventId) {

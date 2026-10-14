@@ -85,6 +85,22 @@ const deps = (db: unknown, sent: unknown[] = []) => ({
   notify: async (n: unknown) => { sent.push(n); },
 });
 
+Deno.test("live, untrusted origins and oversize outings fail without writes or email", async () => {
+  for (const [event, input, status] of [
+    [baseEvent(), body({ environment: "live" }), 403],
+    [baseEvent(), body({ origin: "https://untrusted.example.test" }), 400],
+    [baseEvent({ capacity_total: 20 }), body(), 409],
+    [baseEvent(), body({ participants: 7 }), 400],
+  ] as const) {
+    const f = fakeDb(event);
+    const sent: unknown[] = [];
+    const result = await handleDeposit(input, deps(f.db, sent));
+    assertEquals(result.status, status);
+    assertEquals(f.writes, []);
+    assertEquals(sent, []);
+  }
+});
+
 Deno.test("sin eventId falla antes de cualquier escritura o correo", async () => {
   const f = fakeDb(baseEvent());
   const sent: unknown[] = [];
