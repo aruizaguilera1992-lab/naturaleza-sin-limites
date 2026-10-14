@@ -8,7 +8,6 @@ import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Mail, Phone } from 'lucide-react';
 import { BusinessLegalData } from '@/components/legal/BusinessLegalData';
-import { InsuranceCoverageDetails } from '@/components/legal/InsuranceCoverageDetails';
 
 const sections = [
   {
