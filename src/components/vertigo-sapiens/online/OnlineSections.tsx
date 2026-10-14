@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import { ArrowDown, ArrowRight, Award, Check, ClipboardCheck, Dumbbell, LineChart, Mountain, ShieldCheck, SlidersHorizontal, Timer, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import athleteImage from '@/assets/atleta-reto-naturaleza.jpg';
 import coachImage from '@/assets/founder-antonio.png';
 import { OnlineRequestForm } from './OnlineRequestForm';
-import { saveVertigoAssessment, type VertigoAssessment } from './assessment';
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <p className="mb-4 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-primary">
