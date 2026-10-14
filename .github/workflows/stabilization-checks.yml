@@ -12,13 +12,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # Matches the existing build workflow; package-lock is not yet aligned with package.json.
-      - run: npm install
+      - run: npm ci
       - run: npm test
       - run: npm run build
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.5.4
+      - name: Payment server type checks
+        run: >-
+          deno check --node-modules-dir=none
+          supabase/functions/create-activity-deposit/index.ts
+          supabase/functions/create-plan-checkout/index.ts
+          supabase/functions/create-portal-session/index.ts
+          supabase/functions/get-payment/index.ts
+          supabase/functions/payments-webhook/index.ts
       - name: Server and database tests (simulated providers)
         run: >-
           deno test --node-modules-dir=none --allow-env --allow-read --allow-sys

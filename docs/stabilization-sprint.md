@@ -25,7 +25,7 @@ Las pruebas usan simulaciones sin acceder a cuentas, cobrar o enviar correo. Ver
 - Vitest: cuatro pruebas correctas.
 - Deno: 57 pruebas correctas (depósitos, elegibilidad, checkout, Resend, firma de webhook y capacidad en PostgreSQL embebido). No se autorizó acceso de red durante la ejecución de las pruebas; solo descarga de módulos.
 - Compilación Vite correcta; avisos existentes por un recurso remoto y tamaño del paquete.
-- La comprobación de tipos de las cinco funciones modificadas mantiene los 28 errores de la versión original, vinculados a los tipos de Supabase (`never`/`undefined`). No se declaran corregidos.
+- Los 28 errores de tipos de Supabase de la versión original se corrigieron al especificar el esquema del cliente del webhook y reflejar la nulabilidad real de la RPC SQL en un tipo local del servidor. La comprobación de las cinco funciones de pagos pasa y se añade como paso obligatorio de CI.
 - El análisis de estilo de los archivos fuente mantiene errores anteriores al sprint.
-- El archivo de dependencias npm existente no está alineado con el manifiesto; se validó con dependencias resueltas desde el manifiesto, sin incluir una actualización del archivo de dependencias en el PR.
+- `package-lock.json` se alineó con el manifiesto, incorporando las seis dependencias directas que faltaban y sus dependencias transitivas. Se conservaron las versiones de las dependencias directas que ya estaban presentes. CI usa ahora `npm ci` para exigir instalaciones reproducibles.
 - Se añade comprobación de PR sin despliegue ni secretos. El despliegue existente solo se dispara al actualizar `main`; no integrar este PR hasta aprobar la configuración y la migración.
