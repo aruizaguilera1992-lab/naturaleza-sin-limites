@@ -1,0 +1,482 @@
+{
+  "environment": "sandbox",
+  "verifiedDate": "2026-10-14",
+  "activities": [
+    {
+      "key": "barranquismo/guadalmina",
+      "productId": "nsl_activity_barranquismo_guadalmina",
+      "priceId": "price_1UQQhWBeGm8erMhDu1mipCOa",
+      "amountCents": 3500,
+      "lookupKey": "activity_barranquismo_guadalmina"
+    },
+    {
+      "key": "barranquismo/sima-diablo",
+      "productId": "nsl_activity_barranquismo_sima_diablo",
+      "priceId": "price_1UQQhaBeGm8erMhDX6zo23Mr",
+      "amountCents": 4000,
+      "lookupKey": "activity_barranquismo_sima-diablo"
+    },
+    {
+      "key": "barranquismo/barranco-blanco",
+      "productId": "nsl_activity_barranquismo_barranco_blanco",
+      "priceId": "price_1UQQhdBeGm8erMhDxa6z6dFp",
+      "amountCents": 3000,
+      "lookupKey": "activity_barranquismo_barranco-blanco"
+    },
+    {
+      "key": "barranquismo/almanchares",
+      "productId": "nsl_activity_barranquismo_almanchares",
+      "priceId": "price_1UQQhgBeGm8erMhD5f93bZAu",
+      "amountCents": 4500,
+      "lookupKey": "activity_barranquismo_almanchares"
+    },
+    {
+      "key": "barranquismo/jorox",
+      "productId": "nsl_activity_barranquismo_jorox",
+      "priceId": "price_1UQQhjBeGm8erMhDVYq0ki1L",
+      "amountCents": 4500,
+      "lookupKey": "activity_barranquismo_jorox"
+    },
+    {
+      "key": "barranquismo/moreno",
+      "productId": "nsl_activity_barranquismo_moreno",
+      "priceId": "price_1UQQhnBeGm8erMhDpTyLSjr7",
+      "amountCents": 5000,
+      "lookupKey": "activity_barranquismo_moreno"
+    },
+    {
+      "key": "barranquismo/arroyo-miel",
+      "productId": "nsl_activity_barranquismo_arroyo_miel",
+      "priceId": "price_1UQQhqBeGm8erMhDenrtoaao",
+      "amountCents": 5000,
+      "lookupKey": "activity_barranquismo_arroyo-miel"
+    },
+    {
+      "key": "barranquismo/cala",
+      "productId": "nsl_activity_barranquismo_cala",
+      "priceId": "price_1UQQhtBeGm8erMhDct2mzoHT",
+      "amountCents": 5000,
+      "lookupKey": "activity_barranquismo_cala"
+    },
+    {
+      "key": "barranquismo/huma",
+      "productId": "nsl_activity_barranquismo_huma",
+      "priceId": "price_1UQQhwBeGm8erMhDa0QgKu9s",
+      "amountCents": 5500,
+      "lookupKey": "activity_barranquismo_huma"
+    },
+    {
+      "key": "barranquismo/zarzalones",
+      "productId": "nsl_activity_barranquismo_zarzalones",
+      "priceId": "price_1UQQhzBeGm8erMhDgVcEd28c",
+      "amountCents": 6000,
+      "lookupKey": "activity_barranquismo_zarzalones"
+    },
+    {
+      "key": "barranquismo/tajo-ronda",
+      "productId": "nsl_activity_barranquismo_tajo_ronda",
+      "priceId": "price_1UQQiTBeGm8erMhDv4GdjvTI",
+      "amountCents": 5500,
+      "lookupKey": "activity_barranquismo_tajo-ronda"
+    },
+    {
+      "key": "barranquismo/buitreras",
+      "productId": "nsl_activity_barranquismo_buitreras",
+      "priceId": "price_1UQQiWBeGm8erMhD46UZ0zHU",
+      "amountCents": 9000,
+      "lookupKey": "activity_barranquismo_buitreras"
+    },
+    {
+      "key": "barranquismo/rio-verde",
+      "productId": "nsl_activity_barranquismo_rio_verde",
+      "priceId": "price_1UQQiZBeGm8erMhD3CxZkkbi",
+      "amountCents": 5500,
+      "lookupKey": "activity_barranquismo_rio-verde"
+    },
+    {
+      "key": "barranquismo/rio-lentegi",
+      "productId": "nsl_activity_barranquismo_rio_lentegi",
+      "priceId": "price_1UQQicBeGm8erMhDxuJwOAJV",
+      "amountCents": 4500,
+      "lookupKey": "activity_barranquismo_rio-lentegi"
+    },
+    {
+      "key": "barranquismo/trevejo",
+      "productId": "nsl_activity_barranquismo_trevejo",
+      "priceId": "price_1UQQieBeGm8erMhDvCPUpjUS",
+      "amountCents": 4000,
+      "lookupKey": "activity_barranquismo_trevejo"
+    },
+    {
+      "key": "barranquismo/poqueira",
+      "productId": "nsl_activity_barranquismo_poqueira",
+      "priceId": "price_1UQQihBeGm8erMhDMF6GTdgN",
+      "amountCents": 6500,
+      "lookupKey": "activity_barranquismo_poqueira"
+    },
+    {
+      "key": "barranquismo/lanjaron",
+      "productId": "nsl_activity_barranquismo_lanjaron",
+      "priceId": "price_1UQQilBeGm8erMhDJwJgmcnH",
+      "amountCents": 6000,
+      "lookupKey": "activity_barranquismo_lanjaron"
+    },
+    {
+      "key": "barranquismo/garganta-verde",
+      "productId": "nsl_activity_barranquismo_garganta_verde",
+      "priceId": "price_1UQQioBeGm8erMhD9wAQbDXr",
+      "amountCents": 7500,
+      "lookupKey": "activity_barranquismo_garganta-verde"
+    },
+    {
+      "key": "barranquismo/paterna",
+      "productId": "nsl_activity_barranquismo_paterna",
+      "priceId": "price_1UQQirBeGm8erMhDs1lCdTI0",
+      "amountCents": 4500,
+      "lookupKey": "activity_barranquismo_paterna"
+    },
+    {
+      "key": "barranquismo/majales",
+      "productId": "nsl_activity_barranquismo_majales",
+      "priceId": "price_1UQQiuBeGm8erMhDRWmcc6uv",
+      "amountCents": 5500,
+      "lookupKey": "activity_barranquismo_majales"
+    },
+    {
+      "key": "escalada/chorro-frontales",
+      "productId": "nsl_activity_escalada_chorro_frontales",
+      "priceId": "price_1UQQjBBeGm8erMhDcpVksoh3",
+      "amountCents": 4900,
+      "lookupKey": "activity_escalada_chorro-frontales"
+    },
+    {
+      "key": "escalada/chorro-escalera-arabe",
+      "productId": "nsl_activity_escalada_chorro_escalera_arabe",
+      "priceId": "price_1UQQjEBeGm8erMhDDg4GN1AY",
+      "amountCents": 5500,
+      "lookupKey": "activity_escalada_chorro-escalera-arabe"
+    },
+    {
+      "key": "escalada/valle-abdalajis",
+      "productId": "nsl_activity_escalada_valle_abdalajis",
+      "priceId": "price_1UQQjHBeGm8erMhD0tXQ6vyr",
+      "amountCents": 3900,
+      "lookupKey": "activity_escalada_valle-abdalajis"
+    },
+    {
+      "key": "escalada/gaitanes",
+      "productId": "nsl_activity_escalada_gaitanes",
+      "priceId": "price_1UQQjKBeGm8erMhDiyolTJ4S",
+      "amountCents": 6500,
+      "lookupKey": "activity_escalada_gaitanes"
+    },
+    {
+      "key": "escalada/torcal-antequera",
+      "productId": "nsl_activity_escalada_torcal_antequera",
+      "priceId": "price_1UQQjPBeGm8erMhDiRzx2XfC",
+      "amountCents": 4500,
+      "lookupKey": "activity_escalada_torcal-antequera"
+    },
+    {
+      "key": "escalada/cahorros",
+      "productId": "nsl_activity_escalada_cahorros",
+      "priceId": "price_1UQQjTBeGm8erMhDvQ2B0iBA",
+      "amountCents": 4200,
+      "lookupKey": "activity_escalada_cahorros"
+    },
+    {
+      "key": "escalada/sierra-huetor",
+      "productId": "nsl_activity_escalada_sierra_huetor",
+      "priceId": "price_1UQQjWBeGm8erMhD6dtDivK0",
+      "amountCents": 4900,
+      "lookupKey": "activity_escalada_sierra-huetor"
+    },
+    {
+      "key": "escalada/padul",
+      "productId": "nsl_activity_escalada_padul",
+      "priceId": "price_1UQQjZBeGm8erMhDtU10jkpG",
+      "amountCents": 5200,
+      "lookupKey": "activity_escalada_padul"
+    },
+    {
+      "key": "escalada/alfacar",
+      "productId": "nsl_activity_escalada_alfacar",
+      "priceId": "price_1UQQjdBeGm8erMhDV7LCVHmm",
+      "amountCents": 3800,
+      "lookupKey": "activity_escalada_alfacar"
+    },
+    {
+      "key": "escalada/loja",
+      "productId": "nsl_activity_escalada_loja",
+      "priceId": "price_1UQQjgBeGm8erMhDJB5t6LbO",
+      "amountCents": 5500,
+      "lookupKey": "activity_escalada_loja"
+    },
+    {
+      "key": "escalada/los-vados",
+      "productId": "nsl_activity_escalada_los_vados",
+      "priceId": "price_1UQQjyBeGm8erMhDXZc6Jgwp",
+      "amountCents": 4200,
+      "lookupKey": "activity_escalada_los-vados"
+    },
+    {
+      "key": "escalada/cabra",
+      "productId": "nsl_activity_escalada_cabra",
+      "priceId": "price_1UQQk1BeGm8erMhDUq3kgbaq",
+      "amountCents": 3800,
+      "lookupKey": "activity_escalada_cabra"
+    },
+    {
+      "key": "escalada/zaframagon",
+      "productId": "nsl_activity_escalada_zaframagon",
+      "priceId": "price_1UQQk4BeGm8erMhD4Hf8pv5R",
+      "amountCents": 5500,
+      "lookupKey": "activity_escalada_zaframagon"
+    },
+    {
+      "key": "escalada/grazalema",
+      "productId": "nsl_activity_escalada_grazalema",
+      "priceId": "price_1UQQk7BeGm8erMhDSJlGKQ37",
+      "amountCents": 4500,
+      "lookupKey": "activity_escalada_grazalema"
+    },
+    {
+      "key": "escalada/constantina",
+      "productId": "nsl_activity_escalada_constantina",
+      "priceId": "price_1UQQkBBeGm8erMhD8PZxj9Jp",
+      "amountCents": 3500,
+      "lookupKey": "activity_escalada_constantina"
+    },
+    {
+      "key": "escalada/despeñaperros",
+      "productId": "nsl_activity_escalada_despenaperros",
+      "priceId": "price_1UQQkEBeGm8erMhDfSTnDK1I",
+      "amountCents": 4800,
+      "lookupKey": "activity_escalada_despeñaperros"
+    },
+    {
+      "key": "escalada/cazorla",
+      "productId": "nsl_activity_escalada_cazorla",
+      "priceId": "price_1UQQkHBeGm8erMhDv4C3wQda",
+      "amountCents": 4200,
+      "lookupKey": "activity_escalada_cazorla"
+    },
+    {
+      "key": "escalada/ardales",
+      "productId": "nsl_activity_escalada_ardales",
+      "priceId": "price_1UQQkKBeGm8erMhDv4pSwkSe",
+      "amountCents": 3500,
+      "lookupKey": "activity_escalada_ardales"
+    },
+    {
+      "key": "vias-ferratas/ferrata-el-chorro",
+      "productId": "nsl_activity_vias_ferratas_ferrata_el_chorro",
+      "priceId": "price_1UQQkNBeGm8erMhDvUXtYVSR",
+      "amountCents": 5500,
+      "lookupKey": "activity_vias-ferratas_ferrata-el-chorro"
+    },
+    {
+      "key": "vias-ferratas/ferrata-atajate",
+      "productId": "nsl_activity_vias_ferratas_ferrata_atajate",
+      "priceId": "price_1UQQkSBeGm8erMhDdDZCIgTp",
+      "amountCents": 4500,
+      "lookupKey": "activity_vias-ferratas_ferrata-atajate"
+    },
+    {
+      "key": "vias-ferratas/ferrata-benadalid",
+      "productId": "nsl_activity_vias_ferratas_ferrata_benadalid",
+      "priceId": "price_1UQQkfBeGm8erMhDmTo3OSi2",
+      "amountCents": 5000,
+      "lookupKey": "activity_vias-ferratas_ferrata-benadalid"
+    },
+    {
+      "key": "vias-ferratas/ferrata-benalauria",
+      "productId": "nsl_activity_vias_ferratas_ferrata_benalauria",
+      "priceId": "price_1UQQkiBeGm8erMhD022j9lAP",
+      "amountCents": 4000,
+      "lookupKey": "activity_vias-ferratas_ferrata-benalauria"
+    },
+    {
+      "key": "vias-ferratas/ferrata-teba",
+      "productId": "nsl_activity_vias_ferratas_ferrata_teba",
+      "priceId": "price_1UQQklBeGm8erMhDN6k6V6xa",
+      "amountCents": 4000,
+      "lookupKey": "activity_vias-ferratas_ferrata-teba"
+    },
+    {
+      "key": "vias-ferratas/ferrata-gaucin-castillo",
+      "productId": "nsl_activity_vias_ferratas_ferrata_gaucin_castillo",
+      "priceId": "price_1UQQkoBeGm8erMhD6QGsjDFQ",
+      "amountCents": 4500,
+      "lookupKey": "activity_vias-ferratas_ferrata-gaucin-castillo"
+    },
+    {
+      "key": "vias-ferratas/ferrata-gaucin-hacho",
+      "productId": "nsl_activity_vias_ferratas_ferrata_gaucin_hacho",
+      "priceId": "price_1UQQkrBeGm8erMhDYmEdWgXC",
+      "amountCents": 6000,
+      "lookupKey": "activity_vias-ferratas_ferrata-gaucin-hacho"
+    },
+    {
+      "key": "vias-ferratas/ferrata-tajo-reloj",
+      "productId": "nsl_activity_vias_ferratas_ferrata_tajo_reloj",
+      "priceId": "price_1UQQkvBeGm8erMhDImVCQJtm",
+      "amountCents": 5000,
+      "lookupKey": "activity_vias-ferratas_ferrata-tajo-reloj"
+    },
+    {
+      "key": "vias-ferratas/ferrata-montejaque",
+      "productId": "nsl_activity_vias_ferratas_ferrata_montejaque",
+      "priceId": "price_1UQQkyBeGm8erMhDbi5cdpz8",
+      "amountCents": 6500,
+      "lookupKey": "activity_vias-ferratas_ferrata-montejaque"
+    },
+    {
+      "key": "vias-ferratas/ferrata-turrion-comares",
+      "productId": "nsl_activity_vias_ferratas_ferrata_turrion_comares",
+      "priceId": "price_1UQQl2BeGm8erMhDX5yWsB0B",
+      "amountCents": 5000,
+      "lookupKey": "activity_vias-ferratas_ferrata-turrion-comares"
+    },
+    {
+      "key": "vias-ferratas/ferrata-bola-hondonero",
+      "productId": "nsl_activity_vias_ferratas_ferrata_bola_hondonero",
+      "priceId": "price_1UQQl5BeGm8erMhDVjROyukm",
+      "amountCents": 4000,
+      "lookupKey": "activity_vias-ferratas_ferrata-bola-hondonero"
+    },
+    {
+      "key": "vias-ferratas/ferrata-pita-100canos",
+      "productId": "nsl_activity_vias_ferratas_ferrata_pita_100canos",
+      "priceId": "price_1UQQl8BeGm8erMhD7eA6d04K",
+      "amountCents": 6000,
+      "lookupKey": "activity_vias-ferratas_ferrata-pita-100canos"
+    },
+    {
+      "key": "vias-ferratas/ferrata-alfarnatura",
+      "productId": "nsl_activity_vias_ferratas_ferrata_alfarnatura",
+      "priceId": "price_1UQQlOBeGm8erMhD34uHTOah",
+      "amountCents": 3500,
+      "lookupKey": "activity_vias-ferratas_ferrata-alfarnatura"
+    },
+    {
+      "key": "vias-ferratas/ferrata-archidona",
+      "productId": "nsl_activity_vias_ferratas_ferrata_archidona",
+      "priceId": "price_1UQQlRBeGm8erMhD1L0Kv44F",
+      "amountCents": 5000,
+      "lookupKey": "activity_vias-ferratas_ferrata-archidona"
+    },
+    {
+      "key": "vias-ferratas/ferrata-tajo-ronda-sevillana",
+      "productId": "nsl_activity_vias_ferratas_ferrata_tajo_ronda_sevillana",
+      "priceId": "price_1UQQlUBeGm8erMhDcUEHK0D2",
+      "amountCents": 4500,
+      "lookupKey": "activity_vias-ferratas_ferrata-tajo-ronda-sevillana"
+    },
+    {
+      "key": "vias-ferratas/ferrata-john-hogbin",
+      "productId": "nsl_activity_vias_ferratas_ferrata_john_hogbin",
+      "priceId": "price_1UQQlYBeGm8erMhDkadFWZ0e",
+      "amountCents": 6500,
+      "lookupKey": "activity_vias-ferratas_ferrata-john-hogbin"
+    },
+    {
+      "key": "vias-ferratas/ferrata-cueva-hora-loja",
+      "productId": "nsl_activity_vias_ferratas_ferrata_cueva_hora_loja",
+      "priceId": "price_1UQQlbBeGm8erMhDpHhmPcIh",
+      "amountCents": 6000,
+      "lookupKey": "activity_vias-ferratas_ferrata-cueva-hora-loja"
+    },
+    {
+      "key": "vias-ferratas/ferrata-colmena-quentar",
+      "productId": "nsl_activity_vias_ferratas_ferrata_colmena_quentar",
+      "priceId": "price_1UQQlfBeGm8erMhD9DmUbEU3",
+      "amountCents": 5500,
+      "lookupKey": "activity_vias-ferratas_ferrata-colmena-quentar"
+    },
+    {
+      "key": "vias-ferratas/ferrata-barranco-luna",
+      "productId": "nsl_activity_vias_ferratas_ferrata_barranco_luna",
+      "priceId": "price_1UQQliBeGm8erMhDU8Z30Zgx",
+      "amountCents": 4500,
+      "lookupKey": "activity_vias-ferratas_ferrata-barranco-luna"
+    },
+    {
+      "key": "vias-ferratas/ferrata-tajo-vinas",
+      "productId": "nsl_activity_vias_ferratas_ferrata_tajo_vinas",
+      "priceId": "price_1UQQlmBeGm8erMhD0Kdcc0lK",
+      "amountCents": 5000,
+      "lookupKey": "activity_vias-ferratas_ferrata-tajo-vinas"
+    },
+    {
+      "key": "vias-ferratas/ferrata-benaojan",
+      "productId": "nsl_activity_vias_ferratas_ferrata_benaojan",
+      "priceId": "price_1UQQlqBeGm8erMhDRnAy9uek",
+      "amountCents": 4500,
+      "lookupKey": "activity_vias-ferratas_ferrata-benaojan"
+    },
+    {
+      "key": "vias-ferratas/ferrata-zuheros",
+      "productId": "nsl_activity_vias_ferratas_ferrata_zuheros",
+      "priceId": "price_1UQQluBeGm8erMhDrUtWbCGd",
+      "amountCents": 4000,
+      "lookupKey": "activity_vias-ferratas_ferrata-zuheros"
+    },
+    {
+      "key": "vias-ferratas/ferrata-estrella-espiel",
+      "productId": "nsl_activity_vias_ferratas_ferrata_estrella_espiel",
+      "priceId": "price_1UQQm7BeGm8erMhDiQW0imJR",
+      "amountCents": 4000,
+      "lookupKey": "activity_vias-ferratas_ferrata-estrella-espiel"
+    },
+    {
+      "key": "vias-ferratas/ferrata-castala",
+      "productId": "nsl_activity_vias_ferratas_ferrata_castala",
+      "priceId": "price_1UQQmABeGm8erMhDpdXd8Aek",
+      "amountCents": 7000,
+      "lookupKey": "activity_vias-ferratas_ferrata-castala"
+    },
+    {
+      "key": "vias-ferratas/ferrata-carcauz-vicar",
+      "productId": "nsl_activity_vias_ferratas_ferrata_carcauz_vicar",
+      "priceId": "price_1UQQmDBeGm8erMhDSC0oXR5h",
+      "amountCents": 6000,
+      "lookupKey": "activity_vias-ferratas_ferrata-carcauz-vicar"
+    },
+    {
+      "key": "vias-ferratas/ferrata-castillo-locubin",
+      "productId": "nsl_activity_vias_ferratas_ferrata_castillo_locubin",
+      "priceId": "price_1UQQmHBeGm8erMhDJJXd4H33",
+      "amountCents": 4000,
+      "lookupKey": "activity_vias-ferratas_ferrata-castillo-locubin"
+    },
+    {
+      "key": "vias-ferratas/ferrata-monte-hacho",
+      "productId": "nsl_activity_vias_ferratas_ferrata_monte_hacho",
+      "priceId": "price_1UQQmKBeGm8erMhDYsOqFOqx",
+      "amountCents": 4000,
+      "lookupKey": "activity_vias-ferratas_ferrata-monte-hacho"
+    },
+    {
+      "key": "espeleologia/iniciacion",
+      "productId": "nsl_activity_espeleologia_iniciacion",
+      "priceId": null,
+      "amountCents": null,
+      "lookupKey": null
+    },
+    {
+      "key": "espeleologia/progresion-vertical",
+      "productId": "nsl_activity_espeleologia_progresion_vertical",
+      "priceId": null,
+      "amountCents": null,
+      "lookupKey": null
+    },
+    {
+      "key": "espeleologia/exploracion",
+      "productId": "nsl_activity_espeleologia_exploracion",
+      "priceId": null,
+      "amountCents": null,
+      "lookupKey": null
+    }
+  ]
+}
