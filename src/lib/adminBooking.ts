@@ -22,6 +22,8 @@ export type BookingFinance = {
   totalCents: number | null;
   /** Discount applied by the admin, in cents (0 when none). */
   discountCents: number;
+  /** Whole percentage (0-100) the discount was entered as; 0 when none or a legacy fixed amount. */
+  discountPercent: number;
   /** Total after discount; this is what deposit and balance are computed from. */
   netTotalCents: number | null;
   depositCents: number | null;
@@ -48,6 +50,13 @@ export const catalogPriceForActivity = (activity: string): number | null => {
 
 export const depositFromTotal = (totalCents: number) => Math.round(totalCents * DEPOSIT_RATE);
 
+/** Whole percentage (0-100) of a discount entry; anything invalid or empty counts as no discount. */
+export const clampDiscountPercent = (value: number | string | null | undefined): number => {
+  const n = Math.round(Number(value ?? 0));
+  if (!Number.isFinite(n) || n <= 0) return 0;
+  return Math.min(100, Math.max(0, n));
+};
+
 /**
  * Priority: persisted deposit total > outing price agreed on the event > current catalog (estimate).
  * Never returns 0 € as a price: absence is `null`.
@@ -59,8 +68,10 @@ export function computeFinance(input: {
   eventPriceCents?: number | null;
   payments: PricePayment[];
   catalogPrice?: number | null;
-  /** Admin-applied discount in cents; clamped so the net total never goes below what is already paid. */
+  /** Admin-applied discount in cents (legacy fixed amount); clamped so the net total never goes below 0. */
   discountCents?: number | null;
+  /** Admin-applied discount as a whole percentage of the gross total; takes precedence over discountCents. */
+  discountPercent?: number | null;
 }): BookingFinance {
   const participants = parseParticipants(input.participantsRaw);
   const own = input.payments.filter((p) => p.booking_id === input.bookingId);
