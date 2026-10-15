@@ -1,8 +1,8 @@
 # Roadmap
 
 ## Acceso a gestión (15/10/2026)
-- [ ] Rediseñar login, entrada en footer y estados sin acceso del panel
-- [ ] Probar destinos seguros, retorno, errores/cancelación y vistas móvil/escritorio sin OAuth real
+- [x] Rediseñar login, entrada en footer y estados sin acceso del panel
+- [x] Probar destinos seguros, retorno, errores/cancelación y vistas móvil/escritorio sin OAuth real
 
 ## Correos de reservas y pagos (15/10/2026)
 - [x] Rediseñar solicitud, enlace, recibo, aviso administrativo y confirmación con el renderer compartido
