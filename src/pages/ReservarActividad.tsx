@@ -145,7 +145,7 @@ export default function ReservarActividad() {
             <div className="relative flex h-full min-h-56 flex-col justify-end p-6 sm:min-h-72 sm:p-9 lg:min-h-[780px] lg:p-12">
               <p className="mb-3 text-sm font-semibold uppercase text-primary">{activity?.categoryLabel ?? "Naturaleza Sin Límites"}</p>
               <p className="max-w-lg font-heading text-3xl font-extrabold leading-tight text-foreground sm:text-4xl lg:text-5xl">Tu próxima aventura te espera</p>
-              <p className="mt-2 max-w-md text-base text-foreground/80 sm:text-lg">Elige tu fecha, reserva tu plaza y solo piensa en la montaña.</p>
+              <p className="mt-2 max-w-md text-base text-foreground/80 sm:text-lg">{isEventBooking ? "Elige tu fecha, reserva tu plaza y solo piensa en la montaña." : "Propón tu fecha y te confirmamos disponibilidad y precio antes de reservar."}</p>
               {activity && <p className="mt-3 text-lg font-semibold text-foreground/90">{activity.name}</p>}
             </div>
           </aside>
@@ -333,9 +333,9 @@ export default function ReservarActividad() {
             </div>
             <div className="flex justify-between gap-4 text-muted-foreground">
               <dt>Precio estimado · {euros(unitPrice)} × {form.participants}</dt>
-              <dd>{euros(total)}</dd>
+              <dd>{euros(total)} <span className="text-xs">(estimado)</span></dd>
             </div>
-            <p className="text-muted-foreground">Solicitud sin pago: primero confirmamos la disponibilidad contigo.</p>
+            <p className="text-muted-foreground">Precio estimado, pendiente de confirmación. Solicitud sin pago: primero confirmamos la disponibilidad contigo.</p>
           </dl>
         )}
       </header>
@@ -369,6 +369,21 @@ export default function ReservarActividad() {
             />
           )}
         </div>
+
+        {!isEventBooking && (
+          <section
+            aria-labelledby="request-notice-title"
+            className="mb-6 rounded-lg border-l-4 border-primary bg-card p-5 shadow-sm ring-1 ring-border"
+          >
+            <h3 id="request-notice-title" className="flex items-center gap-2 font-heading text-lg font-bold text-foreground">
+              <Info className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+              Antes de confirmar tu reserva
+            </h3>
+            <p className="mt-2 text-base leading-7 text-foreground/90">
+              Primero confirmaremos contigo la disponibilidad de la fecha, el precio final de la actividad y el importe del anticipo. Enviar esta solicitud no confirma la reserva y no se cobra nada ahora.
+            </p>
+          </section>
+        )}
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
@@ -530,12 +545,17 @@ export default function ReservarActividad() {
           </span>
         </p>
 
-        <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-muted-foreground">
-          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-          {isEventBooking
-            ? "Al continuar comprobamos y bloqueamos tus plazas: tienes 30 minutos para iniciar el pago; al iniciarlo, el bloqueo se mantiene durante el plazo de pago. La reserva se confirma con el pago y queda sujeta a la meteorología y a las condiciones publicadas."
-            : "No se cobra nada ahora. Antonio revisará la disponibilidad de la fecha y, si es posible, te enviará un enlace de pago. Sujeto a la meteorología y a las condiciones publicadas."}
-        </p>
+        {isEventBooking ? (
+          <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-muted-foreground">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            Al continuar comprobamos y bloqueamos tus plazas: tienes 30 minutos para iniciar el pago; al iniciarlo, el bloqueo se mantiene durante el plazo de pago. La reserva se confirma con el pago y queda sujeta a la meteorología y a las condiciones publicadas.
+          </p>
+        ) : (
+          <p id="request-submit-note" className="mt-4 flex items-start gap-2 rounded-md border border-primary/40 bg-primary/10 p-3 text-sm font-medium leading-6 text-foreground">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+            Te confirmaremos la disponibilidad, el precio final y el anticipo antes de enviarte el enlace de pago.
+          </p>
+        )}
 
         <Button
           className="mt-5 min-h-12 w-full text-base transition-all duration-300 active:scale-95 sm:text-lg"
