@@ -1,0 +1,39 @@
+Pendiente de pago · Vía Ferrata Ejemplo
+
+Naturaleza Sin Límites
+
+Tu enlace de pago
+
+Vía Ferrata Ejemplo
+
+Hola Cliente de muestra,
+
+Completa el pago de la señal para confirmar tus plazas en la salida programada, una vez verificados el pago y las plazas.
+
+Actividad: Vía Ferrata Ejemplo
+
+Estado: Pendiente de pago
+
+Salida: 18 de mayo de 2027, 09:00
+
+Personas: 3
+
+Total de la actividad: 180,00 €
+
+Señal · incluida en el total: 54,00 €
+
+Importe de este pago: 54,00 €
+
+Pagado acumulado: 0,00 €
+
+Saldo pendiente: 180,00 €
+
+Pagar la señal: https://naturalezasinlimites.es/pago/ejemplo-ficticio-no-valido
+
+Las plazas están bloqueadas 30 minutos para iniciar el pago. Al iniciarlo, el bloqueo se mantiene durante el plazo de pago; si no se completa, las plazas se liberan.
+
+Entorno de pruebas · no es un cobro real.
+
+Responde a este correo o escríbenos por WhatsApp: +34 685 60 95 42 · https://wa.me/34685609542
+
+Naturaleza Sin Límites · Aventura con los pies en la tierra.
