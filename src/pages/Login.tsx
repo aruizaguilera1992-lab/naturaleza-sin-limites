@@ -1,81 +1,97 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
-import { Mountain } from "lucide-react";
-
-function safeNext(raw: string | null): string {
-  if (!raw) return "/";
-  if (!raw.startsWith("/") || raw.startsWith("//")) return "/";
-  return raw;
-}
+import { Loader2 } from "lucide-react";
+import { AccessLayout } from "@/components/auth/AccessLayout";
+import { clearAuthNext, googleCallbackUrl, safeNext, storeAuthNext } from "@/lib/authReturn";
 
 export default function Login() {
   const [params] = useSearchParams();
   const next = safeNext(params.get("next"));
+  const navigate = useNavigate();
+  const management = next.split(/[?#]/)[0] === "/admin";
+  const connection = next.startsWith("/.lovable/oauth/consent");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [checking, setChecking] = useState(true);
+  const attempt = useRef(0);
+  const cancelled = useRef(false);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) window.location.href = next;
+    let active = true;
+    const verify = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (!active || cancelled.current) return;
+        if (data.user && !error) { clearAuthNext(); navigate(next, { replace: true }); }
+      } catch { if (active) setError("No se pudo comprobar tu sesión. Puedes volver a intentarlo con Google."); }
+      finally { if (active) setChecking(false); }
+    };
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) setTimeout(() => { if (active) void verify(); }, 0);
     });
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) window.location.href = next;
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [next]);
+    void verify();
+    return () => { active = false; attempt.current++; sub.subscription.unsubscribe(); };
+  }, [next, navigate]);
 
   async function handleGoogle() {
     setError(null);
     setBusy(true);
-    // El destino se guarda aparte; el retorno de Google siempre va a la raíz
-    // y desde ahí se navega a `next` una vez confirmada la sesión.
-    sessionStorage.setItem("auth_next", next);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    setBusy(false);
-    if (result.error) {
+    cancelled.current = false;
+    const id = ++attempt.current;
+    try {
+      const stored = storeAuthNext(next);
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: googleCallbackUrl(window.location.origin, next, stored),
+      });
+      if (id !== attempt.current) return;
+      if (result.error) throw result.error;
+      if (result.redirected) return;
+      const { data, error: sessionError } = await supabase.auth.getUser();
+      if (id !== attempt.current) return;
+      if (sessionError || !data.user) throw new Error("No verified session");
+      clearAuthNext();
+      navigate(next, { replace: true });
+    } catch {
+      if (id !== attempt.current) return;
+      clearAuthNext();
       setError("No se pudo iniciar sesión con Google. Inténtalo de nuevo.");
-      return;
-    }
-    if (result.redirected) return;
-    window.location.href = next;
+    } finally { if (id === attempt.current) setBusy(false); }
+  }
+  function cancel() {
+    cancelled.current = true;
+    attempt.current++;
+    clearAuthNext();
+    setBusy(false);
+    navigate("/", { replace: true });
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-16">
+    <>
       <Helmet>
-        <title>Acceso | Naturaleza Sin Límites</title>
-        <meta name="description" content="Inicia sesión en Naturaleza Sin Límites para gestionar tus conexiones y reservas." />
+        <title>{management ? "Acceso a gestión" : connection ? "Acceso a conexiones" : "Acceso"} | Naturaleza Sin Límites</title>
+        <meta name="description" content="Acceso con Google a Naturaleza Sin Límites." />
         <meta name="robots" content="noindex" />
       </Helmet>
-      <div className="w-full max-w-md rounded-xl border border-border bg-card p-8">
-        <div className="flex items-center gap-2 mb-6 text-primary">
-          <Mountain className="h-6 w-6" />
-          <span className="font-heading font-bold tracking-wide">NATURALEZA SIN LÍMITES</span>
-        </div>
-        <h1 className="text-2xl font-heading font-bold text-foreground mb-2">
-          Iniciar sesión
-        </h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          Accede con tu cuenta para autorizar aplicaciones conectadas.
-        </p>
-
-        {error && <p className="text-sm text-destructive mb-4">{error}</p>}
-
+      <AccessLayout title={management ? "Acceso a gestión" : connection ? "Conectar una aplicación" : "Acceso a tu cuenta"} description={management ? "Inicia sesión con tu cuenta de Google para acceder al panel de gestión" : connection ? "Inicia sesión con Google para revisar la solicitud de conexión de la aplicación." : "Inicia sesión con Google para continuar en Naturaleza Sin Límites."} busy={busy || checking}>
+        {error && <p ref={errorRef} tabIndex={-1} role="alert" className="mb-5 rounded-md border border-destructive bg-card p-4 text-sm leading-relaxed text-foreground focus:outline-none">{error}</p>}
         <Button
           type="button"
           onClick={handleGoogle}
-          disabled={busy}
-          className="w-full transition-all duration-300 active:scale-95"
+          disabled={busy || checking}
+          aria-busy={busy || checking}
+          className="w-full gap-3 rounded-md normal-case tracking-normal shadow-none transition-none hover:translate-y-0 active:scale-100"
         >
-          {busy ? "Conectando…" : "Continuar con Google"}
+          {busy || checking ? <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin motion-reduce:animate-none" /> : <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-sm bg-foreground font-sans text-lg font-bold text-background">G</span>}
+          {checking ? "Comprobando sesión…" : busy ? "Conectando con Google…" : error ? "Reintentar con Google" : "Continuar con Google"}
         </Button>
-      </div>
-    </div>
+        {busy && <Button variant="ghost" onClick={cancel} className="mt-3 w-full normal-case tracking-normal">Cancelar y volver a la web</Button>}
+      </AccessLayout>
+    </>
   );
 }
