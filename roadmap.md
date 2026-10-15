@@ -175,7 +175,8 @@
 - [x] Verificado en 1280 y 390 px, build y tipos limpios (sin publicar)
 
 ## Registros DNS de Resend (15/10/2026)
-- [ ] Obtener los registros exactos (SPF, DKIM, MX) del dominio remitente desde Resend
-- [ ] Añadirlos en Hostinger (ns1/ns2.dns-parking.com) y verificar el dominio
-- [ ] Probar un envío real desde el dominio verificado y confirmar recepción
-- [ ] Quitar el remitente de pruebas onboarding@resend.dev de los envíos
+- [x] Comprobado en Resend: naturalezasinlimites.es está **verificado** (alta 17/09/2026, región eu-west-1, envío activo)
+- [x] Los 3 registros (DKIM TXT `resend._domainkey`, SPF CNAME `rsend` y `send`) aparecen como verificados: nada que añadir en Hostinger
+- [x] Remitente real ya en uso: `reservas@naturalezasinlimites.es`, con respuesta a `naturaleza.s.limites@gmail.com`
+- [x] Envío de prueba enviado y entregado con el nuevo canal
+- [x] El backend envía ahora a través del gateway de la conexión (antes llamaba a la API de Resend de forma directa)
