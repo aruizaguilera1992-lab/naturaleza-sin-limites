@@ -54,6 +54,7 @@ import {
 import { DEPOSIT_RATE } from "@/lib/deposit";
 import { BusinessSettingsPanel } from "@/components/admin/BusinessSettingsPanel";
 import { PlanOrdersPanel } from "@/components/admin/PlanOrdersPanel";
+import { AccessLayout } from "@/components/auth/AccessLayout";
 
 type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans";
 
@@ -543,22 +544,26 @@ export default function Admin() {
   useEffect(() => {
     let active = true;
     const init = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!active) return;
-      setSession(data.session);
-      if (!data.session) {
-        setLoading(false);
-        return;
-      }
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", data.session.user.id)
-        .eq("role", "admin");
-      const admin = !!roles && roles.length > 0;
-      setIsAdmin(admin);
-      if (admin) await loadData();
-      setLoading(false);
+      try {
+        const { data: verified, error: verifyError } = await supabase.auth.getUser();
+        const { data } = await supabase.auth.getSession();
+        if (!active) return;
+        if (verifyError || !verified.user || data.session?.user.id !== verified.user.id) {
+          setSession(null); setIsAdmin(false); return;
+        }
+        const { data: roles, error: roleError } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", verified.user.id)
+          .eq("role", "admin");
+        if (!active) return;
+        const admin = !roleError && !!roles && roles.length > 0;
+        setSession(data.session);
+        setIsAdmin(admin);
+        if (admin) await loadData();
+      } catch {
+        if (active) { setSession(null); setIsAdmin(false); }
+      } finally { if (active) setLoading(false); }
     };
     init();
     const { data: sub } = supabase.auth.onAuthStateChange(() => {
@@ -637,32 +642,26 @@ export default function Admin() {
 
   if (!session) {
     return (
-      <div className="min-h-dvh flex items-center justify-center bg-background px-4">
-        <div className="max-w-md w-full text-center rounded-xl border border-border bg-card p-8">
-          <Mountain className="h-8 w-8 text-primary mx-auto mb-4" />
-          <h1 className="text-2xl font-heading font-bold mb-2">Panel de gestión</h1>
-          <p className="text-muted-foreground mb-6">Inicia sesión para acceder a las solicitudes.</p>
+      <AccessLayout title="Acceso a gestión" description="Inicia sesión con tu cuenta de Google para acceder al panel de gestión">
           <Button asChild className="w-full">
-            <Link to="/login?next=/admin">Iniciar sesión</Link>
+            <Link to="/login?next=/admin">Continuar al acceso con Google</Link>
           </Button>
-        </div>
-      </div>
+      </AccessLayout>
     );
   }
 
   if (!isAdmin) {
     return (
-      <div className="min-h-dvh flex items-center justify-center bg-background px-4">
-        <div className="max-w-md w-full text-center rounded-xl border border-border bg-card p-8">
-          <h1 className="text-2xl font-heading font-bold mb-2">Sin permisos</h1>
-          <p className="text-muted-foreground mb-6">
-            Tu cuenta no tiene rol de administrador. Pide que te asignen acceso.
-          </p>
-          <Button variant="outline" onClick={() => supabase.auth.signOut()} className="gap-2">
+      <AccessLayout title="Acceso no autorizado" description="Tu cuenta de Google no tiene acceso al panel de gestión.">
+          <Button variant="outline" onClick={async () => {
+            try {
+              const { error } = await supabase.auth.signOut();
+              if (error) throw error;
+            } catch { toast({ title: "No se pudo cerrar sesión", description: "Inténtalo de nuevo.", variant: "destructive" }); }
+          }} className="w-full gap-2">
             <LogOut className="h-4 w-4" /> Cerrar sesión
           </Button>
-        </div>
-      </div>
+      </AccessLayout>
     );
   }
 

@@ -9,7 +9,7 @@ import { CookieConsentProvider } from "./context/CookieConsentContext";
 import { CookieBanner } from "./components/CookieBanner";
 import { CookiePreferencesModal } from "./components/CookiePreferencesModal";
 import { AnalyticsLoader } from "./components/AnalyticsLoader";
-import { supabase } from "@/integrations/supabase/client";
+import { AuthRedirectHandler } from "@/components/auth/AuthRedirectHandler";
 import Index from "./pages/Index";
 import Actividades from "./pages/Actividades";
 import Calendario from "./pages/Calendario";
@@ -50,22 +50,6 @@ function ScrollToTopOnRouteChange() {
   return null;
 }
 
-// Tras volver de Google, la sesión llega a la raíz; si había un destino
-// guardado (p. ej. /admin), redirige una vez confirmada la sesión.
-function AuthRedirectHandler() {
-  useEffect(() => {
-    const pending = sessionStorage.getItem("auth_next");
-    if (!pending) return;
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        sessionStorage.removeItem("auth_next");
-        window.location.href = pending;
-      }
-    });
-  }, []);
-  return null;
-}
-
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -76,9 +60,9 @@ const App = () => (
           <AnalyticsLoader />
           <BrowserRouter>
             <ScrollToTopOnRouteChange />
-            <AuthRedirectHandler />
             <CookieBanner />
             <CookiePreferencesModal />
+            <AuthRedirectHandler>
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/actividades" element={<Actividades />} />
@@ -107,6 +91,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
             </Routes>
+            </AuthRedirectHandler>
           </BrowserRouter>
         </CookieConsentProvider>
       </TooltipProvider>
