@@ -173,3 +173,9 @@
 - [x] Todos los apartados con el mismo formato de píldora (icono + nombre + contador), letra más grande
 - [x] Filtros activos mostrados como chips quitables uno a uno + botón «Limpiar filtros»
 - [x] Verificado en 1280 y 390 px, build y tipos limpios (sin publicar)
+
+## Registros DNS de Resend (15/10/2026)
+- [ ] Obtener los registros exactos (SPF, DKIM, MX) del dominio remitente desde Resend
+- [ ] Añadirlos en Hostinger (ns1/ns2.dns-parking.com) y verificar el dominio
+- [ ] Probar un envío real desde el dominio verificado y confirmar recepción
+- [ ] Quitar el remitente de pruebas onboarding@resend.dev de los envíos
