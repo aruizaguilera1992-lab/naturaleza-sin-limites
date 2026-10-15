@@ -642,9 +642,9 @@ export default function Admin() {
 
   if (!session) {
     return (
-      <AccessLayout title="Acceso a gestión" description="Inicia sesión con tu cuenta de Google para acceder al panel de gestión">
+      <AccessLayout title="Acceso a gestión" description="">
           <Button asChild className="w-full">
-            <Link to="/login?next=/admin">Continuar al acceso con Google</Link>
+            <Link to="/login?next=/admin">LOGIN</Link>
           </Button>
       </AccessLayout>
     );
