@@ -115,6 +115,8 @@ export interface NotificationIntent {
   paymentRequestId?: string | null;
   bookingId?: string | null;
   contactId?: string | null;
+  /** Optional semantic evidence persisted in payload (e.g. explicit deposit-confirmation intent). */
+  presentation?: Record<string, unknown>;
 }
 
 /** Shape the confirmation RPC expects for durable intents. */
@@ -141,7 +143,7 @@ export async function enqueueNotification(supabase: Db, intent: NotificationInte
     status: "pendiente",
     dedupe_key: intent.dedupeKey,
     provider_idempotency_key: intent.dedupeKey,
-    payload: { html: intent.html, ...(intent.text ? { text: intent.text } : {}), recipients: intent.recipients },
+    payload: { html: intent.html, ...(intent.text ? { text: intent.text } : {}), recipients: intent.recipients, ...(intent.presentation ? { presentation: intent.presentation } : {}) },
     payment_request_id: intent.paymentRequestId ?? null,
     booking_id: intent.bookingId ?? null,
     contact_id: intent.contactId ?? null,
