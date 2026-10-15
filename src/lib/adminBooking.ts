@@ -52,7 +52,7 @@ export const depositFromTotal = (totalCents: number) => Math.round(totalCents * 
 
 /** Whole percentage (0-100) of a discount entry; anything invalid or empty counts as no discount. */
 export const clampDiscountPercent = (value: number | string | null | undefined): number => {
-  const n = Math.round(Number(value ?? 0));
+  const n = Math.round(Number(String(value ?? "").replace(",", ".")));
   if (!Number.isFinite(n) || n <= 0) return 0;
   return Math.min(100, Math.max(0, n));
 };
