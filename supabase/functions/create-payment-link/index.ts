@@ -2,12 +2,11 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
 import {
-  escapeHtml,
-  formatAmount,
   isEmail,
-  layout,
   sendTrackedNotification,
 } from "../_shared/email.ts";
+import { renderBookingEmail } from "../_shared/bookingEmail.ts";
+import { readBookingEmailContext } from "../_shared/bookingEmailContext.ts";
 
 const BodySchema = z.object({
   target: z.enum(["booking", "contact"]),
@@ -109,7 +108,7 @@ Deno.serve(async (req) => {
         customer_email: customerEmail,
         environment: body.environment,
       })
-      .select("id, token, amount_cents, currency, concept")
+      .select("id, token, amount_cents, currency, concept, expires_at")
       .single();
 
     if (error || !created) {
@@ -136,22 +135,15 @@ Deno.serve(async (req) => {
     if (!customerEmail) {
       email = { status: "omitido", error: "La solicitud no tiene un email válido" };
     } else {
-      const amount = formatAmount(record.amount_cents, record.currency);
+      const context = await readBookingEmailContext(supabase, body.target === "booking" ? body.id : null, record);
       const result = await sendTrackedNotification(supabase, {
         kind: "enlace_pago",
         dedupeKey: `payment_link:${record.id}`,
         recipients: [customerEmail],
-        subject: `Enlace de pago · ${record.concept}`,
+        ...renderBookingEmail({ ...context, variant: "payment_link", state: "pendiente_pago", activity: context.activity ?? record.concept, name: customerName, payUrl: url, expiresAt: record.expires_at, sandbox: body.environment === "sandbox" }),
         paymentRequestId: record.id,
         bookingId: body.target === "booking" ? body.id : null,
         contactId: body.target === "contact" ? body.id : null,
-        html: layout("Tu reserva está lista para confirmarse", `
-          <p>${customerName ? `Hola ${escapeHtml(customerName)},` : "Hola,"}</p>
-          <p>Hemos revisado la disponibilidad de tu solicitud. Para <strong>confirmar tu plaza</strong>, completa el pago desde este enlace seguro:</p>
-          <p><strong>${escapeHtml(record.concept)}</strong><br/>Importe: <strong>${escapeHtml(amount)}</strong></p>
-          <p><a href="${url}" style="background:#FF6B35;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;display:inline-block">Pagar y confirmar reserva</a></p>
-          <p style="font-size:13px;color:#666">El enlace es personal y caduca en 14 días. Al completar el pago, tu reserva quedará confirmada automáticamente y recibirás un email de confirmación.</p>
-        `),
       });
       email = { status: result.status, error: result.error };
     }

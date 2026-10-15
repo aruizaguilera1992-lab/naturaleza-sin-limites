@@ -32,6 +32,7 @@ export async function sendEmail(
   subject: string,
   html: string,
   idempotencyKey?: string,
+  text?: string,
 ): Promise<EmailResult> {
   const apiKey = Deno.env.get("RESEND_API_KEY");
   const gatewayKey = Deno.env.get("LOVABLE_API_KEY");
@@ -59,6 +60,7 @@ export async function sendEmail(
         to: recipients,
         subject,
         html,
+        text: text ?? htmlToPlainText(html),
         ...(replyTo ? { reply_to: [replyTo] } : {}),
       }),
     });
@@ -109,6 +111,7 @@ export interface NotificationIntent {
   recipients: string[];
   subject: string;
   html: string;
+  text?: string;
   paymentRequestId?: string | null;
   bookingId?: string | null;
   contactId?: string | null;
@@ -138,7 +141,7 @@ export async function enqueueNotification(supabase: Db, intent: NotificationInte
     status: "pendiente",
     dedupe_key: intent.dedupeKey,
     provider_idempotency_key: intent.dedupeKey,
-    payload: { html: intent.html, recipients: intent.recipients },
+    payload: { html: intent.html, ...(intent.text ? { text: intent.text } : {}), recipients: intent.recipients },
     payment_request_id: intent.paymentRequestId ?? null,
     booking_id: intent.bookingId ?? null,
     contact_id: intent.contactId ?? null,
@@ -191,7 +194,7 @@ export async function dispatchNotification(supabase: Db, id: string): Promise<Di
   const html: string = claim.payload?.html ?? "";
 
   const result = html
-    ? await sendEmail(recipients, claim.subject, html, claim.idempotency_key)
+    ? await sendEmail(recipients, claim.subject, html, claim.idempotency_key, claim.payload?.text)
     : ({ status: "fallido", error: "sin_contenido" } as EmailResult);
 
   const { data: finish, error: finishError } = await supabase.rpc("finish_notification", {
@@ -206,6 +209,20 @@ export async function dispatchNotification(supabase: Db, id: string): Promise<Di
   if (!finish?.ok) throw new Error(`notification_finish_failed: ${finish?.reason}`);
 
   return { id, status: result.status, providerId: result.providerId, error: result.error };
+}
+
+/** RPC-persisted legacy payloads contain HTML only; retain an equivalent text part without a schema change. */
+export function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<head\b[\s\S]*?<\/head>/gi, "")
+    .replace(/<div[^>]*mso-hide:all[^>]*>[\s\S]*?<\/div>/gi, "")
+    .replace(/<a\b[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, "$2 ($1)")
+    .replace(/<\/(?:p|h[1-6]|tr|div|table)>|<br\s*\/?\s*>/gi, "\n")
+    .replace(/<\/td>\s*<td[^>]*>/gi, ": ")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&(?:amp|lt|gt|quot|#39|nbsp);/g, e => ({ "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&nbsp;": " " })[e] ?? e)
+    .replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
 /** Persist + dispatch in one call (non-payment flows). */
