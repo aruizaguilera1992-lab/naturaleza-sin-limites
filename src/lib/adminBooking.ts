@@ -110,9 +110,12 @@ export function computeFinance(input: {
       totalCents = unitCents * participants;
     }
   }
-  const discountCents = Math.max(0, Math.round(input.discountCents ?? 0));
-  const netTotalCents =
-    totalCents !== null ? Math.max(totalCents - Math.min(discountCents, totalCents), 0) : null;
+  const discountPercent = clampDiscountPercent(input.discountPercent);
+  const legacyCents = Math.max(0, Math.round(input.discountCents ?? 0));
+  const grossDiscountCents =
+    totalCents !== null && discountPercent > 0 ? Math.round((totalCents * discountPercent) / 100) : legacyCents;
+  const discountCents = totalCents !== null ? Math.min(grossDiscountCents, totalCents) : grossDiscountCents;
+  const netTotalCents = totalCents !== null ? Math.max(totalCents - discountCents, 0) : null;
   if (netTotalCents !== null && depositCents === null) depositCents = depositFromTotal(netTotalCents);
   if (netTotalCents !== null && depositCents !== null && source === "senal" && discountCents > 0) {
     // A discount agreed after the deposit was set: recompute the suggested deposit on the net total.
@@ -124,7 +127,8 @@ export function computeFinance(input: {
     unitCents,
     participants,
     totalCents,
-    discountCents: totalCents !== null ? Math.min(discountCents, totalCents) : discountCents,
+    discountCents,
+    discountPercent: discountCents > 0 ? discountPercent : 0,
     netTotalCents,
     depositCents,
     paidCents,
