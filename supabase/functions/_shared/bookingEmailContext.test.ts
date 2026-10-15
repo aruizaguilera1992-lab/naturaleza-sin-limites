@@ -43,6 +43,9 @@ Deno.test("manual signal uses admin emission or exact accepted notification, nev
   }
   const cancelled = await readBookingEmailContext(fakeDb({ rows, sent: true, status: "cancelada" }), "b1", payment, true);
   assertEquals(cancelled.manualConfirmation, undefined);
+  const scheduled = await readBookingEmailContext(fakeDb({ rows, sent: true, event: { starts_at: "2027-05-18T07:00:00Z", price_cents: 6000 } as any }), "b1", payment, true, true);
+  assertEquals(scheduled.scheduled, true);
+  assertEquals(scheduled.manualConfirmation, undefined);
 });
 function assertStringIncludesLocal(value: string, part: string) { assert(value.includes(part)); }
 Deno.test("discounted total from persisted source and absent economics remain honest", async () => {

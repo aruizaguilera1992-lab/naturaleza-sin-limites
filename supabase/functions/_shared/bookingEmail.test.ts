@@ -129,6 +129,7 @@ Deno.test("fully paid never invites another payment; unknown balance has no fabr
     const e = renderBookingEmail({ ...bookingEmailFixtures["senal-pago-completo"], variant, payUrl: "https://naturalezasinlimites.es/pago/example" });
     assert(!e.text.includes("Bizum"));
     assert(!e.text.includes("Pagar la señal:"));
+    assert(!e.text.includes("abona la señal"));
     if (variant !== "payment_link") assertStringIncludes(e.text, "Pago completo");
   }
   const unknown = renderBookingEmail(bookingEmailFixtures["senal-saldo-desconocido"]);
