@@ -99,6 +99,7 @@ export function renderBookingEmail(d: BookingEmailData): RenderedEmail {
   else if (confirmed) intro = "Hemos recibido tu pago y tus plazas en la salida están confirmadas.";
   else if (d.variant === "receipt") intro = d.state === "fecha_pendiente" ? "Hemos recibido tu pago. La fecha solicitada sigue pendiente de confirmación; te escribiremos para confirmarla." : "Hemos recibido tu pago y lo hemos registrado correctamente.";
   else intro = "Se ha registrado un pago. Consulta el estado de la reserva y los siguientes pasos en el panel.";
+  if (complete && d.variant === "payment_link") intro = manualDated ? `Tu actividad está confirmada para el ${date}. El pago está completo; no queda ningún importe pendiente.` : "El pago está completo; no queda ningún importe pendiente.";
   const stateText: Record<ReservationEmailState, string> = { confirmada: "Confirmada", fecha_pendiente: "Fecha pendiente de confirmación", pago_recibido: "Pago recibido", pendiente_pago: "Pendiente de pago", nueva: "Solicitud pendiente de revisión" };
   const effectiveState = manual ? manualDated ? "Actividad y fecha confirmadas" : "Fecha pendiente de confirmación" : stateText[d.state];
   const rows: [string, string][] = [["Actividad", activity], ["Estado", effectiveState]];

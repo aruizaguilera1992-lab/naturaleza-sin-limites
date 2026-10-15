@@ -5,14 +5,15 @@ import { renderBookingEmail } from "./bookingEmail.ts";
 const payment = { id: "p1", amount_cents: 5400, currency: "eur" };
 function fakeDb({ discount = 0, event = null, rows = [] as any[], broken = false, sent = false, status = "nueva", date = "2027-05-18" } = {}) {
   const reads: string[] = [];
-  return { reads, from(table: string) {
+  const filters: [string, string, unknown][] = [];
+  return { reads, filters, from(table: string) {
     reads.push(table);
     if (broken) throw new Error("read unavailable");
     const data = table === "bookings" ? { activity: "Ejemplo", preferred_date: date, status, number_of_people: "3", name: "Muestra", discount_percent: discount, discount_cents: 0 }
       : table === "activity_event_bookings" ? (event ? { event_id: "e1" } : null)
       : table === "activity_events" ? event : table === "notification_log" ? sent ? [{ id: "n1" }] : [] : rows;
     const result = { data, error: null };
-    return { select() { return this; }, eq() { return this; }, limit() { return this; }, maybeSingle: async () => result, then(resolve: any) { return Promise.resolve(result).then(resolve); } };
+    return { select() { return this; }, eq(key: string, value: unknown) { filters.push([table, key, value]); return this; }, limit() { return this; }, maybeSingle: async () => result, then(resolve: any) { return Promise.resolve(result).then(resolve); } };
   } };
 }
 Deno.test("enrichment is read-only, current validated payment counted once without persisting anything", async () => {
@@ -31,8 +32,10 @@ Deno.test("manual signal uses admin emission or exact accepted notification, nev
   assertEquals(initial.manualConfirmation, false);
   const admin = await readBookingEmailContext(fakeDb({ rows }), "b1", payment, false, true);
   assertEquals(admin.manualConfirmation, true);
-  const receipt = await readBookingEmailContext(fakeDb({ rows, sent: true }), "b1", payment, true);
+  const accepted = fakeDb({ rows, sent: true });
+  const receipt = await readBookingEmailContext(accepted, "b1", payment, true);
   assertEquals(receipt.manualConfirmation, true);
+  assertEquals(accepted.filters.filter(f => f[0] === "notification_log"), [["notification_log", "payment_request_id", "p1"], ["notification_log", "booking_id", "b1"], ["notification_log", "kind", "enlace_pago"], ["notification_log", "status", "enviado"]]);
   assertStringIncludesLocal(renderBookingEmail({ ...receipt, activity: "Ejemplo", variant: "receipt", state: "fecha_pendiente" }).subject, "Señal recibida");
   for (const kind of ["manual", "saldo", "pack"]) {
     const generic = await readBookingEmailContext(fakeDb({ rows: [{ ...rows[0], kind }], sent: true }), "b1", payment, true);
