@@ -310,7 +310,7 @@ export default function ReservarActividad() {
           {form.date && <span className="flex items-center gap-2"><CalendarDays className="h-5 w-5 text-primary" />{new Date(`${form.date}T12:00:00`).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}</span>}
           <span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" />{form.participants} participante(s)</span>
         </div>
-        {isEventBooking ? (
+        {isEventBooking && (
           <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
             <div>
               <dt className="text-sm font-semibold uppercase text-muted-foreground">Pagas ahora · señal 30 %</dt>
@@ -321,17 +321,6 @@ export default function ReservarActividad() {
               <dd>{euros(total)}</dd>
             </div>
             <div className="flex justify-between gap-4 text-muted-foreground"><dt>Saldo el día de la actividad</dt><dd>{euros(total - deposit)}</dd></div>
-          </dl>
-        ) : (
-          <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
-            <div>
-              <dt className="text-sm font-semibold uppercase text-muted-foreground">Pagas ahora</dt>
-              <dd className="mt-1 font-heading text-[2.75rem] font-extrabold leading-none text-primary sm:text-5xl">0 €</dd>
-            </div>
-            <div className="flex justify-between gap-4 text-muted-foreground">
-              <dt>Precio estimado</dt>
-              <dd>{euros(total)} <span className="text-xs">(pendiente de confirmar)</span></dd>
-            </div>
           </dl>
         )}
       </header>
