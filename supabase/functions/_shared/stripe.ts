@@ -31,7 +31,7 @@ export function createStripeClient(env: StripeEnv): Stripe {
         headers: {
           ...Object.fromEntries(
             new Headers(
-              init?.headers ?? (input instanceof Request ? input.headers : undefined),
+              (init && "headers" in init ? init.headers : undefined) ?? (input instanceof Request ? input.headers : undefined),
             ).entries(),
           ),
           "X-Connection-Api-Key": connectionApiKey,

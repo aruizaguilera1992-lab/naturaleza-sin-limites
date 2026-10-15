@@ -3,7 +3,7 @@
 // the business before a manual payment link is sent from the admin panel.
 import { z } from "npm:zod@3.23.8";
 import { DEPOSIT_RATE, getActivityPrice } from "../_shared/activityPrices.ts";
-import { escapeHtml, formatAmount, listLayout } from "../_shared/email.ts";
+import { renderBookingEmail } from "../_shared/bookingEmail.ts";
 
 export const MAX_STANDARD_GROUP = 6;
 export const HOLD_MINUTES = 30;
@@ -96,6 +96,7 @@ export interface Notification {
   subject: string;
   bookingId: string;
   html: string;
+  text?: string;
 }
 
 export interface Deps {
@@ -165,7 +166,6 @@ export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
   if (depositCents < 50) return { status: 400, body: { error: "Importe demasiado bajo" } };
 
   const eventDate = madridDate(event.starts_at);
-  const eventLabel = madridLabel(event.starts_at);
   const activityLabel = `${activity.category} · ${activity.name}`;
 
   const { data: booking, error: bookingError } = await db
@@ -254,44 +254,25 @@ export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
   }
 
   const payUrl = `${new URL(body.origin).origin}/pago/${request.token}`;
-  const pct = Math.round(DEPOSIT_RATE * 100);
-  const summary = [
-    `Actividad: ${activityLabel}`,
-    `Salida programada: ${eventLabel}`,
-    `Personas: ${body.participants}`,
-    `Precio total: ${formatAmount(totalCents, "eur")}`,
-    `Señal (${pct}%): ${formatAmount(depositCents, "eur")}`,
-    `Plazas bloqueadas ${HOLD_MINUTES} min a la espera del pago`,
-    `Nombre: ${body.name}`,
-    `Email: ${body.email}`,
-    `Teléfono: ${body.phone}`,
-    `Mensaje: ${body.message ?? "-"}`,
-  ];
-
+  const emailData = {
+    state: "pendiente_pago" as const, activity: activityLabel, date: event.starts_at,
+    people: body.participants, name: body.name, email: body.email, phone: body.phone,
+    message: body.message, scheduled: true, sandbox: body.environment === "sandbox",
+    money: { totalCents, depositCents, paymentCents: depositCents, paidCents: 0 },
+  };
   await deps.notify({
     kind: "senal_iniciada_negocio",
     dedupeKey: `deposit_business:${booking.id}`,
     recipients: deps.businessRecipients(),
-    subject: `Nueva reserva con señal: ${activityLabel}`,
     bookingId: booking.id,
-    html: listLayout(`Nueva reserva con señal: ${activityLabel}`, summary),
+    ...renderBookingEmail({ ...emailData, variant: "request_admin", operational: `Plazas bloqueadas ${HOLD_MINUTES} minutos para iniciar el pago.` }),
   });
-
   await deps.notify({
     kind: "senal_iniciada_cliente",
     dedupeKey: `deposit_customer:${booking.id}`,
     recipients: [body.email],
-    subject: "Tu plaza está bloqueada temporalmente · Naturaleza Sin Límites",
     bookingId: booking.id,
-    html: `
-      <div style="font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;line-height:1.6">
-        <h2 style="color:#FF6B35">Ya casi está, ${escapeHtml(body.name)}</h2>
-        <p>Hemos bloqueado temporalmente ${body.participants} plaza(s) en la salida programada de <strong>${escapeHtml(activityLabel)}</strong> del ${escapeHtml(eventLabel)}.</p>
-        <p>Tienes ${HOLD_MINUTES} minutos para iniciar el pago de la señal de <strong>${formatAmount(depositCents, "eur")}</strong> (${pct}% del total de ${formatAmount(totalCents, "eur")}); al iniciarlo, el bloqueo se mantiene durante el plazo de pago. Si no se completa el pago, las plazas se liberan. El resto se abona el día de la actividad.</p>
-        <p><a href="${payUrl}" style="background:#FF6B35;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none">Pagar la señal</a></p>
-        <p>Si el enlace no funciona, copia esta dirección: ${payUrl}</p>
-        <p>La reserva se confirma cuando recibimos el pago y siempre está sujeta a las condiciones meteorológicas y a las condiciones publicadas.</p>
-      </div>`,
+    ...renderBookingEmail({ ...emailData, variant: "payment_link", payUrl, holdMinutes: HOLD_MINUTES }),
   });
 
   return { status: 200, body: { token: request.token, amountCents: depositCents, totalCents } };

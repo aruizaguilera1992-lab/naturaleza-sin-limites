@@ -1,0 +1,31 @@
+Nueva solicitud · Vía Ferrata Ejemplo
+
+Naturaleza Sin Límites
+
+Nueva solicitud
+
+Vía Ferrata Ejemplo
+
+Revisa la disponibilidad de la fecha, el precio final y el anticipo antes de responder.
+
+Actividad: Vía Ferrata Ejemplo
+
+Estado: Solicitud pendiente de revisión
+
+Fecha solicitada: 18 de mayo de 2027
+
+Personas: 3
+
+Cliente: Cliente de muestra
+
+Email: cliente@example.test
+
+Teléfono: +34 600 000 000
+
+Precio: Pendiente de confirmar
+
+Abrir panel de gestión: https://naturalezasinlimites.es/admin
+
+Mensaje del cliente: Consulta ficticia: preferimos una actividad de iniciación.
+
+Naturaleza Sin Límites · Aventura con los pies en la tierra.
