@@ -181,3 +181,6 @@
 - [x] Envío de prueba enviado y entregado con el nuevo canal
 - [x] El backend envía ahora a través del gateway de la conexión (antes llamaba a la API de Resend de forma directa)
 - [x] Detalle de reserva en pantalla principal de /admin (lista + detalle, sin panel lateral) con descuento aplicado que recalcula total, senal y saldo
+- [x] /admin: el menú lateral solo en escritorio (lg); en tableta y móvil se abre con el botón ☰
+- [x] Descuentos por porcentaje (migración 0012: bookings.discount_percent 0-100); el importe fijo discount_cents queda como legado
+- [ ] Publicar la web (lo hace el usuario)

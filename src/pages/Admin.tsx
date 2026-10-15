@@ -44,6 +44,7 @@ import {
 import {
   ACTIVITY_TZ,
   buildSlots,
+  clampDiscountPercent,
   computeFinance,
   findCoincidences,
   slotForBooking,
@@ -99,26 +100,46 @@ function NotesField({ id, value, onSave }: NotesFieldProps) {
   );
 }
 
-function DiscountField({ id, value, onSave }: { id: string; value: number | null | undefined; onSave: (euros: string) => Promise<void> }) {
-  const current = value ? (value / 100).toFixed(2).replace(".", ",") : "";
+function DiscountField({
+  id,
+  value,
+  totalCents,
+  onSave,
+}: {
+  id: string;
+  value: number | null | undefined;
+  totalCents: number | null;
+  onSave: (percent: string) => Promise<void>;
+}) {
+  const current = value ? String(value) : "";
   const [text, setText] = useState(current);
   const [saving, setSaving] = useState(false);
   const dirty = text.trim() !== current;
+  const percent = clampDiscountPercent(text.trim());
+  const previewCents = percent > 0 && totalCents !== null ? Math.round((totalCents * percent) / 100) : 0;
 
   return (
     <div className="mt-4 border-t border-border pt-3">
       <Label htmlFor={`discount-${id}`} className="text-sm text-muted-foreground">
-        Descuento (€)
+        Descuento (%)
       </Label>
-      <div className="mt-1.5 flex items-center gap-2">
-        <Input
-          id={`discount-${id}`}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          inputMode="decimal"
-          placeholder="0,00"
-          className="h-11 w-28 text-foreground"
-        />
+      <div className="mt-1.5 flex flex-wrap items-center gap-2">
+        <div className="relative">
+          <Input
+            id={`discount-${id}`}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            inputMode="numeric"
+            placeholder="0"
+            className="h-11 w-24 pr-7 text-foreground"
+          />
+          <span
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
+            aria-hidden="true"
+          >
+            %
+          </span>
+        </div>
         <Button
           variant="outline"
           className="min-h-11 gap-2"
@@ -133,6 +154,11 @@ function DiscountField({ id, value, onSave }: { id: string; value: number | null
           Guardar
         </Button>
       </div>
+      {percent > 0 && (
+        <p className="mt-1 text-sm text-foreground">
+          {percent} %{previewCents > 0 && <> = − {formatAmount(previewCents)}</>}
+        </p>
+      )}
       <p className="mt-1 text-xs text-muted-foreground">Se aplica sobre el total y recalcula la señal y el saldo. Pon 0 para quitarlo.</p>
     </div>
   );
@@ -173,6 +199,7 @@ type Booking = {
   email?: string | null;
   phone?: string | null;
   discount_cents?: number | null;
+  discount_percent?: number | null;
 };
 
 type Contact = {
@@ -563,20 +590,21 @@ export default function Admin() {
     toast({ title: "Estado actualizado" });
   };
 
-  const updateDiscount = async (id: string, euros: string) => {
-    const value = euros.trim() === "" ? 0 : Number(euros.replace(",", "."));
-    if (!Number.isFinite(value) || value < 0) {
-      toast({ title: "Descuento no válido", description: "Introduce un importe en euros (0 para quitarlo).", variant: "destructive" });
+  const updateDiscount = async (id: string, raw: string) => {
+    const trimmed = raw.trim();
+    const num = Number(trimmed.replace(",", "."));
+    if (trimmed !== "" && (!Number.isFinite(num) || num < 0 || num > 100)) {
+      toast({ title: "Descuento no válido", description: "Introduce un porcentaje de 0 a 100 (0 para quitarlo).", variant: "destructive" });
       return;
     }
-    const discount_cents = Math.round(value * 100);
-    const { error } = await supabase.from("bookings").update({ discount_cents }).eq("id", id);
+    const discount_percent = clampDiscountPercent(trimmed);
+    const { error } = await supabase.from("bookings").update({ discount_percent, discount_cents: 0 }).eq("id", id);
     if (error) {
       toast({ title: "No se pudo guardar el descuento", description: error.message, variant: "destructive" });
       return;
     }
-    setBookings((prev) => prev.map((r) => (r.id === id ? { ...r, discount_cents } : r)));
-    toast({ title: discount_cents > 0 ? "Descuento aplicado" : "Descuento eliminado" });
+    setBookings((prev) => prev.map((r) => (r.id === id ? { ...r, discount_percent, discount_cents: 0 } : r)));
+    toast({ title: discount_percent > 0 ? `Descuento del ${discount_percent} % aplicado` : "Descuento eliminado" });
   };
 
   const updateNotes = async (
@@ -828,6 +856,7 @@ export default function Admin() {
       eventPriceCents: ev?.price_cents ?? null,
       payments,
       discountCents: b.discount_cents ?? 0,
+      discountPercent: b.discount_percent ?? 0,
     });
     const pct = Math.round(DEPOSIT_RATE * 100);
     const row = (label: string, value: React.ReactNode, strong = false) => (
@@ -896,14 +925,24 @@ export default function Admin() {
                 ? row("Tarifa", `${formatAmount(fin.unitCents)} × ${fin.participants} pers.`)
                 : null}
               {row("Total actividad", formatAmount(fin.totalCents), fin.discountCents === 0)}
-              {fin.discountCents > 0 && row("Descuento aplicado", `− ${formatAmount(fin.discountCents)}`)}
+              {fin.discountCents > 0 &&
+                row(
+                  `Descuento${fin.discountPercent > 0 ? ` (${fin.discountPercent} %)` : ""}`,
+                  `− ${formatAmount(fin.discountCents)}`,
+                )}
               {fin.discountCents > 0 && row("Total con descuento", formatAmount(fin.netTotalCents ?? 0), true)}
               {row(`Señal (${pct} %, incluida en el total)`, fin.depositCents !== null ? formatAmount(fin.depositCents) : "—")}
               {row("Pagado", formatAmount(fin.paidCents))}
               <div className="border-t border-border pt-1.5">{row("Saldo pendiente", formatAmount(fin.balanceCents ?? 0), true)}</div>
             </dl>
           )}
-          <DiscountField key={`disc-${b.id}`} id={b.id} value={b.discount_cents} onSave={(e) => updateDiscount(b.id, e)} />
+          <DiscountField
+            key={`disc-${b.id}`}
+            id={b.id}
+            value={b.discount_percent}
+            totalCents={fin.totalCents}
+            onSave={(p) => updateDiscount(b.id, p)}
+          />
         </section>
 
         {(() => {
@@ -978,7 +1017,7 @@ export default function Admin() {
             return {
               defaultConcept: `Señal ${pct}% · ${b.activity} · ${fin.participants} pax`,
               defaultAmount: (sug / 100).toFixed(2).replace(".", ","),
-              amountHint: `Importe propuesto: señal del ${pct} %${fin.estimated ? " con tarifa actual (estimado)" : ""}${fin.discountCents > 0 ? " con el descuento aplicado" : ""}. Revísalo antes de generar el enlace.`,
+              amountHint: `Importe propuesto: señal del ${pct} %${fin.estimated ? " con tarifa actual (estimado)" : ""}${fin.discountCents > 0 ? ` con el descuento${fin.discountPercent > 0 ? ` del ${fin.discountPercent} %` : ""} aplicado` : ""}. Revísalo antes de generar el enlace.`,
             };
           })()}
           payments={payments.filter((p) => p.booking_id === b.id)}
@@ -989,12 +1028,12 @@ export default function Admin() {
   })();
 
   return (
-    <div className="min-h-dvh bg-background md:flex">
+    <div className="min-h-dvh bg-background lg:flex">
       <Helmet>
         <title>Panel de gestión | Naturaleza Sin Límites</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <aside className="hidden md:sticky md:top-0 md:flex md:h-dvh md:w-60 md:shrink-0 md:flex-col border-r border-border bg-card">
+      <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-60 lg:shrink-0 lg:flex-col border-r border-border bg-card">
         <div className="flex items-center gap-2 px-5 py-6 font-heading font-bold text-foreground">
           <Mountain className="h-5 w-5 text-primary" aria-hidden="true" /> Gestión NSL
         </div>
@@ -1006,7 +1045,7 @@ export default function Admin() {
         </div>
       </aside>
 
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card px-4 py-2 md:hidden">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card px-4 py-2 lg:hidden">
         <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="min-h-11 min-w-11" aria-label="Abrir menú del panel">
@@ -1037,7 +1076,7 @@ export default function Admin() {
             <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{current.label}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{current.subtitle}</p>
           </div>
-          <Button variant="outline" onClick={refresh} disabled={refreshing} className="hidden min-h-11 gap-2 md:inline-flex">
+          <Button variant="outline" onClick={refresh} disabled={refreshing} className="hidden min-h-11 gap-2 lg:inline-flex">
             <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} aria-hidden="true" /> Actualizar
           </Button>
         </div>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSlots, computeFinance, findCoincidences, localDay, slotForBooking, suggestedDepositCents } from "./adminBooking";
+import { buildSlots, clampDiscountPercent, computeFinance, findCoincidences, localDay, slotForBooking, suggestedDepositCents } from "./adminBooking";
 
 const base = { bookingId: "b1", activity: "X · Y", payments: [] as never[] };
 
@@ -117,4 +117,78 @@ it("el descuento nunca deja el total por debajo de cero", () => {
   });
   expect(f.netTotalCents).toBe(0);
   expect(f.balanceCents).toBe(0);
+});
+
+describe("descuento por porcentaje", () => {
+  it("normaliza la entrada", () => {
+    expect(clampDiscountPercent("10")).toBe(10);
+    expect(clampDiscountPercent("12,5")).toBe(13);
+    expect(clampDiscountPercent("0")).toBe(0);
+    expect(clampDiscountPercent("")).toBe(0);
+    expect(clampDiscountPercent("abc")).toBe(0);
+    expect(clampDiscountPercent(null)).toBe(0);
+    expect(clampDiscountPercent(150)).toBe(100);
+  });
+
+  it("calcula el descuento, la señal y el saldo sobre el neto", () => {
+    const f = computeFinance({
+      bookingId: "b1",
+      participantsRaw: "6",
+      activity: "x",
+      catalogPrice: 55,
+      payments: [],
+      discountPercent: 10,
+    });
+    expect(f.totalCents).toBe(33000);
+    expect(f.discountPercent).toBe(10);
+    expect(f.discountCents).toBe(3300);
+    expect(f.netTotalCents).toBe(29700);
+    expect(f.depositCents).toBe(8910);
+    expect(f.balanceCents).toBe(29700);
+    expect(suggestedDepositCents(f)).toBe(8910);
+  });
+
+  it("el porcentaje manda sobre el importe fijo antiguo", () => {
+    const f = computeFinance({
+      bookingId: "b1",
+      participantsRaw: "2",
+      activity: "x",
+      catalogPrice: 50,
+      payments: [],
+      discountPercent: 20,
+      discountCents: 500,
+    });
+    expect(f.discountCents).toBe(2000);
+    expect(f.netTotalCents).toBe(8000);
+  });
+
+  it("sin porcentaje conserva el importe fijo antiguo", () => {
+    const f = computeFinance({
+      bookingId: "b1",
+      participantsRaw: "2",
+      activity: "x",
+      catalogPrice: 50,
+      payments: [],
+      discountPercent: 0,
+      discountCents: 500,
+    });
+    expect(f.discountPercent).toBe(0);
+    expect(f.discountCents).toBe(500);
+    expect(f.netTotalCents).toBe(9500);
+  });
+
+  it("un 100 % deja el saldo a cero", () => {
+    const f = computeFinance({
+      bookingId: "b1",
+      participantsRaw: "2",
+      activity: "x",
+      catalogPrice: 50,
+      payments: [],
+      discountPercent: 100,
+    });
+    expect(f.discountCents).toBe(10000);
+    expect(f.netTotalCents).toBe(0);
+    expect(f.depositCents).toBe(0);
+    expect(suggestedDepositCents(f)).toBeNull();
+  });
 });

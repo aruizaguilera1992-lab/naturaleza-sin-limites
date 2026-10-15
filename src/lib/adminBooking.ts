@@ -22,6 +22,8 @@ export type BookingFinance = {
   totalCents: number | null;
   /** Discount applied by the admin, in cents (0 when none). */
   discountCents: number;
+  /** Whole percentage (0-100) the discount was entered as; 0 when none or a legacy fixed amount. */
+  discountPercent: number;
   /** Total after discount; this is what deposit and balance are computed from. */
   netTotalCents: number | null;
   depositCents: number | null;
@@ -48,6 +50,13 @@ export const catalogPriceForActivity = (activity: string): number | null => {
 
 export const depositFromTotal = (totalCents: number) => Math.round(totalCents * DEPOSIT_RATE);
 
+/** Whole percentage (0-100) of a discount entry; anything invalid or empty counts as no discount. */
+export const clampDiscountPercent = (value: number | string | null | undefined): number => {
+  const n = Math.round(Number(String(value ?? "").replace(",", ".")));
+  if (!Number.isFinite(n) || n <= 0) return 0;
+  return Math.min(100, Math.max(0, n));
+};
+
 /**
  * Priority: persisted deposit total > outing price agreed on the event > current catalog (estimate).
  * Never returns 0 € as a price: absence is `null`.
@@ -59,8 +68,10 @@ export function computeFinance(input: {
   eventPriceCents?: number | null;
   payments: PricePayment[];
   catalogPrice?: number | null;
-  /** Admin-applied discount in cents; clamped so the net total never goes below what is already paid. */
+  /** Admin-applied discount in cents (legacy fixed amount); clamped so the net total never goes below 0. */
   discountCents?: number | null;
+  /** Admin-applied discount as a whole percentage of the gross total; takes precedence over discountCents. */
+  discountPercent?: number | null;
 }): BookingFinance {
   const participants = parseParticipants(input.participantsRaw);
   const own = input.payments.filter((p) => p.booking_id === input.bookingId);
@@ -99,9 +110,12 @@ export function computeFinance(input: {
       totalCents = unitCents * participants;
     }
   }
-  const discountCents = Math.max(0, Math.round(input.discountCents ?? 0));
-  const netTotalCents =
-    totalCents !== null ? Math.max(totalCents - Math.min(discountCents, totalCents), 0) : null;
+  const discountPercent = clampDiscountPercent(input.discountPercent);
+  const legacyCents = Math.max(0, Math.round(input.discountCents ?? 0));
+  const grossDiscountCents =
+    totalCents !== null && discountPercent > 0 ? Math.round((totalCents * discountPercent) / 100) : legacyCents;
+  const discountCents = totalCents !== null ? Math.min(grossDiscountCents, totalCents) : grossDiscountCents;
+  const netTotalCents = totalCents !== null ? Math.max(totalCents - discountCents, 0) : null;
   if (netTotalCents !== null && depositCents === null) depositCents = depositFromTotal(netTotalCents);
   if (netTotalCents !== null && depositCents !== null && source === "senal" && discountCents > 0) {
     // A discount agreed after the deposit was set: recompute the suggested deposit on the net total.
@@ -113,7 +127,8 @@ export function computeFinance(input: {
     unitCents,
     participants,
     totalCents,
-    discountCents: totalCents !== null ? Math.min(discountCents, totalCents) : discountCents,
+    discountCents,
+    discountPercent: discountCents > 0 ? discountPercent : 0,
     netTotalCents,
     depositCents,
     paidCents,
