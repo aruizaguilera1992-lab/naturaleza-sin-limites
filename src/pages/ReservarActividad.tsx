@@ -17,7 +17,7 @@ import { ActivityEventPicker } from "@/components/actividades/ActivityEventPicke
 import { useActivityEvents } from "@/hooks/useActivityEvents";
 import logoAsset from "@/assets/logo-integrated.png";
 
-const DEPOSIT_RATE = 0.3;
+import { DEPOSIT_RATE } from "@/lib/deposit";
 const MAX_PEOPLE = 6;
 const phoneRegex = /^[+]?[\d\s()./-]{9,20}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
