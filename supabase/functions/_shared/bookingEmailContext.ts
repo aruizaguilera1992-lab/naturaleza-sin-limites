@@ -3,6 +3,7 @@ import { reliableEmailMoney, type BookingEmailData } from "./bookingEmail.ts";
 
 // Read-only presentation enrichment. Missing sources omit economics, never block or alter payment processing.
 export async function readBookingEmailContext(db: any, bookingId: string | null, payment?: { id: string; amount_cents: number; currency?: string }, received = false): Promise<Partial<BookingEmailData>> {
+  try {
   if (!bookingId) return payment ? { money: { paymentCents: payment.amount_cents, currency: payment.currency } } : {};
   const { data: booking, error } = await db.from("bookings").select("activity, preferred_date, number_of_people, name, email, phone, discount_percent, discount_cents").eq("id", bookingId).maybeSingle();
   if (error || !booking) return payment ? { money: { paymentCents: payment.amount_cents, currency: payment.currency } } : {};
@@ -21,4 +22,8 @@ export async function readBookingEmailContext(db: any, bookingId: string | null,
     money.totalCents = Math.max(0, money.totalCents - discount);
   }
   return { ...context, money };
+  } catch {
+    // Read enrichment is optional; keep the already-validated payment amount if a read is unavailable.
+    return payment ? { money: { paymentCents: payment.amount_cents, currency: payment.currency } } : {};
+  }
 }
