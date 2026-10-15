@@ -1,16 +1,15 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { CookieConsentProvider } from "./context/CookieConsentContext";
 import { CookieBanner } from "./components/CookieBanner";
 import { CookiePreferencesModal } from "./components/CookiePreferencesModal";
 import { AnalyticsLoader } from "./components/AnalyticsLoader";
-import { supabase } from "@/integrations/supabase/client";
-import { clearAuthNext, readAuthNext } from "@/lib/authReturn";
+import { AuthRedirectHandler } from "@/components/auth/AuthRedirectHandler";
 import Index from "./pages/Index";
 import Actividades from "./pages/Actividades";
 import Calendario from "./pages/Calendario";
@@ -49,45 +48,6 @@ function ScrollToTopOnRouteChange() {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname, hash]);
   return null;
-}
-
-// Tras volver de Google, la sesión llega a la raíz; si había un destino
-// guardado (p. ej. /admin), redirige una vez confirmada la sesión.
-export function AuthRedirectHandler({ children }: { children: ReactNode }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [checking, setChecking] = useState(() => location.pathname === "/" && Boolean(readAuthNext()));
-  useEffect(() => {
-    if (location.pathname !== "/") { setChecking(false); return; }
-    const pending = readAuthNext();
-    if (!pending) return;
-    let active = true;
-    let completed = false;
-    const verify = async () => {
-      try {
-        const { data, error } = await supabase.auth.getUser();
-        if (active && !completed && data.user && !error) {
-          completed = true;
-          clearAuthNext();
-          navigate(pending, { replace: true });
-        } else if (active && !completed && !data.user) {
-          clearAuthNext();
-          navigate(`/login?next=${encodeURIComponent(pending)}`, { replace: true });
-        }
-      } catch {
-        if (active) { clearAuthNext(); navigate(`/login?next=${encodeURIComponent(pending)}`, { replace: true }); }
-      } finally {
-        if (active) setChecking(false);
-      }
-    };
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) setTimeout(() => { if (active) void verify(); }, 0);
-    });
-    void verify();
-    return () => { active = false; sub.subscription.unsubscribe(); };
-  }, [location.pathname, navigate]);
-  if (checking) return <main className="flex min-h-dvh items-center justify-center bg-background text-muted-foreground" aria-busy="true"><p role="status">Comprobando acceso…</p></main>;
-  return <>{children}</>;
 }
 
 const App = () => (

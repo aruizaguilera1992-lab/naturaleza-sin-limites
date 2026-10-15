@@ -5,6 +5,7 @@ describe("safeNext", () => {
   it.each(["/", "/admin", "/calendario", "/pago/example?status=ok", "/.lovable/oauth/consent?authorization_id=example", "/actividades/escalada/example#datos"])("preserves internal %s", path => expect(safeNext(path)).toBe(path));
   it.each(["//evil.test", "/\\evil.test", "\\evil.test", "https://evil.test", "javascript:alert(1)", "/%5cevil.test", "/%2fevil.test", "/%252fevil.test", "%2f%2fevil.test", "/%0a/evil.test", "/%00evil", "/%E0%A4%A", "/login", "/login?next=/admin", "/%6cogin", "/%255clogin", "/ /evil.test"])("rejects unsafe or looping %s", path => expect(safeNext(path)).toBe("/"));
   it("handles null and custom fallback", () => { expect(safeNext(null)).toBe("/"); expect(safeNext("//evil", "")).toBe(""); });
+  it.each(["/foo/../login", "/foo/%2e%2e/login", "/foo/..//evil.test"])("rejects normalized bypass %s", path => expect(safeNext(path)).toBe("/"));
 });
 describe("return storage and callback", () => {
   it("stores validated destination then clears it", () => {

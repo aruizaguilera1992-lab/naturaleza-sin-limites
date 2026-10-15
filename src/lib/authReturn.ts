@@ -5,7 +5,10 @@ export function safeNext(raw: string | null | undefined, fallback = "/"): string
   for (let i = 0; i < 8; i++) {
     if (!decoded.startsWith("/") || decoded.startsWith("//") || /[\\\u0000-\u0020\u007f]/.test(decoded)) return fallback;
     const pathname = decoded.split(/[?#]/, 1)[0];
-    if (/^\/login\/?$/i.test(pathname)) return fallback;
+    try {
+      const normalized = new URL(pathname, "https://internal.invalid").pathname;
+      if (normalized.startsWith("//") || /^\/login\/?$/i.test(normalized)) return fallback;
+    } catch { return fallback; }
     try {
       const next = decodeURIComponent(decoded);
       if (next === decoded) return raw;
