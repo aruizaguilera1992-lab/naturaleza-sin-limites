@@ -180,3 +180,4 @@
 - [x] Remitente real ya en uso: `reservas@naturalezasinlimites.es`, con respuesta a `naturaleza.s.limites@gmail.com`
 - [x] Envío de prueba enviado y entregado con el nuevo canal
 - [x] El backend envía ahora a través del gateway de la conexión (antes llamaba a la API de Resend de forma directa)
+- [x] Detalle de reserva en pantalla principal de /admin (lista + detalle, sin panel lateral) con descuento aplicado que recalcula total, senal y saldo
