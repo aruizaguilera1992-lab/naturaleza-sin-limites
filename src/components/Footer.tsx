@@ -213,7 +213,7 @@ export function Footer() {
               <button onClick={openPreferences} className="hover:text-primary transition-colors">
                 Configurar cookies
               </button>
-              <Link to="/login?next=/admin" className="inline-flex min-h-11 items-center gap-2 rounded-md px-1 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <Link to="/login?next=/admin" aria-label="Acceso a gestión" className="inline-flex min-h-11 items-center gap-2 rounded-md px-1 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <LockKeyhole aria-hidden="true" className="h-4 w-4" />
               </Link>
             </div>
