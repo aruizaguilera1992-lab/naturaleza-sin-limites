@@ -41,6 +41,16 @@ import {
   AlertTriangle,
   Repeat,
 } from "lucide-react";
+import {
+  ACTIVITY_TZ,
+  buildSlots,
+  computeFinance,
+  findCoincidences,
+  slotForBooking,
+  suggestedDepositCents,
+  type Coincidence,
+} from "@/lib/adminBooking";
+import { DEPOSIT_RATE } from "@/lib/deposit";
 import { BusinessSettingsPanel } from "@/components/admin/BusinessSettingsPanel";
 import { PlanOrdersPanel } from "@/components/admin/PlanOrdersPanel";
 
@@ -104,6 +114,7 @@ type PaymentRequest = {
   payment_reference: string | null;
   created_at: string;
   kind?: string;
+  total_cents?: number | null;
 };
 
 type Booking = {
@@ -122,6 +133,8 @@ type Booking = {
   paid_at: string | null;
   payment_reference: string | null;
   event_id: string | null;
+  email?: string | null;
+  phone?: string | null;
 };
 
 type Contact = {
@@ -150,13 +163,16 @@ type PaymentPanelProps = {
   target: "booking" | "contact";
   id: string;
   defaultConcept: string;
+  /** Pre-filled amount in euros; the admin can edit it before generating the link. */
+  defaultAmount?: string;
+  amountHint?: string;
   payments: PaymentRequest[];
   onCreated: () => void;
 };
 
-function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: PaymentPanelProps) {
+function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, payments, onCreated }: PaymentPanelProps) {
   const { toast } = useToast();
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(defaultAmount ?? "");
   const [concept, setConcept] = useState(defaultConcept);
   const [creating, setCreating] = useState(false);
 
@@ -259,6 +275,7 @@ function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: Payme
         </div>
       )}
 
+      {amountHint && <p className="mt-2 text-xs text-muted-foreground">{amountHint}</p>}
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <Input
           value={amount}
@@ -286,6 +303,16 @@ function PaymentPanel({ target, id, defaultConcept, payments, onCreated }: Payme
     </div>
   );
 }
+
+type EventRow = {
+  id: string;
+  title: string;
+  starts_at: string;
+  ends_at: string | null;
+  status: string;
+  guide_name: string | null;
+  price_cents: number | null;
+};
 
 type NotificationRow = {
   id: string;
@@ -342,6 +369,7 @@ function StatusBadge({ status }: { status: string }) {
 
 const formatDateTime = (value: string) =>
   new Date(value).toLocaleString("es-ES", {
+    timeZone: ACTIVITY_TZ,
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -385,7 +413,7 @@ export default function Admin() {
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [eventsById, setEventsById] = useState<
-    Record<string, { id: string; title: string; starts_at: string }>
+    Record<string, EventRow>
   >({});
 
   const loadData = useCallback(async () => {
@@ -405,13 +433,15 @@ export default function Admin() {
     if (p.data) setPayments(p.data as PaymentRequest[]);
     if (n.data) setNotifications(n.data as NotificationRow[]);
     const ids = [...new Set((b.data ?? []).map((r) => r.event_id).filter(Boolean))] as string[];
-    if (ids.length) {
-      const { data: ev } = await supabase
-        .from("activity_events")
-        .select("id, title, starts_at")
-        .in("id", ids);
-      setEventsById(Object.fromEntries((ev ?? []).map((e) => [e.id, e])));
-    }
+    const cols = "id, title, starts_at, ends_at, status, guide_name, price_cents";
+    const since = new Date(Date.now() - 2 * 86400000).toISOString();
+    const [linked, upcoming] = await Promise.all([
+      ids.length ? supabase.from("activity_events").select(cols).in("id", ids) : Promise.resolve({ data: [] as EventRow[] }),
+      supabase.from("activity_events").select(cols).gte("starts_at", since),
+    ]);
+    setEventsById(
+      Object.fromEntries([...(linked.data ?? []), ...(upcoming.data ?? [])].map((e) => [e.id, e as EventRow])),
+    );
   }, []);
 
   const refresh = async () => {
@@ -634,6 +664,15 @@ export default function Admin() {
     b.event_id && eventsById[b.event_id]
       ? formatDateTime(eventsById[b.event_id].starts_at)
       : formatPreferred(b.preferred_date);
+
+  const slots = buildSlots(Object.values(eventsById), bookings);
+  const coincidencesFor = (b: Booking): Coincidence[] =>
+    b.status === "cancelada" ? [] : findCoincidences(slotForBooking(b, slots), slots);
+  const coincidenceCount = Object.fromEntries(bookings.map((b) => [b.id, coincidencesFor(b).length]));
+  const cdot = (b: Booking) =>
+    coincidenceCount[b.id] ? (
+      <AlertTriangle className="ml-1.5 inline h-3.5 w-3.5 text-primary" aria-label="Posible coincidencia con otra actividad" />
+    ) : null;
 
   const toolbar = (total: number, shown: number, placeholder: string) => (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -899,7 +938,7 @@ export default function Admin() {
                             aria-label={`Abrir reserva de ${b.name || b.contact}: ${b.activity}`}
                             className={rowClass}
                           >
-                            <td className="max-w-[260px] truncate px-4 py-3 font-medium text-foreground">{b.activity}</td>
+                            <td className="max-w-[260px] truncate px-4 py-3 font-medium text-foreground">{b.activity}{cdot(b)}</td>
                             <td className="max-w-[220px] px-4 py-3">
                               <span className="block truncate text-foreground">{b.name || b.contact}</span>
                               {b.name && <span className="block truncate text-xs text-muted-foreground">{b.contact}</span>}
@@ -921,7 +960,7 @@ export default function Admin() {
                           className="w-full rounded-xl border border-border bg-card p-4 text-left transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <span className="flex items-start justify-between gap-2">
-                            <span className="font-medium text-foreground">{b.activity}</span>
+                            <span className="font-medium text-foreground">{b.activity}{cdot(b)}</span>
                             <StatusBadge status={b.status} />
                           </span>
                           <span className="mt-1 block truncate text-sm text-muted-foreground">{b.name || b.contact}</span>
@@ -1021,25 +1060,116 @@ export default function Admin() {
                     <span>Recibida el {formatDate(b.created_at)}</span>
                   </SheetDescription>
                 </SheetHeader>
-                <dl className="mt-6 grid grid-cols-2 gap-4">
-                  <Field label="Cliente" value={b.name} />
-                  <Field label="Contacto" value={b.contact} />
-                  <Field label="Fecha" value={bookingDate(b)} />
-                  <Field label="Participantes" value={b.number_of_people} />
-                  <Field label="Nivel" value={b.experience_level} />
-                  <Field label="Pagado" value={b.paid_amount_cents ? formatAmount(b.paid_amount_cents) : null} />
-                </dl>
-                {b.event_id && (
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/40 bg-primary/5 px-3 py-2 text-sm">
-                    <span className="flex items-center gap-2 text-foreground">
-                      <CalendarDays className="h-4 w-4 text-primary" aria-hidden="true" />
-                      {ev ? `${ev.title} · ${formatDateTime(ev.starts_at)}` : "Salida programada"}
-                    </span>
-                    <Button size="sm" variant="outline" className="min-h-11" onClick={() => { setSelectedId(null); setTab("events"); }}>
-                      Ver salida
-                    </Button>
-                  </div>
-                )}
+                <section aria-label="Datos principales" className="mt-5 rounded-xl border border-border bg-background/60 p-4">
+                  <dl className="grid grid-cols-2 gap-4">
+                    <Field label={ev ? "Fecha y hora" : "Fecha"} value={bookingDate(b)} />
+                    <Field label="Participantes" value={b.number_of_people} />
+                    <Field label="Cliente" value={b.name} />
+                    <Field label="Email" value={b.email || b.contact} />
+                    <Field label="Teléfono" value={b.phone ? <a className="text-primary underline-offset-2 hover:underline" href={`tel:${b.phone.replace(/\s/g, "")}`}>{b.phone}</a> : null} />
+                    <Field label="Nivel" value={b.experience_level} />
+                  </dl>
+                  {b.event_id && (
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-sm">
+                      <span className="flex items-center gap-2 text-foreground">
+                        <CalendarDays className="h-4 w-4 text-primary" aria-hidden="true" />
+                        {ev ? `Salida programada${ev.guide_name ? ` · Guía: ${ev.guide_name}` : ""}` : "Salida programada"}
+                      </span>
+                      <Button size="sm" variant="outline" className="min-h-11" onClick={() => { setSelectedId(null); setTab("events"); }}>
+                        Ver en calendario
+                      </Button>
+                    </div>
+                  )}
+                </section>
+
+                {(() => {
+                  const f = computeFinance({
+                    bookingId: b.id,
+                    participantsRaw: b.number_of_people,
+                    activity: b.activity,
+                    eventPriceCents: ev?.price_cents ?? null,
+                    payments,
+                  });
+                  const pct = Math.round(DEPOSIT_RATE * 100);
+                  const row = (label: string, value: React.ReactNode, strong = false) => (
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-muted-foreground">{label}</dt>
+                      <dd className={strong ? "font-heading font-bold text-foreground" : "text-foreground"}>{value}</dd>
+                    </div>
+                  );
+                  return (
+                    <section aria-labelledby="fin-title" className="mt-4 rounded-xl border border-border bg-background/60 p-4">
+                      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                        <h3 id="fin-title" className="font-heading font-semibold text-foreground">Resumen económico</h3>
+                        {f.estimated && (
+                          <span className="rounded-full border border-primary/50 px-2 py-0.5 text-xs text-primary">Estimado con tarifa actual · pendiente de confirmar</span>
+                        )}
+                        {f.source === "senal" && <span className="text-xs text-muted-foreground">Importes pactados en la reserva</span>}
+                        {f.source === "salida" && <span className="text-xs text-muted-foreground">Precio de la salida</span>}
+                      </div>
+                      {f.totalCents === null ? (
+                        <p className="text-sm text-foreground">
+                          Precio a confirmar{!f.participants ? " (faltan participantes)" : ""}.
+                          {f.paidCents > 0 && <> Pagado: <strong>{formatAmount(f.paidCents)}</strong>.</>}
+                        </p>
+                      ) : (
+                        <dl className="space-y-1.5 text-sm">
+                          {f.unitCents !== null && f.participants
+                            ? row("Tarifa", `${formatAmount(f.unitCents)} × ${f.participants} pers.`)
+                            : null}
+                          {row("Total actividad", formatAmount(f.totalCents), true)}
+                          {row(`Señal (${pct} %, incluida en el total)`, f.depositCents !== null ? formatAmount(f.depositCents) : "—")}
+                          {row("Pagado", formatAmount(f.paidCents))}
+                          <div className="border-t border-border pt-1.5">{row("Saldo pendiente", formatAmount(f.balanceCents ?? 0), true)}</div>
+                        </dl>
+                      )}
+                    </section>
+                  );
+                })()}
+
+                {(() => {
+                  const list = coincidencesFor(b);
+                  if (!list.length) return null;
+                  return (
+                    <section role="note" aria-labelledby="coin-title" className="mt-4 rounded-xl border border-primary/50 bg-primary/10 p-4 text-sm">
+                      <h3 id="coin-title" className="flex items-center gap-2 font-heading font-semibold text-foreground">
+                        <AlertTriangle className="h-4 w-4 text-primary" aria-hidden="true" /> Posible coincidencia
+                      </h3>
+                      <ul className="mt-2 space-y-2">
+                        {list.map((c) => {
+                          const msg = c.sameGuide
+                            ? "Mismo guía en horario solapado: incompatibilidad a resolver."
+                            : c.level === "solape"
+                              ? c.otherGuide
+                                ? "Horarios solapados con otro guía asignado: revisa recursos."
+                                : "Horarios solapados: revisa guía y material."
+                              : "Otra actividad el mismo día: revisa horarios.";
+                          return (
+                            <li key={c.slot.key} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-background/60 px-3 py-2">
+                              <span className="min-w-0">
+                                <span className="block font-medium text-foreground">{c.slot.label}</span>
+                                <span className="block text-muted-foreground">
+                                  {c.slot.startIso ? formatDateTime(c.slot.startIso) : formatPreferred(c.slot.day)} · {msg}
+                                </span>
+                              </span>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="min-h-11"
+                                onClick={() => {
+                                  if (c.slot.kind === "booking") setSelectedId(c.slot.refId);
+                                  else { setSelectedId(null); setTab("events"); }
+                                }}
+                              >
+                                {c.slot.kind === "booking" ? "Ver reserva" : "Ver en calendario"}
+                              </Button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </section>
+                  );
+                })()}
                 {!b.event_id &&
                   payments.some((p) => p.booking_id === b.id && p.kind === "senal" && p.status === "pendiente") && (
                     <p role="note" className="mt-4 flex gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-foreground">
@@ -1048,8 +1178,8 @@ export default function Admin() {
                     </p>
                   )}
                 {b.message && (
-                  <div className="mt-4">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Comentarios</p>
+                  <div className="mt-5">
+                    <p className="text-sm text-muted-foreground">Comentarios del cliente</p>
                     <p className="mt-1 whitespace-pre-line rounded-lg bg-background/60 p-3 text-sm text-foreground">{b.message}</p>
                   </div>
                 )}
@@ -1059,7 +1189,21 @@ export default function Admin() {
                   key={`pay-${b.id}`}
                   target="booking"
                   id={b.id}
-                  defaultConcept={`Reserva ${b.activity}`}
+                  {...(() => {
+                    const f = computeFinance({ bookingId: b.id, participantsRaw: b.number_of_people, activity: b.activity, eventPriceCents: ev?.price_cents ?? null, payments });
+                    const sug = suggestedDepositCents(f);
+                    const pct = Math.round(DEPOSIT_RATE * 100);
+                    if (sug === null)
+                      return {
+                        defaultConcept: `Reserva ${b.activity}`,
+                        amountHint: f.depositPaid ? "La señal ya está pagada: no se propone otra." : f.depositPending ? "Ya hay una señal pendiente de pago." : undefined,
+                      };
+                    return {
+                      defaultConcept: `Señal ${pct}% · ${b.activity} · ${f.participants} pax`,
+                      defaultAmount: (sug / 100).toFixed(2).replace(".", ","),
+                      amountHint: `Importe propuesto: señal del ${pct} %${f.estimated ? " con tarifa actual (estimado)" : ""}. Revísalo antes de generar el enlace.`,
+                    };
+                  })()}
                   payments={payments.filter((p) => p.booking_id === b.id)}
                   onCreated={loadData}
                 />
