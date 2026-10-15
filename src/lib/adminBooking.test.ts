@@ -39,6 +39,23 @@ describe("computeFinance", () => {
   });
 });
 
+describe("cobros manuales", () => {
+  it("no infiere el total de un cobro manual ni de una señal que no es el 30 %", () => {
+    const f = computeFinance({
+      ...base,
+      participantsRaw: "2",
+      catalogPrice: null,
+      payments: [
+        { booking_id: "b1", amount_cents: 5000, status: "pagado", kind: "manual", total_cents: null },
+        { booking_id: "b1", amount_cents: 1000, status: "pendiente", kind: "senal", total_cents: 7000 },
+      ] as never,
+    });
+    expect(f.source).toBe("ninguna");
+    expect(f.totalCents).toBeNull();
+    expect(f.paidCents).toBe(5000);
+  });
+});
+
 describe("coincidencias", () => {
   const events = [
     { id: "e1", title: "Ferrata", starts_at: "2026-10-23T07:00:00Z", ends_at: "2026-10-23T11:00:00Z", status: "publicada", guide_name: "Antonio" },
