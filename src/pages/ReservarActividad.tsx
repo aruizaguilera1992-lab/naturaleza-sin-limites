@@ -501,7 +501,7 @@ export default function ReservarActividad() {
           onClick={submit}
         >
           {submitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-          {isEventBooking ? `Pagar señal de ${euros(deposit)}` : "Solicitar disponibilidad sin pago"}
+          {isEventBooking ? `Pagar señal de ${euros(deposit)}` : "SOLICITAR DISPONIBILIDAD "}
         </Button>
       </div>
     </div>,
