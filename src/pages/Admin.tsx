@@ -989,12 +989,12 @@ export default function Admin() {
   })();
 
   return (
-    <div className="min-h-dvh bg-background md:flex">
+    <div className="min-h-dvh bg-background lg:flex">
       <Helmet>
         <title>Panel de gestión | Naturaleza Sin Límites</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <aside className="hidden md:sticky md:top-0 md:flex md:h-dvh md:w-60 md:shrink-0 md:flex-col border-r border-border bg-card">
+      <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-60 lg:shrink-0 lg:flex-col border-r border-border bg-card">
         <div className="flex items-center gap-2 px-5 py-6 font-heading font-bold text-foreground">
           <Mountain className="h-5 w-5 text-primary" aria-hidden="true" /> Gestión NSL
         </div>
@@ -1006,7 +1006,7 @@ export default function Admin() {
         </div>
       </aside>
 
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card px-4 py-2 md:hidden">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-card px-4 py-2 lg:hidden">
         <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="min-h-11 min-w-11" aria-label="Abrir menú del panel">
@@ -1037,7 +1037,7 @@ export default function Admin() {
             <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{current.label}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{current.subtitle}</p>
           </div>
-          <Button variant="outline" onClick={refresh} disabled={refreshing} className="hidden min-h-11 gap-2 md:inline-flex">
+          <Button variant="outline" onClick={refresh} disabled={refreshing} className="hidden min-h-11 gap-2 lg:inline-flex">
             <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} aria-hidden="true" /> Actualizar
           </Button>
         </div>
