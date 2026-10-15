@@ -1,5 +1,9 @@
 # Roadmap
 
+## Aclaración comercial de correos (15/10/2026)
+- [ ] Distinguir señales administrativas confirmadas de solicitudes y pagos genéricos con evidencia fiable
+- [ ] Actualizar economía/resto, pruebas y muestras ficticias; revisar escritorio/móvil sin envíos ni despliegue
+
 ## Acceso a gestión (15/10/2026)
 - [x] Rediseñar login, entrada en footer y estados sin acceso del panel
 - [x] Probar destinos seguros, retorno, errores/cancelación y vistas móvil/escritorio sin OAuth real
