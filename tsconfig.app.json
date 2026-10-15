@@ -19,6 +19,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "zod": [
+        "./node_modules/.deno/@lovable.dev+mcp-js@0.26.3/node_modules/zod"
       ]
     },
     "skipLibCheck": true,
