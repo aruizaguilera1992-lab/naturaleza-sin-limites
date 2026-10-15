@@ -322,17 +322,6 @@ export default function ReservarActividad() {
             </div>
             <div className="flex justify-between gap-4 text-muted-foreground"><dt>Saldo el día de la actividad</dt><dd>{euros(total - deposit)}</dd></div>
           </dl>
-        ) : (
-          <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
-            <div>
-              <dt className="text-sm font-semibold uppercase text-muted-foreground">Pagas ahora</dt>
-              <dd className="mt-1 font-heading text-[2.75rem] font-extrabold leading-none text-primary sm:text-5xl">0 €</dd>
-            </div>
-            <div className="flex justify-between gap-4 text-muted-foreground">
-              <dt>Precio estimado</dt>
-              <dd>{euros(total)} <span className="text-xs">(pendiente de confirmar)</span></dd>
-            </div>
-          </dl>
         )}
       </header>
 
