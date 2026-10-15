@@ -44,6 +44,7 @@ import {
 import {
   ACTIVITY_TZ,
   buildSlots,
+  clampDiscountPercent,
   computeFinance,
   findCoincidences,
   slotForBooking,
