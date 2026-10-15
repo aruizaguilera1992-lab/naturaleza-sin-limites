@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { depositConfirmationOption, paymentLinkBody, type DepositConfirmationOption } from "@/lib/depositConfirmation";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -234,13 +235,17 @@ type PaymentPanelProps = {
   amountHint?: string;
   payments: PaymentRequest[];
   onCreated: () => void;
+  /** Explicit "confirm activity + deposit" option (manual bookings only). */
+  depositConfirmation?: DepositConfirmationOption;
 };
 
-function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, payments, onCreated }: PaymentPanelProps) {
+function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, payments, onCreated, depositConfirmation }: PaymentPanelProps) {
   const { toast } = useToast();
   const [amount, setAmount] = useState(defaultAmount ?? "");
   const [concept, setConcept] = useState(defaultConcept);
   const [creating, setCreating] = useState(false);
+  const [confirmDeposit, setConfirmDeposit] = useState(Boolean(depositConfirmation?.available && depositConfirmation.preselected));
+  const explicitDeposit = target === "booking" && Boolean(depositConfirmation?.available) && confirmDeposit;
 
   const create = async (withEmail: boolean) => {
     const value = Number(amount.replace(",", "."));
@@ -250,7 +255,7 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
     }
     setCreating(true);
     const { data, error } = await supabase.functions.invoke("create-payment-link", {
-      body: {
+      body: paymentLinkBody({
         target,
         id,
         amountCents: Math.round(value * 100),
@@ -258,7 +263,8 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
         environment: getStripeEnvironment(),
         sendEmail: withEmail,
         baseUrl: window.location.origin,
-      },
+        confirmDeposit: explicitDeposit,
+      }),
     });
     setCreating(false);
     if (error || !data?.url) {
@@ -278,7 +284,7 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
       });
     } else {
       toast({
-        title: withEmail ? "Enlace enviado por email" : "Enlace creado y copiado",
+        title: withEmail ? (explicitDeposit ? "Actividad confirmada y señal enviada" : "Enlace enviado por email") : "Enlace creado y copiado",
         description: data.url,
       });
     }
@@ -358,14 +364,32 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
           placeholder="Concepto"
           className="h-11 min-w-[180px] flex-1 text-foreground"
         />
-        <Button variant="outline" className="min-h-11 gap-2" disabled={creating} onClick={() => create(false)}>
+        <Button variant="outline" className="min-h-11 gap-2" disabled={creating || explicitDeposit} onClick={() => create(false)}>
           {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
           Generar enlace
         </Button>
         <Button className="min-h-11 gap-2" disabled={creating} onClick={() => create(true)}>
-          <Mail className="h-4 w-4" /> Enviar por email
+          <Mail className="h-4 w-4" /> {explicitDeposit ? "Confirmar actividad y enviar señal" : "Enviar por email"}
         </Button>
       </div>
+      {target === "booking" && depositConfirmation && (
+        depositConfirmation.available ? (
+          <label className="mt-3 flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-border bg-background/60 px-3 py-2 text-sm text-foreground">
+            <input
+              type="checkbox"
+              className="mt-1 h-4 w-4 accent-primary"
+              checked={confirmDeposit}
+              onChange={(e) => setConfirmDeposit(e.target.checked)}
+            />
+            <span>
+              <span className="font-medium">Confirmar actividad y enviar señal</span>
+              <span className="block text-xs text-muted-foreground">El email dirá que la actividad y la fecha están confirmadas y que este importe es la señal. Desmárcalo para saldos u otros cobros.</span>
+            </span>
+          </label>
+        ) : (
+          depositConfirmation.reason && <p className="mt-2 text-xs text-muted-foreground">Confirmación de actividad no disponible: {depositConfirmation.reason}</p>
+        )
+      )}
     </div>
   );
 }
@@ -1020,6 +1044,7 @@ export default function Admin() {
             };
           })()}
           payments={payments.filter((p) => p.booking_id === b.id)}
+          depositConfirmation={depositConfirmationOption(b, payments.filter((p) => p.booking_id === b.id), suggestedDepositCents(fin) !== null)}
           onCreated={loadData}
         />
       </section>
