@@ -70,6 +70,9 @@ export function AuthRedirectHandler({ children }: { children: ReactNode }) {
           completed = true;
           clearAuthNext();
           navigate(pending, { replace: true });
+        } else if (active && !completed && !data.user) {
+          clearAuthNext();
+          navigate(`/login?next=${encodeURIComponent(pending)}`, { replace: true });
         }
       } catch {
         if (active) { clearAuthNext(); navigate(`/login?next=${encodeURIComponent(pending)}`, { replace: true }); }
