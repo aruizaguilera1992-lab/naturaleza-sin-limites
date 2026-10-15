@@ -2,10 +2,10 @@ import { DEPOSIT_RATE } from "./activityPrices.ts";
 import { reliableEmailMoney, type BookingEmailData } from "./bookingEmail.ts";
 
 // Read-only presentation enrichment. Missing sources omit economics, never block or alter payment processing.
-export async function readBookingEmailContext(db: any, bookingId: string | null, payment?: { id: string; amount_cents: number; currency?: string }, received = false): Promise<Partial<BookingEmailData>> {
+export async function readBookingEmailContext(db: any, bookingId: string | null, payment?: { id: string; amount_cents: number; currency?: string }, received = false, adminSignalEmail = false): Promise<Partial<BookingEmailData>> {
   try {
   if (!bookingId) return payment ? { money: { paymentCents: payment.amount_cents, currency: payment.currency } } : {};
-  const { data: booking, error } = await db.from("bookings").select("activity, preferred_date, number_of_people, name, email, phone, discount_percent, discount_cents").eq("id", bookingId).maybeSingle();
+  const { data: booking, error } = await db.from("bookings").select("activity, preferred_date, number_of_people, name, email, phone, discount_percent, discount_cents, status").eq("id", bookingId).maybeSingle();
   if (error || !booking) return payment ? { money: { paymentCents: payment.amount_cents, currency: payment.currency } } : {};
   const { data: link } = await db.from("activity_event_bookings").select("event_id").eq("booking_id", bookingId).maybeSingle();
   const { data: event } = link?.event_id ? await db.from("activity_events").select("starts_at, price_cents").eq("id", link.event_id).maybeSingle() : { data: null };
@@ -15,6 +15,19 @@ export async function readBookingEmailContext(db: any, bookingId: string | null,
   if (paymentError || !rows) return { ...context, money: { paymentCents: payment.amount_cents, currency: payment.currency } };
   // Snapshot for the atomic notification intent: this event's validated payment is included exactly once.
   const payments = rows.map((p: any) => received && p.id === payment.id ? { ...p, status: "pagado" } : p);
+  const current = rows.find((p: any) => p.id === payment.id);
+  context.paymentKind = current?.kind;
+  if (!context.scheduled && current?.kind === "senal" && booking.status !== "cancelada") {
+    if (adminSignalEmail) context.manualConfirmation = true;
+    else {
+      // Only an accepted admin email for THIS signal is evidence. Payload stores rendered
+      // HTML/text, not semantic variant/state; booking.status is also set by generic payments.
+      const { data: sent, error: sentError } = await db.from("notification_log")
+        .select("id").eq("payment_request_id", payment.id).eq("booking_id", bookingId)
+        .eq("kind", "enlace_pago").eq("status", "enviado").limit(1);
+      context.manualConfirmation = !sentError && Boolean(sent?.length);
+    }
+  }
   const money = reliableEmailMoney(payments, payment, DEPOSIT_RATE, event?.price_cents, Number(booking.number_of_people));
   if (money.totalCents != null) {
     const percent = Math.min(100, Math.max(0, Number(booking.discount_percent) || 0));
