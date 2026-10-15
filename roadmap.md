@@ -8,8 +8,8 @@
 
 ## Pendiente
 - [x] Rediseñar fichas individuales y añadir vídeos oficiales verificados al Blog (sin publicar)
-- [ ] Clave de Resend válida (los emails fallan: 'API key is invalid')
-- [ ] Verificar dominio remitente en Resend
+- [x] Clave de Resend válida (conexión conectada el 15/10/2026; envíos verificados)
+- [x] Dominio remitente verificado en Resend (naturalezasinlimites.es, los 3 registros en verde)
 - [ ] Activar pagos reales (modo actual: sandbox)
 
 ## Rediseño comercial visual (21/09/2026)
@@ -40,7 +40,7 @@
 - [x] Estado real de los correos (enviado / fallido / omitido) y registro de avisos con reintento desde el panel
 - [x] Formularios con nombre, email y teléfono separados; reservas de 1 a 6 personas y consulta para grupos mayores
 - [x] Newsletter y promesa de descuento ocultas (código conservado)
-- [ ] Clave de Resend válida + remitente verificado (pendiente del usuario)
+- [x] Clave de Resend válida + remitente verificado (comprobado el 15/10/2026: correo de prueba entregado)
 
 ## Fotografías de fichas
 - [x] Fotos reales individuales y metadatos para las 68 actividades publicadas
@@ -89,7 +89,7 @@
 - Para pasar a producción falta: completar la verificación de la cuenta de pagos
   (go-live), que genera STRIPE_LIVE_API_KEY, PAYMENTS_LIVE_WEBHOOK_SECRET y el token
   público live. No requiere cambios de código: el entorno se deriva del prefijo del token.
-- También pendiente: clave de Resend válida y remitente verificado para los correos.
+- Correos: remitente verificado y envíos comprobados el 15/10/2026.
 
 ## Calendario real de salidas (fases 1-5)
 - [x] Fase 1: tablas `activity_events` y `activity_event_bookings`, `event_id` en reservas, permisos y RLS
