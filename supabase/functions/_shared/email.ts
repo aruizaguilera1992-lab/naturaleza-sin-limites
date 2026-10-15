@@ -26,7 +26,7 @@ export interface EmailResult {
   error?: string;
 }
 
-/** Sends an email through Resend. Returns the real provider outcome. */
+/** Sends an email through Resend via the Lovable connector gateway. Returns the real provider outcome. */
 export async function sendEmail(
   to: string[],
   subject: string,
@@ -34,19 +34,22 @@ export async function sendEmail(
   idempotencyKey?: string,
 ): Promise<EmailResult> {
   const apiKey = Deno.env.get("RESEND_API_KEY");
+  const gatewayKey = Deno.env.get("LOVABLE_API_KEY");
   const from = Deno.env.get("NOTIFICATION_FROM") ?? "onboarding@resend.dev";
   const replyToRaw = (Deno.env.get("NOTIFICATION_REPLY_TO") ?? "").trim();
   const replyTo = isEmail(replyToRaw) ? replyToRaw : "";
   const recipients = to.map((t) => t.trim()).filter((t) => isEmail(t));
 
   if (!apiKey) return { status: "omitido", error: "RESEND_API_KEY no configurada" };
+  if (!gatewayKey) return { status: "omitido", error: "LOVABLE_API_KEY no configurada" };
   if (recipients.length === 0) return { status: "omitido", error: "Sin destinatarios válidos" };
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${gatewayKey}`,
+        "X-Connection-Api-Key": apiKey,
         "Content-Type": "application/json",
         // Stable key: the provider de-duplicates retries of the same intent.
         ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey.slice(0, 256) } : {}),
