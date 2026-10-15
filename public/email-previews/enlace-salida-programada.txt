@@ -30,6 +30,10 @@ Saldo pendiente: 180,00 €
 
 Pagar la señal: https://naturalezasinlimites.es/pago/ejemplo-ficticio-no-valido
 
+Pago del importe restante
+
+El importe restante puedes abonarlo por Bizum, en efectivo o mediante pago web. Para coordinar el pago o solicitar un enlace web, responde a este correo o contacta con nosotros por WhatsApp.
+
 Las plazas están bloqueadas 30 minutos para iniciar el pago. Al iniciarlo, el bloqueo se mantiene durante el plazo de pago; si no se completa, las plazas se liberan.
 
 Entorno de pruebas · no es un cobro real.
