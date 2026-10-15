@@ -78,7 +78,7 @@ export default function Login() {
         <meta name="description" content="Acceso con Google a Naturaleza Sin Límites." />
         <meta name="robots" content="noindex" />
       </Helmet>
-      <AccessLayout onLeave={() => { cancelled.current = true; attempt.current++; clearAuthNext(); }} title={management ? "Acceso a gestión" : connection ? "Conectar una aplicación" : "Acceso a tu cuenta"} description={management ? "Inicia sesión con tu cuenta de Google para acceder al panel de gestión" : connection ? "Inicia sesión con Google para revisar la solicitud de conexión de la aplicación." : "Inicia sesión con Google para continuar en Naturaleza Sin Límites."} busy={busy || checking}>
+      <AccessLayout onLeave={() => { cancelled.current = true; attempt.current++; clearAuthNext(); }} title={management ? "Acceso a gestión" : connection ? "Conectar una aplicación" : "Acceso a tu cuenta"} description={management ? "Inicia sesión\u00a0 para acceder al panel de gestión" : connection ? "Inicia sesión con Google para revisar la solicitud de conexión de la aplicación." : "Inicia sesión con Google para continuar en Naturaleza Sin Límites."} busy={busy || checking}>
         {error && <p ref={errorRef} tabIndex={-1} role="alert" className="mb-5 rounded-md border border-destructive bg-card p-4 text-sm leading-relaxed text-foreground focus:outline-none">{error}</p>}
         <Button
           type="button"
@@ -88,7 +88,7 @@ export default function Login() {
           className="w-full gap-3 rounded-md normal-case tracking-normal shadow-none transition-none hover:translate-y-0 active:scale-100"
         >
           {busy || checking ? <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin motion-reduce:animate-none" /> : <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-sm bg-foreground font-sans text-lg font-bold text-background">G</span>}
-          {checking ? "Comprobando sesión…" : busy ? "Conectando con Google…" : error ? "Reintentar con Google" : "Continuar con Google"}
+          {checking ? "Comprobando sesión…" : busy ? "Conectando con Google…" : error ? "Reintentar con Google" : "login"}
         </Button>
         {busy && <Button variant="ghost" onClick={cancel} className="mt-3 w-full normal-case tracking-normal">Cancelar y volver a la web</Button>}
       </AccessLayout>
