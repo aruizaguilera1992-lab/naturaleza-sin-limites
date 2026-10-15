@@ -108,14 +108,14 @@ Deno.serve(async (req) => {
         customer_email: customerEmail,
         environment: body.environment,
       })
-      .select("id, token, amount_cents, currency, concept, expires_at")
+      .select("id, token, amount_cents, currency, concept, expires_at, status")
       .single();
 
     if (error || !created) {
       console.error("Insert payment_request error", error);
       return json({ error: "No se pudo crear el cobro" }, 500);
     }
-    record = created as typeof created & { expires_at?: string; status?: string };
+    record = created;
   }
 
   const url = `${body.baseUrl.replace(/\/$/, "")}/pago/${record.token}`;

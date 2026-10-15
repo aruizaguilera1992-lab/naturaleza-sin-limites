@@ -32,7 +32,7 @@ export async function sendEmail(
   subject: string,
   html: string,
   idempotencyKey?: string,
-  text?: string,
+  plainText?: string,
 ): Promise<EmailResult> {
   const apiKey = Deno.env.get("RESEND_API_KEY");
   const gatewayKey = Deno.env.get("LOVABLE_API_KEY");
@@ -60,7 +60,7 @@ export async function sendEmail(
         to: recipients,
         subject,
         html,
-        text: text ?? htmlToPlainText(html),
+        text: plainText ?? htmlToPlainText(html),
         ...(replyTo ? { reply_to: [replyTo] } : {}),
       }),
     });

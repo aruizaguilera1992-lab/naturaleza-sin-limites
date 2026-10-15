@@ -1,4 +1,4 @@
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
 import {
   businessRecipients,
@@ -17,7 +17,7 @@ import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
 import { renderBookingEmail, type BookingEmailData } from "../_shared/bookingEmail.ts";
 import { readBookingEmailContext } from "../_shared/bookingEmailContext.ts";
 
-let _supabase: ReturnType<typeof createClient> | null = null;
+let _supabase: SupabaseClient<any> | null = null;
 function getSupabase() {
   if (!_supabase) {
     _supabase = createClient(
