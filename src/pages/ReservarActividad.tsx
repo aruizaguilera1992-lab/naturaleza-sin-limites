@@ -497,7 +497,7 @@ export default function ReservarActividad() {
 
         {error && <p role="alert" className="mt-4 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-foreground">{error}</p>}
 
-        <p className="mt-5 text-sm text-muted-foreground">Edad mínima: {activity.minimumAge} años.</p>
+        <p className="mt-5 text-sm text-muted-foreground">Edad mínima: {activity.minimumAge}.</p>
 
         {!isEventBooking && (
           <p id="request-submit-note" className="mt-4 flex items-start gap-2 rounded-md border border-primary/40 bg-primary/10 p-3 text-sm font-medium leading-6 text-foreground">
