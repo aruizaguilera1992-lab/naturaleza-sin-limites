@@ -288,8 +288,7 @@ export default function ReservarActividad() {
           {fromDateInput(form.date)?.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })} ({form.participants} participante(s)).
         </p>
         <p className="mb-7 max-w-md text-base leading-7 text-muted-foreground">
-          Todavía no es una reserva confirmada y no se ha cobrado nada. Antonio revisará la
-          disponibilidad y, si es posible, te enviará un enlace de pago.
+          Revisaremos la disponibilidad y te enviamos un enlace de pago para confirmar la reserva. ¡Muchas gracias!
         </p>
         <Button size="lg" asChild>
           <Link to={`/actividades/${category}/${slug}`}>Volver a la actividad</Link>
