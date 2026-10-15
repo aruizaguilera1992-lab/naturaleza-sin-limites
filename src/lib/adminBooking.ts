@@ -61,7 +61,14 @@ export function computeFinance(input: {
   const senales = own.filter((p) => p.kind === "senal");
   const depositPaid = senales.some((p) => p.status === "pagado");
   const depositPending = senales.some((p) => p.status === "pendiente");
-  const senalWithTotal = senales.find((p) => p.total_cents && p.total_cents > 0 && p.status !== "cancelado");
+  // Only trust a persisted total when the row is unambiguously an official-rate deposit of that total.
+  const senalWithTotal = senales.find(
+    (p) =>
+      !!p.total_cents &&
+      p.total_cents > 0 &&
+      p.status !== "cancelado" &&
+      p.amount_cents === depositFromTotal(p.total_cents),
+  );
 
   let source: PriceSource = "ninguna";
   let totalCents: number | null = null;
