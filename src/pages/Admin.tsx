@@ -99,7 +99,44 @@ function NotesField({ id, value, onSave }: NotesFieldProps) {
   );
 }
 
+function DiscountField({ id, value, onSave }: { id: string; value: number | null | undefined; onSave: (euros: string) => Promise<void> }) {
+  const current = value ? (value / 100).toFixed(2).replace(".", ",") : "";
+  const [text, setText] = useState(current);
+  const [saving, setSaving] = useState(false);
+  const dirty = text.trim() !== current;
 
+  return (
+    <div className="mt-4 border-t border-border pt-3">
+      <Label htmlFor={`discount-${id}`} className="text-sm text-muted-foreground">
+        Descuento (€)
+      </Label>
+      <div className="mt-1.5 flex items-center gap-2">
+        <Input
+          id={`discount-${id}`}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          inputMode="decimal"
+          placeholder="0,00"
+          className="h-11 w-28 text-foreground"
+        />
+        <Button
+          variant="outline"
+          className="min-h-11 gap-2"
+          disabled={!dirty || saving}
+          onClick={async () => {
+            setSaving(true);
+            await onSave(text);
+            setSaving(false);
+          }}
+        >
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          Guardar
+        </Button>
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">Se aplica sobre el total y recalcula la señal y el saldo. Pon 0 para quitarlo.</p>
+    </div>
+  );
+}
 
 type PaymentRequest = {
   id: string;
@@ -135,6 +172,7 @@ type Booking = {
   event_id: string | null;
   email?: string | null;
   phone?: string | null;
+  discount_cents?: number | null;
 };
 
 type Contact = {
@@ -525,6 +563,22 @@ export default function Admin() {
     toast({ title: "Estado actualizado" });
   };
 
+  const updateDiscount = async (id: string, euros: string) => {
+    const value = euros.trim() === "" ? 0 : Number(euros.replace(",", "."));
+    if (!Number.isFinite(value) || value < 0) {
+      toast({ title: "Descuento no válido", description: "Introduce un importe en euros (0 para quitarlo).", variant: "destructive" });
+      return;
+    }
+    const discount_cents = Math.round(value * 100);
+    const { error } = await supabase.from("bookings").update({ discount_cents }).eq("id", id);
+    if (error) {
+      toast({ title: "No se pudo guardar el descuento", description: error.message, variant: "destructive" });
+      return;
+    }
+    setBookings((prev) => prev.map((r) => (r.id === id ? { ...r, discount_cents } : r)));
+    toast({ title: discount_cents > 0 ? "Descuento aplicado" : "Descuento eliminado" });
+  };
+
   const updateNotes = async (
     table: "bookings" | "contact_submissions",
     id: string,
@@ -764,8 +818,175 @@ export default function Admin() {
       </div>
     );
 
-  const rowClass =
-    "cursor-pointer border-b border-border transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:bg-muted";
+  const bookingDetail = selectedBooking && (() => {
+    const b = selectedBooking;
+    const ev = b.event_id ? eventsById[b.event_id] : undefined;
+    const fin = computeFinance({
+      bookingId: b.id,
+      participantsRaw: b.number_of_people,
+      activity: b.activity,
+      eventPriceCents: ev?.price_cents ?? null,
+      payments,
+      discountCents: b.discount_cents ?? 0,
+    });
+    const pct = Math.round(DEPOSIT_RATE * 100);
+    const row = (label: string, value: React.ReactNode, strong = false) => (
+      <div className="flex justify-between gap-4">
+        <dt className="text-muted-foreground">{label}</dt>
+        <dd className={strong ? "font-heading font-bold text-foreground" : "text-foreground"}>{value}</dd>
+      </div>
+    );
+    return (
+      <section
+        aria-label={`Detalle de la reserva de ${b.name || b.contact}`}
+        className="self-start rounded-xl border border-border bg-card p-4 md:p-6"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-heading text-xl font-bold text-foreground">{b.activity}</h2>
+            <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              <StatusBadge status={b.status} />
+              <span>Recibida el {formatDate(b.created_at)}</span>
+            </p>
+          </div>
+          <Button variant="ghost" className="min-h-11 gap-2 lg:hidden" onClick={() => setSelectedId(null)}>
+            <ChevronRight className="h-4 w-4 rotate-180" aria-hidden="true" /> Volver a la lista
+          </Button>
+        </div>
+
+        <section aria-label="Datos principales" className="mt-5 rounded-xl border border-border bg-background/60 p-4">
+          <dl className="grid grid-cols-2 gap-4">
+            <Field label={ev ? "Fecha y hora" : "Fecha"} value={bookingDate(b)} />
+            <Field label="Participantes" value={b.number_of_people} />
+            <Field label="Cliente" value={b.name} />
+            <Field label="Email" value={b.email || b.contact} />
+            <Field label="Teléfono" value={b.phone ? <a className="text-primary underline-offset-2 hover:underline" href={`tel:${b.phone.replace(/\s/g, "")}`}>{b.phone}</a> : null} />
+            <Field label="Nivel" value={b.experience_level} />
+          </dl>
+          {b.event_id && (
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-sm">
+              <span className="flex items-center gap-2 text-foreground">
+                <CalendarDays className="h-4 w-4 text-primary" aria-hidden="true" />
+                {ev ? `Salida programada${ev.guide_name ? ` · Guía: ${ev.guide_name}` : ""}` : "Salida programada"}
+              </span>
+              <Button size="sm" variant="outline" className="min-h-11" onClick={() => { setSelectedId(null); setTab("events"); }}>
+                Ver en calendario
+              </Button>
+            </div>
+          )}
+        </section>
+
+        <section aria-labelledby="fin-title" className="mt-4 rounded-xl border border-border bg-background/60 p-4">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h3 id="fin-title" className="font-heading font-semibold text-foreground">Resumen económico</h3>
+            {fin.estimated && (
+              <span className="rounded-full border border-primary/50 px-2 py-0.5 text-xs text-primary">Estimado con tarifa actual · pendiente de confirmar</span>
+            )}
+            {fin.source === "senal" && <span className="text-xs text-muted-foreground">Importes pactados en la reserva</span>}
+            {fin.source === "salida" && <span className="text-xs text-muted-foreground">Precio de la salida</span>}
+          </div>
+          {fin.totalCents === null ? (
+            <p className="text-sm text-foreground">
+              Precio a confirmar{!fin.participants ? " (faltan participantes)" : ""}.
+              {fin.paidCents > 0 && <> Pagado: <strong>{formatAmount(fin.paidCents)}</strong>.</>}
+            </p>
+          ) : (
+            <dl className="space-y-1.5 text-sm">
+              {fin.unitCents !== null && fin.participants
+                ? row("Tarifa", `${formatAmount(fin.unitCents)} × ${fin.participants} pers.`)
+                : null}
+              {row("Total actividad", formatAmount(fin.totalCents), fin.discountCents === 0)}
+              {fin.discountCents > 0 && row("Descuento aplicado", `− ${formatAmount(fin.discountCents)}`)}
+              {fin.discountCents > 0 && row("Total con descuento", formatAmount(fin.netTotalCents ?? 0), true)}
+              {row(`Señal (${pct} %, incluida en el total)`, fin.depositCents !== null ? formatAmount(fin.depositCents) : "—")}
+              {row("Pagado", formatAmount(fin.paidCents))}
+              <div className="border-t border-border pt-1.5">{row("Saldo pendiente", formatAmount(fin.balanceCents ?? 0), true)}</div>
+            </dl>
+          )}
+          <DiscountField key={`disc-${b.id}`} id={b.id} value={b.discount_cents} onSave={(e) => updateDiscount(b.id, e)} />
+        </section>
+
+        {(() => {
+          const list = coincidencesFor(b);
+          if (!list.length) return null;
+          return (
+            <section role="note" aria-labelledby="coin-title" className="mt-4 rounded-xl border border-primary/50 bg-primary/10 p-4 text-sm">
+              <h3 id="coin-title" className="flex items-center gap-2 font-heading font-semibold text-foreground">
+                <AlertTriangle className="h-4 w-4 text-primary" aria-hidden="true" /> Posible coincidencia
+              </h3>
+              <ul className="mt-2 space-y-2">
+                {list.map((c) => {
+                  const msg = c.sameGuide
+                    ? "Mismo guía en horario solapado: incompatibilidad a resolver."
+                    : c.level === "solape"
+                      ? c.otherGuide
+                        ? "Horarios solapados con otro guía asignado: revisa recursos."
+                        : "Horarios solapados: revisa guía y material."
+                      : "Otra actividad el mismo día: revisa horarios.";
+                  return (
+                    <li key={c.slot.key} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-background/60 px-3 py-2">
+                      <span className="min-w-0">
+                        <span className="block font-medium text-foreground">{c.slot.label}</span>
+                        <span className="block text-muted-foreground">
+                          {c.slot.startIso ? formatDateTime(c.slot.startIso) : formatPreferred(c.slot.day)} · {msg}
+                        </span>
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="min-h-11"
+                        onClick={() => {
+                          if (c.slot.kind === "booking") setSelectedId(c.slot.refId);
+                          else { setSelectedId(null); setTab("events"); }
+                        }}
+                      >
+                        {c.slot.kind === "booking" ? "Ver reserva" : "Ver en calendario"}
+                      </Button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          );
+        })()}
+        {!b.event_id &&
+          payments.some((p) => p.booking_id === b.id && p.kind === "senal" && p.status === "pendiente") && (
+            <p role="note" className="mt-4 flex gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-foreground">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" aria-hidden="true" />
+              Señal antigua sin salida concreta: no se puede pagar online. Revisa la disponibilidad y, si procede, envía un enlace de pago manual abajo.
+            </p>
+          )}
+        {b.message && (
+          <div className="mt-5">
+            <p className="text-sm text-muted-foreground">Comentarios del cliente</p>
+            <p className="mt-1 whitespace-pre-line rounded-lg bg-background/60 p-3 text-sm text-foreground">{b.message}</p>
+          </div>
+        )}
+        <div className="mt-6"><StatusSelect table="bookings" id={b.id} value={b.status} /></div>
+        <NotesField key={b.id} id={b.id} value={b.admin_notes} onSave={(n) => updateNotes("bookings", b.id, n)} />
+        <PaymentPanel
+          key={`pay-${b.id}`}
+          target="booking"
+          id={b.id}
+          {...(() => {
+            const sug = suggestedDepositCents(fin);
+            if (sug === null)
+              return {
+                defaultConcept: `Reserva ${b.activity}`,
+                amountHint: fin.depositPaid ? "La señal ya está pagada: no se propone otra." : fin.depositPending ? "Ya hay una señal pendiente de pago." : undefined,
+              };
+            return {
+              defaultConcept: `Señal ${pct}% · ${b.activity} · ${fin.participants} pax`,
+              defaultAmount: (sug / 100).toFixed(2).replace(".", ","),
+              amountHint: `Importe propuesto: señal del ${pct} %${fin.estimated ? " con tarifa actual (estimado)" : ""}${fin.discountCents > 0 ? " con el descuento aplicado" : ""}. Revísalo antes de generar el enlace.`,
+            };
+          })()}
+          payments={payments.filter((p) => p.booking_id === b.id)}
+          onCreated={loadData}
+        />
+      </section>
+    );
+  })();
 
   return (
     <div className="min-h-dvh bg-background md:flex">
@@ -830,7 +1051,7 @@ export default function Admin() {
           </div>
         )}
 
-        <div className="max-w-6xl space-y-4">
+        <div className="max-w-7xl space-y-4">
           {tab === "overview" && (
             <>
               <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
@@ -905,75 +1126,47 @@ export default function Admin() {
           {tab === "bookings" && (
             <>
               {toolbar(bookings.length, filteredBookings.length, "Cliente, email o actividad")}
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+              <div className={selectedBooking ? "hidden lg:block" : ""}>
               {filteredBookings.length === 0 ? (
                 emptyState(
                   bookings.length === 0 ? "Todavía no hay reservas" : "Ninguna reserva coincide",
                   bookings.length === 0 ? "Aparecerán aquí cuando alguien reserve o solicite fecha." : "Prueba con otra búsqueda o estado.",
                 )
               ) : (
-                <>
-                  <div className="hidden overflow-hidden rounded-xl border border-border bg-card md:block">
-                    <table className="w-full text-sm">
-                      <thead className="bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                        <tr>
-                          <th scope="col" className="px-4 py-3 font-medium">Actividad</th>
-                          <th scope="col" className="px-4 py-3 font-medium">Cliente</th>
-                          <th scope="col" className="px-4 py-3 font-medium">Fecha</th>
-                          <th scope="col" className="px-4 py-3 font-medium text-center">Pers.</th>
-                          <th scope="col" className="px-4 py-3 font-medium">Estado</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredBookings.map((b) => (
-                          <tr
-                            key={b.id}
-                            tabIndex={0}
-                            onClick={() => setSelectedId(b.id)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === " ") {
-                                e.preventDefault();
-                                setSelectedId(b.id);
-                              }
-                            }}
-                            aria-label={`Abrir reserva de ${b.name || b.contact}: ${b.activity}`}
-                            className={rowClass}
-                          >
-                            <td className="max-w-[260px] truncate px-4 py-3 font-medium text-foreground">{b.activity}{cdot(b)}</td>
-                            <td className="max-w-[220px] px-4 py-3">
-                              <span className="block truncate text-foreground">{b.name || b.contact}</span>
-                              {b.name && <span className="block truncate text-xs text-muted-foreground">{b.contact}</span>}
-                            </td>
-                            <td className="whitespace-nowrap px-4 py-3 text-foreground">{bookingDate(b)}</td>
-                            <td className="px-4 py-3 text-center text-foreground">{b.number_of_people || "—"}</td>
-                            <td className="px-4 py-3"><StatusBadge status={b.status} /></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <ul className="space-y-2 md:hidden">
-                    {filteredBookings.map((b) => (
-                      <li key={b.id}>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedId(b.id)}
-                          className="w-full rounded-xl border border-border bg-card p-4 text-left transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        >
-                          <span className="flex items-start justify-between gap-2">
-                            <span className="font-medium text-foreground">{b.activity}{cdot(b)}</span>
-                            <StatusBadge status={b.status} />
-                          </span>
-                          <span className="mt-1 block truncate text-sm text-muted-foreground">{b.name || b.contact}</span>
-                          <span className="mt-1 block text-sm text-foreground">
-                            {bookingDate(b)}
-                            {b.number_of_people ? ` · ${b.number_of_people} pers.` : ""}
-                          </span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </>
+                <ul className="space-y-2">
+                  {filteredBookings.map((b) => (
+                    <li key={b.id}>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedId(b.id)}
+                        aria-current={selectedId === b.id ? "true" : undefined}
+                        className={`w-full rounded-xl border bg-card p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                          selectedId === b.id ? "border-primary" : "border-border hover:border-primary"
+                        }`}
+                      >
+                        <span className="flex items-start justify-between gap-2">
+                          <span className="font-medium text-foreground">{b.activity}{cdot(b)}</span>
+                          <StatusBadge status={b.status} />
+                        </span>
+                        <span className="mt-1 block truncate text-sm text-muted-foreground">{b.name || b.contact}</span>
+                        <span className="mt-1 block text-sm text-foreground">
+                          {bookingDate(b)}
+                          {b.number_of_people ? ` · ${b.number_of_people} pers.` : ""}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               )}
+              </div>
+              {bookingDetail ?? (
+                <div className="hidden self-start rounded-xl border border-dashed border-border bg-card/50 px-6 py-12 text-center lg:block">
+                  <CalendarCheck className="mx-auto mb-3 h-8 w-8 text-muted-foreground" aria-hidden="true" />
+                  <p className="text-sm text-muted-foreground">Selecciona una reserva para ver todos sus detalles aquí.</p>
+                </div>
+              )}
+              </div>
             </>
           )}
 
@@ -1046,170 +1239,8 @@ export default function Admin() {
         </div>
       </main>
 
-      <Sheet open={!!(selectedBooking || selectedContact) && (tab === "bookings" || tab === "contacts")} onOpenChange={(o) => !o && setSelectedId(null)}>
+      <Sheet open={!!selectedContact && tab === "contacts"} onOpenChange={(o) => !o && setSelectedId(null)}>
         <SheetContent side="right" className="w-full overflow-y-auto bg-card sm:max-w-lg">
-          {tab === "bookings" && selectedBooking && (() => {
-            const b = selectedBooking;
-            const ev = b.event_id ? eventsById[b.event_id] : undefined;
-            return (
-              <>
-                <SheetHeader className="pr-8 text-left">
-                  <SheetTitle className="font-heading text-xl text-foreground">{b.activity}</SheetTitle>
-                  <SheetDescription className="flex flex-wrap items-center gap-2">
-                    <StatusBadge status={b.status} />
-                    <span>Recibida el {formatDate(b.created_at)}</span>
-                  </SheetDescription>
-                </SheetHeader>
-                <section aria-label="Datos principales" className="mt-5 rounded-xl border border-border bg-background/60 p-4">
-                  <dl className="grid grid-cols-2 gap-4">
-                    <Field label={ev ? "Fecha y hora" : "Fecha"} value={bookingDate(b)} />
-                    <Field label="Participantes" value={b.number_of_people} />
-                    <Field label="Cliente" value={b.name} />
-                    <Field label="Email" value={b.email || b.contact} />
-                    <Field label="Teléfono" value={b.phone ? <a className="text-primary underline-offset-2 hover:underline" href={`tel:${b.phone.replace(/\s/g, "")}`}>{b.phone}</a> : null} />
-                    <Field label="Nivel" value={b.experience_level} />
-                  </dl>
-                  {b.event_id && (
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-sm">
-                      <span className="flex items-center gap-2 text-foreground">
-                        <CalendarDays className="h-4 w-4 text-primary" aria-hidden="true" />
-                        {ev ? `Salida programada${ev.guide_name ? ` · Guía: ${ev.guide_name}` : ""}` : "Salida programada"}
-                      </span>
-                      <Button size="sm" variant="outline" className="min-h-11" onClick={() => { setSelectedId(null); setTab("events"); }}>
-                        Ver en calendario
-                      </Button>
-                    </div>
-                  )}
-                </section>
-
-                {(() => {
-                  const f = computeFinance({
-                    bookingId: b.id,
-                    participantsRaw: b.number_of_people,
-                    activity: b.activity,
-                    eventPriceCents: ev?.price_cents ?? null,
-                    payments,
-                  });
-                  const pct = Math.round(DEPOSIT_RATE * 100);
-                  const row = (label: string, value: React.ReactNode, strong = false) => (
-                    <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">{label}</dt>
-                      <dd className={strong ? "font-heading font-bold text-foreground" : "text-foreground"}>{value}</dd>
-                    </div>
-                  );
-                  return (
-                    <section aria-labelledby="fin-title" className="mt-4 rounded-xl border border-border bg-background/60 p-4">
-                      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                        <h3 id="fin-title" className="font-heading font-semibold text-foreground">Resumen económico</h3>
-                        {f.estimated && (
-                          <span className="rounded-full border border-primary/50 px-2 py-0.5 text-xs text-primary">Estimado con tarifa actual · pendiente de confirmar</span>
-                        )}
-                        {f.source === "senal" && <span className="text-xs text-muted-foreground">Importes pactados en la reserva</span>}
-                        {f.source === "salida" && <span className="text-xs text-muted-foreground">Precio de la salida</span>}
-                      </div>
-                      {f.totalCents === null ? (
-                        <p className="text-sm text-foreground">
-                          Precio a confirmar{!f.participants ? " (faltan participantes)" : ""}.
-                          {f.paidCents > 0 && <> Pagado: <strong>{formatAmount(f.paidCents)}</strong>.</>}
-                        </p>
-                      ) : (
-                        <dl className="space-y-1.5 text-sm">
-                          {f.unitCents !== null && f.participants
-                            ? row("Tarifa", `${formatAmount(f.unitCents)} × ${f.participants} pers.`)
-                            : null}
-                          {row("Total actividad", formatAmount(f.totalCents), true)}
-                          {row(`Señal (${pct} %, incluida en el total)`, f.depositCents !== null ? formatAmount(f.depositCents) : "—")}
-                          {row("Pagado", formatAmount(f.paidCents))}
-                          <div className="border-t border-border pt-1.5">{row("Saldo pendiente", formatAmount(f.balanceCents ?? 0), true)}</div>
-                        </dl>
-                      )}
-                    </section>
-                  );
-                })()}
-
-                {(() => {
-                  const list = coincidencesFor(b);
-                  if (!list.length) return null;
-                  return (
-                    <section role="note" aria-labelledby="coin-title" className="mt-4 rounded-xl border border-primary/50 bg-primary/10 p-4 text-sm">
-                      <h3 id="coin-title" className="flex items-center gap-2 font-heading font-semibold text-foreground">
-                        <AlertTriangle className="h-4 w-4 text-primary" aria-hidden="true" /> Posible coincidencia
-                      </h3>
-                      <ul className="mt-2 space-y-2">
-                        {list.map((c) => {
-                          const msg = c.sameGuide
-                            ? "Mismo guía en horario solapado: incompatibilidad a resolver."
-                            : c.level === "solape"
-                              ? c.otherGuide
-                                ? "Horarios solapados con otro guía asignado: revisa recursos."
-                                : "Horarios solapados: revisa guía y material."
-                              : "Otra actividad el mismo día: revisa horarios.";
-                          return (
-                            <li key={c.slot.key} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-background/60 px-3 py-2">
-                              <span className="min-w-0">
-                                <span className="block font-medium text-foreground">{c.slot.label}</span>
-                                <span className="block text-muted-foreground">
-                                  {c.slot.startIso ? formatDateTime(c.slot.startIso) : formatPreferred(c.slot.day)} · {msg}
-                                </span>
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="min-h-11"
-                                onClick={() => {
-                                  if (c.slot.kind === "booking") setSelectedId(c.slot.refId);
-                                  else { setSelectedId(null); setTab("events"); }
-                                }}
-                              >
-                                {c.slot.kind === "booking" ? "Ver reserva" : "Ver en calendario"}
-                              </Button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </section>
-                  );
-                })()}
-                {!b.event_id &&
-                  payments.some((p) => p.booking_id === b.id && p.kind === "senal" && p.status === "pendiente") && (
-                    <p role="note" className="mt-4 flex gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-foreground">
-                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" aria-hidden="true" />
-                      Señal antigua sin salida concreta: no se puede pagar online. Revisa la disponibilidad y, si procede, envía un enlace de pago manual abajo.
-                    </p>
-                  )}
-                {b.message && (
-                  <div className="mt-5">
-                    <p className="text-sm text-muted-foreground">Comentarios del cliente</p>
-                    <p className="mt-1 whitespace-pre-line rounded-lg bg-background/60 p-3 text-sm text-foreground">{b.message}</p>
-                  </div>
-                )}
-                <div className="mt-6"><StatusSelect table="bookings" id={b.id} value={b.status} /></div>
-                <NotesField key={b.id} id={b.id} value={b.admin_notes} onSave={(n) => updateNotes("bookings", b.id, n)} />
-                <PaymentPanel
-                  key={`pay-${b.id}`}
-                  target="booking"
-                  id={b.id}
-                  {...(() => {
-                    const f = computeFinance({ bookingId: b.id, participantsRaw: b.number_of_people, activity: b.activity, eventPriceCents: ev?.price_cents ?? null, payments });
-                    const sug = suggestedDepositCents(f);
-                    const pct = Math.round(DEPOSIT_RATE * 100);
-                    if (sug === null)
-                      return {
-                        defaultConcept: `Reserva ${b.activity}`,
-                        amountHint: f.depositPaid ? "La señal ya está pagada: no se propone otra." : f.depositPending ? "Ya hay una señal pendiente de pago." : undefined,
-                      };
-                    return {
-                      defaultConcept: `Señal ${pct}% · ${b.activity} · ${f.participants} pax`,
-                      defaultAmount: (sug / 100).toFixed(2).replace(".", ","),
-                      amountHint: `Importe propuesto: señal del ${pct} %${f.estimated ? " con tarifa actual (estimado)" : ""}. Revísalo antes de generar el enlace.`,
-                    };
-                  })()}
-                  payments={payments.filter((p) => p.booking_id === b.id)}
-                  onCreated={loadData}
-                />
-              </>
-            );
-          })()}
           {tab === "contacts" && selectedContact && (() => {
             const c = selectedContact;
             return (

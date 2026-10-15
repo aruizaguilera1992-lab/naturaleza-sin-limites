@@ -90,3 +90,31 @@ describe("coincidencias", () => {
     expect(localDay("2026-10-22T22:30:00Z")).toBe("2026-10-23");
   });
 });
+
+it("aplica el descuento sobre total, señal y saldo", () => {
+  const f = computeFinance({
+    bookingId: "b1",
+    participantsRaw: "6",
+    activity: "Vía ferrata · Vía Ferrata El Chorro",
+    catalogPrice: 55,
+    payments: [],
+    discountCents: 3000,
+  });
+  expect(f.totalCents).toBe(33000);
+  expect(f.netTotalCents).toBe(30000);
+  expect(f.depositCents).toBe(9000);
+  expect(f.balanceCents).toBe(30000);
+});
+
+it("el descuento nunca deja el total por debajo de cero", () => {
+  const f = computeFinance({
+    bookingId: "b1",
+    participantsRaw: "2",
+    activity: "x",
+    catalogPrice: 50,
+    payments: [],
+    discountCents: 999999,
+  });
+  expect(f.netTotalCents).toBe(0);
+  expect(f.balanceCents).toBe(0);
+});

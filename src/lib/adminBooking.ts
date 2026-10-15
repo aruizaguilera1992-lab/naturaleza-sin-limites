@@ -18,7 +18,12 @@ export type BookingFinance = {
   /** Per-person price in cents; null when no reliable figure. */
   unitCents: number | null;
   participants: number | null;
+  /** Gross total before discount. */
   totalCents: number | null;
+  /** Discount applied by the admin, in cents (0 when none). */
+  discountCents: number;
+  /** Total after discount; this is what deposit and balance are computed from. */
+  netTotalCents: number | null;
   depositCents: number | null;
   paidCents: number;
   balanceCents: number | null;
@@ -54,6 +59,8 @@ export function computeFinance(input: {
   eventPriceCents?: number | null;
   payments: PricePayment[];
   catalogPrice?: number | null;
+  /** Admin-applied discount in cents; clamped so the net total never goes below what is already paid. */
+  discountCents?: number | null;
 }): BookingFinance {
   const participants = parseParticipants(input.participantsRaw);
   const own = input.payments.filter((p) => p.booking_id === input.bookingId);
@@ -92,16 +99,25 @@ export function computeFinance(input: {
       totalCents = unitCents * participants;
     }
   }
-  if (totalCents !== null && depositCents === null) depositCents = depositFromTotal(totalCents);
+  const discountCents = Math.max(0, Math.round(input.discountCents ?? 0));
+  const netTotalCents =
+    totalCents !== null ? Math.max(totalCents - Math.min(discountCents, totalCents), 0) : null;
+  if (netTotalCents !== null && depositCents === null) depositCents = depositFromTotal(netTotalCents);
+  if (netTotalCents !== null && depositCents !== null && source === "senal" && discountCents > 0) {
+    // A discount agreed after the deposit was set: recompute the suggested deposit on the net total.
+    depositCents = depositFromTotal(netTotalCents);
+  }
 
   return {
     source,
     unitCents,
     participants,
     totalCents,
+    discountCents: totalCents !== null ? Math.min(discountCents, totalCents) : discountCents,
+    netTotalCents,
     depositCents,
     paidCents,
-    balanceCents: totalCents !== null ? Math.max(totalCents - paidCents, 0) : null,
+    balanceCents: netTotalCents !== null ? Math.max(netTotalCents - paidCents, 0) : null,
     depositPaid,
     depositPending,
     estimated: source === "catalogo",
