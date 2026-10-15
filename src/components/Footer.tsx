@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, MapPin, MessageCircle, LockKeyhole } from "lucide-react";
 import logoAsset from "@/assets/naturaleza-sin-limites-logo.webp.asset.json";
 import { useCookieConsent } from "@/context/CookieConsentContext";
+import { absoluteUrl } from "@/lib/site";
 
 const navLinks = [
   { href: "/actividades", label: "Actividades" },
@@ -87,7 +88,7 @@ export function Footer() {
           <div>
             <button onClick={handleLogoClick} className="inline-block mb-6 cursor-pointer">
               <img
-                src={logoAsset.url}
+                src={absoluteUrl(logoAsset.url)}
                 alt="Naturaleza Sin Límites"
                 loading="lazy"
                 decoding="async"
