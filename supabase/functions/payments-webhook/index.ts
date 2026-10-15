@@ -14,6 +14,8 @@ import {
 } from "../_shared/email.ts";
 import { PLAN_CATALOG } from "../_shared/planCatalog.ts";
 import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
+import { renderBookingEmail, type BookingEmailData } from "../_shared/bookingEmail.ts";
+import { readBookingEmailContext } from "../_shared/bookingEmailContext.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
@@ -29,65 +31,27 @@ function getSupabase() {
 type CustomerVariant = "confirmada" | "fecha_pendiente" | "pago_recibido";
 
 function customerIntent(opts: {
-  paymentRequestId: string;
-  concept: string;
-  amount: string;
-  reference: string;
-  email: string;
-  variant: CustomerVariant;
+  paymentRequestId: string; concept: string; amount: string; reference: string;
+  email: string; variant: CustomerVariant; context?: Partial<BookingEmailData>;
 }): NotificationIntent {
-  const { concept, amount, reference } = opts;
-  const details = `<p><strong>${escapeHtml(concept)}</strong><br/>Importe pagado: <strong>${escapeHtml(amount)}</strong><br/>Referencia: ${escapeHtml(reference)}</p>`;
-  const contact = `<p>Cualquier duda, respóndenos a este email o escríbenos por WhatsApp al <strong>+34 685 60 95 42</strong>.</p>`;
-  if (opts.variant === "confirmada") {
-    return {
-      kind: "pago_confirmado_cliente",
-      dedupeKey: `payment_confirmed_customer:${opts.paymentRequestId}`,
-      recipients: [opts.email],
-      subject: `Reserva confirmada · ${concept}`,
-      html: layout("¡Tu reserva está confirmada!", `
-        <p>Hemos recibido tu pago y tu plaza en la salida queda <strong>confirmada</strong>.</p>
-        ${details}
-        <p>Te enviaremos el punto de encuentro y la hora exacta con antelación.</p>
-        ${contact}`),
-    };
-  }
-  const pendingDate = opts.variant === "fecha_pendiente";
+  const confirmed = opts.variant === "confirmada";
   return {
-    kind: "pago_recibido_cliente",
-    dedupeKey: `payment_received_customer:${opts.paymentRequestId}`,
+    kind: confirmed ? "pago_confirmado_cliente" : "pago_recibido_cliente",
+    dedupeKey: `${confirmed ? "payment_confirmed_customer" : "payment_received_customer"}:${opts.paymentRequestId}`,
     recipients: [opts.email],
-    subject: `Pago recibido · ${concept}`,
-    html: layout("Hemos recibido tu pago", `
-      <p>Tu pago se ha registrado correctamente.${pendingDate ? " La fecha solicitada está <strong>pendiente de confirmación</strong>: te escribiremos para confirmarla." : ""}</p>
-      ${details}
-      ${contact}`),
+    ...renderBookingEmail({ ...opts.context, variant: "receipt", state: opts.variant, activity: opts.context?.activity ?? opts.concept }),
   };
 }
 
 function businessIntent(opts: {
-  paymentRequestId: string;
-  concept: string;
-  amount: string;
-  reference: string;
-  customerEmail: string | null;
-  env: StripeEnv;
-  type: string;
+  paymentRequestId: string; concept: string; amount: string; reference: string;
+  customerEmail: string | null; env: StripeEnv; type: string; context?: Partial<BookingEmailData>;
 }): NotificationIntent {
-  const subject = `Pago recibido: ${opts.concept}`;
   return {
     kind: "pago_confirmado_negocio",
     dedupeKey: `payment_confirmed_business:${opts.paymentRequestId}`,
     recipients: businessRecipients(),
-    subject,
-    html: listLayout(subject, [
-      `Concepto: ${opts.concept}`,
-      `Importe: ${opts.amount}`,
-      `Cliente: ${opts.customerEmail ?? "-"}`,
-      `Referencia: ${opts.reference}`,
-      `Entorno: ${opts.env}`,
-      `Tipo: ${opts.type}`,
-    ]),
+    ...renderBookingEmail({ ...opts.context, variant: "payment_admin", state: opts.type === "reserva con fecha solicitada" ? "fecha_pendiente" : "pago_recibido", activity: opts.context?.activity ?? opts.concept, email: opts.customerEmail, reference: opts.reference, sandbox: opts.env === "sandbox" }),
   };
 }
 
@@ -364,7 +328,9 @@ async function fulfill(session: any, env: StripeEnv) {
     hasEvent = Boolean(link);
   }
 
+  const context = await readBookingEmailContext(supabase, pr.booking_id ?? null, { id: pr.id, amount_cents: amountCents, currency }, true);
   const base = {
+    context,
     paymentRequestId: pr.id as string,
     concept: (pr.concept as string) ?? "Actividad",
     amount: formatAmount(amountCents, currency),

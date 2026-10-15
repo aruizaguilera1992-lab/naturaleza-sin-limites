@@ -1,5 +1,10 @@
 # Roadmap
 
+## Correos de reservas y pagos (15/10/2026)
+- [ ] Rediseñar solicitud, enlace, recibo, aviso administrativo y confirmación con el renderer compartido
+- [ ] Verificar estados, escape, importes, ausentes y vistas HTML ficticias en escritorio/móvil
+- [ ] Desplegar funciones de correo (bloqueado: requiere petición adicional del usuario; no desplegar en esta tarea)
+
 ## Hecho
 - [x] Punto 2: página de pago /pago/:token + cobros desde el panel admin
 - [x] QA: solicitud de prueba desde /contacto -> aparece en /admin y cambio de estado OK
