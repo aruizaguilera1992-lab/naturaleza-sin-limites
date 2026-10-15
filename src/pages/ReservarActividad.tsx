@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { AlertTriangle, CalendarDays, CheckCircle2, Info, ShieldCheck, Loader2, Users } from "lucide-react";
+import { AlertTriangle, CalendarDays, CheckCircle2, ShieldCheck, Loader2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -16,7 +16,6 @@ import { getActivityCatalogImage, getActivityProfile, PENDING } from "@/data/act
 import { ActivityEventPicker } from "@/components/actividades/ActivityEventPicker";
 import { useActivityEvents } from "@/hooks/useActivityEvents";
 import logoAsset from "@/assets/logo-integrated.png";
-
 
 const DEPOSIT_RATE = 0.3;
 const MAX_PEOPLE = 6;
@@ -279,7 +278,6 @@ export default function ReservarActividad() {
     }
   };
 
-
   if (requestSent) {
     return wrapper(
       <div className="flex min-h-[520px] flex-col items-center justify-center py-10 text-center" role="status">
@@ -323,7 +321,6 @@ export default function ReservarActividad() {
               <dd>{euros(total)}</dd>
             </div>
             <div className="flex justify-between gap-4 text-muted-foreground"><dt>Saldo el día de la actividad</dt><dd>{euros(total - deposit)}</dd></div>
-            <div className="flex justify-between gap-4 text-muted-foreground"><dt>Impuestos</dt><dd>IVA incluido</dd></div>
           </dl>
         ) : (
           <dl className="mt-7 space-y-3 border-y border-border py-6 text-sm">
@@ -332,10 +329,9 @@ export default function ReservarActividad() {
               <dd className="mt-1 font-heading text-[2.75rem] font-extrabold leading-none text-primary sm:text-5xl">0 €</dd>
             </div>
             <div className="flex justify-between gap-4 text-muted-foreground">
-              <dt>Precio estimado · {euros(unitPrice)} × {form.participants}</dt>
-              <dd>{euros(total)} <span className="text-xs">(estimado)</span></dd>
+              <dt>Precio estimado</dt>
+              <dd>{euros(total)} <span className="text-xs">(pendiente de confirmar)</span></dd>
             </div>
-            <p className="text-muted-foreground">Precio estimado, pendiente de confirmación. Solicitud sin pago: primero confirmamos la disponibilidad contigo.</p>
           </dl>
         )}
       </header>
@@ -346,9 +342,6 @@ export default function ReservarActividad() {
         {eventNotice && (
           <div role="alert" className="mb-6 rounded-md border border-primary/40 bg-primary/10 p-4 text-sm leading-6 text-foreground">
             <p>{eventNotice}</p>
-            {selectedEventId === null && (
-              <p className="mt-2 font-semibold">Ahora estás en modo solicitud: elige la fecha que prefieres (sin pago).</p>
-            )}
           </div>
         )}
 
@@ -369,21 +362,6 @@ export default function ReservarActividad() {
             />
           )}
         </div>
-
-        {!isEventBooking && (
-          <section
-            aria-labelledby="request-notice-title"
-            className="mb-6 rounded-lg border-l-4 border-primary bg-card p-5 shadow-sm ring-1 ring-border"
-          >
-            <h3 id="request-notice-title" className="flex items-center gap-2 font-heading text-lg font-bold text-foreground">
-              <Info className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
-              Antes de confirmar tu reserva
-            </h3>
-            <p className="mt-2 text-base leading-7 text-foreground/90">
-              Primero confirmaremos contigo la disponibilidad de la fecha, el precio final de la actividad y el importe del anticipo. Enviar esta solicitud no confirma la reserva y no se cobra nada ahora.
-            </p>
-          </section>
-        )}
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
@@ -420,16 +398,6 @@ export default function ReservarActividad() {
                 />
               </PopoverContent>
             </Popover>
-            {selectedEvent && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                Fecha fijada por la salida programada que has elegido.
-              </p>
-            )}
-            {!selectedEvent && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                Fecha propuesta: queda pendiente de confirmar disponibilidad.
-              </p>
-            )}
           </div>
           <div>
             <Label>Participantes</Label>
@@ -456,13 +424,6 @@ export default function ReservarActividad() {
                 );
               })}
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {selectedEvent
-                ? selectedEvent.freeSeats === 1
-                  ? "Queda 1 plaza en esta salida: reserva individual."
-                  : `Quedan ${selectedEvent.freeSeats} plaza(s) en esta salida.`
-                : null}
-            </p>
             <p className="mt-1 text-xs text-muted-foreground">
               Para grupos de más de {MAX_PEOPLE} personas,{" "}
               <Link to="/contacto" className="text-primary underline">
@@ -536,21 +497,9 @@ export default function ReservarActividad() {
 
         {error && <p role="alert" className="mt-4 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-foreground">{error}</p>}
 
-        <p className="mt-5 flex items-start gap-2 rounded-md border border-border bg-muted/30 p-4 text-sm leading-6 text-foreground">
-          <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-          <span>
-            <strong>Edad mínima: {activity.minimumAge}.</strong> Los menores necesitan autorización y,
-            en su caso, acompañamiento según los{" "}
-            <Link to="/terminos" className="text-primary underline">términos</Link>.
-          </span>
-        </p>
+        <p className="mt-5 text-sm text-muted-foreground">Edad mínima: {activity.minimumAge}.</p>
 
-        {isEventBooking ? (
-          <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-muted-foreground">
-            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-            Al continuar comprobamos y bloqueamos tus plazas: tienes 30 minutos para iniciar el pago; al iniciarlo, el bloqueo se mantiene durante el plazo de pago. La reserva se confirma con el pago y queda sujeta a la meteorología y a las condiciones publicadas.
-          </p>
-        ) : (
+        {!isEventBooking && (
           <p id="request-submit-note" className="mt-4 flex items-start gap-2 rounded-md border border-primary/40 bg-primary/10 p-3 text-sm font-medium leading-6 text-foreground">
             <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
             Te confirmaremos la disponibilidad, el precio final y el anticipo antes de enviarte el enlace de pago.
@@ -566,9 +515,6 @@ export default function ReservarActividad() {
           {submitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
           {isEventBooking ? `Pagar señal de ${euros(deposit)}` : "Solicitar disponibilidad sin pago"}
         </Button>
-        {isEventBooking && (
-          <p className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-primary" />Pago seguro con Stripe</p>
-        )}
       </div>
     </div>,
   );
