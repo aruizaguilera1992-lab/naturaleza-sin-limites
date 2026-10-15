@@ -77,3 +77,63 @@ Deno.test("stored category not duplicated, logo has fallback brand text", () => 
   assert(!fallback.html.includes("<img"));
   assertStringIncludes(fallback.html, "Naturaleza Sin Límites");
 });
+
+Deno.test("initial request remains unconfirmed and free before team review", () => {
+  const e = renderBookingEmail(bookingEmailFixtures["solicitud-cliente"]);
+  assertStringIncludes(e.text, "Aún no es una reserva confirmada y no se ha cobrado nada");
+  assert(!e.text.includes("Bizum"));
+});
+Deno.test("admin signal confirmation and linked receipt agree without pretending signal paid", () => {
+  const link = renderBookingEmail(bookingEmailFixtures["confirmacion-manual-admin"]);
+  assertEquals(link.subject, "Actividad confirmada · Vía Ferrata Ejemplo");
+  assertStringIncludes(link.text, "Hemos confirmado tu actividad para el 18 de mayo de 2027");
+  assertStringIncludes(link.text, "abona la señal de 54,00");
+  assertStringIncludes(link.text, "Señal pendiente de pago");
+  assertStringIncludes(link.text, "Pagar la señal:");
+  assert(!link.text.includes("fecha solicitada sigue pendiente"));
+  const receipt = renderBookingEmail(bookingEmailFixtures["senal-manual-recibida"]);
+  assertEquals(receipt.subject, "Señal recibida · Vía Ferrata Ejemplo");
+  assertStringIncludes(receipt.text, "Hemos recibido tu señal. Tu actividad está confirmada para el 18 de mayo de 2027");
+  assert(!receipt.text.includes("pendiente de confirmación"));
+  assertStringIncludes(receipt.text, "Saldo pendiente: 126,00");
+  assertStringIncludes(receipt.text, "incluida en el total");
+  assertStringIncludes(receipt.text, "El importe restante puedes abonarlo por Bizum, en efectivo o mediante pago web");
+  const admin = renderBookingEmail(bookingEmailFixtures["senal-manual-admin"]);
+  assertStringIncludes(admin.subject, "Señal recibida");
+  assertStringIncludes(admin.text, "La actividad está confirmada");
+  assertStringIncludes(admin.text, "El resto queda pendiente de coordinar");
+});
+Deno.test("no date invented, generic links and signals without evidence don't confirm", () => {
+  const missing = renderBookingEmail(bookingEmailFixtures["senal-sin-fecha"]);
+  assert(!missing.subject.includes("Actividad confirmada"));
+  assertStringIncludes(missing.text, "La fecha está pendiente de confirmar");
+  for (const kind of ["manual", "saldo", "pack", undefined]) {
+    const e = renderBookingEmail({ ...bookingEmailFixtures["confirmacion-manual-admin"], paymentKind: kind });
+    assert(!e.subject.includes("Actividad confirmada"));
+    assert(!e.text.includes("Pagar la señal"));
+  }
+  const noEvidence = renderBookingEmail({ ...bookingEmailFixtures["senal-manual-recibida"], manualConfirmation: false });
+  assertStringIncludes(noEvidence.text, "fecha solicitada sigue pendiente");
+  assertEquals(noEvidence.subject, "Pago recibido · Vía Ferrata Ejemplo");
+});
+Deno.test("scheduled seat outcome remains authoritative, manual flag cannot override failure", () => {
+  const failed = renderBookingEmail({ ...bookingEmailFixtures["senal-programada-incidencia"], manualConfirmation: true });
+  assert(!failed.subject.includes("confirmada"));
+  assert(!failed.text.includes("plazas en la salida están confirmadas"));
+  const success = renderBookingEmail(bookingEmailFixtures["confirmacion-final"]);
+  assertStringIncludes(success.subject, "Reserva confirmada");
+  assertStringIncludes(success.text, "plazas en la salida están confirmadas");
+});
+Deno.test("fully paid never invites another payment; unknown balance has no fabricated amount", () => {
+  for (const variant of ["receipt", "payment_link", "payment_admin"] as const) {
+    const e = renderBookingEmail({ ...bookingEmailFixtures["senal-pago-completo"], variant, payUrl: "https://naturalezasinlimites.es/pago/example" });
+    assert(!e.text.includes("Bizum"));
+    assert(!e.text.includes("Pagar la señal:"));
+    assert(!e.text.includes("abona la señal"));
+    if (variant !== "payment_link") assertStringIncludes(e.text, "Pago completo");
+  }
+  const unknown = renderBookingEmail(bookingEmailFixtures["senal-saldo-desconocido"]);
+  assert(!unknown.text.includes("Saldo pendiente:"));
+  assert(!unknown.text.includes("Total de la actividad:"));
+  assertStringIncludes(unknown.text, "El importe restante puedes abonarlo");
+});

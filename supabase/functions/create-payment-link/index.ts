@@ -135,7 +135,7 @@ Deno.serve(async (req) => {
     if (!customerEmail) {
       email = { status: "omitido", error: "La solicitud no tiene un email válido" };
     } else {
-      const context = await readBookingEmailContext(supabase, body.target === "booking" ? body.id : null, record);
+      const context = await readBookingEmailContext(supabase, body.target === "booking" ? body.id : null, record, false, true);
       const result = await sendTrackedNotification(supabase, {
         kind: "enlace_pago",
         dedupeKey: `payment_link:${record.id}`,

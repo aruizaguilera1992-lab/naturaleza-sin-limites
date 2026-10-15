@@ -1,5 +1,10 @@
 # Roadmap
 
+## Aclaración comercial de correos (15/10/2026)
+- [x] Distinguir señales administrativas confirmadas de solicitudes y pagos genéricos con evidencia fiable
+- [x] Actualizar economía/resto, pruebas y muestras ficticias; revisar escritorio/móvil sin envíos ni despliegue
+- Límite actual: create-payment-link crea kind=manual por defecto; solo señales ya identificadas kind=senal pueden usar confirmación comercial. No se reclasificaron pagos ni registros. notification_log registra aceptación del envío, no una fecha histórica confirmada independiente.
+
 ## Acceso a gestión (15/10/2026)
 - [x] Rediseñar login, entrada en footer y estados sin acceso del panel
 - [x] Probar destinos seguros, retorno, errores/cancelación y vistas móvil/escritorio sin OAuth real

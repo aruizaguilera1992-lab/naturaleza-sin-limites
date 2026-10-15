@@ -1,0 +1,45 @@
+Señal recibida · Vía Ferrata Ejemplo
+
+Naturaleza Sin Límites
+
+Señal recibida
+
+Vía Ferrata Ejemplo
+
+Se ha recibido la señal. La actividad está confirmada para el 18 de mayo de 2027.
+
+Actividad: Vía Ferrata Ejemplo
+
+Estado: Actividad y fecha confirmadas
+
+Pago: Señal recibida
+
+Fecha confirmada: 18 de mayo de 2027
+
+Personas: 3
+
+Cliente: Cliente de muestra
+
+Email: cliente@example.test
+
+Teléfono: +34 600 000 000
+
+Total de la actividad: 180,00 €
+
+Señal · incluida en el total: 54,00 €
+
+Importe de este pago: 54,00 €
+
+Pagado acumulado: 54,00 €
+
+Saldo pendiente: 126,00 €
+
+Abrir panel de gestión: https://naturalezasinlimites.es/admin
+
+Pago del importe restante
+
+El resto queda pendiente de coordinar con el cliente: Bizum, efectivo o pago web.
+
+Referencia del pago: REFERENCIA_FICTICIA
+
+Naturaleza Sin Límites · Aventura con los pies en la tierra.

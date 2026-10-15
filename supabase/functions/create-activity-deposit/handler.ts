@@ -257,7 +257,7 @@ export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
   const emailData = {
     state: "pendiente_pago" as const, activity: activityLabel, date: event.starts_at,
     people: body.participants, name: body.name, email: body.email, phone: body.phone,
-    message: body.message, scheduled: true, sandbox: body.environment === "sandbox",
+    message: body.message, scheduled: true, paymentKind: "senal", sandbox: body.environment === "sandbox",
     money: { totalCents, depositCents, paymentCents: depositCents, paidCents: 0 },
   };
   await deps.notify({
