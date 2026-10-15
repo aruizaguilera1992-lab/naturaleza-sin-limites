@@ -78,7 +78,7 @@ export default function Login() {
         <meta name="description" content="Acceso con Google a Naturaleza Sin Límites." />
         <meta name="robots" content="noindex" />
       </Helmet>
-      <AccessLayout title={management ? "Acceso a gestión" : connection ? "Conectar una aplicación" : "Acceso a tu cuenta"} description={management ? "Inicia sesión con tu cuenta de Google para acceder al panel de gestión" : connection ? "Inicia sesión con Google para revisar la solicitud de conexión de la aplicación." : "Inicia sesión con Google para continuar en Naturaleza Sin Límites."} busy={busy || checking}>
+      <AccessLayout onLeave={() => { cancelled.current = true; attempt.current++; clearAuthNext(); }} title={management ? "Acceso a gestión" : connection ? "Conectar una aplicación" : "Acceso a tu cuenta"} description={management ? "Inicia sesión con tu cuenta de Google para acceder al panel de gestión" : connection ? "Inicia sesión con Google para revisar la solicitud de conexión de la aplicación." : "Inicia sesión con Google para continuar en Naturaleza Sin Límites."} busy={busy || checking}>
         {error && <p ref={errorRef} tabIndex={-1} role="alert" className="mb-5 rounded-md border border-destructive bg-card p-4 text-sm leading-relaxed text-foreground focus:outline-none">{error}</p>}
         <Button
           type="button"
