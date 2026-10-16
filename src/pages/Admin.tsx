@@ -1027,7 +1027,7 @@ export default function Admin() {
         <div className="mt-6"><StatusSelect table="bookings" id={b.id} value={b.status} /></div>
         <NotesField key={b.id} id={b.id} value={b.admin_notes} onSave={(n) => updateNotes("bookings", b.id, n)} />
         <PaymentPanel
-          key={`pay-${b.id}`}
+          key={`pay-${b.id}-d${b.discount_percent ?? 0}`}
           target="booking"
           id={b.id}
           {...(() => {
