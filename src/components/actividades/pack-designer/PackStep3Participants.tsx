@@ -29,7 +29,7 @@ export function PackStep3Participants({
   // packPrice is the price PER PERSON
   const pricePerPerson = packPrice;
   const minParticipants = pack.minGroupSize || 1;
-  const maxParticipants = 20;
+  const maxParticipants = 6;
   
   // Calculate group total
   const subtotalGroup = pricePerPerson * participants;
@@ -40,6 +40,7 @@ export function PackStep3Participants({
   const totalWithDiscount = subtotalGroup - discountAmount;
   
   const isValid = 
+    Number.isInteger(participants) && participants >= minParticipants && participants <= maxParticipants &&
     coordinator.name.trim().length >= 2 &&
     coordinator.email.includes('@') &&
     coordinator.phone.replace(/\D/g, '').length >= 9;

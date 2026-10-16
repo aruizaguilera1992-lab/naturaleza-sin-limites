@@ -24,14 +24,14 @@ describe("Google-only login", () => {
   it("preserves consent context and destination", async () => {
     mount("/login?next=" + encodeURIComponent("/.lovable/oauth/consent?authorization_id=fixture"));
     expect(screen.getByRole("heading", { name: "Conectar una aplicación" })).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByRole("button", { name: "Continuar con Google" })).toBeEnabled());
+    await waitFor(() => expect(screen.getByRole("button", { name: "login" })).toBeEnabled());
     auth.signIn.mockImplementation(async () => { auth.getUser.mockResolvedValue({ data: { user: { id: "fixture" } }, error: null }); return {}; });
-    fireEvent.click(screen.getByRole("button", { name: "Continuar con Google" }));
+    fireEvent.click(screen.getByRole("button", { name: "login" }));
     await screen.findByText("Consent destination"); expect(sessionStorage.getItem("auth_next")).toBeNull();
   });
   it.each(["throw", "returned", "cancelled"])("%s failure is accessible and can retry without a stuck loading state", async mode => {
     auth.signIn.mockImplementation(async () => { if (mode === "throw") throw Error("fixture"); return mode === "returned" ? { error: Error("fixture") } : {}; });
-    mount(); const button = await screen.findByRole("button", { name: "Continuar con Google" });
+    mount(); const button = await screen.findByRole("button", { name: "login" });
     await waitFor(() => expect(button).toBeEnabled()); fireEvent.click(button);
     expect(await screen.findByRole("alert")).toHaveFocus();
     expect(screen.getByRole("button", { name: "Reintentar con Google" })).toBeEnabled();
@@ -40,7 +40,7 @@ describe("Google-only login", () => {
   it("manual cancellation ignores late success and returns to public web", async () => {
     let resolve: (value: object) => void = () => {};
     auth.signIn.mockImplementation(() => new Promise(r => { resolve = r; }));
-    mount(); const button = await screen.findByRole("button", { name: "Continuar con Google" });
+    mount(); const button = await screen.findByRole("button", { name: "login" });
     await waitFor(() => expect(button).toBeEnabled()); fireEvent.click(button);
     fireEvent.click(await screen.findByRole("button", { name: "Cancelar y volver a la web" }));
     await screen.findByText("Public web"); resolve({});

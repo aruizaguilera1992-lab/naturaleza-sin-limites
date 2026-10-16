@@ -1,0 +1,42 @@
+name: Stabilization checks
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.5.4
+      - name: Payment server type checks
+        run: >-
+          deno check --node-modules-dir=none
+          supabase/functions/create-activity-deposit/index.ts
+          supabase/functions/create-plan-checkout/index.ts
+          supabase/functions/create-payment-link/index.ts
+          supabase/functions/submit-request/index.ts
+          supabase/functions/create-portal-session/index.ts
+          supabase/functions/get-payment/index.ts
+          supabase/functions/payments-webhook/index.ts
+      - name: Server and database tests (simulated providers)
+        run: >-
+          deno test --node-modules-dir=none --allow-env --allow-read --allow-sys
+          supabase/functions/create-activity-deposit/handler.test.ts
+          supabase/functions/get-payment/eligibility.test.ts
+          supabase/functions/get-payment/checkout.test.ts
+          supabase/functions/_shared/email.test.ts
+          supabase/functions/_shared/stripe.test.ts
+          supabase/tests/capacity_max_six.test.ts
+          supabase/functions/create-payment-link/handler.test.ts
+          supabase/functions/_shared/bookingEmail.test.ts
+          supabase/functions/_shared/bookingEmailContext.test.ts
