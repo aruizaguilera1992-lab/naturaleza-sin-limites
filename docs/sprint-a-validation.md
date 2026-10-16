@@ -29,7 +29,7 @@ La migración 0013 no elimina registros ni reduce plazas. Si existe capacity_tot
 - Compilación Vite correcta; avisos de recurso remoto sin resolver en compilación, Browserslist antiguo y tamaño del paquete.
 - ESLint: 69 errores y 12 avisos en el árbol integrado. No se presenta lint como correcto; la limpieza general queda pendiente y no es un paso obligatorio de este CI.
 - npm audit: 50 avisos (1 bajo, 12 moderados, 34 altos y 3 críticos). Paquetes con severidad crítica: proxy-addr y tinypool transitivos; vitest directo de desarrollo. El inventario no demuestra explotabilidad en producción. Evaluar cadenas de dependencia y correcciones en un cambio separado antes de publicar; no se ejecuta audit fix.
-- CI remoto: NO ejecutado sobre el commit integrado. La revisión automática rechazó git push por interpretar la prohibición de publicar como prohibición de enviar commits. PR #1 permanece sin actualizar; requiere autorización explícita para subir únicamente su rama y ejecutar CI sin desplegar. El workflow ampliado local no despliega.
+- CI remoto: autorizado por el propietario el 16 de octubre de 2026 para la rama del PR #1. El resultado y el SHA verificado se registran en la descripción del PR después de la ejecución. El workflow de PR no despliega.
 
 Comandos reproducibles: npm ci; npm test; npm run build; npm run lint; npm audit. Para comprobaciones Deno, usar las listas exactas del workflow .github/workflows/stabilization-checks.yml. Runtime local: Node 24.19.0 y Deno 2.5.4; CI usa Node 22 y Deno 2.5.4. Las dependencias Deno se descargan antes de las pruebas; el código probado no recibe --allow-net.
 
@@ -53,4 +53,4 @@ Ajustes de integración: pruebas de Login usan el nombre accesible actual del bo
 
 ## Estado de entrega
 
-Integración local: ede7b5965100d3f40e47619e8aa3bf8430148ddc (merge con padres f664843 y d04930a). No subido al remoto. El PR remoto no se ha marcado listo para revisión ni se ha modificado su descripción: esas operaciones quedan pendientes junto con el push y CI remoto. La actualización de la rama puede activar los controles de PR; no se autoriza ninguna publicación del sitio.
+Integración local: ede7b5965100d3f40e47619e8aa3bf8430148ddc (merge con padres f664843 y d04930a). El propietario autorizó expresamente subir únicamente la rama del PR, ejecutar CI y dejarlo listo para revisión. La restricción de publicar el sitio, fusionar, desplegar y aplicar migraciones remotas sigue vigente. Consultar en el PR el SHA final y su resultado de CI.
