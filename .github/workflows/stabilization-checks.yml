@@ -41,3 +41,12 @@ jobs:
           supabase/functions/create-payment-link/handler.test.ts
           supabase/functions/_shared/bookingEmail.test.ts
           supabase/functions/_shared/bookingEmailContext.test.ts
+  dev-security-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run test:security

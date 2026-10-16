@@ -42,7 +42,8 @@ try {
     const response = await fetch(`${base}/${fixture}${suffix}`);
     // A nonexistent named stream may use the SPA fallback. It must never
     // expose the file, and actual env/default-stream requests must be denied.
-    if (suffix !== ":$DATA?raw") assert.ok(response.status >= 400, `Sensitive path must fail (${suffix})`);
+    const targetsFile = suffix === "?raw" || (process.platform === "win32" && suffix === "::$DATA?raw");
+    if (targetsFile) assert.ok(response.status >= 400, `Sensitive path must fail (${suffix})`);
     else if (response.ok) assert.ok(response.headers.get("content-type")?.includes("text/html"));
     assert.equal((await response.text()).includes(marker), false);
   }

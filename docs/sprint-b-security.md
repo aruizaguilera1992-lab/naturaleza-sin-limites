@@ -94,3 +94,5 @@ Fuentes: https://github.com/advisories/GHSA-vfj7-8cjw-p6xm ; https://github.com/
 Este cambio depende del PR #1 y debe revisarse contra su rama para aislar el Sprint B. CI de PR admite esa base y main; no incluye despliegue. npm/package-lock son la ruta comprobada en CI; los lockfiles históricos de Bun/pnpm no se sincronizan ni se certifican.
 
 No fusionar ni retargetear automáticamente. main conserva el workflow FTP con npm install; seguridad del despliegue, validación de migraciones en copia aislada y proveedores sandbox pertenecen a la siguiente fase y siguen pendientes. No se han desplegado cambios, aplicado migraciones remotas, activado pagos reales ni enviado comunicaciones.
+
+CI incluye además un job Windows para comprobar NTFS en su plataforma real. En Linux, las rutas de streams inexistentes pueden usar el fallback HTML; en ambas plataformas se exige que nunca expongan el marcador sintético. La petición normal al archivo .env siempre debe fallar.
