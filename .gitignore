@@ -15,6 +15,9 @@ dist-ssr
 .env.*
 !.env.example
 
+# Local PostgreSQL binaries, data and credentials are never project sources.
+.tools/local-postgres/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

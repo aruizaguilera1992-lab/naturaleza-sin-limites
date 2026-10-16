@@ -1,7 +1,7 @@
 name: Stabilization checks
 on:
   pull_request:
-    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security]
+    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security, test/sprint-c-isolated-bookings]
 permissions:
   contents: read
 jobs:
@@ -52,3 +52,40 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npm run test:security
+  local-schema-rebuild:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.14
+        env:
+          POSTGRES_USER: nsl_local_admin
+          POSTGRES_PASSWORD: nsl-ci-fixture-only
+          POSTGRES_DB: postgres
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U nsl_local_admin -d postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: node --test scripts/local-db/target.test.mjs
+      - name: Configure ephemeral local fixture only
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          fs.mkdirSync('.tools/local-postgres', { recursive: true });
+          fs.writeFileSync('.tools/local-postgres/credentials.local.json', JSON.stringify({
+            host: '127.0.0.1', port: 55432, user: 'nsl_local_admin',
+            password: 'nsl-ci-fixture-only'
+          }));
+          JS
+      - name: Rebuild and verify native local schema
+        run: node scripts/rebuild-local-db.mjs --database nsl_rebuild_ci
+      - name: Refuse an existing fixture database
+        run: node scripts/local-db/check-existing.mjs --database nsl_rebuild_ci
