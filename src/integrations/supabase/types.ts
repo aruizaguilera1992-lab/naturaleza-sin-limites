@@ -144,6 +144,8 @@ export type Database = {
           admin_notes: string | null
           contact: string
           created_at: string
+          discount_cents: number
+          discount_percent: number
           email: string | null
           event_id: string | null
           experience_level: string | null
@@ -166,6 +168,8 @@ export type Database = {
           admin_notes?: string | null
           contact: string
           created_at?: string
+          discount_cents?: number
+          discount_percent?: number
           email?: string | null
           event_id?: string | null
           experience_level?: string | null
@@ -188,6 +192,8 @@ export type Database = {
           admin_notes?: string | null
           contact?: string
           created_at?: string
+          discount_cents?: number
+          discount_percent?: number
           email?: string | null
           event_id?: string | null
           experience_level?: string | null

@@ -1,9 +1,10 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin, MessageCircle, LockKeyhole } from "lucide-react";
 import logoAsset from "@/assets/naturaleza-sin-limites-logo.webp.asset.json";
 import { useCookieConsent } from "@/context/CookieConsentContext";
+import { absoluteUrl } from "@/lib/site";
 
 const navLinks = [
   { href: "/actividades", label: "Actividades" },
@@ -87,7 +88,7 @@ export function Footer() {
           <div>
             <button onClick={handleLogoClick} className="inline-block mb-6 cursor-pointer">
               <img
-                src={logoAsset.url}
+                src={absoluteUrl(logoAsset.url)}
                 alt="Naturaleza Sin Límites"
                 loading="lazy"
                 decoding="async"
@@ -212,6 +213,9 @@ export function Footer() {
               <button onClick={openPreferences} className="hover:text-primary transition-colors">
                 Configurar cookies
               </button>
+              <Link to="/login?next=/admin" aria-label="Acceso a gestión" className="inline-flex min-h-11 items-center gap-2 rounded-md px-1 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <LockKeyhole aria-hidden="true" className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </div>

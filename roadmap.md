@@ -1,5 +1,19 @@
 # Roadmap
 
+## Aclaración comercial de correos (15/10/2026)
+- [x] Distinguir señales administrativas confirmadas de solicitudes y pagos genéricos con evidencia fiable
+- [x] Actualizar economía/resto, pruebas y muestras ficticias; revisar escritorio/móvil sin envíos ni despliegue
+- Límite actual: create-payment-link crea kind=manual por defecto; solo señales ya identificadas kind=senal pueden usar confirmación comercial. No se reclasificaron pagos ni registros. notification_log registra aceptación del envío, no una fecha histórica confirmada independiente.
+
+## Acceso a gestión (15/10/2026)
+- [x] Rediseñar login, entrada en footer y estados sin acceso del panel
+- [x] Probar destinos seguros, retorno, errores/cancelación y vistas móvil/escritorio sin OAuth real
+
+## Correos de reservas y pagos (15/10/2026)
+- [x] Rediseñar solicitud, enlace, recibo, aviso administrativo y confirmación con el renderer compartido
+- [x] Verificar estados, escape, importes, ausentes y vistas HTML ficticias en escritorio/móvil
+- [ ] Desplegar funciones de correo (bloqueado: requiere petición adicional del usuario; no desplegar en esta tarea)
+
 ## Hecho
 - [x] Punto 2: página de pago /pago/:token + cobros desde el panel admin
 - [x] QA: solicitud de prueba desde /contacto -> aparece en /admin y cambio de estado OK
@@ -8,8 +22,8 @@
 
 ## Pendiente
 - [x] Rediseñar fichas individuales y añadir vídeos oficiales verificados al Blog (sin publicar)
-- [ ] Clave de Resend válida (los emails fallan: 'API key is invalid')
-- [ ] Verificar dominio remitente en Resend
+- [x] Clave de Resend válida (conexión conectada el 15/10/2026; envíos verificados)
+- [x] Dominio remitente verificado en Resend (naturalezasinlimites.es, los 3 registros en verde)
 - [ ] Activar pagos reales (modo actual: sandbox)
 
 ## Rediseño comercial visual (21/09/2026)
@@ -40,7 +54,7 @@
 - [x] Estado real de los correos (enviado / fallido / omitido) y registro de avisos con reintento desde el panel
 - [x] Formularios con nombre, email y teléfono separados; reservas de 1 a 6 personas y consulta para grupos mayores
 - [x] Newsletter y promesa de descuento ocultas (código conservado)
-- [ ] Clave de Resend válida + remitente verificado (pendiente del usuario)
+- [x] Clave de Resend válida + remitente verificado (comprobado el 15/10/2026: correo de prueba entregado)
 
 ## Fotografías de fichas
 - [x] Fotos reales individuales y metadatos para las 68 actividades publicadas
@@ -89,7 +103,7 @@
 - Para pasar a producción falta: completar la verificación de la cuenta de pagos
   (go-live), que genera STRIPE_LIVE_API_KEY, PAYMENTS_LIVE_WEBHOOK_SECRET y el token
   público live. No requiere cambios de código: el entorno se deriva del prefijo del token.
-- También pendiente: clave de Resend válida y remitente verificado para los correos.
+- Correos: remitente verificado y envíos comprobados el 15/10/2026.
 
 ## Calendario real de salidas (fases 1-5)
 - [x] Fase 1: tablas `activity_events` y `activity_event_bookings`, `event_id` en reservas, permisos y RLS
@@ -173,3 +187,14 @@
 - [x] Todos los apartados con el mismo formato de píldora (icono + nombre + contador), letra más grande
 - [x] Filtros activos mostrados como chips quitables uno a uno + botón «Limpiar filtros»
 - [x] Verificado en 1280 y 390 px, build y tipos limpios (sin publicar)
+
+## Registros DNS de Resend (15/10/2026)
+- [x] Comprobado en Resend: naturalezasinlimites.es está **verificado** (alta 17/09/2026, región eu-west-1, envío activo)
+- [x] Los 3 registros (DKIM TXT `resend._domainkey`, SPF CNAME `rsend` y `send`) aparecen como verificados: nada que añadir en Hostinger
+- [x] Remitente real ya en uso: `reservas@naturalezasinlimites.es`, con respuesta a `naturaleza.s.limites@gmail.com`
+- [x] Envío de prueba enviado y entregado con el nuevo canal
+- [x] El backend envía ahora a través del gateway de la conexión (antes llamaba a la API de Resend de forma directa)
+- [x] Detalle de reserva en pantalla principal de /admin (lista + detalle, sin panel lateral) con descuento aplicado que recalcula total, senal y saldo
+- [x] /admin: el menú lateral solo en escritorio (lg); en tableta y móvil se abre con el botón ☰
+- [x] Descuentos por porcentaje (migración 0012: bookings.discount_percent 0-100); el importe fijo discount_cents queda como legado
+- [ ] Publicar la web (lo hace el usuario)

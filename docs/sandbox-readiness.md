@@ -8,7 +8,7 @@ Se realizaron consultas de solo lectura a la cuenta conectada «Entorno de prueb
 | --- | --- | --- |
 | Código Lovable | Último commit del proyecto: `d6a6b0439304c810f1da56db92d84b4c66b23e1a`, anterior al PR | Las correcciones aún no están en la vista previa existente |
 | Salidas | Una salida; capacidad máxima 6; ninguna superior a 6 | No se detectan datos que bloqueen la migración en el momento de la consulta |
-| Restricción de capacidad | `activity_events_capacity_positive` todavía admite hasta 20 | Migración 0012 pendiente; repetir preflight justo antes de aplicarla |
+| Restricción de capacidad | `activity_events_capacity_positive` todavía admite hasta 20 | Migración 0013 pendiente; repetir preflight justo antes de aplicarla |
 | Precios Stripe de pruebas | Cero precios activos y cero coincidencias para las seis lookup keys del catálogo | Bloquea checkout de planes y packs (`Precio no encontrado`) |
 | Webhooks Stripe de pruebas | Dos endpoints habilitados: ruta Lovable `/payments-webhook/sandbox` y función Supabase `payments-webhook?env=sandbox` | Configuración visible; entrega, firmas y encaminamiento aún sin probar |
 | Resend | Sin conector de Resend ni secretos de servidor configurados en este entorno local | No se puede verificar entrega aquí |

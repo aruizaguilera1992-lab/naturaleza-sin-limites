@@ -23,6 +23,8 @@ jobs:
           deno check --node-modules-dir=none
           supabase/functions/create-activity-deposit/index.ts
           supabase/functions/create-plan-checkout/index.ts
+          supabase/functions/create-payment-link/index.ts
+          supabase/functions/submit-request/index.ts
           supabase/functions/create-portal-session/index.ts
           supabase/functions/get-payment/index.ts
           supabase/functions/payments-webhook/index.ts
@@ -35,3 +37,6 @@ jobs:
           supabase/functions/_shared/email.test.ts
           supabase/functions/_shared/stripe.test.ts
           supabase/tests/capacity_max_six.test.ts
+          supabase/functions/create-payment-link/handler.test.ts
+          supabase/functions/_shared/bookingEmail.test.ts
+          supabase/functions/_shared/bookingEmailContext.test.ts

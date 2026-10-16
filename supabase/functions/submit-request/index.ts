@@ -8,6 +8,7 @@ import {
   listLayout,
   sendTrackedNotification,
 } from "../_shared/email.ts";
+import { renderBookingEmail } from "../_shared/bookingEmail.ts";
 
 export const MAX_STANDARD_GROUP = 6;
 
@@ -166,39 +167,22 @@ Deno.serve(async (req) => {
       return json({ error: "No se pudo guardar la solicitud" }, 500);
     }
 
-    const summary = [
-      `Actividad: ${data.activity}`,
-      `Fecha preferente: ${data.preferredDate ?? "-"}`,
-      `Personas: ${data.numberOfPeople}`,
-      `Nivel: ${data.experienceLevel ?? "-"}`,
-      `Nombre: ${data.name}`,
-      `Email: ${data.email}`,
-      `Teléfono: ${data.phone}`,
-      `Mensaje: ${data.message ?? "-"}`,
-    ];
-
-    const businessSubject = `Nueva reserva: ${data.activity}`;
+    const emailData = { state: "nueva" as const, activity: data.activity, date: data.preferredDate, people: data.numberOfPeople, name: data.name, email: data.email, phone: data.phone, message: data.message, level: data.experienceLevel };
+    const businessEmail = renderBookingEmail({ ...emailData, variant: "request_admin" });
     const business = await sendTrackedNotification(supabase, {
       kind: "reserva_negocio",
       dedupeKey: `booking_business:${inserted.id}`,
       recipients: businessRecipients(),
-      subject: businessSubject,
+      ...businessEmail,
       bookingId: inserted.id,
-      html: listLayout(businessSubject, summary),
     });
 
     const client = await sendTrackedNotification(supabase, {
       kind: "reserva_cliente",
       dedupeKey: `booking_customer:${inserted.id}`,
       recipients: [data.email],
-      subject: "Hemos recibido tu solicitud · Naturaleza Sin Límites",
+      ...renderBookingEmail({ ...emailData, variant: "request_customer" }),
       bookingId: inserted.id,
-      html: clientConfirmationHtml(data.name, "Resumen de tu solicitud", [
-        `Actividad: ${data.activity}`,
-        `Fecha preferente: ${data.preferredDate ?? "por concretar"}`,
-        `Personas: ${data.numberOfPeople}`,
-        `Nivel: ${data.experienceLevel ?? "por concretar"}`,
-      ]),
     });
 
     return json({

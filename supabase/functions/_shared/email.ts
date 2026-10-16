@@ -28,30 +28,34 @@ export interface EmailResult {
   error?: string;
 }
 
-/** Sends an email through Resend. Returns the real provider outcome. */
+/** Sends an email through Resend via the Lovable connector gateway. Returns the real provider outcome. */
 export async function sendEmail(
   to: string[],
   subject: string,
   html: string,
   idempotencyKey?: string,
+  plainText?: string,
 ): Promise<EmailResult> {
   const apiKey = Deno.env.get("RESEND_API_KEY");
+  const gatewayKey = Deno.env.get("LOVABLE_API_KEY");
   const from = Deno.env.get("NOTIFICATION_FROM") ?? "onboarding@resend.dev";
   const replyToRaw = (Deno.env.get("NOTIFICATION_REPLY_TO") ?? "").trim();
   const replyTo = isEmail(replyToRaw) ? replyToRaw : "";
   const recipients = to.map((t) => t.trim()).filter((t) => isEmail(t));
 
   if (!apiKey) return { status: "omitido", error: "RESEND_API_KEY no configurada" };
+  if (!gatewayKey) return { status: "omitido", error: "LOVABLE_API_KEY no configurada" };
   if (recipients.length === 0) return { status: "omitido", error: "Sin destinatarios válidos" };
   if (!emailDeliveryAllowed(recipients, Deno.env.get("EMAIL_DELIVERY_MODE"), Deno.env.get("EMAIL_TEST_RECIPIENTS"))) {
     return { status: "omitido", error: "Entrega de email deshabilitada para estos destinatarios" };
   }
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${gatewayKey}`,
+        "X-Connection-Api-Key": apiKey,
         "Content-Type": "application/json",
         // Stable key: the provider de-duplicates retries of the same intent.
         ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey.slice(0, 256) } : {}),
@@ -61,6 +65,7 @@ export async function sendEmail(
         to: recipients,
         subject,
         html,
+        text: plainText ?? htmlToPlainText(html),
         ...(replyTo ? { reply_to: [replyTo] } : {}),
       }),
     });
@@ -111,9 +116,12 @@ export interface NotificationIntent {
   recipients: string[];
   subject: string;
   html: string;
+  text?: string;
   paymentRequestId?: string | null;
   bookingId?: string | null;
   contactId?: string | null;
+  /** Optional semantic evidence persisted in payload (e.g. explicit deposit-confirmation intent). */
+  presentation?: Record<string, unknown>;
 }
 
 /** Shape the confirmation RPC expects for durable intents. */
@@ -140,7 +148,7 @@ export async function enqueueNotification(supabase: Db, intent: NotificationInte
     status: "pendiente",
     dedupe_key: intent.dedupeKey,
     provider_idempotency_key: intent.dedupeKey,
-    payload: { html: intent.html, recipients: intent.recipients },
+    payload: { html: intent.html, ...(intent.text ? { text: intent.text } : {}), recipients: intent.recipients, ...(intent.presentation ? { presentation: intent.presentation } : {}) },
     payment_request_id: intent.paymentRequestId ?? null,
     booking_id: intent.bookingId ?? null,
     contact_id: intent.contactId ?? null,
@@ -193,7 +201,7 @@ export async function dispatchNotification(supabase: Db, id: string): Promise<Di
   const html: string = claim.payload?.html ?? "";
 
   const result = html
-    ? await sendEmail(recipients, claim.subject, html, claim.idempotency_key)
+    ? await sendEmail(recipients, claim.subject, html, claim.idempotency_key, claim.payload?.text)
     : ({ status: "fallido", error: "sin_contenido" } as EmailResult);
 
   const { data: finish, error: finishError } = await supabase.rpc("finish_notification", {
@@ -208,6 +216,20 @@ export async function dispatchNotification(supabase: Db, id: string): Promise<Di
   if (!finish?.ok) throw new Error(`notification_finish_failed: ${finish?.reason}`);
 
   return { id, status: result.status, providerId: result.providerId, error: result.error };
+}
+
+/** RPC-persisted legacy payloads contain HTML only; retain an equivalent text part without a schema change. */
+export function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<head\b[\s\S]*?<\/head>/gi, "")
+    .replace(/<div[^>]*mso-hide:all[^>]*>[\s\S]*?<\/div>/gi, "")
+    .replace(/<a\b[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, "$2 ($1)")
+    .replace(/<\/(?:p|h[1-6]|tr|div|table)>|<br\s*\/?\s*>/gi, "\n")
+    .replace(/<\/td>\s*<td[^>]*>/gi, ": ")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&(?:amp|lt|gt|quot|#39|nbsp);/g, e => ({ "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&nbsp;": " " })[e] ?? e)
+    .replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
 /** Persist + dispatch in one call (non-payment flows). */

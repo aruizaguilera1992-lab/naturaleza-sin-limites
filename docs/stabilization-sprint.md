@@ -8,7 +8,7 @@ Los archivos locales dejan de rastrearse; usar `.env.example` como plantilla. An
 
 ## Capacidad
 
-Panel y diseñador de packs: máximo seis. La nueva migración Drizzle `0012_capacity_max_six` impone el límite en la tabla y en la RPC de reserva manteniendo los permisos exclusivos de `service_role` y el bloqueo de filas. Si existen salidas con capacidad superior a seis, aborta antes de modificar datos. Revisar esas salidas y sus reservas manualmente; no reducir automáticamente grupos ya reservados. No se ha aplicado ninguna migración remota.
+Panel y diseñador de packs: máximo seis. La nueva migración Drizzle `0013_capacity_max_six` impone el límite en la tabla y en la RPC de reserva manteniendo los permisos exclusivos de `service_role` y el bloqueo de filas. Si existen salidas con capacidad superior a seis, aborta antes de modificar datos. Revisar esas salidas y sus reservas manualmente; no reducir automáticamente grupos ya reservados. No se ha aplicado ninguna migración remota.
 
 ## Stripe y Resend
 
@@ -31,3 +31,7 @@ Las pruebas usan simulaciones sin acceder a cuentas, cobrar o enviar correo. Ver
 - Las comprobaciones de PR no despliegan ni reciben secretos. El despliegue existente solo se dispara al actualizar `main`; no integrar este PR hasta aprobar la configuración y la migración.
 
 La revisión de solo lectura de los proveedores está en [sandbox-readiness.md](sandbox-readiness.md): faltan precios de pruebas, el código del PR no está desplegado y el aislamiento de la base de datos aún no se ha confirmado.
+
+## Integración Sprint A — 16 de octubre de 2026
+
+Main incorporado hasta d04930a; capacidad pasa a 0013, después de los descuentos 0012. Resultados actuales, riesgos y procedimiento de validación en [sprint-a-validation.md](sprint-a-validation.md); las cifras de la sección anterior corresponden a la fase original.

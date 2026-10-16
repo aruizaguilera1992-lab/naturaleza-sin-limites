@@ -1,7 +1,9 @@
 import { PGlite } from "npm:@electric-sql/pglite@0.3.14";
 import { assertEquals, assertRejects } from "jsr:@std/assert@1";
 
-const migration = await Deno.readTextFile("drizzle/migrations/0012_capacity_max_six.sql");
+const migration = await Deno.readTextFile("drizzle/migrations/0013_capacity_max_six.sql");
+const discountMigration = await Deno.readTextFile("drizzle/migrations/0012_add_booking_discount_percent.sql");
+const journal = JSON.parse(await Deno.readTextFile("drizzle/migrations/meta/_journal.json"));
 
 async function database(capacity = 6) {
   const db = new PGlite();
@@ -11,7 +13,7 @@ async function database(capacity = 6) {
       seats_reserved integer DEFAULT 0, status text DEFAULT 'publicada', starts_at timestamptz DEFAULT now() + interval '1 day',
       CONSTRAINT activity_events_capacity_positive CHECK(capacity_total BETWEEN 1 AND 20),
       CONSTRAINT activity_events_seats_range CHECK(seats_reserved BETWEEN 0 AND capacity_total));
-    CREATE TABLE bookings(id uuid PRIMARY KEY, event_id uuid);
+    CREATE TABLE bookings(id uuid PRIMARY KEY, event_id uuid, discount_cents integer DEFAULT 0);
     CREATE TABLE activity_event_bookings(event_id uuid, booking_id uuid UNIQUE, participants integer, state text, hold_expires_at timestamptz);
     CREATE FUNCTION release_expired_event_holds() RETURNS integer LANGUAGE sql AS 'SELECT 0';
     INSERT INTO activity_events(id,capacity_total) VALUES('11111111-1111-4111-8111-111111111111',${capacity});
@@ -52,9 +54,38 @@ Deno.test("database enforces six and atomic seat reservations cannot overbook", 
 Deno.test("legacy capacity aborts migration without changing reservations", async () => {
   const db = await database(20);
   try {
+    await db.exec("UPDATE activity_events SET seats_reserved=8; INSERT INTO bookings(id,discount_cents) VALUES('22222222-2222-4222-8222-222222222221',1500)");
+    await db.exec(discountMigration);
     await assertRejects(() => db.exec(migration));
     await db.exec("ROLLBACK");
     const rows = await db.query<{ capacity_total: number }>("SELECT capacity_total FROM activity_events");
     assertEquals(rows.rows[0].capacity_total, 20);
+    assertEquals((await db.query("SELECT seats_reserved FROM activity_events")).rows, [{ seats_reserved: 8 }]);
+    assertEquals((await db.query("SELECT discount_cents,discount_percent FROM bookings")).rows, [{ discount_cents: 1500, discount_percent: 0 }]);
+  } finally { await db.close(); }
+});
+
+Deno.test("journal keeps upstream 0012 then 0013 with increasing timestamps and existing discounts", async () => {
+  const entries = journal.entries;
+  assertEquals(new Set(entries.map((e: { idx: number }) => e.idx)).size, entries.length);
+  assertEquals(new Set(entries.map((e: { tag: string }) => e.tag.slice(0, 4))).size, entries.length);
+  for (let i = 0; i < entries.length; i++) {
+    assertEquals(entries[i].idx, i);
+    if (i) assertEquals(entries[i].when > entries[i - 1].when, true);
+    await Deno.readTextFile(`drizzle/migrations/${entries[i].tag}.sql`);
+  }
+  assertEquals(entries[12].tag, "0012_add_booking_discount_percent");
+  assertEquals(entries[12].when, 1792062004750);
+  assertEquals(entries[13].tag, "0013_capacity_max_six");
+  const db = await database();
+  try {
+    await db.exec("INSERT INTO bookings(id,discount_cents) VALUES('22222222-2222-4222-8222-222222222221',1500)");
+    await db.exec(discountMigration);
+    await db.exec("UPDATE bookings SET discount_percent=25; UPDATE activity_events SET seats_reserved=2");
+    await db.exec(migration);
+    assertEquals((await db.query("SELECT discount_cents,discount_percent FROM bookings")).rows, [{ discount_cents: 1500, discount_percent: 25 }]);
+    assertEquals((await db.query("SELECT capacity_total,seats_reserved FROM activity_events")).rows, [{ capacity_total: 6, seats_reserved: 2 }]);
+    await assertRejects(() => db.exec("UPDATE bookings SET discount_percent=101"));
+    await assertRejects(() => db.exec("UPDATE activity_events SET capacity_total=7"));
   } finally { await db.close(); }
 });

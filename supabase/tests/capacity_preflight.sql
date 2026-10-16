@@ -1,4 +1,4 @@
--- Read-only preflight. Run again immediately before migration 0012.
+-- Read-only preflight. Run again immediately before migration 0013.
 -- Contains no customer details, payment tokens or secrets.
 SELECT count(*) AS total_events,
        count(*) FILTER (WHERE capacity_total > 6) AS oversized_events,
