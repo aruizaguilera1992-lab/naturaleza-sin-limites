@@ -26,6 +26,7 @@ function getSupabase() {
     _supabase = createClient<ServerDatabase>(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      { auth: { persistSession: false, autoRefreshToken: false } },
     );
   }
   return _supabase;
@@ -413,6 +414,10 @@ async function fulfill(session: any, env: StripeEnv) {
         .from("payment_requests")
         .update({ last_error: `plazas: ${why}` })
         .eq("id", paymentRequestId);
+      const { error: incidentError } = await supabase.from("bookings")
+        .update({ status: "incidencia_plazas" })
+        .eq("id", confirmedBookingId).eq("status", "confirmada");
+      if (incidentError) throw new Error("seat_incident_status_failed");
       const subject = `INCIDENCIA: pago recibido sin plaza · ${base.concept}`;
       await enqueueNotification(supabase, {
         kind: "incidencia_plazas_negocio",
@@ -432,6 +437,13 @@ async function fulfill(session: any, env: StripeEnv) {
       });
     } else {
       console.log("confirm_event_seats", JSON.stringify(seatOutcome));
+      const { error: recoveredError } = await supabase.from("bookings")
+        .update({ status: "confirmada" })
+        .eq("id", confirmedBookingId).eq("status", "incidencia_plazas");
+      if (recoveredError) throw new Error("seat_recovery_status_failed");
+      const { error: clearedError } = await supabase.from("payment_requests")
+        .update({ last_error: null }).eq("id", paymentRequestId).like("last_error", "plazas:%");
+      if (clearedError) throw new Error("seat_recovery_error_clear_failed");
       if (email) {
         await enqueueNotification(supabase, {
           ...customerIntent({ ...base, email, variant: "confirmada" }),

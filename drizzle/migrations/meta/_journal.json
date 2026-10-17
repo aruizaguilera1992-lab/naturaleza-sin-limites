@@ -99,6 +99,13 @@
       "when": 1792108800000,
       "tag": "0013_capacity_max_six",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792152000000,
+      "tag": "0014_atomic_deposit_intents",
+      "breakpoints": true
     }
   ]
 }

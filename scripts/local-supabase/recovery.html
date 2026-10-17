@@ -1,0 +1,20 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Prueba local de recuperación</title>
+<h1>Prueba local de recuperación de seis plazas</h1><p>Solo datos ficticios. Crea un bloqueo local y descarta su respuesta antes de volver al formulario.</p>
+<button id="run">Simular respuesta perdida</button><p id="result" role="status"></p>
+<script>
+document.getElementById('run').onclick = async () => {
+  document.getElementById('run').disabled = true;
+  const eventId = '40000000-0000-4000-a000-000000000016';
+  const requestId = crypto.randomUUID();
+  sessionStorage.setItem('nsl-deposit-intent:' + eventId, JSON.stringify({id:requestId,fingerprint:'local-recovery-fixture'}));
+  const response = await fetch('/local-supabase/functions/v1/create-activity-deposit', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({requestId,eventId,category:'barranquismo',slug:'guadalmina',participants:6,
+      name:'LOCAL RECOVERY FIXTURE',email:'local-recovery-browser@example.test',phone:'+34000000000',rgpd:true,
+      environment:'sandbox',origin:location.origin})
+  });
+  if (!response.ok) { document.getElementById('result').textContent = 'No se pudo crear el bloqueo ficticio'; return; }
+  // Intentionally discard the token; recovery must look it up using the capability.
+  location.assign('/reservar/barranquismo/guadalmina?evento=' + eventId);
+};
+</script></html>

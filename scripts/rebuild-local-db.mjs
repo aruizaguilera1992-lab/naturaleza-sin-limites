@@ -59,10 +59,10 @@ if (!args.length || args[0] === "--help") {
     stage = "native Drizzle migration";
     await migrate(drizzle(sql), { migrationsFolder: "drizzle/migrations" });
     const history = await sql`SELECT hash,created_at FROM drizzle.__drizzle_migrations ORDER BY created_at`;
-    assert.equal(history.length, 14);
+    assert.equal(history.length, JSON.parse(fs.readFileSync('drizzle/migrations/meta/_journal.json', 'utf8')).entries.length);
     await migrate(drizzle(sql), { migrationsFolder: "drizzle/migrations" });
     assert.deepEqual(await sql`SELECT hash,created_at FROM drizzle.__drizzle_migrations ORDER BY created_at`, history);
-    report.checks.push("14 native migration entries; second pass unchanged");
+    report.checks.push(`${history.length} native migration entries; second pass unchanged`);
     report.history = history;
 
     stage = "generated column inventory";
