@@ -17,7 +17,7 @@ export function validateBuildOnly(workflow) {
   assert.equal(job['runs-on'], 'ubuntu-latest');
   assert.deepEqual(job.steps.map(step => step.uses ?? step.run), [
     'actions/checkout@v4', 'actions/setup-node@v4',
-    'npm ci', 'node --test scripts/deployment-guard.test.mjs', 'npm run build',
+    'npm install', 'node --test scripts/deployment-guard.test.mjs', 'npm run build',
   ]);
   for (const [index, step] of job.steps.entries()) {
     assert.equal(typeof step.name, 'string');

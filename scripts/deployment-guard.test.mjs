@@ -13,7 +13,7 @@ for (const [name, change] of [
   ['persisted checkout credential', value => { value.jobs.build.steps[0].with['persist-credentials'] = true; }],
   ['secret passed into job', value => { value.jobs.build.env = { FTP_PASSWORD: '${{ secrets.FTP_PASSWORD }}' }; }],
   ['extra shell command', value => { value.jobs.build.steps[4].run = 'npm run build && curl https://example.test'; }],
-  ['nonreproducible install', value => { value.jobs.build.steps[2].run = 'npm install'; }],
+  ['forced dependency changes', value => { value.jobs.build.steps[2].run = 'npm install --force'; }],
   ['privileged pull request event', value => { value.on.pull_request_target = {}; }],
   ['dispatch publishing input', value => { value.on.workflow_dispatch.inputs = { publish: { default: true } }; }],
 ]) {

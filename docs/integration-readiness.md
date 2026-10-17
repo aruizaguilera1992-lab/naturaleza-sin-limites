@@ -36,7 +36,7 @@ basado directamente en main, que puede revisarse antes de la cadena funcional.
 
 build.yml conserva push a main y añade pull_request a main y workflow_dispatch,
 pero sus únicos pasos son checkout sin credenciales persistentes, Node 22,
-npm ci, comprobación de política y npm run build. Token contents:read; ningún
+npm install, comprobación de política y npm run build. Token contents:read; ningún
 paso FTP, credencial de despliegue, subida de artefacto ni trabajo de publicación.
 workflow_dispatch también compila únicamente: no ofrece parámetro para publicar.
 
@@ -45,8 +45,16 @@ permisos y pasos y rechaza trabajos adicionales, secretos, comandos encadenados,
 permisos de escritura y eventos privilegiados. Once pruebas incluyen controles
 negativos. Son detección de regresiones, no un mecanismo de autorización que
 resista a alguien con permiso para cambiar a la vez el workflow y su comprobación.
-El paquete yaml ya está en el lock de main y se instala con npm ci; no se añade
+El paquete yaml ya está en el lock de main y se instala con npm install; no se añade
 ni actualiza ninguna dependencia en este PR.
+
+El primer CI del guard con npm ci falló porque el lock vigente de main no incluye
+dependencias declaradas en package.json. Para no introducir aquí la corrección
+de dependencias que ya preparan los PR siguientes, se conserva npm install del
+workflow original. La instalación no es reproducible y puede resolver versiones
+permitidas nuevas dentro del runner; no se presenta como una certificación del
+lock ni se incorpora el lock generado por CI. Tras integrar la estabilización,
+preparar otro cambio revisado a npm ci. Los checks de estabilización ya lo usan.
 
 Esta barrera se limita a este workflow del repositorio. Antes de autorizar
 cualquier futura modificación de main, revisar otras automatizaciones, webhooks,
