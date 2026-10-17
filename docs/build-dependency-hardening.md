@@ -22,7 +22,10 @@ El resolvedor conservaba inicialmente esbuild 0.18.20 en el lock. Se resolvió e
 una carpeta aislada partiendo del lock original, retirando solo las entradas
 obsoletas del subárbol core-utils y dejando que npm reconstruyera esa parte.
 Se comprobó la instalación final con npm ci 10.9.4 y resolución efectiva desde
-cada consumidor. Fuera de esbuild y sus binarios, el único cambio de versión en
+cada consumidor. Se retiró una referencia local sobrante introducida por la
+resolución con --prefix; CI verifica que el lock coincide con el manifiesto y
+no contiene enlaces locales ni rutas fuera del checkout.
+Fuera de esbuild y sus binarios, el único cambio de versión en
 una ruta ya presente es postcss-selector-parser. La resolución completa sin el
 lock original actualizaba paquetes ajenos y no se incorporó.
 

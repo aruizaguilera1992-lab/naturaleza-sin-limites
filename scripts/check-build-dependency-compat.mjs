@@ -6,6 +6,12 @@ import { execFileSync } from 'node:child_process';
 import { randomUUID, createHash } from 'node:crypto';
 
 const require = createRequire(import.meta.url);
+const manifest = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const lock = JSON.parse(fs.readFileSync('package-lock.json', 'utf8'));
+assert.deepEqual(lock.packages[''].dependencies, manifest.dependencies, 'Lock must match manifest without local self-dependencies');
+assert.deepEqual(lock.packages[''].devDependencies, manifest.devDependencies);
+assert.ok(Object.entries(lock.packages).every(([name, value]) =>
+  (name === '' || name.startsWith('node_modules/')) && !value.link), 'No local links or paths outside this checkout');
 const core = require('@esbuild-kit/core-utils');
 const coreRequire = createRequire(require.resolve('@esbuild-kit/core-utils'));
 const mcpRequire = createRequire(require.resolve('@lovable.dev/mcp-js'));
