@@ -96,6 +96,28 @@ La comprobación de sandbox del 14 de octubre es histórica, no un estado actual
 de la cuenta. Las pruebas locales y simuladas no prueban 3DS, entrega real de
 correo, renovaciones, portal ni retorno OAuth de un proveedor externo.
 
+### Catálogo sandbox comprobado de nuevo el 17 de octubre
+
+Consulta exclusivamente de lectura al entorno de pruebas de Naturaleza sin
+Limites, livemode=false. Se buscaron las seis lookup keys activas del catálogo;
+la respuesta completa (has_more=false) contiene dos precios, ambos en EUR:
+
+| Lookup key | Código actual | Precio activo encontrado |
+| --- | --- | --- |
+| aventurero_1_semana_mensual | 119 EUR/mes | No encontrado |
+| aventurero_2_semana_mensual | 189 EUR/mes | No encontrado |
+| entrenador_personal_mensual | 329 EUR/mes | No encontrado |
+| entrenador_personal_prepago6 | 285 EUR/mes; modelo mensual por confirmar | No encontrado |
+| outdoor_pack_4_actividades | 215 EUR, pago único | 215 EUR, pago único, sandbox |
+| outdoor_pack_8_actividades | 380 EUR, pago único | 380 EUR, pago único, sandbox |
+
+Se cotejó el catálogo de cliente/servidor de la rama del PR #6; la rama de este
+guard no altera ese catálogo. No se crearon precios, clientes, sesiones ni
+notificaciones. La presencia de dos precios no acredita impuestos, disponibilidad
+de fechas, credenciales del backend ni un checkout ejecutable. Ambos precios
+devuelven tax_behavior=unspecified; no se certifica su configuración fiscal.
+Los cuatro planes mensuales y las reglas del plan de seis meses siguen pendientes.
+
 ## Cierre y recuperación
 
 Este PR no modifica SQL, aplicación, .env ni configuración remota. Revertir la
