@@ -1,0 +1,21 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Acceso exclusivo de pruebas locales</title>
+<h1>Acceso exclusivo de pruebas locales</h1><p>Usa únicamente usuarios ficticios del Supabase local. Este acceso no se incluye en la web publicada.</p>
+<form id="local-login"><label>Email ficticio <input id="email" type="email" autocomplete="off" required></label>
+<label>Contraseña de prueba <input id="password" type="password" autocomplete="off" required></label>
+<button>Entrar al panel local</button></form><p id="result" role="status"></p>
+<script>
+document.getElementById('local-login').addEventListener('submit', async event => {
+  event.preventDefault();
+  try {
+    const response = await fetch('/local-supabase/auth/v1/token?grant_type=password', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', apikey: '__LOCAL_PUBLIC_KEY__' },
+      body: JSON.stringify({ email: document.getElementById('email').value, password: document.getElementById('password').value })
+    });
+    if (!response.ok) throw Error();
+    const session = await response.json();
+    if (!session.access_token || !session.refresh_token) throw Error();
+    localStorage.setItem('sb-127-auth-token', JSON.stringify(session));
+    location.assign('/admin');
+  } catch { document.getElementById('result').textContent = 'No se pudo verificar el usuario ficticio local.'; }
+});
+</script></html>

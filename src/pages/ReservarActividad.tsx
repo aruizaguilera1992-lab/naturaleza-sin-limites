@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { AlertTriangle, CalendarDays, CheckCircle2, ShieldCheck, Loader2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
+import { depositIntentId, savedDepositIntent } from "@/lib/depositIntent";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -61,6 +62,25 @@ export default function ReservarActividad() {
 
   // Outing coming from the calendar link: select it only if it is still bookable.
   const requestedEventId = searchParams.get("evento");
+  const [recoveredToken, setRecoveredToken] = useState<string | null>(null);
+  const [recoveryNotice, setRecoveryNotice] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    const id = requestedEventId ? savedDepositIntent(requestedEventId) : null;
+    setRecoveredToken(null); setRecoveryNotice(null);
+    if (id) {
+      setRecoveryNotice("Comprobando tu reserva anterior…");
+      void supabase.functions.invoke("create-activity-deposit", { body: { action: "recover", requestId: id } })
+        .then(({ data, error }) => {
+          if (!active) return;
+          if (!error && typeof data?.token === "string" && /^[a-f0-9]{48}$/.test(data.token)) {
+            setRecoveredToken(data.token);
+            setRecoveryNotice("Hemos recuperado tu reserva anterior. Puedes retomarla sin bloquear nuevas plazas.");
+          } else setRecoveryNotice("No se ha podido recuperar la reserva anterior. Evita enviar otra hasta comprobar si el bloqueo sigue vigente.");
+        }).catch(() => { if (active) setRecoveryNotice("No se pudo comprobar tu reserva anterior. Reintenta la comprobación más tarde antes de enviar otra."); });
+    }
+    return () => { active = false; };
+  }, [requestedEventId]);
   const [requestHandled, setRequestHandled] = useState(false);
   useEffect(() => {
     if (!requestedEventId || requestHandled || eventsLoading) return;
@@ -237,8 +257,7 @@ export default function ReservarActividad() {
 
     // ---- Scheduled outing: server checks and holds seats, then payment ----
     try {
-      const { data, error: fnError } = await supabase.functions.invoke("create-activity-deposit", {
-        body: {
+      const depositBody = {
           category,
           slug,
           participants: form.participants,
@@ -250,7 +269,10 @@ export default function ReservarActividad() {
           rgpd: true,
           environment: getStripeEnvironment(),
           origin: window.location.origin,
-        },
+      };
+      const requestId = await depositIntentId(depositBody);
+      const { data, error: fnError } = await supabase.functions.invoke("create-activity-deposit", {
+        body: { ...depositBody, requestId },
       });
 
       if (fnError || !data?.token) {
@@ -265,14 +287,14 @@ export default function ReservarActividad() {
           );
           setError("No se ha bloqueado ninguna plaza ni se ha realizado ningún cargo.");
         } else {
-          setError("No hemos podido preparar el pago. No se ha realizado ningún cargo: inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.");
+          setError("No hemos podido confirmar si el pago quedó preparado. No se ha realizado ningún cargo. Evita reenviar la reserva: podría existir un bloqueo temporal de plazas. Escríbenos para comprobarlo o espera a que caduque el bloqueo.");
         }
         return;
       }
       navigate(`/pago/${data.token}`);
     } catch {
       // Network failure: a hold may exist server-side; it expires on its own.
-      setError("No hemos podido confirmar tu reserva. No se ha realizado ningún cargo; si se llegó a bloquear una plaza se liberará sola en unos minutos. Inténtalo de nuevo o escríbenos por WhatsApp.");
+      setError("No hemos podido confirmar tu reserva. No se ha realizado ningún cargo. Evita reenviarla: podría duplicarse el bloqueo de plazas. Escríbenos para comprobarlo; los bloqueos caducan automáticamente.");
     } finally {
       setSubmitting(false);
     }
@@ -296,6 +318,15 @@ export default function ReservarActividad() {
       </div>,
     );
   }
+
+  if (recoveredToken) return wrapper(
+    <section role="status" className="space-y-6 py-10">
+      <h1 className="font-heading text-3xl font-bold">Retoma tu reserva</h1>
+      <p>Hemos recuperado tu reserva de {activity.name}. Puedes continuar con la misma referencia, sin bloquear nuevas plazas.</p>
+      <Button onClick={() => navigate(`/pago/${recoveredToken}`)}>Retomar mi reserva</Button>
+      <p className="text-sm text-muted-foreground">La disponibilidad y el estado del pago se comprobarán de nuevo al continuar.</p>
+    </section>,
+  );
 
   return wrapper(
     <div className="space-y-8">
@@ -325,6 +356,10 @@ export default function ReservarActividad() {
       </header>
 
       <div>
+        {recoveryNotice && <div role="status" className="mb-6 rounded-md border border-primary/40 bg-primary/10 p-4">
+          <p>{recoveryNotice}</p>
+          {recoveredToken && <Button className="mt-3" onClick={() => navigate(`/pago/${recoveredToken}`)}>Retomar mi reserva</Button>}
+        </div>}
         <h2 className="mb-5 font-heading text-2xl font-bold">Elige los detalles</h2>
 
         {eventNotice && (
