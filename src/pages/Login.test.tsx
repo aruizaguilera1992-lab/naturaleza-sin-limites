@@ -17,6 +17,22 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 describe("Google-only login", () => {
+  it("direct login with a verified session opens management by default", async () => {
+    auth.getUser.mockResolvedValue({ data: { user: { id: "fixture" } }, error: null });
+    mount("/login");
+    await screen.findByText("Admin destination");
+    expect(auth.signIn).not.toHaveBeenCalled();
+  });
+  it("blocked popup allows retry and explains how to unblock Google", async () => {
+    auth.signIn.mockResolvedValue({ error: new Error("Popup was blocked.") });
+    mount();
+    const button = await screen.findByRole("button", { name: "login" });
+    await waitFor(() => expect(button).toBeEnabled());
+    fireEvent.click(button);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Permite las ventanas emergentes");
+    expect(screen.getByRole("button", { name: "Reintentar con Google" })).toBeEnabled();
+    expect(auth.signIn).toHaveBeenCalledWith("google", { redirect_uri: window.location.origin + "/login?next=%2Fadmin" });
+  });
   it("already signed in returns to admin without another Google call", async () => {
     auth.getUser.mockResolvedValue({ data: { user: { id: "fixture" } }, error: null });
     mount(); await screen.findByText("Admin destination"); expect(auth.signIn).not.toHaveBeenCalled();
@@ -24,14 +40,14 @@ describe("Google-only login", () => {
   it("preserves consent context and destination", async () => {
     mount("/login?next=" + encodeURIComponent("/.lovable/oauth/consent?authorization_id=fixture"));
     expect(screen.getByRole("heading", { name: "Conectar una aplicación" })).toBeInTheDocument();
-    await waitFor(() => expect(screen.getByRole("button", { name: "Continuar con Google" })).toBeEnabled());
+    await waitFor(() => expect(screen.getByRole("button", { name: "login" })).toBeEnabled());
     auth.signIn.mockImplementation(async () => { auth.getUser.mockResolvedValue({ data: { user: { id: "fixture" } }, error: null }); return {}; });
-    fireEvent.click(screen.getByRole("button", { name: "Continuar con Google" }));
+    fireEvent.click(screen.getByRole("button", { name: "login" }));
     await screen.findByText("Consent destination"); expect(sessionStorage.getItem("auth_next")).toBeNull();
   });
   it.each(["throw", "returned", "cancelled"])("%s failure is accessible and can retry without a stuck loading state", async mode => {
     auth.signIn.mockImplementation(async () => { if (mode === "throw") throw Error("fixture"); return mode === "returned" ? { error: Error("fixture") } : {}; });
-    mount(); const button = await screen.findByRole("button", { name: "Continuar con Google" });
+    mount(); const button = await screen.findByRole("button", { name: "login" });
     await waitFor(() => expect(button).toBeEnabled()); fireEvent.click(button);
     expect(await screen.findByRole("alert")).toHaveFocus();
     expect(screen.getByRole("button", { name: "Reintentar con Google" })).toBeEnabled();
@@ -40,7 +56,7 @@ describe("Google-only login", () => {
   it("manual cancellation ignores late success and returns to public web", async () => {
     let resolve: (value: object) => void = () => {};
     auth.signIn.mockImplementation(() => new Promise(r => { resolve = r; }));
-    mount(); const button = await screen.findByRole("button", { name: "Continuar con Google" });
+    mount(); const button = await screen.findByRole("button", { name: "login" });
     await waitFor(() => expect(button).toBeEnabled()); fireEvent.click(button);
     fireEvent.click(await screen.findByRole("button", { name: "Cancelar y volver a la web" }));
     await screen.findByText("Public web"); resolve({});
