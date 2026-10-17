@@ -41,6 +41,8 @@ export function storeAuthNext(next: string, storage = browserStorage()): boolean
     return storage.getItem(KEY) === safeNext(next);
   } catch { return false; }
 }
-export function googleCallbackUrl(origin: string, next: string, stored: boolean): string {
-  return stored ? origin : `${origin}/login?next=${encodeURIComponent(safeNext(next))}`;
+export function googleCallbackUrl(origin: string, next: string, _stored: boolean): string {
+  // OAuth may return in a different tab whose sessionStorage has no auth_next.
+  // Carry the validated destination in the public callback as well.
+  return `${origin}/login?next=${encodeURIComponent(safeNext(next))}`;
 }

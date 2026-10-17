@@ -10,7 +10,7 @@ import { clearAuthNext, googleCallbackUrl, safeNext, storeAuthNext } from "@/lib
 
 export default function Login() {
   const [params] = useSearchParams();
-  const next = safeNext(params.get("next"));
+  const next = safeNext(params.get("next"), "/admin");
   const navigate = useNavigate();
   const management = next.split(/[?#]/)[0] === "/admin";
   const connection = next.startsWith("/.lovable/oauth/consent");
@@ -57,10 +57,13 @@ export default function Login() {
       if (sessionError || !data.user) throw new Error("No verified session");
       clearAuthNext();
       navigate(next, { replace: true });
-    } catch {
+    } catch (cause) {
       if (id !== attempt.current) return;
       clearAuthNext();
-      setError("No se pudo iniciar sesión con Google. Inténtalo de nuevo.");
+      const message = cause instanceof Error ? cause.message : "";
+      setError(/popup.*block/i.test(message)
+        ? "El navegador ha bloqueado la ventana de Google. Permite las ventanas emergentes para esta web y vuelve a intentarlo."
+        : "No se pudo iniciar sesión con Google. Inténtalo de nuevo.");
     } finally { if (id === attempt.current) setBusy(false); }
   }
   function cancel() {
