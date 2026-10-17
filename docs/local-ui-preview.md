@@ -109,6 +109,6 @@ correo requieren dobles locales explícitos o una fase sandbox autorizada y sepa
 
 La vista compilada aislada, la autenticación local y el pago con proveedor
 simulado ya se han comprobado. Las limitaciones de instalación/virtualización
-descritas más abajo son históricas y están superadas. El modo dev en 8081 no
+descritas más arriba son históricas y están superadas. El modo dev en 8081 no
 se utiliza como evidencia: la navegación comprobada corresponde a preview en
 127.0.0.1:8082. Ver [final-local-validation.md](final-local-validation.md).

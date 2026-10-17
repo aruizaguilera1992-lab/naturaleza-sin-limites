@@ -94,4 +94,10 @@ No añadir sus aliases o rutas de fixture a vite.config.ts.
   configuración fiscal del proveedor, catálogo de planes y ensayo sobre una
   copia certificada de producción. Requieren una fase separada y autorización.
 
-CI remoto del cambio final: pendiente de registrar el commit y ejecución exactos.
+CI de la primera versión c1919a36da0f4ef0719041caf88a822b6a9bde04: correcto
+en Linux, Windows y PostgreSQL nativo, incluida la regresión de 0014:
+https://github.com/aruizaguilera1992-lab/naturaleza-sin-limites/actions/runs/39021946760.
+Las ejecuciones de la versión final se consultan en los checks del PR #5:
+https://github.com/aruizaguilera1992-lab/naturaleza-sin-limites/pull/5/checks.
+Comprobar siempre que corresponden al SHA revisado. El PR depende de #4;
+ninguna ejecución autoriza integración automática ni despliegue.

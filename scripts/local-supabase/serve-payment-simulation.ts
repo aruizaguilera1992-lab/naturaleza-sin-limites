@@ -17,7 +17,7 @@ Deno.env.set('NOTIFICATION_EMAIL', 'owner@example.test');
 const secret = `local-only-${crypto.randomUUID()}`;
 Deno.env.set('PAYMENTS_SANDBOX_WEBHOOK_SECRET', secret);
 const db = createClient(local.API_URL, local.SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
-const must = async <T>(query: PromiseLike<{ data: T; error: { message: string } | null }>): Promise<NonNullable<T>> => { const result = await query; if (result.error) throw Error(result.error.message); assert.notEqual(result.data, null); return result.data!; };
+const must = async <T>(query: PromiseLike<{ data: T; error: { message: string } | null }>): Promise<T> => { const result = await query; if (result.error) throw Error(result.error.message); return result.data; };
 type Session = { id: string; object: string; client_secret: string; expires_at: number; status: string; payment_status: string;
   livemode: boolean; amount_total: number; currency: string; return_url: string; metadata: { payment_request_token: string; environment: string } };
 const sessions = new Map<string, Session>();
@@ -65,11 +65,14 @@ let fixture: { event: string; email: string; token: string } | undefined;
 const evidence = async () => {
   assert.ok(fixture);
   const payments = await must(db.from('payment_requests').select('id,status,booking_id,stripe_session_id').eq('token', fixture.token));
+  assert.ok(payments);
   assert.equal(payments.length, 1);
   const payment = payments[0];
   const hold = await must(db.from('activity_event_bookings').select('state').eq('booking_id', payment.booking_id).single());
   const event = await must(db.from('activity_events').select('seats_reserved').eq('id', fixture.event).single());
+  assert.ok(hold); assert.ok(event);
   const notifications = await must(db.from('notification_log').select('status').eq('booking_id', payment.booking_id));
+  assert.ok(notifications);
   assert.ok(notifications.every(row => row.status === 'omitido'));
   return { paymentStatus: payment.status, seatState: hold.state, seats: event.seats_reserved,
     providerSessions: sessions.size, createCalls, notificationsOmitted: true, externalCalls: blocked };
@@ -114,7 +117,7 @@ realServe({ hostname: '127.0.0.1', port: 54327 }, async req => {
     if (path === '/evidence') return Response.json(await evidence());
     if (path === '/cleanup' && req.method === 'POST') {
       if (fixture) {
-        for (const booking of await must(db.from('bookings').select('id').eq('email', fixture.email))) {
+        for (const booking of (await must(db.from('bookings').select('id').eq('email', fixture.email))) ?? []) {
           await must(db.from('notification_log').delete().eq('booking_id', booking.id));
           await must(db.from('payment_requests').delete().eq('booking_id', booking.id));
           await must(db.from('bookings').delete().eq('id', booking.id));
