@@ -52,7 +52,7 @@ export function OnlineHero() {
 
 const benefits = [
   { icon: Timer, title: 'Resistencia', text: 'Sostener el esfuerzo en jornadas largas.', img: '/images/functional-training-documentary.jpg' },
-  { icon: Dumbbell, title: 'Fuerza útil', text: 'Trabajar tracción, piernas y agarre.', img: '/images/rope-detail-documentary.jpg' },
+  { icon: Dumbbell, title: 'Fuerza funcional', text: 'Trabajar tracción, piernas y agarre.', img: '/images/rope-detail-documentary.jpg' },
   { icon: Mountain, title: 'Movilidad y estabilidad', text: 'Preparar movimientos y apoyos exigentes.', img: null },
   { icon: LineChart, title: 'Progreso con criterio', text: 'Registrar el entrenamiento y revisar su evolución.', img: null },
 ];
