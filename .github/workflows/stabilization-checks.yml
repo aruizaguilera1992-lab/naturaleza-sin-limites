@@ -1,7 +1,7 @@
 name: Stabilization checks
 on:
   pull_request:
-    branches: [main, fix/stabilization-capacity-sandbox]
+    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security]
 permissions:
   contents: read
 jobs:
@@ -38,6 +38,8 @@ jobs:
           supabase/functions/_shared/email.test.ts
           supabase/functions/_shared/stripe.test.ts
           supabase/tests/capacity_max_six.test.ts
+          supabase/tests/migration_history.test.ts
+          supabase/tests/prepare_deposit_checkout.test.ts
           supabase/functions/create-payment-link/handler.test.ts
           supabase/functions/_shared/bookingEmail.test.ts
           supabase/functions/_shared/bookingEmailContext.test.ts
