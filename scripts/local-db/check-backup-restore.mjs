@@ -24,6 +24,7 @@ try {
   assert.equal((await admin`SELECT 1 FROM pg_database WHERE datname=${destination.database}`).length,0,'Restore target must not exist');
   fs.mkdirSync(output,{recursive:true});
   const before=await schemaInventory(sql);
+  assert.equal((await sql`SELECT current_setting('search_path') AS value`)[0].value,'public, extensions');
   const counts=async db=>{
     const result={};
     for(const {schema,relname,relkind} of before.relations)if(['r','p'].includes(relkind))result[`${schema}.${relname}`]=Number((await db`SELECT count(*) AS n FROM ${db(schema+'.'+relname)}`)[0].n);
@@ -39,6 +40,9 @@ try {
   const dump=path.join(output,'fixture.dump');
   run('pg_dump',[...connection,'--dbname',name,'--format=custom','--file',dump]);
   await admin`CREATE DATABASE ${admin(destination.database)}`;
+  // pg_dump without --create does not restore database-level settings.
+  // This fixture explicitly requires its extension schema in search_path.
+  await admin`ALTER DATABASE ${admin(destination.database)} SET search_path TO public, extensions`;
   restored=postgres({...destination,...options});
   run('pg_restore',[...connection,'--dbname',destination.database,'--exit-on-error','--single-transaction',dump]);
   assert.deepEqual(await schemaInventory(restored),before,'Restored structure must match exactly');
@@ -46,7 +50,7 @@ try {
   assert.deepEqual(await schemaInventory(sql),before,'Source structure must remain unchanged');
   assert.deepEqual(await counts(sql),beforeCounts,'Source counts must remain unchanged');
   fs.writeFileSync(path.join(output,'schema.json'),JSON.stringify(before,null,2)+'\n');
-  const report={source:name,restored:destination.database,localFixtureOnly:true,productionEquivalent:false,sha256:createHash('sha256').update(fs.readFileSync(dump)).digest('hex'),sections:Object.fromEntries(Object.entries(before).map(([k,v])=>[k,v.length])),counts:beforeCounts,structureMatches:true,countsMatch:true,sourceUnchanged:true};
+  const report={source:name,restored:destination.database,localFixtureOnly:true,productionEquivalent:false,restoredDatabaseSettings:{search_path:'public, extensions'},sha256:createHash('sha256').update(fs.readFileSync(dump)).digest('hex'),sections:Object.fromEntries(Object.entries(before).map(([k,v])=>[k,v.length])),counts:beforeCounts,structureMatches:true,countsMatch:true,sourceUnchanged:true};
   fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');
   console.log(JSON.stringify(report,null,2));
 } finally {await restored?.end();await sql.end();await admin.end();}
