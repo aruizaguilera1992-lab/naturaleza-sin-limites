@@ -136,9 +136,9 @@ export function OnlineProgram() {
       <div className="container mx-auto max-w-5xl px-4">
         <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
           <div className="relative isolate flex flex-col overflow-hidden bg-primary p-7 text-background sm:p-10">
-            <div className="relative -mx-7 -mt-7 mb-8 h-44 overflow-hidden sm:-mx-10 sm:-mt-10 sm:h-56">
-              <img src="/images/vias-ferratas.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_32%]" />
-              <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/25 to-primary" />
+            <div className="relative -mx-7 -mt-7 mb-8 h-52 overflow-hidden sm:-mx-10 sm:-mt-10 sm:h-64">
+              <img src="/images/vias-ferratas.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_42%]" />
+              <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,hsl(var(--primary))_100%)]" />
             </div>
             <div className="relative flex flex-1 flex-col justify-between">
               <div>
@@ -154,12 +154,12 @@ export function OnlineProgram() {
               </div>
               <ul className="mt-7 flex flex-wrap gap-2" aria-label="Claves del programa">
                 {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
-                  <li key={item} className="border border-background/45 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">{item}</li>
+                  <li key={item} className="border border-background/45 px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider">{item}</li>
                 ))}
               </ul>
             </div>
           </div>
-          <div className="p-6 sm:p-10">
+          <div className="flex flex-col p-6 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
               {included.map(({ text }) => (
@@ -169,7 +169,7 @@ export function OnlineProgram() {
                 </li>
               ))}
             </ul>
-            <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-auto flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
               <Button variant="hero" size="lg" className="w-full shrink-0 sm:w-auto" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
               <p className="max-w-xs text-sm leading-6 text-foreground/80">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
             </div>
