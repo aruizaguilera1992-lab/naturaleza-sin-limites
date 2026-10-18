@@ -12,9 +12,6 @@ export interface PlanCatalogEntry {
   onboarding: string;
 }
 
-const TRAINING_ONBOARDING =
-  "En las próximas 24 horas laborables recibirás un segundo correo con tu invitación personal para darte de alta en la plataforma de entrenamiento, donde encontrarás tu plan, la biblioteca de cursos y la comunidad privada.";
-
 const OUTDOOR_ONBOARDING =
   "En las próximas 24 horas laborables te escribiremos para reservar las fechas de tus salidas y enviarte el punto de encuentro y el material recomendado.";
 
