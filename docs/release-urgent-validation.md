@@ -85,3 +85,30 @@ Implementar. Su eliminación debe garantizar que no borra el contenido publicado
 El procedimiento comercial futuro debe publicar un artefacto aprobado y asociado
 a un SHA, con revisión de configuración, ensayo de reserva/pago/correo y plan de
 recuperación probado. Esta documentación no habilita publicación ni proveedores.
+
+## Servicios integrados de Lovable: lectura del panel real
+
+Se consultó el proyecto existente e8067521-0f87-494a-b789-e89c9f7b9922 en el
+navegador, sin enviar instrucciones al agente de Lovable ni publicar:
+
+- Cloud muestra Database, Users, Storage, Emails, Secrets, Jobs y Edge functions.
+  Esto confirma disponibilidad de servicios, no prueba cada regla o dato remoto.
+- Cloud / Emails ofrece Get started. Es una función diferente del conector Resend
+  que utiliza el código. No iniciar otro servicio para duplicar los correos actuales.
+- Conectores muestra la conexión privada Resend del titular y el aviso
+  «Este espacio de trabajo no tiene acceso a esta conexión», con botón Conceder acceso.
+  No se pulsó: ampliar permisos requiere revisar destinatario, alcance y autorización.
+  El aviso no prueba por sí solo el estado de credenciales en funciones ya desplegadas;
+  impide dar por verificada una conexión utilizable desde este espacio de trabajo.
+- Pagos tiene vistas Live y Test. Se consultó Test y coincide con la cuenta sandbox
+  anteriormente revisada. Las cuentas de ambas vistas son diferentes, lo cual se
+  confirmó como separación de prueba/real; no se creó ninguna operación ni se
+  activaron cobros. Ver Live en un panel no acredita que checkout comercial funcione.
+- Seguridad muestra No active issues y un hallazgo ignorado informativo sobre
+  teléfonos en business_settings. Revisar que sean solo contactos empresariales
+  destinados a publicación antes de considerarlo aceptado. No se cambió su estado.
+  El panel también informa avisos de dependencias; su fuente puede diferir del lock
+  auditado. No confundir «sin incidencias activas» con «sin avisos ignorados/dependencias».
+
+Se conserva Lovable como plataforma de servicios de la aplicación. PostgreSQL local
+y los proveedores simulados son herramientas de ensayo, no una sustitución de Cloud.
