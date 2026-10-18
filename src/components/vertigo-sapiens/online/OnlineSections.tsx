@@ -121,7 +121,7 @@ const included = [
   { text: 'Vídeos de ejercicios' },
   { text: 'Registro semanal' },
   { text: 'Revisión quincenal' },
-  { text: 'Hasta 2 vídeos al mes y evaluación final', wide: true },
+  { text: 'Hasta 2 vídeos al mes y evaluación final' },
 ];
 const excluded = ['Sesiones presenciales', 'Salidas outdoor', 'Asesoramiento nutricional', 'Mensajería ilimitada', 'Cursos técnicos o evaluación de seguridad'];
 const details = [
@@ -135,7 +135,7 @@ export function OnlineProgram() {
     <section id="programa" className="scroll-mt-28 py-20 sm:py-28">
       <div className="container mx-auto max-w-5xl px-4">
         <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
-          <div className="relative flex flex-col justify-center overflow-hidden bg-primary p-7 text-primary-foreground sm:p-10">
+          <div className="relative flex flex-col justify-between overflow-hidden bg-primary p-7 text-primary-foreground sm:p-10">
             <img src="/images/rope-detail-documentary.jpg" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-25" />
             <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/90 to-primary" />
             <div className="relative">
@@ -145,8 +145,11 @@ export function OnlineProgram() {
                 Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
               </p>
             </div>
-            <div aria-hidden className="relative mt-9 h-px w-16 bg-primary-foreground/40" />
-            <ul className="relative mt-6 flex flex-wrap gap-2" aria-label="Claves del programa">
+            <div className="relative mt-10 border-t border-primary-foreground/25 pt-6">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Para quién es</p>
+              <p className="mt-2 max-w-xs text-sm font-semibold leading-6">Barranquismo, espeleología, escalada, ferratas o montaña.</p>
+            </div>
+            <ul className="relative mt-8 flex flex-wrap gap-2" aria-label="Claves del programa">
               {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
                 <li key={item} className="border border-primary-foreground/45 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">{item}</li>
               ))}
@@ -155,8 +158,8 @@ export function OnlineProgram() {
           <div className="p-6 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
-              {included.map(({ text, wide }) => (
-                <li key={text} className={`flex items-center gap-3 border border-border bg-background/60 p-3.5 text-sm font-semibold leading-5 transition-all duration-300 hover:border-primary/60${wide ? ' sm:col-span-2' : ''}`}>
+              {included.map(({ text }) => (
+                <li key={text} className="flex items-center gap-3 border border-border bg-background/60 p-3.5 text-sm font-semibold leading-5 transition-all duration-300 hover:border-primary/60">
                   <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
                   {text}
                 </li>
