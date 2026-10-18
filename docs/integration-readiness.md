@@ -118,6 +118,44 @@ de fechas, credenciales del backend ni un checkout ejecutable. Ambos precios
 devuelven tax_behavior=unspecified; no se certifica su configuración fiscal.
 Los cuatro planes mensuales y las reglas del plan de seis meses siguen pendientes.
 
+## Revisión de canales de publicación — 18 de octubre
+
+Los planes de entrenamiento y sus precios quedan aparcados por indicación del
+promotor. No son un requisito para continuar la validación de reservas de aventura,
+migraciones, accesos y correo. El catálogo anterior se conserva como referencia
+histórica, sin crear productos ni suscripciones.
+
+Consulta de solo lectura a la API de GitHub con la credencial Git existente:
+
+| Comprobación | Resultado observado | Alcance |
+| --- | --- | --- |
+| Webhooks del repositorio | HTTP 200, lista vacía | No hay webhooks configurados visibles en este repositorio |
+| GitHub Pages | HTTP 404 | No se confirmó un sitio Pages; no equivale a ausencia de alojamiento externo |
+| Environments | HTTP 200, lista vacía | No hay entornos de GitHub configurados con barreras de aprobación |
+| Protección clásica de main | HTTP 404 | No se obtuvo una protección clásica; no se presupone una barrera activa |
+| Rulesets del repositorio | HTTP 200, lista vacía | No hay reglas devueltas por este endpoint |
+| Workflows | Build and Deploy y Stabilization checks activos | Estar activo no demuestra que el despliegue tenga credenciales válidas |
+| Permisos predeterminados de Actions | read; aprobación de PR por Actions deshabilitada | Configuración leída, sin cambios remotos |
+
+El archivo de origin/main todavía ejecuta FTP al recibir un push a main:
+SamKirkland/FTP-Deploy-Action@v4.3.6, protocolo ftp, puerto 21 y destino public_html/.
+No se han consultado valores de secretos ni probado conexiones FTP. Por tanto,
+existe un canal de publicación configurado cuya ejecución efectiva no está probada.
+El PR #7 elimina ese paso, pero su protección no estará activa mientras siga abierto.
+El uso de FTP sin cifrado es otro motivo para no reutilizar ese mecanismo en una
+futura publicación autorizada.
+
+No se han auditado ajustes internos de Lovable, aplicaciones GitHub instaladas,
+paneles del alojamiento ni automatizaciones externas. La lista vacía de webhooks
+no descarta integraciones mediante aplicaciones. Antes de cualquier futura
+integración en main, revisar esos canales con acceso de lectura a sus paneles.
+No se modificaron permisos, reglas, conexiones, secretos ni servicios.
+
+Siguiente validación técnica sin producción: inventario estructural de esquema
+local (columnas, restricciones, índices, RLS, permisos y funciones), comparado antes
+y después de las migraciones con datos ficticios. Un resultado local correcto no
+certificará equivalencia con producción ni autorizará migraciones remotas.
+
 ## Cierre y recuperación
 
 Este PR no modifica SQL, aplicación, .env ni configuración remota. Revertir la
