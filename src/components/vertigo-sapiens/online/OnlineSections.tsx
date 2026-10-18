@@ -135,39 +135,43 @@ export function OnlineProgram() {
     <section id="programa" className="scroll-mt-28 py-20 sm:py-28">
       <div className="container mx-auto max-w-5xl px-4">
         <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
-          <div className="relative flex flex-col justify-between overflow-hidden bg-primary p-7 text-primary-foreground sm:p-10">
-            <img src="/images/rope-detail-documentary.jpg" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-25" />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/90 to-primary" />
-            <div className="relative">
-              <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
-              <h2 className="mt-4 text-4xl font-extrabold leading-[1.02] sm:text-6xl">Vértigo<br />Sapiens<br />Online</h2>
-              <p className="mt-6 max-w-sm text-base font-semibold leading-7">
-                Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
-              </p>
+          <div className="relative isolate flex flex-col overflow-hidden bg-primary p-7 text-background sm:p-10">
+            <div className="relative -mx-7 -mt-7 mb-7 h-44 overflow-hidden sm:-mx-10 sm:-mt-10 sm:h-52">
+              <img src="/images/escalada.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[28%_50%]" />
+              <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,hsl(var(--primary))_100%)]" />
             </div>
-            <div className="relative mt-10 border-t border-primary-foreground/25 pt-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Para quién es</p>
-              <p className="mt-2 max-w-xs text-sm font-semibold leading-6">Barranquismo, espeleología, escalada, ferratas o montaña.</p>
+            <div className="relative flex flex-1 flex-col justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
+                <h2 className="mt-4 text-3xl font-extrabold leading-[1.04] sm:text-5xl">Vértigo<br />Sapiens<br />Online</h2>
+                <p className="mt-6 max-w-sm text-base font-semibold leading-7">
+                  Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
+                </p>
+              </div>
+              <div className="mt-8 border-t border-background/25 pt-5">
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Para quién es</p>
+                <p className="mt-2 max-w-xs text-sm font-semibold leading-6">Barranquismo, espeleología, escalada, ferratas o montaña.</p>
+              </div>
+              <ul className="mt-7 flex flex-wrap gap-2" aria-label="Claves del programa">
+                {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
+                  <li key={item} className="rounded-full border border-background/35 bg-background/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider">{item}</li>
+                ))}
+              </ul>
             </div>
-            <ul className="relative mt-8 flex flex-wrap gap-2" aria-label="Claves del programa">
-              {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
-                <li key={item} className="border border-primary-foreground/45 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">{item}</li>
-              ))}
-            </ul>
           </div>
-          <div className="p-6 sm:p-10">
+          <div className="flex flex-col p-6 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
-            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+            <ul className="mt-5 grid flex-1 content-center gap-3 sm:grid-cols-2">
               {included.map(({ text }) => (
-                <li key={text} className="flex items-center gap-3 border border-border bg-background/60 p-3.5 text-sm font-semibold leading-5 transition-all duration-300 hover:border-primary/60">
-                  <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
+                <li key={text} className="flex items-start gap-3 border border-border bg-background/60 p-4 text-[15px] font-semibold leading-6 transition-all duration-300 hover:border-primary/60">
+                  <span aria-hidden className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
                   {text}
                 </li>
               ))}
             </ul>
-            <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-auto border-t border-border pt-6">
               <Button variant="hero" size="lg" className="w-full shrink-0 sm:w-auto" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
-              <p className="max-w-xs text-sm leading-6 text-foreground/80">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
+              <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
             </div>
             <Accordion type="single" collapsible className="mt-6 border-t border-border">
               <AccordionItem value="detalles" className="border-b-0">
