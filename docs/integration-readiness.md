@@ -171,17 +171,31 @@ desactivado Stabilization checks. El PR #7 sigue abierto para retirar el paso de
 código cuando se autorice expresamente su integración. No reactivar build.yml
 mientras main contenga FTP ni restaurar los secretos retirados.
 
-Hostinger requiere completar la verificación en dos pasos en el navegador del
-promotor. Hasta acceder y comprobar sus ajustes, no se considera revocada la
-credencial FTP del alojamiento ni descartada una automatización independiente.
-Retirar secretos en GitHub no invalida por sí solo la contraseña en Hostinger.
-No se deben borrar archivos del sitio, cuentas de hosting ni datos para completar
-esta tarea. Si la revocación requiere cambiar una contraseña, debe introducirla
-y guardar el cambio el promotor directamente, sin compartirla en el chat.
+Tras completar el promotor el acceso y los cambios de credenciales en Hostinger,
+se comprobó su registro de actividades el 18 de octubre. El panel muestra:
+
+- 12:27:17: cambio de contraseña del sitio, Success.
+- 12:27:18: cambio de contraseña de la cuenta FTP, Success.
+- 12:27:58: eliminación de la cuenta FTP adicional, Success.
+
+La cuenta adicional ya no figura en Cuentas FTP. La cuenta principal permanece
+disponible: no se ha deshabilitado el servicio FTP completo. No se han leído ni
+almacenado contraseñas ni probado una conexión con credenciales anteriores.
+Los cambios fueron realizados por el promotor; el agente verificó el registro.
+
+Hostinger conserva una conexión GIT del repositorio a main y una URL de webhook
+para implementación automática. No se invocó esa URL ni se desplegó el repositorio.
+La consulta previa de webhooks de GitHub devolvió una lista vacía: no se observó
+el enlace automático desde GitHub. Esto no certifica que ningún otro sistema pueda
+invocar el webhook. No se borró la conexión GIT ni su clave SSH: su retirada es una
+acción distinta de retirar FTP y debe evaluarse sin borrar archivos publicados.
+La pantalla de Cron no mostró tareas existentes. No se tocaron archivos, DNS,
+certificados, bases de datos ni servicios de correo.
 
 ## Cierre y recuperación
 
-Este PR no modifica SQL, aplicación, .env ni configuración remota. Revertir la
+El código de este PR no modifica SQL, aplicación ni .env. Los ajustes remotos
+realizados por autorización expresa se documentan en la sección anterior. Revertir la
 retirada del paso FTP es una operación de publicación potencial y exige revisión
 y autorización nuevas. Ante un fallo de compilación, mantener la barrera y corregir
 el fallo; no reactivar FTP como solución rápida. Resultado de CI del guard y SHA
