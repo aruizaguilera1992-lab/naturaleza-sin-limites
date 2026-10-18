@@ -136,8 +136,9 @@ export function OnlineProgram() {
       <div className="container mx-auto max-w-5xl px-4">
         <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
           <div className="relative flex flex-col justify-between overflow-hidden bg-primary p-7 text-primary-foreground sm:p-10">
-            <img src="/images/rope-detail-documentary.jpg" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-25" />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/90 to-primary" />
+            <img src="/images/vias-ferratas.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_28%]" />
+            <div aria-hidden className="absolute inset-0 bg-primary/70" />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-background/65 via-background/35 to-background/70" />
             <div className="relative">
               <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
               <h2 className="mt-4 text-4xl font-extrabold leading-[1.02] sm:text-6xl">Vértigo<br />Sapiens<br />Online</h2>
@@ -145,13 +146,13 @@ export function OnlineProgram() {
                 Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
               </p>
             </div>
-            <div className="relative mt-10 border-t border-primary-foreground/25 pt-6">
+            <div className="relative mt-10 border-t border-primary-foreground/30 pt-6">
               <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Para quién es</p>
               <p className="mt-2 max-w-xs text-sm font-semibold leading-6">Barranquismo, espeleología, escalada, ferratas o montaña.</p>
             </div>
             <ul className="relative mt-8 flex flex-wrap gap-2" aria-label="Claves del programa">
               {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
-                <li key={item} className="border border-primary-foreground/45 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">{item}</li>
+                <li key={item} className="border border-primary-foreground/55 bg-background/25 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">{item}</li>
               ))}
             </ul>
           </div>
