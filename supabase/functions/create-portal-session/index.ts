@@ -18,6 +18,8 @@ const isAllowedReturnUrl = (value: string): boolean => {
   }
 };
 
+const MANAGEABLE_STATUSES = new Set(["activo", "pago_fallido", "impagado", "pausado"]);
+
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -56,6 +58,10 @@ Deno.serve(async (req) => {
     return json({ error: "No disponible" }, 500);
   }
   if (!order?.stripe_customer_id) return json({ error: "Enlace no válido" }, 404);
+  // Canceled/expired subscriptions lose billing-portal access immediately.
+  if (!MANAGEABLE_STATUSES.has(String(order.status))) {
+    return json({ error: "Esta suscripción ya no está activa" }, 403);
+  }
 
   // The environment always comes from the stored order, never from the client.
   if (!paymentsAllowed(order.environment, Deno.env.get("PAYMENTS_LIVE_ENABLED"))) {

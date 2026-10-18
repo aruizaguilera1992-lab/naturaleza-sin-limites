@@ -17,6 +17,22 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 describe("Google-only login", () => {
+  it("direct login with a verified session opens management by default", async () => {
+    auth.getUser.mockResolvedValue({ data: { user: { id: "fixture" } }, error: null });
+    mount("/login");
+    await screen.findByText("Admin destination");
+    expect(auth.signIn).not.toHaveBeenCalled();
+  });
+  it("blocked popup allows retry and explains how to unblock Google", async () => {
+    auth.signIn.mockResolvedValue({ error: new Error("Popup was blocked.") });
+    mount();
+    const button = await screen.findByRole("button", { name: "login" });
+    await waitFor(() => expect(button).toBeEnabled());
+    fireEvent.click(button);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Permite las ventanas emergentes");
+    expect(screen.getByRole("button", { name: "Reintentar con Google" })).toBeEnabled();
+    expect(auth.signIn).toHaveBeenCalledWith("google", { redirect_uri: window.location.origin + "/login?next=%2Fadmin" });
+  });
   it("already signed in returns to admin without another Google call", async () => {
     auth.getUser.mockResolvedValue({ data: { user: { id: "fixture" } }, error: null });
     mount(); await screen.findByText("Admin destination"); expect(auth.signIn).not.toHaveBeenCalled();

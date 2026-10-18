@@ -79,10 +79,9 @@ Deno.serve(async (req) => {
     }
   }
 
-  // One Stripe customer per email so renewals and the billing portal resolve.
-  const existing = await stripe.customers.list({ email: body.email, limit: 1 });
-  const customer = existing.data[0] ??
-    await stripe.customers.create({
+  // Always a fresh customer: the email is unverified, so it must never link
+  // this checkout (or its portal token) to another person's billing account.
+  const customer = await stripe.customers.create({
       email: body.email,
       name: body.name,
       phone: body.phone,
