@@ -156,6 +156,29 @@ local (columnas, restricciones, índices, RLS, permisos y funciones), comparado 
 y después de las migraciones con datos ficticios. Un resultado local correcto no
 certificará equivalencia con producción ni autorizará migraciones remotas.
 
+## Retirada operativa de FTP — 18 de octubre
+
+Por autorización expresa del promotor para eliminar el despliegue automático de
+GitHub y Hostinger, se desactivó mediante API el workflow build.yml (ID 225238863).
+La lectura posterior confirma state=disabled_manually. No había ejecuciones
+pendientes. Se eliminaron exclusivamente los secretos del repositorio FTP_SERVER,
+FTP_USERNAME y FTP_PASSWORD; la lista posterior no contiene secretos FTP_. No se
+leyeron sus valores ni se fusionó ningún PR ni se desplegó la web.
+
+Esta barrera ya está activa en los ajustes de GitHub, aunque main conserve el YAML
+histórico. También queda desactivada la compilación de ese workflow; no se ha
+desactivado Stabilization checks. El PR #7 sigue abierto para retirar el paso del
+código cuando se autorice expresamente su integración. No reactivar build.yml
+mientras main contenga FTP ni restaurar los secretos retirados.
+
+Hostinger requiere completar la verificación en dos pasos en el navegador del
+promotor. Hasta acceder y comprobar sus ajustes, no se considera revocada la
+credencial FTP del alojamiento ni descartada una automatización independiente.
+Retirar secretos en GitHub no invalida por sí solo la contraseña en Hostinger.
+No se deben borrar archivos del sitio, cuentas de hosting ni datos para completar
+esta tarea. Si la revocación requiere cambiar una contraseña, debe introducirla
+y guardar el cambio el promotor directamente, sin compartirla en el chat.
+
 ## Cierre y recuperación
 
 Este PR no modifica SQL, aplicación, .env ni configuración remota. Revertir la
