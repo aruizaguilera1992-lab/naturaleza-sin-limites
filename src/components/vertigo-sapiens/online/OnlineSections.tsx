@@ -127,23 +127,37 @@ export function OnlineProgram() {
   return (
     <section id="programa" className="scroll-mt-28 py-20 sm:py-28">
       <div className="container mx-auto max-w-5xl px-4">
-        <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.8fr_1.2fr]">
-          <div className="flex flex-col justify-between bg-primary p-7 text-primary-foreground sm:p-10">
-            <div>
+        <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
+          <div className="relative flex flex-col justify-between overflow-hidden bg-primary p-7 text-primary-foreground sm:p-10">
+            <img src="/images/rope-detail-documentary.jpg" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/90 to-primary" />
+            <div className="relative">
               <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
-              <h2 className="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl">Vértigo Sapiens Online</h2>
+              <h2 className="mt-4 text-3xl font-extrabold leading-[1.03] sm:text-5xl">Vértigo<br />Sapiens<br />Online</h2>
+              <p className="mt-5 max-w-xs text-sm font-semibold leading-6 sm:text-base">
+                Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
+              </p>
             </div>
-            <div className="mt-10">
-              <p className="text-5xl font-extrabold">179 €</p>
-              <p className="mt-2 font-semibold">8 semanas · precio orientativo, pendiente de confirmación</p>
-            </div>
+            <ul className="relative mt-10 flex flex-wrap gap-2" aria-label="Claves del programa">
+              {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
+                <li key={item} className="border border-primary-foreground/45 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">{item}</li>
+              ))}
+            </ul>
           </div>
           <div className="p-6 sm:p-10">
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {included.map((item) => <li key={item} className="flex gap-2 font-semibold"><Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />{item}</li>)}
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
+            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+              {included.map((item) => (
+                <li key={item} className="flex items-start gap-3 border border-border bg-background/60 p-3.5 text-sm font-semibold leading-5 transition-all duration-300 hover:border-primary/60">
+                  <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center bg-primary/15"><Check className="h-4 w-4 text-primary" /></span>
+                  {item}
+                </li>
+              ))}
             </ul>
-            <Button variant="hero" size="lg" className="mt-8 w-full sm:w-auto" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
-            <p className="mt-4 text-sm text-foreground/80">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
+            <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <Button variant="hero" size="lg" className="w-full sm:w-auto" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
+              <p className="max-w-xs text-sm leading-6 text-foreground/80">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
+            </div>
             <Accordion type="single" collapsible className="mt-6 border-t border-border">
               <AccordionItem value="detalles" className="border-b-0">
                 <AccordionTrigger className="py-4 text-left text-sm font-bold">Detalles y qué no incluye</AccordionTrigger>
