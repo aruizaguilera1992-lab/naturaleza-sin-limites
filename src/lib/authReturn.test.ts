@@ -25,6 +25,15 @@ describe("return storage and callback", () => {
     expect(readAuthNext(broken)).toBeNull();
     expect(() => clearAuthNext(broken)).not.toThrow();
     expect(googleCallbackUrl("https://naturalezasinlimites.es", "/admin", false)).toBe("https://naturalezasinlimites.es/login?next=%2Fadmin");
-    expect(googleCallbackUrl("https://naturalezasinlimites.es", "/admin", true)).toBe("https://naturalezasinlimites.es");
+    expect(googleCallbackUrl("https://naturalezasinlimites.es", "/admin", true)).toBe("https://naturalezasinlimites.es/login?next=%2Fadmin");
+  });
+  it("carries the admin destination even when the callback tab loses session storage", () => {
+    storeAuthNext("/admin", sessionStorage);
+    const callback = new URL(googleCallbackUrl("https://naturalezasinlimites.es", "/admin", true));
+    sessionStorage.clear();
+    expect(readAuthNext(sessionStorage)).toBeNull();
+    expect(callback.pathname).toBe("/login");
+    expect(safeNext(callback.searchParams.get("next"))).toBe("/admin");
+    expect(new URL(googleCallbackUrl(callback.origin, "//evil.test", true)).searchParams.get("next")).toBe("/");
   });
 });
