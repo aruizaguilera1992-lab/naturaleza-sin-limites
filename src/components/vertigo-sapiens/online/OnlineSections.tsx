@@ -163,8 +163,8 @@ export function OnlineProgram() {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
             <ul className="mt-5 grid flex-1 content-center gap-3 sm:grid-cols-2">
               {included.map(({ text }) => (
-                <li key={text} className="flex items-center gap-3 border border-border bg-background/60 p-4 text-[15px] font-semibold leading-6 transition-all duration-300 hover:border-primary/60">
-                  <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
+                <li key={text} className="flex items-start gap-3 border border-border bg-background/60 p-4 text-[15px] font-semibold leading-6 transition-all duration-300 hover:border-primary/60">
+                  <span aria-hidden className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
                   {text}
                 </li>
               ))}
