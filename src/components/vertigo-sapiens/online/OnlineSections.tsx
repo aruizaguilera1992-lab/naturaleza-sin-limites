@@ -136,14 +136,14 @@ export function OnlineProgram() {
       <div className="container mx-auto max-w-5xl px-4">
         <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
           <div className="relative isolate flex flex-col overflow-hidden bg-primary p-7 text-background sm:p-10">
-            <div className="relative -mx-7 -mt-7 mb-8 h-52 overflow-hidden sm:-mx-10 sm:-mt-10 sm:h-64">
-              <img src="/images/vias-ferratas.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_42%]" />
+            <div className="relative -mx-7 -mt-7 mb-7 h-44 overflow-hidden sm:-mx-10 sm:-mt-10 sm:h-52">
+              <img src="/images/escalada.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[28%_50%]" />
               <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,hsl(var(--primary))_100%)]" />
             </div>
             <div className="relative flex flex-1 flex-col justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
-                <h2 className="mt-4 text-4xl font-extrabold leading-[1.02] sm:text-6xl">Vértigo<br />Sapiens<br />Online</h2>
+                <h2 className="mt-4 text-3xl font-extrabold leading-[1.04] sm:text-5xl">Vértigo<br />Sapiens<br />Online</h2>
                 <p className="mt-6 max-w-sm text-base font-semibold leading-7">
                   Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
                 </p>
@@ -161,9 +161,9 @@ export function OnlineProgram() {
           </div>
           <div className="flex flex-col p-6 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
-            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
               {included.map(({ text }) => (
-                <li key={text} className="flex items-center gap-3 border border-border bg-background/60 p-3.5 text-sm font-semibold leading-5 transition-all duration-300 hover:border-primary/60">
+                <li key={text} className="flex items-center gap-3 border border-border bg-background/60 p-4 text-[15px] font-semibold leading-6 transition-all duration-300 hover:border-primary/60">
                   <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
                   {text}
                 </li>
