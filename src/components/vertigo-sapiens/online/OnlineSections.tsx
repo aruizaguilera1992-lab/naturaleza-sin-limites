@@ -154,14 +154,14 @@ export function OnlineProgram() {
               </div>
               <ul className="mt-7 flex flex-wrap gap-2" aria-label="Claves del programa">
                 {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
-                  <li key={item} className="border border-background/45 px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider">{item}</li>
+                  <li key={item} className="rounded-full border border-background/35 bg-background/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider">{item}</li>
                 ))}
               </ul>
             </div>
           </div>
           <div className="flex flex-col p-6 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
-            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+            <ul className="mt-5 grid flex-1 content-center gap-3 sm:grid-cols-2">
               {included.map(({ text }) => (
                 <li key={text} className="flex items-center gap-3 border border-border bg-background/60 p-4 text-[15px] font-semibold leading-6 transition-all duration-300 hover:border-primary/60">
                   <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
@@ -169,9 +169,9 @@ export function OnlineProgram() {
                 </li>
               ))}
             </ul>
-            <div className="mt-auto flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-auto border-t border-border pt-6">
               <Button variant="hero" size="lg" className="w-full shrink-0 sm:w-auto" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
-              <p className="max-w-xs text-sm leading-6 text-foreground/80">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
+              <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
             </div>
             <Accordion type="single" collapsible className="mt-6 border-t border-border">
               <AccordionItem value="detalles" className="border-b-0">
