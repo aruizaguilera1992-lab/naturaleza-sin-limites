@@ -136,7 +136,9 @@ export function CustomPackDesignerModal({ open, onOpenChange }: CustomPackDesign
   // Validation
   const canProceedStep1 = state.selectedActivities.length >= 2;
   const canProceedStep2 = state.selectedActivities.every(s => s.date);
+  const validParticipants = Number.isInteger(state.participants) && state.participants >= 1 && state.participants <= 6;
   const canProceedStep3 = 
+    validParticipants &&
     state.coordinator.name.trim().length >= 2 &&
     state.coordinator.email.includes('@') &&
     state.coordinator.phone.replace(/\D/g, '').length >= 9;
@@ -145,6 +147,7 @@ export function CustomPackDesignerModal({ open, onOpenChange }: CustomPackDesign
 
   // Confirm and send to WhatsApp
   const handleConfirm = () => {
+    if (!canProceedStep3) return;
     const activitiesList = state.selectedActivities.map(s => {
       const dateStr = s.date ? format(s.date, "d MMM yyyy", { locale: es }) : 'Por confirmar';
       return `- ${s.activity.name}: ${dateStr}`;
@@ -155,7 +158,7 @@ export function CustomPackDesignerModal({ open, onOpenChange }: CustomPackDesign
       discounts.push(`Descuento pack (${Math.round(activityDiscount * 100)}%): -${activityDiscountAmount}€`);
     }
     if (groupDiscount > 0) {
-      discounts.push(`Descuento grupo (+6): -${groupDiscountAmount}€`);
+      discounts.push(`Descuento grupo (6 personas): -${groupDiscountAmount}€`);
     }
 
     const message = `✨ *PACK PERSONALIZADO*
@@ -529,8 +532,8 @@ ${state.coordinator.name}
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => setState(prev => ({ ...prev, participants: Math.min(20, prev.participants + 1) }))}
-                      disabled={state.participants >= 20}
+                      onClick={() => setState(prev => ({ ...prev, participants: Math.min(6, prev.participants + 1) }))}
+                      disabled={state.participants >= 6}
                     >
                       <span className="text-lg">+</span>
                     </Button>
@@ -689,7 +692,7 @@ ${state.coordinator.name}
                     )}
                     {groupDiscount > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Descuento grupo (+6):</span>
+                        <span className="text-muted-foreground">Descuento grupo (6 personas):</span>
                         <span className="text-primary">-{groupDiscountAmount}€</span>
                       </div>
                     )}
