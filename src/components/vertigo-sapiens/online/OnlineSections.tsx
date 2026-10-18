@@ -135,25 +135,29 @@ export function OnlineProgram() {
     <section id="programa" className="scroll-mt-28 py-20 sm:py-28">
       <div className="container mx-auto max-w-5xl px-4">
         <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
-          <div className="relative isolate flex flex-col justify-between overflow-hidden bg-primary p-7 text-primary-foreground sm:p-10">
-            <img src="/images/vias-ferratas.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_30%] mix-blend-luminosity" />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/35 to-background/60" />
-            <div className="relative">
-              <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
-              <h2 className="mt-4 text-4xl font-extrabold leading-[1.02] sm:text-6xl">Vértigo<br />Sapiens<br />Online</h2>
-              <p className="mt-6 max-w-sm text-base font-semibold leading-7">
-                Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
-              </p>
+          <div className="relative isolate flex flex-col overflow-hidden bg-primary p-7 text-background sm:p-10">
+            <div className="relative -mx-7 -mt-7 mb-8 h-44 overflow-hidden sm:-mx-10 sm:-mt-10 sm:h-56">
+              <img src="/images/vias-ferratas.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_32%]" />
+              <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/25 to-primary" />
             </div>
-            <div className="relative mt-10 border-t border-primary-foreground/45 pt-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Para quién es</p>
-              <p className="mt-2 max-w-xs text-sm font-semibold leading-6">Barranquismo, espeleología, escalada, ferratas o montaña.</p>
+            <div className="relative flex flex-1 flex-col justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
+                <h2 className="mt-4 text-4xl font-extrabold leading-[1.02] sm:text-6xl">Vértigo<br />Sapiens<br />Online</h2>
+                <p className="mt-6 max-w-sm text-base font-semibold leading-7">
+                  Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
+                </p>
+              </div>
+              <div className="mt-8 border-t border-background/25 pt-5">
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Para quién es</p>
+                <p className="mt-2 max-w-xs text-sm font-semibold leading-6">Barranquismo, espeleología, escalada, ferratas o montaña.</p>
+              </div>
+              <ul className="mt-7 flex flex-wrap gap-2" aria-label="Claves del programa">
+                {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
+                  <li key={item} className="border border-background/45 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">{item}</li>
+                ))}
+              </ul>
             </div>
-            <ul className="relative mt-8 flex flex-wrap gap-2" aria-label="Claves del programa">
-              {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
-                <li key={item} className="border border-primary-foreground/70 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">{item}</li>
-              ))}
-            </ul>
           </div>
           <div className="p-6 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
