@@ -1,3 +1,4 @@
+import { paymentsAllowed } from "../_shared/paymentSafety.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
@@ -130,6 +131,10 @@ Deno.serve(async (req) => {
 
   const expired = new Date(pr.expires_at).getTime() < Date.now();
   let status: string = pr.status === "pendiente" && expired ? "caducado" : pr.status;
+
+  if (!paymentsAllowed(pr.environment, Deno.env.get("PAYMENTS_LIVE_ENABLED"))) {
+    return json({ error: "Los pagos de este entorno están deshabilitados" }, 403);
+  }
 
   // After returning from checkout, ask the payment provider about THIS
   // session only to tell "processing" apart; confirmation is still webhook-only.

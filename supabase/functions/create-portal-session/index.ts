@@ -1,3 +1,4 @@
+import { paymentsAllowed } from "../_shared/paymentSafety.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
@@ -63,6 +64,10 @@ Deno.serve(async (req) => {
   }
 
   // The environment always comes from the stored order, never from the client.
+  if (!paymentsAllowed(order.environment, Deno.env.get("PAYMENTS_LIVE_ENABLED"))) {
+    return json({ error: "Los pagos de este entorno están deshabilitados" }, 403);
+  }
+
   const env = order.environment as StripeEnv;
   const stripe = createStripeClient(env);
 

@@ -1,4 +1,6 @@
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
+import type { ServerDatabase } from "../_shared/databaseTypes.ts";
+
 import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
 import {
   businessRecipients,
@@ -17,10 +19,11 @@ import { isTrustedSiteOrigin } from "../_shared/siteOrigins.ts";
 import { renderBookingEmail, type BookingEmailData } from "../_shared/bookingEmail.ts";
 import { readBookingEmailContext } from "../_shared/bookingEmailContext.ts";
 
-let _supabase: SupabaseClient<any> | null = null;
+let _supabase: SupabaseClient<ServerDatabase> | null = null;
+
 function getSupabase() {
   if (!_supabase) {
-    _supabase = createClient(
+    _supabase = createClient<ServerDatabase>(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
@@ -62,7 +65,8 @@ function businessIntent(opts: {
  */
 // deno-lint-ignore no-explicit-any
 async function fulfillPlanOrder(session: any, env: StripeEnv) {
-  if (session?.payment_status === "unpaid") {
+  if (session?.livemode !== (env === "live") ||
+      !["paid", "no_payment_required"].includes(session?.payment_status)) {
     console.log("Plan session not settled yet", session?.id);
     return;
   }
@@ -462,6 +466,9 @@ Deno.serve(async (req) => {
 
   try {
     const event = await verifyWebhook(req, env);
+    if ((event as { livemode?: boolean }).livemode !== (env === "live")) {
+      return new Response("Environment mismatch", { status: 400 });
+    }
     switch (event.type) {
       case "checkout.session.completed":
       case "checkout.session.async_payment_succeeded":

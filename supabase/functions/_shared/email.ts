@@ -7,6 +7,8 @@
 //    "sent" and "persisted" cannot produce a duplicate email on retry.
 //  - Persistence errors propagate: we never report success we did not store.
 
+import { emailDeliveryAllowed } from "./paymentSafety.ts";
+
 export const escapeHtml = (value: string) =>
   value.replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string,
@@ -44,6 +46,9 @@ export async function sendEmail(
   if (!apiKey) return { status: "omitido", error: "RESEND_API_KEY no configurada" };
   if (!gatewayKey) return { status: "omitido", error: "LOVABLE_API_KEY no configurada" };
   if (recipients.length === 0) return { status: "omitido", error: "Sin destinatarios válidos" };
+  if (!emailDeliveryAllowed(recipients, Deno.env.get("EMAIL_DELIVERY_MODE"), Deno.env.get("EMAIL_TEST_RECIPIENTS"))) {
+    return { status: "omitido", error: "Entrega de email deshabilitada para estos destinatarios" };
+  }
 
   try {
     const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
@@ -66,17 +71,17 @@ export async function sendEmail(
     });
     const text = await res.text();
     if (!res.ok) {
-      console.error("Resend error", res.status, text);
-      return { status: "fallido", error: `HTTP ${res.status}: ${text.slice(0, 400)}` };
+      console.error("Resend error", res.status);
+      return { status: "fallido", error: `Resend HTTP ${res.status}` };
     }
     let providerId: string | undefined;
     try {
       providerId = JSON.parse(text)?.id;
     } catch { /* body without id */ }
     return { status: "enviado", providerId };
-  } catch (e) {
-    console.error("Resend exception", e);
-    return { status: "fallido", error: String(e).slice(0, 400) };
+  } catch {
+    console.error("Resend request failed");
+    return { status: "fallido", error: "Resend request failed" };
   }
 }
 

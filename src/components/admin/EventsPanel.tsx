@@ -215,7 +215,7 @@ export function EventsPanel() {
       title: activity.name,
       starts_at: new Date(startsAt).toISOString(),
       ends_at: form.endsAt ? new Date(form.endsAt).toISOString() : null,
-      capacity_total: Math.min(20, Math.max(1, form.capacity)),
+      capacity_total: form.capacity,
       event_type: form.eventType,
       status: form.status,
       guide_name: form.guideName.trim() || null,
@@ -231,7 +231,9 @@ export function EventsPanel() {
   const validate = (event?: EventRow) => {
     if (!selectedActivity) return "Elige una actividad del catálogo vendible.";
     if (!form.startsAt) return "Indica la fecha y hora de salida.";
-    if (form.capacity < 1) return "La capacidad debe ser mayor que cero.";
+    if (!Number.isInteger(form.capacity) || form.capacity < 1 || form.capacity > 6) {
+      return "La capacidad debe ser un número entero entre 1 y 6.";
+    }
     if (event && form.capacity < event.seats_reserved) {
       return `No puedes bajar de ${event.seats_reserved} plazas: ya están reservadas.`;
     }
@@ -542,10 +544,11 @@ export function EventsPanel() {
               id="capacity"
               type="number"
               min={1}
-              max={20}
+              max={6}
+              step={1}
               className="mt-1 text-foreground"
               value={form.capacity}
-              onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) || 6 })}
+              onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })}
             />
           </div>
           <div>

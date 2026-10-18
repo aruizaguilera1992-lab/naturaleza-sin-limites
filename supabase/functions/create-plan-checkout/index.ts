@@ -1,3 +1,4 @@
+import { paymentsAllowed } from "../_shared/paymentSafety.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
@@ -43,6 +44,10 @@ Deno.serve(async (req) => {
   const origin = new URL(body.returnUrl).origin;
   if (!isTrustedSiteOrigin(origin)) {
     return json({ error: "returnUrl no válida" }, 400);
+  }
+
+  if (!paymentsAllowed(body.environment, Deno.env.get("PAYMENTS_LIVE_ENABLED"))) {
+    return json({ error: "Los pagos de este entorno están deshabilitados" }, 403);
   }
 
   const env: StripeEnv = body.environment;

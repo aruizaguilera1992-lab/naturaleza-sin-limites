@@ -68,7 +68,8 @@ function request(confirmDeposit: boolean, extra: Record<string, unknown> = {}) {
 async function receiptFor(db: any) {
   const pr = db.tables.payment_requests[0];
   const ctx = await readBookingEmailContext(db, BID, { id: pr.id, amount_cents: pr.amount_cents, currency: "eur" }, true);
-  return { ctx, mail: renderBookingEmail({ ...ctx, variant: "receipt", state: "fecha_pendiente" }) };
+  assert(typeof ctx.activity === "string", "fixture activity must exist");
+  return { ctx, mail: renderBookingEmail({ ...ctx, activity: ctx.activity, variant: "receipt", state: "fecha_pendiente" }) };
 }
 
 Deno.test("UI -> payload -> emitter -> evidence -> receipt: explicit kind=manual confirmation", async () => {
