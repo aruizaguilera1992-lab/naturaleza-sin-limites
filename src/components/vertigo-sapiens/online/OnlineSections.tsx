@@ -136,10 +136,8 @@ export function OnlineProgram() {
       <div className="container mx-auto max-w-5xl px-4">
         <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
           <div className="relative isolate flex flex-col justify-between overflow-hidden bg-primary p-7 text-primary-foreground sm:p-10">
-            <img src="/images/vias-ferratas.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_28%] brightness-[.9]" />
-            <div aria-hidden className="absolute inset-0 bg-primary mix-blend-multiply" />
-            <div aria-hidden className="absolute inset-0 bg-primary/30" />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-transparent via-background/25 to-transparent" />
+            <img src="/images/vias-ferratas.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_30%] mix-blend-luminosity" />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/35 to-background/60" />
             <div className="relative">
               <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
               <h2 className="mt-4 text-4xl font-extrabold leading-[1.02] sm:text-6xl">Vértigo<br />Sapiens<br />Online</h2>
