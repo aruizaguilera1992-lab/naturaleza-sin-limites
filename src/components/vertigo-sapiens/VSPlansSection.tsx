@@ -18,128 +18,6 @@ import { PlanDetailCard } from "./PlanDetailCard";
 import { PlanDetailSheet } from "./PlanDetailSheet";
 const plans = [
   {
-    name: "Aventurero Activo",
-    subtitle: "Entrenamiento funcional para deportes de aventura",
-    pricePerSession: 119,
-    monthlyPrice: 119,
-    period: "/mes",
-    description:
-      "Prepárate físicamente para escalar, hacer barrancos y montaña con un programa guiado, en grupos pequeños y con acceso 24/7 a contenido formativo y comunidad privada.",
-    popular: false,
-    cta: "Ver detalles",
-    sessionsInfo: "4-8 sesiones/mes",
-    profile: "Entrenamiento funcional para deportes de aventura, con comunidad online incluida.",
-    motivationalQuote:
-      "El gimnasio tradicional te aburre. La montaña te llama. Aquí preparamos tu cuerpo para responder.",
-    components: [
-      {
-        icon: Dumbbell,
-        text: "Sesiones presenciales en grupos reducidos (4-6 personas) para atención muy personalizada",
-      },
-      {
-        icon: MessageCircle,
-        text: "Acceso a comunidad digital cerrada de aventureros con tus mismos intereses",
-      },
-      {
-        icon: BookOpen,
-        text: "Biblioteca online de cursos para seguir mejorando fuera del gimnasio",
-      },
-    ],
-    pricingOptions: [
-      {
-        sessions: "1 sesión/semana",
-        total: "4 al mes",
-        price: "119€/mes",
-        priceId: "aventurero_1_semana_mensual",
-        note: "Ideal si ya haces algo de actividad por tu cuenta",
-      },
-      {
-        sessions: "2 sesiones/semana",
-        total: "8 al mes",
-        price: "189€/mes",
-        priceId: "aventurero_2_semana_mensual",
-        note: "Para progresar rápido y ganar confianza",
-      },
-    ],
-    commitment: "3 meses mínimo",
-    commitmentNote: "para garantizar resultados reales",
-    discount: "10-15% prepago 6 meses",
-    benefits: [
-      "Programa guiado específico para escalada, barrancos y montaña",
-      "Grupos pequeños (4-6) para atención muy personalizada",
-      "Acceso 24/7 a contenido formativo y comunidad privada",
-      "Progresa con aventureros que comparten tus mismos intereses",
-    ],
-  },
-  {
-    name: "Entrenador Personal",
-    subtitle: "Integración total: presencial + online + planificación personalizada",
-    pricePerSession: 329,
-    monthlyPrice: 329,
-    period: "/mes",
-    description:
-      "Consigue resultados visibles con un sistema completo que une entrenamiento, técnica, nutrición y seguimiento continuo, sin tener que coordinar varios profesionales.",
-    popular: true,
-    cta: "Ver detalles",
-    sessionsInfo: "10 sesiones/mes",
-    profile:
-      "Integración total: sesiones presenciales, asesoramiento online y planificación 100% personalizada para tus objetivos.",
-    motivationalQuote:
-      "Tu tiempo es oro. Nosotros unimos entrenamiento, nutrición y técnica para que tú solo tengas que dar lo mejor.",
-    components: [
-      {
-        icon: Dumbbell,
-        text: "2 sesiones presenciales por semana (8 al mes) para entrenar contigo y corregir la técnica en directo",
-      },
-      {
-        icon: Video,
-        text: "2 sesiones online 1-a-1 al mes por Zoom para resolver dudas, ajustar el plan y mantener la motivación alta",
-      },
-      {
-        icon: MessageCircle,
-        text: "Acceso ilimitado a comunidad privada y biblioteca online para apoyo constante y recursos extra",
-      },
-      {
-        icon: Activity,
-        text: "Plan de entrenamiento personalizado actualizado cada mes, adaptado a tu progreso y agenda",
-      },
-      {
-        icon: Apple,
-        text: "Plan nutricional personalizado con revisión mensual",
-      },
-      {
-        icon: Video,
-        text: "Análisis de movimiento en vídeo (2 al mes) para mejorar rendimiento y prevenir lesiones",
-      },
-    ],
-    pricingOptions: [
-      {
-        sessions: "Plan completo",
-        total: "8 presenciales + 2 online",
-        price: "329€/mes",
-        priceId: "entrenador_personal_mensual",
-        note: "Todo incluido para resultados visibles",
-      },
-      {
-        sessions: "Tarifa con permanencia de 6 meses",
-        total: "Ahorro aproximado del 13,4%",
-        price: "285€/mes",
-        priceId: "entrenador_personal_prepago6",
-        note: "Ideal si ya tienes claro que quieres un cambio serio",
-      },
-    ],
-    commitment: "3 meses mínimo",
-    commitmentNote: "para garantizar resultados y un proceso bien estructurado",
-    discount: "13,4% con permanencia de 6 meses",
-    benefits: [
-      "Sistema completo: entrenamiento + técnica + nutrición en uno",
-      "Seguimiento continuo sin coordinar varios profesionales",
-      "Plan 100% adaptado a tus objetivos y agenda",
-      "Análisis de video para corrección técnica y prevención de lesiones",
-      "Motivación alta con sesiones online personalizadas",
-    ],
-  },
-  {
     name: "Outdoor Experiencial",
     subtitle: "Aventura sin suscripción ni compromiso mensual",
     pricePerSession: 59,
@@ -200,43 +78,12 @@ const plans = [
   },
 ];
 const features = [
-  {
-    name: "Precio",
-    values: ["Desde 119 €/mes · 4 sesiones", "329 €/mes · 10 sesiones", "Desde 59 €/actividad"],
-  },
-  {
-    name: "Sesiones presenciales",
-    values: ["4 u 8 al mes", "8 presenciales + 2 online al mes", "Según actividad"],
-  },
-  {
-    name: "Salidas outdoor",
-    values: ["Contratación aparte", "Contratación aparte", "Actividad suelta o paquetes de 4 u 8"],
-  },
-  {
-    name: "Plan personalizado",
-    values: ["Genérico", true, false],
-  },
-  {
-    name: "Biblioteca técnica",
-    values: [true, true, "Acceso limitado"],
-  },
-  {
-    name: "Asesoramiento",
-    values: ["Chat grupal", "Videollamadas mensuales", false],
-  },
-  {
-    name: "Seguimiento métricas",
-    values: ["Básico", "Métricas avanzadas", false],
-  },
-  {
-    name: "Nutrición",
-    values: [false, true, false],
-  },
-  {
-    name: "Compromiso",
-    values: ["Mensual", "Trimestral", "No suscripción"],
-  },
+  { name: "Precio", values: ["Desde 59 €/actividad"] },
+  { name: "Salidas outdoor", values: ["Actividad suelta o paquetes de 4 u 8"] },
+  { name: "Biblioteca técnica", values: ["Acceso limitado"] },
+  { name: "Compromiso", values: ["No suscripción"] },
 ];
+const gridStyle = { gridTemplateColumns: `repeat(${plans.length + 1}, minmax(0, 1fr))` };
 const renderValue = (value: boolean | string) => {
   if (value === true) {
     return (
@@ -368,11 +215,11 @@ export function VSPlansSection() {
           transition={{
             duration: 0.6,
           }}
-          className="hidden md:block max-w-5xl mx-auto"
+          className="hidden md:block max-w-3xl mx-auto"
         >
           <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl overflow-hidden">
             {/* Header */}
-            <div className="grid grid-cols-4 border-b border-border">
+            <div className="grid border-b border-border" style={gridStyle}>
               <div className="p-6 bg-background/50">
                 <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                   Comparativa
@@ -403,7 +250,8 @@ export function VSPlansSection() {
             {features.map((feature, index) => (
               <div
                 key={feature.name}
-                className={`grid grid-cols-4 ${index !== features.length - 1 ? "border-b border-border" : ""}`}
+                style={gridStyle}
+                className={`grid ${index !== features.length - 1 ? "border-b border-border" : ""}`}
               >
                 <div className="p-4 flex items-center bg-background/30">
                   <span className="text-sm font-medium text-foreground">{feature.name}</span>
@@ -420,7 +268,7 @@ export function VSPlansSection() {
             ))}
 
             {/* CTA Row */}
-            <div className="grid grid-cols-4 border-t border-border">
+            <div className="grid border-t border-border" style={gridStyle}>
               <div className="p-6 bg-background/30">
                 <span className="text-sm font-medium text-foreground">Reservar</span>
               </div>
