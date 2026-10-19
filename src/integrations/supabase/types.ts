@@ -330,6 +330,45 @@ export type Database = {
         }
         Relationships: []
       }
+      deposit_intents: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          payload_hash: string
+          payment_request_id: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id: string
+          payload_hash: string
+          payment_request_id: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          payload_hash?: string
+          payment_request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deposit_intents_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deposit_intents_payment_request_id_fkey"
+            columns: ["payment_request_id"]
+            isOneToOne: false
+            referencedRelation: "payment_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_log: {
         Row: {
           attempts: number
@@ -677,6 +716,9 @@ export type Database = {
       }
     }
     Functions: {
+      admin_delete_booking: { Args: { _id: string }; Returns: Json }
+      admin_delete_contact: { Args: { _id: string }; Returns: Json }
+      admin_reset_all: { Args: { _confirm: string }; Returns: Json }
       begin_checkout_generation: {
         Args: { _expired_session_id: string; _token: string }
         Returns: Json
@@ -699,6 +741,10 @@ export type Database = {
           _session_id: string
           _token: string
         }
+        Returns: Json
+      }
+      create_deposit_intent: {
+        Args: { _id: string; _payload: Json }
         Returns: Json
       }
       finish_notification: {
