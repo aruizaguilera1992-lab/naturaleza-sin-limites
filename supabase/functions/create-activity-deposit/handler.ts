@@ -12,6 +12,7 @@ export const HOLD_MINUTES = 30;
 const phoneRegex = /^[+]?[\d\s()./-]{9,20}$/;
 
 export const BodySchema = z.object({
+  requestId: z.string().uuid(),
   category: z.string().min(2).max(40),
   slug: z.string().min(1).max(80),
   participants: z.number().int().min(1).max(MAX_STANDARD_GROUP),
@@ -124,6 +125,25 @@ const REASON_MESSAGES: Record<string, string> = {
 };
 
 export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
+  if (raw && typeof raw === "object" && (raw as { action?: unknown }).action === "recover") {
+    const recovery = z.object({ action: z.literal("recover"), requestId: z.string().uuid() }).strict().safeParse(raw);
+    if (!recovery.success) return { status: 400, body: { error: "Referencia no válida" } };
+    const { data: intent, error } = await deps.db.from("deposit_intents")
+      .select("booking_id,payment_request_id").eq("id", recovery.data.requestId).maybeSingle();
+    if (error) return { status: 500, body: { error: "No se pudo comprobar la reserva" } };
+    if (!intent) return { status: 404, body: { error: "Referencia no disponible" } };
+    const { data: payment, error: paymentError } = await deps.db.from("payment_requests")
+      .select("token,status,environment").eq("id", intent.payment_request_id).single();
+    if (paymentError || !payment) return { status: 500, body: { error: "No se pudo comprobar el pago" } };
+    if (!paymentsAllowed(payment.environment, deps.liveEnabled)) return { status: 403, body: { error: "Entorno deshabilitado" } };
+    if (payment.status === "pagado") return { status: 200, body: { token: payment.token } };
+    const { data: hold, error: holdError } = await deps.db.from("activity_event_bookings")
+      .select("state,hold_expires_at").eq("booking_id", intent.booking_id).maybeSingle();
+    if (holdError) return { status: 500, body: { error: "No se pudo comprobar la plaza" } };
+    if (payment.status !== "pendiente" || hold?.state !== "bloqueada" || !hold.hold_expires_at || new Date(hold.hold_expires_at) <= (deps.now?.() ?? new Date()))
+      return { status: 409, body: { reason: "intent_expired", error: "El bloqueo ha caducado" } };
+    return { status: 200, body: { token: payment.token } };
+  }
   const parsed = BodySchema.safeParse(raw);
   if (!parsed.success) return { status: 400, body: { error: "Datos no válidos" } };
   const body = parsed.data;
@@ -149,119 +169,20 @@ export async function handleDeposit(raw: unknown, deps: Deps): Promise<Result> {
   if (!activity) return { status: 404, body: { error: "Actividad no disponible para pago online" } };
 
   const { db } = deps;
-  const now = deps.now?.() ?? new Date();
-
-  const { data: ev, error: evError } = await db
-    .from("activity_events")
-    .select("id, category, slug, status, starts_at, capacity_total, seats_reserved, price_cents, event_type")
-    .eq("id", body.eventId)
-    .maybeSingle();
-  if (evError) {
-    console.error("event read failed", evError);
-    return { status: 500, body: { error: "No se pudo comprobar la salida" } };
-  }
-
-  const check = checkEvent(ev as EventRow | null, body.category, body.slug, body.participants, now);
-  if (!check.ok) {
-    return {
-      status: 409,
-      body: { error: REASON_MESSAGES[check.reason], reason: check.reason, freeSeats: check.freeSeats },
-    };
-  }
-
-  const event = ev as EventRow;
-  const unitCents = unitPriceCents(event, activity.pricePerPerson);
-  const totalCents = unitCents * body.participants;
-  const depositCents = Math.round(totalCents * DEPOSIT_RATE);
-  if (depositCents < 50) return { status: 400, body: { error: "Importe demasiado bajo" } };
-
-  const eventDate = madridDate(event.starts_at);
   const activityLabel = `${activity.category} · ${activity.name}`;
-
-  const { data: booking, error: bookingError } = await db
-    .from("bookings")
-    .insert({
-      activity: activityLabel,
-      preferred_date: eventDate,
-      number_of_people: String(body.participants),
-      contact: body.email,
-      email: body.email,
-      phone: body.phone,
-      payment_email: body.email,
-      name: body.name,
-      message: body.message || null,
-      status: "pendiente_pago",
-      rgpd_accepted_at: now.toISOString(),
-    })
-    .select("id")
-    .single();
-  if (bookingError || !booking) {
-    console.error("deposit booking insert failed", bookingError);
-    return { status: 500, body: { error: "No se pudo registrar la reserva" } };
-  }
-
-  // Atomic seat hold (SELECT ... FOR UPDATE inside the RPC).
-  const { data: seatResult, error: seatError } = await db.rpc("reserve_event_seats", {
-    _event_id: event.id,
-    _booking_id: booking.id,
-    _participants: body.participants,
-    _hold_minutes: HOLD_MINUTES,
+  const { data: intent, error: intentError } = await db.rpc("create_deposit_intent", {
+    _id: body.requestId,
+    _payload: { ...body, message: body.message ?? null, preferredDate: undefined,
+      activityLabel, catalogueUnitCents: Math.round(activity.pricePerPerson * 100) },
   });
-  const seat = seatResult as { ok?: boolean; reason?: string; free_seats?: number } | null;
-  if (seatError || !seat?.ok) {
-    console.error("reserve_event_seats failed", seatError, seat);
-    // Only the booking created by THIS call is removed (no seats were taken).
-    await db.from("bookings").delete().eq("id", booking.id);
-    if (seat?.reason === "sin_plazas") {
-      return {
-        status: 409,
-        body: { error: REASON_MESSAGES.sin_plazas, reason: "sin_plazas", freeSeats: seat.free_seats ?? 0 },
-      };
-    }
-    return { status: 409, body: { error: "No se pudo bloquear la plaza en esa salida" } };
-  }
-
-  const concept = `Señal ${Math.round(DEPOSIT_RATE * 100)}% · ${activityLabel} · ${body.participants} pax`;
-  const { data: request, error: requestError } = await db
-    .from("payment_requests")
-    .insert({
-      booking_id: booking.id,
-      amount_cents: depositCents,
-      total_cents: totalCents,
-      kind: "senal",
-      currency: "eur",
-      concept,
-      customer_email: body.email,
-      environment: body.environment,
-    })
-    .select("token")
-    .single();
-
-  if (requestError || !request) {
-    console.error("deposit payment_request insert failed", requestError);
-    // Controlled rollback of the records created by this call only.
-    const { data: rel, error: relError } = await db.rpc("release_event_seats", {
-      _booking_id: booking.id,
-      _reason: "payment_prepare_failed",
-    });
-    const released = !relError && (rel as { ok?: boolean } | null)?.ok === true;
-    if (released) {
-      await db.from("activity_event_bookings").delete().eq("booking_id", booking.id);
-      await db.from("bookings").delete().eq("id", booking.id);
-    } else {
-      // Seats could NOT be released: keep link + booking so the counter can be
-      // repaired by an admin. Never claim the seats were freed.
-      console.error("release_event_seats failed after payment prepare failure", relError, rel);
-      await db
-        .from("bookings")
-        .update({
-          status: "incidencia_plazas",
-          admin_notes: `Fallo al preparar el pago y al liberar plazas (${now.toISOString()}). Revisar contador de la salida ${event.id}.`,
-        })
-        .eq("id", booking.id);
-    }
-    return { status: 500, body: { error: "No se pudo preparar el pago. No se ha realizado ningún cargo." } };
-  }
+  if (intentError || !intent) return { status: 500, body: { error: "No se pudo preparar la reserva. Reintenta con la misma intención." } };
+  if (!intent.ok) return { status: 409, body: { reason: intent.reason,
+    error: REASON_MESSAGES[intent.reason] ?? "La intención no coincide o ha caducado. Revisa la reserva antes de iniciar otra.", freeSeats: intent.free_seats } };
+  const booking = { id: intent.booking_id };
+  const request = { token: intent.token };
+  const event = { starts_at: intent.starts_at };
+  const totalCents = intent.total_cents;
+  const depositCents = intent.amount_cents;
 
   const payUrl = `${new URL(body.origin).origin}/pago/${request.token}`;
   const emailData = {

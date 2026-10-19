@@ -1,7 +1,7 @@
 name: Stabilization checks
 on:
   pull_request:
-    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security, test/sprint-c-isolated-bookings]
+    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security, test/sprint-c-isolated-bookings, test/local-schema-baseline]
 permissions:
   contents: read
 jobs:
@@ -14,6 +14,7 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npm test
+      - run: node scripts/check-local-secret-boundary.mjs
       - run: npm run test:security
       - run: npm run build
       - uses: denoland/setup-deno@v2
@@ -87,5 +88,7 @@ jobs:
           JS
       - name: Rebuild and verify native local schema
         run: node scripts/rebuild-local-db.mjs --database nsl_rebuild_ci
+      - name: Atomic deposit migration on native PostgreSQL (no providers)
+        run: node scripts/local-db/check-deposit-intents.mjs --database nsl_rebuild_ci
       - name: Refuse an existing fixture database
         run: node scripts/local-db/check-existing.mjs --database nsl_rebuild_ci

@@ -180,6 +180,7 @@ type PaymentRequest = {
   created_at: string;
   kind?: string;
   total_cents?: number | null;
+  last_error?: string | null;
 };
 
 type Booking = {
@@ -219,7 +220,7 @@ type Contact = {
   payment_reference: string | null;
 };
 
-const STATUSES = ["nueva", "contactada", "pendiente_pago", "confirmada", "cancelada"] as const;
+const STATUSES = ["nueva", "contactada", "pendiente_pago", "incidencia_plazas", "confirmada", "cancelada"] as const;
 
 const formatAmount = (cents: number, currency = "eur") =>
   new Intl.NumberFormat("es-ES", { style: "currency", currency: currency.toUpperCase() }).format(
@@ -342,6 +343,11 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
                   </>
                 )}
               </span>
+              {p.status === "pagado" && p.last_error?.startsWith("plazas:") && (
+                <p role="alert" className="w-full rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-foreground">
+                  <strong>Pago recibido sin plaza confirmada.</strong> Revisa la disponibilidad y resuelve la incidencia antes de confirmar la actividad al cliente.
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -433,6 +439,7 @@ const STATUS_LABELS: Record<string, string> = {
   nueva: "Nueva",
   contactada: "Contactada",
   pendiente_pago: "Pendiente de pago",
+  incidencia_plazas: "Incidencia de plazas",
   confirmada: "Confirmada",
   cancelada: "Cancelada",
 };
@@ -447,6 +454,8 @@ function StatusBadge({ status }: { status: string }) {
         ? "border-accent bg-accent/20 text-foreground"
         : status === "confirmada"
           ? "border-transparent bg-primary text-primary-foreground"
+          : status === "incidencia_plazas"
+            ? "border-destructive bg-destructive/15 text-foreground"
           : status === "cancelada"
             ? "border-destructive/60 bg-destructive/15 text-foreground line-through decoration-1"
             : "border-border bg-muted text-foreground";
@@ -518,7 +527,12 @@ export default function Admin() {
         .limit(100),
     ]);
     setLoadError(!!(b.error || c.error || p.error || n.error));
-    if (b.data) setBookings(b.data as Booking[]);
+    if (b.data) {
+      // Older paid bookings may still say confirmed despite an unresolved seat error.
+      const incidentIds = new Set((p.data ?? []).filter(row => row.status === "pagado" && row.last_error?.startsWith("plazas:")).map(row => row.booking_id));
+      setBookings((b.data as Booking[]).map(row => row.status === "confirmada" && incidentIds.has(row.id)
+        ? { ...row, status: "incidencia_plazas" } : row));
+    }
     if (c.data) setContacts(c.data as Contact[]);
     if (p.data) setPayments(p.data as PaymentRequest[]);
     if (n.data) setNotifications(n.data as NotificationRow[]);
@@ -692,6 +706,9 @@ export default function Admin() {
   const pendingNotifications = notifications.filter((n) => n.status !== "enviado").length;
   const newBookings = bookings.filter((b) => b.status === "nueva").length;
   const pendingPayBookings = bookings.filter((b) => b.status === "pendiente_pago").length;
+  const seatIncidents = bookings.filter((b) => b.status === "incidencia_plazas").length;
+  const attentionBookings = bookings.filter(b => ["nueva", "pendiente_pago", "incidencia_plazas"].includes(b.status))
+    .sort((a, b) => Number(b.status === "incidencia_plazas") - Number(a.status === "incidencia_plazas"));
   const newContacts = contacts.filter((c) => c.status === "nueva").length;
   const monthStart = new Date();
   monthStart.setDate(1);
@@ -1121,6 +1138,7 @@ export default function Admin() {
                 {[
                   { label: "Reservas nuevas", value: newBookings, go: "bookings" as AdminTab, filter: "nueva" },
                   { label: "Pendientes de pago", value: pendingPayBookings, go: "bookings" as AdminTab, filter: "pendiente_pago" },
+                  { label: "Incidencias de plazas", value: seatIncidents, go: "bookings" as AdminTab, filter: "incidencia_plazas" },
                   { label: "Contactos nuevos", value: newContacts, go: "contacts" as AdminTab, filter: "nueva" },
                   { label: "Avisos con fallo", value: pendingNotifications, go: "notifications" as AdminTab },
                 ].map((s) => (
@@ -1149,12 +1167,11 @@ export default function Admin() {
                 <h2 id="todo-title" className="border-b border-border px-4 py-3 font-heading font-semibold text-foreground md:px-5">
                   Por atender
                 </h2>
-                {bookings.filter((b) => b.status === "nueva" || b.status === "pendiente_pago").length === 0 ? (
+                {attentionBookings.length === 0 ? (
                   <p className="px-5 py-8 text-center text-sm text-muted-foreground">Nada pendiente. Todo al día.</p>
                 ) : (
                   <ul>
-                    {bookings
-                      .filter((b) => b.status === "nueva" || b.status === "pendiente_pago")
+                    {attentionBookings
                       .slice(0, 6)
                       .map((b) => (
                         <li key={b.id} className="border-b border-border last:border-0">

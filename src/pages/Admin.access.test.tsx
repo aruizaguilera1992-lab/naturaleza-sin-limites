@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { beforeEach, afterEach, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -26,4 +26,29 @@ it("verified user without admin role stays unauthorized with leave/logout and no
   expect(screen.queryByRole("link", { name: "LOGIN" })).not.toBeInTheDocument();
   expect(api.from).toHaveBeenCalledTimes(1);
   expect(api.from).toHaveBeenCalledWith("user_roles");
+});
+
+it("legacy confirmed booking with paid seat error is actionable, filtered and never shown as all clear", async () => {
+  api.getUser.mockResolvedValue({ data: { user: { id: "fixture" } }, error: null });
+  api.getSession.mockResolvedValue({ data: { session: { user: { id: "fixture" } } } });
+  api.from.mockImplementation((table: string) => {
+    const data = table === "user_roles" ? [{ role: "admin" }]
+      : table === "bookings" ? [{ id: "booking-fixture", activity: "LOCAL INCIDENT", name: "Persona ficticia", contact: "fixture@example.test",
+        status: "confirmada", created_at: "2026-10-16T10:00:00Z", event_id: null, number_of_people: "2" }]
+      : table === "payment_requests" ? [{ id: "payment-fixture", booking_id: "booking-fixture", status: "pagado", last_error: "plazas: sin_plazas",
+        amount_cents: 2100, currency: "eur", concept: "LOCAL INCIDENT", created_at: "2026-10-16T10:00:00Z" }]
+      : [];
+    const query = { select() { return this; }, eq() { return this; }, order() { return this; }, limit() { return this; }, gte() { return this; },
+      then(resolve: (value: unknown) => unknown) { return Promise.resolve({ data, error: null }).then(resolve); } };
+    return query;
+  });
+  mount();
+  const incidents = await screen.findByRole("button", { name: "Incidencias de plazas 1" });
+  expect(screen.queryByText("Nada pendiente. Todo al día.")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /LOCAL INCIDENT.*Incidencia de plazas/ })).toBeInTheDocument();
+  fireEvent.click(incidents);
+  const booking = screen.getByRole("button", { name: /LOCAL INCIDENT Incidencia de plazas/ });
+  fireEvent.click(booking);
+  expect(screen.getByText("Pago recibido sin plaza confirmada.")).toBeInTheDocument();
+  expect(screen.queryByText("Confirmada", { exact: true })).not.toBeInTheDocument();
 });

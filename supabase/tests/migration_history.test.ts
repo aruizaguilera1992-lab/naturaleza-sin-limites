@@ -6,7 +6,8 @@ import { assertEquals, assertRejects } from "jsr:@std/assert@1";
 
 // Synthetic post-0011 schema, never a production connection or data copy.
 const config = { migrationsFolder: "drizzle/migrations" };
-const migrations = readMigrationFiles(config);
+// This synthetic fixture covers historical 0012/0013; later RPCs need the full local schema.
+const migrations = readMigrationFiles(config).slice(0, 14);
 const EVENT = "11111111-1111-4111-8111-111111111111";
 const BOOKING = "22222222-2222-4222-8222-222222222221";
 
