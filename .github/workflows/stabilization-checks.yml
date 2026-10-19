@@ -1,7 +1,7 @@
 name: Stabilization checks
 on:
   pull_request:
-    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security, test/sprint-c-isolated-bookings, test/local-schema-baseline]
+    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security, test/sprint-c-isolated-bookings, test/local-schema-baseline, test/local-booking-validation]
 permissions:
   contents: read
 jobs:
@@ -17,6 +17,8 @@ jobs:
       - run: node scripts/check-local-secret-boundary.mjs
       - run: npm run test:security
       - run: npm run build
+      - name: Scoped build dependency compatibility (no database connection)
+        run: node scripts/check-build-dependency-compat.mjs
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.5.4
@@ -53,6 +55,8 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npm run test:security
+      - name: Scoped build dependency compatibility on Windows
+        run: node scripts/check-build-dependency-compat.mjs
   local-schema-rebuild:
     runs-on: ubuntu-latest
     services:
