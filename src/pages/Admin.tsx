@@ -542,6 +542,7 @@ export default function Admin() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [actionDone, setActionDone] = useState<{ title: string; description: string } | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [eventsById, setEventsById] = useState<
@@ -1016,6 +1017,44 @@ export default function Admin() {
             totalCents={fin.totalCents}
             onSave={(p) => updateDiscount(b.id, p)}
           />
+          {(() => {
+            const own = payments.filter((p) => p.booking_id === b.id);
+            const sug = suggestedDepositCents(fin);
+            const base = depositConfirmationOption(b, own, sug !== null);
+            const noDeposit = fin.depositCents === null || fin.depositCents < 50;
+            const depositConfirmation =
+              base.available && noDeposit && !fin.depositPaid
+                ? {
+                    available: false,
+                    preselected: false,
+                    reason:
+                      fin.totalCents === null
+                        ? "falta el precio o los participantes en el resumen económico."
+                        : "con el descuento actual la señal es inferior a 0,50 €; revisa el descuento.",
+                  }
+                : base;
+            return (
+              <PaymentPanel
+                key={`pay-${b.id}-d${b.discount_percent ?? 0}-p${b.number_of_people ?? ""}-${b.activity}`}
+                target="booking"
+                id={b.id}
+                {...(sug === null
+                  ? {
+                      defaultConcept: `Reserva ${b.activity}`,
+                      amountHint: fin.depositPaid ? "La señal ya está pagada: no se propone otra." : fin.depositPending ? "Ya hay una señal pendiente de pago." : undefined,
+                    }
+                  : {
+                      defaultConcept: `Señal ${pct}% · ${b.activity} · ${fin.participants} pax`,
+                      defaultAmount: (sug / 100).toFixed(2).replace(".", ","),
+                      amountHint: `Importe propuesto: señal del ${pct} % del resumen.`,
+                    })}
+                payments={own}
+                depositConfirmation={depositConfirmation}
+                lockedDepositCents={sug}
+                onCreated={(msg) => { if (msg) setActionDone(msg); loadData(); }}
+              />
+            );
+          })()}
         </section>
 
         {(() => {
@@ -1077,27 +1116,6 @@ export default function Admin() {
         <BookingEditForm key={`edit-${b.id}-${b.updated_at ?? ""}`} booking={b} onSaved={(patch) => setBookings((prev) => prev.map((r) => (r.id === b.id ? { ...r, ...patch } : r)))} />
         <div className="mt-6"><StatusSelect table="bookings" id={b.id} value={b.status} /></div>
         <NotesField key={b.id} id={b.id} value={b.admin_notes} onSave={(n) => updateNotes("bookings", b.id, n)} />
-        <PaymentPanel
-          key={`pay-${b.id}-d${b.discount_percent ?? 0}`}
-          target="booking"
-          id={b.id}
-          {...(() => {
-            const sug = suggestedDepositCents(fin);
-            if (sug === null)
-              return {
-                defaultConcept: `Reserva ${b.activity}`,
-                amountHint: fin.depositPaid ? "La señal ya está pagada: no se propone otra." : fin.depositPending ? "Ya hay una señal pendiente de pago." : undefined,
-              };
-            return {
-              defaultConcept: `Señal ${pct}% · ${b.activity} · ${fin.participants} pax`,
-              defaultAmount: (sug / 100).toFixed(2).replace(".", ","),
-              amountHint: `Importe propuesto: señal del ${pct} %${fin.estimated ? " con tarifa actual (estimado)" : ""}${fin.discountCents > 0 ? ` con el descuento${fin.discountPercent > 0 ? ` del ${fin.discountPercent} %` : ""} aplicado` : ""}. Revísalo antes de generar el enlace.`,
-            };
-          })()}
-          payments={payments.filter((p) => p.booking_id === b.id)}
-          depositConfirmation={depositConfirmationOption(b, payments.filter((p) => p.booking_id === b.id), suggestedDepositCents(fin) !== null)}
-          onCreated={loadData}
-        />
         <DeleteRecordButton target="booking" id={b.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
       </section>
     );
