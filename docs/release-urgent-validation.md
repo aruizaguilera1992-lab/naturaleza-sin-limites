@@ -112,3 +112,28 @@ navegador, sin enviar instrucciones al agente de Lovable ni publicar:
 
 Se conserva Lovable como plataforma de servicios de la aplicación. PostgreSQL local
 y los proveedores simulados son herramientas de ensayo, no una sustitución de Cloud.
+
+## Inventario remoto de solo lectura
+
+La API de Lovable confirmó enabled=true, stack=supabase, y proyecto sin publicar.
+Se ejecutaron únicamente SELECT de metadatos y un recuento agregado, sin mostrar
+reservas, contactos, tokens ni valores de secretos y sin ejecutar funciones de negocio.
+
+La base real registra trece migraciones Drizzle, hasta 0012_add_booking_discount_percent.
+Los trece timestamps y hashes coinciden con los archivos del repositorio en formato
+LF. La primera comparación con el checkout Windows difería por CRLF, no por SQL
+distinto. Se añade .gitattributes para conservar LF en SQL Drizzle en ambas plataformas;
+no se edita el SQL histórico ni se reescribe el historial de la base.
+
+Todavía no existen deposit_intents/create_deposit_intent en el inventario consultado;
+0013 y 0014 están pendientes de aplicación remota. La restricción antigua de aforo
+permite hasta veinte. El recuento de salidas con aforo/ocupación superior a seis o
+con ocupación superior al aforo fue cero. Esto permite preparar el siguiente ensayo,
+pero no sustituye repetir el preflight inmediatamente antes de una migración autorizada.
+
+Las nueve tablas públicas consultadas tienen RLS activado. Los RPC de preparación
+de checkout y reserva no permiten ejecución a anon; anon solo tiene SELECT sobre
+la vista pública en el conjunto de tablas de reservas/pagos/eventos revisado. No se
+certifican todas las políticas ni se presenta como un nuevo escaneo exhaustivo.
+La copia representativa sin datos personales y su recuperación siguen pendientes;
+no se copió producción ni se aplicó ninguna de las dos migraciones pendientes.
