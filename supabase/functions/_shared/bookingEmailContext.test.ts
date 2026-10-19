@@ -81,5 +81,5 @@ Deno.test("deposit email invoice: Guadalmina booking stored as 'Categoría · No
   if (ctx.money?.totalCents !== 7000 || ctx.money?.depositCents !== 2100) throw new Error(JSON.stringify(ctx.money));
   const mail = renderBookingEmail({ variant: "payment_link", state: "pendiente_pago", activity: "Río Guadalmina", date: "2099-01-10", people: 2, ...ctx } as any);
   for (const s of ["2 × 35,00 € por persona", "Total de la actividad: 70,00 €", "A PAGAR AHORA (señal del 30 %, incluida en el total): 21,00 €", "Resto pendiente: 49,00 €"])
-    if (!mail.text.includes(s)) throw new Error("missing " + s + "\n" + mail.text);
+    if (!mail.text.replace(/\u00a0/g, " ").includes(s)) throw new Error("missing " + s + "\n" + mail.text);
 });
