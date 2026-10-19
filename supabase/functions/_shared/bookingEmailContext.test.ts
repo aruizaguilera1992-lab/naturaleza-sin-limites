@@ -70,3 +70,16 @@ Deno.test("deposit confirmation shows catalogue total when payment is exactly th
   const ctx = await readBookingEmailContext({ from: q }, "b1", { id: "p1", amount_cents: 2100 }, false, true, { depositConfirmationDate: "2027-05-18" });
   if (ctx.money?.totalCents !== 7000 || ctx.money?.depositCents !== 2100) throw new Error(JSON.stringify(ctx.money));
 });
+
+Deno.test("deposit email invoice: Guadalmina booking stored as 'Categoría · Nombre', 2 people", async () => {
+  const { renderBookingEmail } = await import("./bookingEmail.ts");
+  const { readBookingEmailContext } = await import("./bookingEmailContext.ts");
+  const db = { from: (t: string) => { const q: any = { select: () => q, eq: () => q, limit: () => Promise.resolve({ data: [], error: null }),
+    maybeSingle: () => Promise.resolve({ data: t === "bookings" ? { activity: "Barranquismo · Río Guadalmina", preferred_date: "2099-01-10", number_of_people: "2", status: "nueva", discount_percent: 0, discount_cents: 0 } : null, error: null }),
+    then: (r: any) => r({ data: [{ id: "p1", kind: "senal", amount_cents: 2100, total_cents: null, status: "pendiente" }], error: null }) }; return q; } };
+  const ctx = await readBookingEmailContext(db, "b1", { id: "p1", amount_cents: 2100 }, false, true);
+  if (ctx.money?.totalCents !== 7000 || ctx.money?.depositCents !== 2100) throw new Error(JSON.stringify(ctx.money));
+  const mail = renderBookingEmail({ variant: "payment_link", state: "pendiente_pago", activity: "Río Guadalmina", date: "2099-01-10", people: 2, ...ctx } as any);
+  for (const s of ["2 × 35,00 € por persona", "Total de la actividad: 70,00 €", "A PAGAR AHORA (señal del 30 %, incluida en el total): 21,00 €", "Resto pendiente: 49,00 €"])
+    if (!mail.text.replace(/\u00a0/g, " ").includes(s)) throw new Error("missing " + s + "\n" + mail.text);
+});

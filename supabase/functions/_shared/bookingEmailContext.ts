@@ -2,6 +2,8 @@ import { ACTIVITY_PRICES, DEPOSIT_RATE } from "./activityPrices.ts";
 import { hasMatchingDepositEvidence } from "./depositConfirmation.ts";
 import { reliableEmailMoney, type BookingEmailData } from "./bookingEmail.ts";
 
+const validPeople = (v: unknown) => Number.isInteger(Number(v)) && Number(v) > 0;
+
 // Read-only presentation enrichment. Missing sources omit economics, never block or alter payment processing.
 export async function readBookingEmailContext(db: any, bookingId: string | null, payment?: { id: string; amount_cents: number; currency?: string }, received = false, adminSignalEmail = false, options: { depositConfirmationDate?: string } = {}): Promise<Partial<BookingEmailData>> {
   try {
@@ -45,14 +47,18 @@ export async function readBookingEmailContext(db: any, bookingId: string | null,
   const money = reliableEmailMoney(payments, payment, DEPOSIT_RATE, event?.price_cents, Number(booking.number_of_people));
   if (money.totalCents != null) {
     const percent = Math.min(100, Math.max(0, Number(booking.discount_percent) || 0));
-    const discount = percent > 0 ? Math.round(money.totalCents * percent / 100) : Math.max(0, Number(booking.discount_cents) || 0);
+    const discount = Math.min(money.totalCents, percent > 0 ? Math.round(money.totalCents * percent / 100) : Math.max(0, Number(booking.discount_cents) || 0));
+    if (discount > 0) { money.grossCents = money.totalCents; money.discountCents = discount; money.discountPercent = percent > 0 ? percent : undefined; }
+    if (validPeople(booking.number_of_people) && event?.price_cents > 0 && money.grossCents == null) money.unitCents = event.price_cents;
     money.totalCents = Math.max(0, money.totalCents - discount);
   }
   // Deposit-confirmation emails: show the activity total only when the official catalogue
   // price × people (minus discount) makes THIS payment exactly the official deposit.
   if (money.totalCents == null && context.manualConfirmation && context.paymentKind === "senal") {
     const people = Number(booking.number_of_people);
-    const entry = Object.values(ACTIVITY_PRICES).find((e) => e.name.trim().toLowerCase() === String(booking.activity ?? "").trim().toLowerCase());
+    const wanted = String(booking.activity ?? "").trim().toLowerCase();
+    // Bookings store "Categoría · Nombre"; also accept the bare catalogue name.
+    const entry = Object.values(ACTIVITY_PRICES).find((e) => [e.name, `${e.category} · ${e.name}`].some((n) => n.trim().toLowerCase() === wanted));
     if (entry && Number.isInteger(people) && people > 0) {
       const gross = Math.round(entry.pricePerPerson * 100) * people;
       const percent = Math.min(100, Math.max(0, Number(booking.discount_percent) || 0));
@@ -61,6 +67,8 @@ export async function readBookingEmailContext(db: any, bookingId: string | null,
       if (net > 0 && payment.amount_cents === Math.round(net * DEPOSIT_RATE)) {
         money.totalCents = net;
         money.depositCents = payment.amount_cents;
+        money.unitCents = Math.round(entry.pricePerPerson * 100);
+        if (discount > 0) { money.grossCents = gross; money.discountCents = Math.min(discount, gross); money.discountPercent = percent > 0 ? percent : undefined; }
       }
     }
   }
