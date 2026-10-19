@@ -30,7 +30,7 @@ const faqs = [
   },
   {
     question: '¿Hay compromiso de permanencia?',
-    answer: 'El plan "Aventurero Activo" es mensual sin compromiso. El plan "Entrenador Personal" tiene un compromiso trimestral para garantizar resultados. El paquete "Outdoor Experiencial" no tiene suscripción.',
+    answer: 'No. No hay cuotas mensuales: pagas por actividad o por paquete "Outdoor Experiencial", sin suscripción.',
   },
   {
     question: '¿Cómo funciona el seguimiento personalizado?',

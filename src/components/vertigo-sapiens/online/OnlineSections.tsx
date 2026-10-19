@@ -51,10 +51,10 @@ export function OnlineHero() {
 }
 
 const benefits = [
-  { icon: Timer, title: 'Resistencia', text: 'Sostener el esfuerzo en jornadas largas.', img: '/images/functional-training-documentary.jpg' },
-  { icon: Dumbbell, title: 'Fuerza útil', text: 'Trabajar tracción, piernas y agarre.', img: '/images/rope-detail-documentary.jpg' },
-  { icon: Mountain, title: 'Movilidad y estabilidad', text: 'Preparar movimientos y apoyos exigentes.', img: null },
-  { icon: LineChart, title: 'Progreso con criterio', text: 'Registrar el entrenamiento y revisar su evolución.', img: null },
+  { icon: Timer, title: 'Resistencia', text: 'Llega entero al final de la jornada: aproximaciones largas, desniveles y horas de actividad sin perder energía.', img: '/images/functional-training-documentary.jpg' },
+  { icon: Dumbbell, title: 'Fuerza funcional', text: 'Tracción, piernas, core y agarre para trepar, cargar la mochila y moverte con seguridad en cuerda.', img: '/images/rope-detail-documentary.jpg' },
+  { icon: Mountain, title: 'Movilidad y estabilidad', text: 'Articulaciones preparadas para pasos amplios, apoyos inestables y posturas exigentes en roca o cueva.', img: null },
+  { icon: LineChart, title: 'Progreso con criterio', text: 'Cada sesión queda registrada para ver tu evolución y ajustar el plan semana a semana.', img: null },
 ];
 
 export function OnlineBenefits() {
@@ -115,7 +115,14 @@ export function OnlineValue() {
   );
 }
 
-const included = ['Evaluación inicial', 'Plan semanal adaptado', 'Vídeos de ejercicios', 'Registro semanal', 'Revisión quincenal', 'Hasta 2 vídeos al mes y evaluación final'];
+const included = [
+  { text: 'Evaluación inicial' },
+  { text: 'Plan semanal adaptado' },
+  { text: 'Vídeos de ejercicios' },
+  { text: 'Registro semanal' },
+  { text: 'Revisión quincenal' },
+  { text: 'Hasta 2 vídeos al mes y evaluación final' },
+];
 const excluded = ['Sesiones presenciales', 'Salidas outdoor', 'Asesoramiento nutricional', 'Mensajería ilimitada', 'Cursos técnicos o evaluación de seguridad'];
 const details = [
   { q: '¿Necesito gimnasio?', a: 'No necesariamente. El plan se adapta al material que tengas en gimnasio, casa o parque.' },
@@ -127,23 +134,45 @@ export function OnlineProgram() {
   return (
     <section id="programa" className="scroll-mt-28 py-20 sm:py-28">
       <div className="container mx-auto max-w-5xl px-4">
-        <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.8fr_1.2fr]">
-          <div className="flex flex-col justify-between bg-primary p-7 text-primary-foreground sm:p-10">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
-              <h2 className="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl">Vértigo Sapiens Online</h2>
+        <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
+          <div className="relative isolate flex flex-col overflow-hidden bg-primary p-7 text-background sm:p-10">
+            <div className="relative -mx-7 -mt-7 mb-7 h-44 overflow-hidden sm:-mx-10 sm:-mt-10 sm:h-52">
+              <img src="/images/escalada.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[28%_50%]" />
+              <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,hsl(var(--primary))_100%)]" />
             </div>
-            <div className="mt-10">
-              <p className="text-5xl font-extrabold">179 €</p>
-              <p className="mt-2 font-semibold">8 semanas · precio orientativo, pendiente de confirmación</p>
+            <div className="relative flex flex-1 flex-col justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
+                <h2 className="mt-4 text-3xl font-extrabold leading-[1.04] sm:text-5xl">Vértigo<br />Sapiens<br />Online</h2>
+                <p className="mt-6 max-w-sm text-base font-semibold leading-7">
+                  Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
+                </p>
+              </div>
+              <div className="mt-8 border-t border-background/25 pt-5">
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Para quién es</p>
+                <p className="mt-2 max-w-xs text-sm font-semibold leading-6">Barranquismo, espeleología, escalada, ferratas o montaña.</p>
+              </div>
+              <ul className="mt-7 flex flex-wrap gap-2" aria-label="Claves del programa">
+                {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
+                  <li key={item} className="rounded-full border border-background/35 bg-background/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider">{item}</li>
+                ))}
+              </ul>
             </div>
           </div>
-          <div className="p-6 sm:p-10">
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {included.map((item) => <li key={item} className="flex gap-2 font-semibold"><Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />{item}</li>)}
+          <div className="flex flex-col p-6 sm:p-10">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
+            <ul className="mt-5 grid flex-1 content-center gap-3 sm:grid-cols-2">
+              {included.map(({ text }) => (
+                <li key={text} className="flex items-start gap-3 border border-border bg-background/60 p-4 text-[15px] font-semibold leading-6 transition-all duration-300 hover:border-primary/60">
+                  <span aria-hidden className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
+                  {text}
+                </li>
+              ))}
             </ul>
-            <Button variant="hero" size="lg" className="mt-8 w-full sm:w-auto" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
-            <p className="mt-4 text-sm text-foreground/80">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
+            <div className="mt-auto border-t border-border pt-6">
+              <Button variant="hero" size="lg" className="w-full shrink-0 sm:w-auto" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
+              <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
+            </div>
             <Accordion type="single" collapsible className="mt-6 border-t border-border">
               <AccordionItem value="detalles" className="border-b-0">
                 <AccordionTrigger className="py-4 text-left text-sm font-bold">Detalles y qué no incluye</AccordionTrigger>
