@@ -24,13 +24,13 @@ Email: cliente@example.test
 
 Teléfono: +34 600 000 000
 
+Resumen de tu reserva
+
 Total de la actividad: 180,00 €
 
-Señal · incluida en el total: 54,00 €
+Señal (30 %, incluida en el total): 54,00 €
 
-Importe de este pago: 54,00 €
-
-Pagado acumulado: 54,00 €
+Ya pagado: 54,00 €
 
 Saldo pendiente: 126,00 €
 
