@@ -238,22 +238,27 @@ type PaymentPanelProps = {
   defaultAmount?: string;
   amountHint?: string;
   payments: PaymentRequest[];
-  onCreated: () => void;
+  /** Called after a link is created; `message` describes what was done for the confirmation dialog. */
+  onCreated: (message?: { title: string; description: string }) => void;
   /** Explicit "confirm activity + deposit" option (manual bookings only). */
   depositConfirmation?: DepositConfirmationOption;
+  /** Deposit (cents) from the economic summary; when confirming the activity the charge is exactly this amount. */
+  lockedDepositCents?: number | null;
 };
 
-function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, payments, onCreated, depositConfirmation }: PaymentPanelProps) {
+function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, payments, onCreated, depositConfirmation, lockedDepositCents }: PaymentPanelProps) {
   const { toast } = useToast();
   const [amount, setAmount] = useState(defaultAmount ?? "");
   const [concept, setConcept] = useState(defaultConcept);
   const [creating, setCreating] = useState(false);
   const [confirmDeposit, setConfirmDeposit] = useState(Boolean(depositConfirmation?.available && depositConfirmation.preselected));
   const explicitDeposit = target === "booking" && Boolean(depositConfirmation?.available) && confirmDeposit;
+  const locked = explicitDeposit && typeof lockedDepositCents === "number" && lockedDepositCents >= 50;
+  const shownAmount = locked ? (lockedDepositCents! / 100).toFixed(2).replace(".", ",") : amount;
   const [done, setDone] = useState<string | null>(null);
 
   const create = async (withEmail: boolean) => {
-    const value = Number(amount.replace(",", "."));
+    const value = locked ? lockedDepositCents! / 100 : Number(amount.replace(",", "."));
     if (!Number.isFinite(value) || value < 0.5) {
       toast({ title: "Importe no válido", description: "Introduce un importe mínimo de 0,50 €", variant: "destructive" });
       return;
