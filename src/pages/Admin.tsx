@@ -205,6 +205,7 @@ type Booking = {
   phone?: string | null;
   discount_cents?: number | null;
   discount_percent?: number | null;
+  updated_at?: string;
 };
 
 type Contact = {
