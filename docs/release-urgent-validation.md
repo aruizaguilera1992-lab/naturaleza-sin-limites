@@ -1,5 +1,45 @@
 # Validación urgente previa al lanzamiento — 18 de octubre de 2026
 
+Actualización del 19 de octubre: cadena de integración autorizada completada.
+
+| PR | Resultado de fusión | CI previo correcto |
+| --- | --- | --- |
+| #7 | fd6824eb32378e8a6c77129f2b470ed6b01dc63b | 39119570347 |
+| #1 | 16e44b07a7a8d57bffdd17cc15a15a44ecbfce5f | 39119728284 |
+| #2 | f3abe6a768cef55ee7be045377acbf0789a2f817 | 39119997507 |
+| #3 | 6af2d4f06e594fd7767fef7a4ac92d59826adc9b | 39120098804 |
+| #4 | 7c8c49f260b398ca66f533e38e9f7acfea000bf0 | 39120238543 |
+| #5 | a455b32b438661703e12e1fad06c21ab3269d577 | 39120362235 |
+| #6 | 4e12e2e1384b37f1d1c8556c5b08d048e4631075 | 39235734219 |
+
+Se actualizaron las ramas con main, se conservaron los cambios concurrentes de
+Lovable y se usaron commits de merge. No se borraron ramas. El CI de #6 corresponde
+al head 522e465acfd1bf31e5d0732183ffee531dd75ac6 que ya incorpora los cambios de
+main disponibles antes de la fusión. No se reutiliza el CI histórico de #6 para
+justificar esa combinación. El PR #8 permanece sin fusionar.
+
+Las once pruebas locales del guard de publicación pasaron; el control de secretos
+pasó sobre 611 rutas versionables. No se ejecutaron despliegues, migraciones remotas,
+pagos ni comunicaciones de clientes durante la integración.
+
+## Decisiones y trabajo externo que siguen abiertos
+
+- Main no tiene una nueva regla de protección impuesta por esta tarea. Exigir PR
+  para todo push podría bloquear el flujo de edición directa de Lovable observado
+  durante la integración. Definir primero el flujo de trabajo y cualquier excepción
+  limitada de la aplicación; no conceder bypass indiscriminado ni activar reglas
+  incompatibles silenciosamente. Los checks en PR existen, pero no son aún una
+  obligación impuesta por protección de rama.
+- La conexión GIT/webhook de Hostinger sigue pendiente de retirada o desactivación
+  verificada sin pérdida de archivos. No se invocó su URL de despliegue.
+- Antes de publicar faltan copia aislada representativa, respaldo recuperable del
+  destino real y autorización separada para 0013/0014. La comparación de metadatos
+  remotos del 18 de octubre no sustituye ese respaldo ni un preflight nuevo.
+- Revisar acceso al conector Resend y probar correo solo a un buzón propio autorizado.
+- Completar prueba real de Stripe sandbox de extremo a extremo con plazas, fallos,
+  retorno y webhook; los proveedores simulados no certifican el servicio integrado.
+- Las dependencias residuales siguen documentadas, sin declarar audit limpio.
+
 ## Autorización y límites
 
 El promotor autorizó expresamente integrar #7 y #1–#6, en orden y con CI correcto
