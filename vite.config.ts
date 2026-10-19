@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 import { PUBLIC_CLOUD_CONFIG, jwtRole } from "./config/publicCloudConfig";
 
-const PUBLIC_KEYS = ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY"] as const;
+const PUBLIC_KEYS = ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY", "VITE_PAYMENTS_CLIENT_TOKEN"] as const;
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -26,6 +26,9 @@ export default defineConfig(({ mode, command }) => {
     const isPublishableFormat = resolved.VITE_SUPABASE_PUBLISHABLE_KEY!.startsWith("sb_publishable_");
     if (!isPublishableFormat && role !== "anon") {
       throw new Error("[build] VITE_SUPABASE_PUBLISHABLE_KEY is not a public anon/publishable key.");
+    }
+    if (!/^pk_(live|test)_/.test(resolved.VITE_PAYMENTS_CLIENT_TOKEN!)) {
+      throw new Error("[build] VITE_PAYMENTS_CLIENT_TOKEN must be a Stripe publishable key (pk_).");
     }
   }
 
