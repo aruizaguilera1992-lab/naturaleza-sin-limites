@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EventsPanel } from "@/components/admin/EventsPanel";
+import { BookingEditForm } from "@/components/admin/BookingEditForm";
 import {
   Select,
   SelectContent,
@@ -248,6 +249,7 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
   const [creating, setCreating] = useState(false);
   const [confirmDeposit, setConfirmDeposit] = useState(Boolean(depositConfirmation?.available && depositConfirmation.preselected));
   const explicitDeposit = target === "booking" && Boolean(depositConfirmation?.available) && confirmDeposit;
+  const [done, setDone] = useState<string | null>(null);
 
   const create = async (withEmail: boolean) => {
     const value = Number(amount.replace(",", "."));
@@ -256,13 +258,19 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
       return;
     }
     setCreating(true);
+    let environment: "sandbox" | "live";
+    try { environment = getStripeEnvironment(); } catch (e) {
+      setCreating(false);
+      toast({ title: "Pagos no configurados", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+      return;
+    }
     const { data, error } = await supabase.functions.invoke("create-payment-link", {
       body: paymentLinkBody({
         target,
         id,
         amountCents: Math.round(value * 100),
         concept: concept.trim() || defaultConcept,
-        environment: getStripeEnvironment(),
+        environment,
         sendEmail: withEmail,
         baseUrl: window.location.origin,
         confirmDeposit: explicitDeposit,
@@ -270,7 +278,9 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
     });
     setCreating(false);
     if (error || !data?.url) {
-      toast({ title: "No se pudo generar el cobro", description: error?.message, variant: "destructive" });
+      let description = error?.message;
+      try { const ctx = await (error as { context?: Response })?.context?.json?.(); if (ctx?.error) description = ctx.error; } catch { /* keep generic */ }
+      toast({ title: "No se pudo generar el cobro", description, variant: "destructive" });
       return;
     }
     await navigator.clipboard.writeText(data.url).catch(() => undefined);
@@ -285,6 +295,7 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
         variant: "destructive",
       });
     } else {
+      setDone(withEmail ? (explicitDeposit ? "Hecho: actividad confirmada y señal enviada al cliente. Reserva en «Pendiente de pago»." : "Hecho: enlace de pago enviado por email al cliente.") : "Hecho: enlace creado y copiado.");
       toast({
         title: withEmail ? (explicitDeposit ? "Actividad confirmada y señal enviada" : "Enlace enviado por email") : "Enlace creado y copiado",
         description: data.url,
@@ -299,6 +310,11 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
       <p className="flex items-center gap-2 text-sm text-muted-foreground">
         <CreditCard className="h-3.5 w-3.5" /> Cobros
       </p>
+      {done && (
+        <p role="status" className="mt-2 flex items-center gap-2 rounded-lg border border-primary/50 bg-primary/10 px-3 py-2 text-sm text-foreground">
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" /> {done}
+        </p>
+      )}
 
       {payments.length > 0 && (
         <div className="mt-2 space-y-2">
@@ -1042,6 +1058,7 @@ export default function Admin() {
             <p className="mt-1 whitespace-pre-line rounded-lg bg-background/60 p-3 text-sm text-foreground">{b.message}</p>
           </div>
         )}
+        <BookingEditForm key={`edit-${b.id}-${b.updated_at ?? ""}`} booking={b} onSaved={(patch) => setBookings((prev) => prev.map((r) => (r.id === b.id ? { ...r, ...patch } : r)))} />
         <div className="mt-6"><StatusSelect table="bookings" id={b.id} value={b.status} /></div>
         <NotesField key={b.id} id={b.id} value={b.admin_notes} onSave={(n) => updateNotes("bookings", b.id, n)} />
         <PaymentPanel
