@@ -14,6 +14,7 @@ import { SITE_URL } from '@/lib/site';
 import { MobileBookingBar } from '@/components/actividades/MobileBookingBar';
 import { ActivityHeroCarousel } from '@/components/actividades/ActivityHeroCarousel';
 import { ActivityBookingPanel } from '@/components/actividades/ActivityBookingPanel';
+import { TechnicalSheet } from '@/components/actividades/TechnicalSheet';
 
 function shorten(value: string, max: number) {
   return value.length <= max ? value : `${value.slice(0, max - 1).trimEnd()}…`;
@@ -151,19 +152,8 @@ export default function ActivityProfilePage() {
               </div>
             </section>
 
-            {/* TABLA TÉCNICA compacta */}
-            <section aria-labelledby="ficha-tecnica">
-              <h2 id="ficha-tecnica" className="mb-4 font-heading text-2xl font-bold">Ficha técnica</h2>
-              <dl className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-                {technicalRows.map(([label, value]) => (
-                  <div key={label} className="bg-card p-3">
-                    <dt className="text-xs font-semibold text-foreground">{label}</dt>
-                    <dd className="mt-1 text-sm text-muted-foreground [overflow-wrap:anywhere]">{value}</dd>
-                  </div>
-                ))}
-              </dl>
-              {activity.sourceUrl && <a href={activity.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm text-primary hover:underline">Fuente técnica <ExternalLink className="h-4 w-4" /></a>}
-            </section>
+            {/* FICHA TÉCNICA interactiva: pestañas por bloque y celdas desplegables */}
+            <TechnicalSheet rows={technicalRows} sourceUrl={activity.sourceUrl} />
 
             {/* TU GUÍA Y SEGURIDAD: solo credenciales y requisitos presentes en los datos */}
             <section aria-labelledby="guia-seguridad" className="rounded-lg border border-primary/30 bg-primary/5 p-5 sm:p-6">
