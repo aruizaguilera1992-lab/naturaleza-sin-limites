@@ -1,4 +1,4 @@
-import { DEPOSIT_RATE } from "./activityPrices.ts";
+import { ACTIVITY_PRICES, DEPOSIT_RATE } from "./activityPrices.ts";
 import { hasMatchingDepositEvidence } from "./depositConfirmation.ts";
 import { reliableEmailMoney, type BookingEmailData } from "./bookingEmail.ts";
 
@@ -47,6 +47,22 @@ export async function readBookingEmailContext(db: any, bookingId: string | null,
     const percent = Math.min(100, Math.max(0, Number(booking.discount_percent) || 0));
     const discount = percent > 0 ? Math.round(money.totalCents * percent / 100) : Math.max(0, Number(booking.discount_cents) || 0);
     money.totalCents = Math.max(0, money.totalCents - discount);
+  }
+  // Deposit-confirmation emails: show the activity total only when the official catalogue
+  // price × people (minus discount) makes THIS payment exactly the official deposit.
+  if (money.totalCents == null && context.manualConfirmation && context.paymentKind === "senal") {
+    const people = Number(booking.number_of_people);
+    const entry = Object.values(ACTIVITY_PRICES).find((e) => e.name.trim().toLowerCase() === String(booking.activity ?? "").trim().toLowerCase());
+    if (entry && Number.isInteger(people) && people > 0) {
+      const gross = Math.round(entry.pricePerPerson * 100) * people;
+      const percent = Math.min(100, Math.max(0, Number(booking.discount_percent) || 0));
+      const discount = percent > 0 ? Math.round(gross * percent / 100) : Math.max(0, Number(booking.discount_cents) || 0);
+      const net = Math.max(0, gross - discount);
+      if (net > 0 && payment.amount_cents === Math.round(net * DEPOSIT_RATE)) {
+        money.totalCents = net;
+        money.depositCents = payment.amount_cents;
+      }
+    }
   }
   return { ...context, money };
   } catch {
