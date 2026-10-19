@@ -56,6 +56,7 @@ import { DEPOSIT_RATE } from "@/lib/deposit";
 import { BusinessSettingsPanel } from "@/components/admin/BusinessSettingsPanel";
 import { PlanOrdersPanel } from "@/components/admin/PlanOrdersPanel";
 import { AccessLayout } from "@/components/auth/AccessLayout";
+import { DeleteRecordButton, ResetAllButton } from "@/components/admin/DeleteControls";
 
 type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans";
 
@@ -1064,6 +1065,7 @@ export default function Admin() {
           depositConfirmation={depositConfirmationOption(b, payments.filter((p) => p.booking_id === b.id), suggestedDepositCents(fin) !== null)}
           onCreated={loadData}
         />
+        <DeleteRecordButton target="booking" id={b.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
       </section>
     );
   })();
@@ -1080,6 +1082,7 @@ export default function Admin() {
         </div>
         <div className="flex-1 overflow-y-auto px-3">{navList}</div>
         <div className="border-t border-border p-3">
+          <ResetAllButton onDone={() => { setSelectedId(null); loadData(); }} />
           <Button variant="ghost" onClick={() => supabase.auth.signOut()} className="min-h-11 w-full justify-start gap-2">
             <LogOut className="h-4 w-4" aria-hidden="true" /> Salir
           </Button>
@@ -1100,7 +1103,8 @@ export default function Admin() {
               </SheetTitle>
             </SheetHeader>
             {navList}
-            <Button variant="ghost" onClick={() => supabase.auth.signOut()} className="mt-6 min-h-11 w-full justify-start gap-2">
+            <div className="mt-6"><ResetAllButton onDone={() => { setSelectedId(null); loadData(); }} /></div>
+            <Button variant="ghost" onClick={() => supabase.auth.signOut()} className="min-h-11 w-full justify-start gap-2">
               <LogOut className="h-4 w-4" aria-hidden="true" /> Salir
             </Button>
           </SheetContent>
@@ -1354,6 +1358,7 @@ export default function Admin() {
                   payments={payments.filter((p) => p.contact_id === c.id)}
                   onCreated={loadData}
                 />
+                <DeleteRecordButton target="contact" id={c.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
               </>
             );
           })()}
