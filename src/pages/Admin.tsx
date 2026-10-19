@@ -17,6 +17,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -238,22 +239,27 @@ type PaymentPanelProps = {
   defaultAmount?: string;
   amountHint?: string;
   payments: PaymentRequest[];
-  onCreated: () => void;
+  /** Called after a link is created; `message` describes what was done for the confirmation dialog. */
+  onCreated: (message?: { title: string; description: string }) => void;
   /** Explicit "confirm activity + deposit" option (manual bookings only). */
   depositConfirmation?: DepositConfirmationOption;
+  /** Deposit (cents) from the economic summary; when confirming the activity the charge is exactly this amount. */
+  lockedDepositCents?: number | null;
 };
 
-function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, payments, onCreated, depositConfirmation }: PaymentPanelProps) {
+function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, payments, onCreated, depositConfirmation, lockedDepositCents }: PaymentPanelProps) {
   const { toast } = useToast();
   const [amount, setAmount] = useState(defaultAmount ?? "");
   const [concept, setConcept] = useState(defaultConcept);
   const [creating, setCreating] = useState(false);
   const [confirmDeposit, setConfirmDeposit] = useState(Boolean(depositConfirmation?.available && depositConfirmation.preselected));
   const explicitDeposit = target === "booking" && Boolean(depositConfirmation?.available) && confirmDeposit;
+  const locked = explicitDeposit && typeof lockedDepositCents === "number" && lockedDepositCents >= 50;
+  const shownAmount = locked ? (lockedDepositCents! / 100).toFixed(2).replace(".", ",") : amount;
   const [done, setDone] = useState<string | null>(null);
 
   const create = async (withEmail: boolean) => {
-    const value = Number(amount.replace(",", "."));
+    const value = locked ? lockedDepositCents! / 100 : Number(amount.replace(",", "."));
     if (!Number.isFinite(value) || value < 0.5) {
       toast({ title: "Importe no válido", description: "Introduce un importe mínimo de 0,50 €", variant: "destructive" });
       return;
@@ -295,15 +301,20 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
           "Revisa la configuración de correo. Puedes reintentarlo desde Notificaciones.",
         variant: "destructive",
       });
-    } else {
-      setDone(withEmail ? (explicitDeposit ? "Hecho: actividad confirmada y señal enviada al cliente. Reserva en «Pendiente de pago»." : "Hecho: enlace de pago enviado por email al cliente.") : "Hecho: enlace creado y copiado.");
-      toast({
-        title: withEmail ? (explicitDeposit ? "Actividad confirmada y señal enviada" : "Enlace enviado por email") : "Enlace creado y copiado",
-        description: data.url,
-      });
+      setAmount("");
+      onCreated();
+      return;
     }
+    const euros = formatAmount(Math.round(value * 100));
+    const title = withEmail ? (explicitDeposit ? "Reserva confirmada" : "Enlace enviado por email") : "Enlace de pago creado";
+    const description = withEmail
+      ? explicitDeposit
+        ? `El cliente ha recibido el correo de confirmación con el enlace para pagar la señal de ${euros}. La reserva ha pasado a «Pendiente de pago».`
+        : `El cliente ha recibido por email el enlace para pagar ${euros}.`
+      : `Enlace de ${euros} copiado al portapapeles.`;
+    setDone(`Hecho: ${description}`);
     setAmount("");
-    onCreated();
+    onCreated({ title, description });
   };
 
   return (
@@ -371,11 +382,16 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
         </div>
       )}
 
-      {amountHint && <p className="mt-2 text-xs text-muted-foreground">{amountHint}</p>}
+      {locked ? (
+        <p className="mt-2 text-xs text-muted-foreground">Se cobra la señal del resumen económico. Desmarca «Confirmar actividad» para otro importe.</p>
+      ) : (
+        amountHint && <p className="mt-2 text-xs text-muted-foreground">{amountHint}</p>
+      )}
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <Input
-          value={amount}
+          value={shownAmount}
           onChange={(e) => setAmount(e.target.value)}
+          readOnly={locked}
           inputMode="decimal"
           aria-label="Importe en euros"
           placeholder="Importe €"
@@ -527,6 +543,7 @@ export default function Admin() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [actionDone, setActionDone] = useState<{ title: string; description: string } | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [eventsById, setEventsById] = useState<
@@ -1001,6 +1018,44 @@ export default function Admin() {
             totalCents={fin.totalCents}
             onSave={(p) => updateDiscount(b.id, p)}
           />
+          {(() => {
+            const own = payments.filter((p) => p.booking_id === b.id);
+            const sug = suggestedDepositCents(fin);
+            const base = depositConfirmationOption(b, own, sug !== null);
+            const noDeposit = fin.depositCents === null || fin.depositCents < 50;
+            const depositConfirmation =
+              base.available && noDeposit && !fin.depositPaid
+                ? {
+                    available: false,
+                    preselected: false,
+                    reason:
+                      fin.totalCents === null
+                        ? "falta el precio o los participantes en el resumen económico."
+                        : "con el descuento actual la señal es inferior a 0,50 €; revisa el descuento.",
+                  }
+                : base;
+            return (
+              <PaymentPanel
+                key={`pay-${b.id}-d${b.discount_percent ?? 0}-p${b.number_of_people ?? ""}-${b.activity}`}
+                target="booking"
+                id={b.id}
+                {...(sug === null
+                  ? {
+                      defaultConcept: `Reserva ${b.activity}`,
+                      amountHint: fin.depositPaid ? "La señal ya está pagada: no se propone otra." : fin.depositPending ? "Ya hay una señal pendiente de pago." : undefined,
+                    }
+                  : {
+                      defaultConcept: `Señal ${pct}% · ${b.activity} · ${fin.participants} pax`,
+                      defaultAmount: (sug / 100).toFixed(2).replace(".", ","),
+                      amountHint: `Importe propuesto: señal del ${pct} % del resumen.`,
+                    })}
+                payments={own}
+                depositConfirmation={depositConfirmation}
+                lockedDepositCents={sug}
+                onCreated={(msg) => { if (msg) setActionDone(msg); loadData(); }}
+              />
+            );
+          })()}
         </section>
 
         {(() => {
@@ -1062,27 +1117,6 @@ export default function Admin() {
         <BookingEditForm key={`edit-${b.id}-${b.updated_at ?? ""}`} booking={b} onSaved={(patch) => setBookings((prev) => prev.map((r) => (r.id === b.id ? { ...r, ...patch } : r)))} />
         <div className="mt-6"><StatusSelect table="bookings" id={b.id} value={b.status} /></div>
         <NotesField key={b.id} id={b.id} value={b.admin_notes} onSave={(n) => updateNotes("bookings", b.id, n)} />
-        <PaymentPanel
-          key={`pay-${b.id}-d${b.discount_percent ?? 0}`}
-          target="booking"
-          id={b.id}
-          {...(() => {
-            const sug = suggestedDepositCents(fin);
-            if (sug === null)
-              return {
-                defaultConcept: `Reserva ${b.activity}`,
-                amountHint: fin.depositPaid ? "La señal ya está pagada: no se propone otra." : fin.depositPending ? "Ya hay una señal pendiente de pago." : undefined,
-              };
-            return {
-              defaultConcept: `Señal ${pct}% · ${b.activity} · ${fin.participants} pax`,
-              defaultAmount: (sug / 100).toFixed(2).replace(".", ","),
-              amountHint: `Importe propuesto: señal del ${pct} %${fin.estimated ? " con tarifa actual (estimado)" : ""}${fin.discountCents > 0 ? ` con el descuento${fin.discountPercent > 0 ? ` del ${fin.discountPercent} %` : ""} aplicado` : ""}. Revísalo antes de generar el enlace.`,
-            };
-          })()}
-          payments={payments.filter((p) => p.booking_id === b.id)}
-          depositConfirmation={depositConfirmationOption(b, payments.filter((p) => p.booking_id === b.id), suggestedDepositCents(fin) !== null)}
-          onCreated={loadData}
-        />
         <DeleteRecordButton target="booking" id={b.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
       </section>
     );
@@ -1374,7 +1408,7 @@ export default function Admin() {
                   id={c.id}
                   defaultConcept={`Reserva ${c.interes}`}
                   payments={payments.filter((p) => p.contact_id === c.id)}
-                  onCreated={loadData}
+                  onCreated={(msg) => { if (msg) setActionDone(msg); loadData(); }}
                 />
                 <DeleteRecordButton target="contact" id={c.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
               </>
@@ -1382,6 +1416,18 @@ export default function Admin() {
           })()}
         </SheetContent>
       </Sheet>
+      <Dialog open={actionDone !== null} onOpenChange={(o) => { if (!o) setActionDone(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <span className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full border border-primary/40 bg-primary/10">
+              <CheckCircle2 className="h-7 w-7 text-primary" aria-hidden="true" />
+            </span>
+            <DialogTitle className="text-center font-heading text-foreground">{actionDone?.title}</DialogTitle>
+            <DialogDescription className="text-center">{actionDone?.description}</DialogDescription>
+          </DialogHeader>
+          <Button className="min-h-11 w-full" onClick={() => setActionDone(null)}>Entendido</Button>
+        </DialogContent>
+      </Dialog>
     </div>
 
   );
