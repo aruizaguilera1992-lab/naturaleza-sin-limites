@@ -20,8 +20,8 @@ const Index = () => {
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
       <Seo
-        title="Naturaleza Sin Límites | Barranquismo y aventura en Málaga"
-        description="Barranquismo, escalada y vías ferratas guiadas en Málaga y Andalucía. Guía titulado TD2, grupos de máximo 6 personas y material homologado."
+        title="Barranquismo, escalada y vías ferratas en Málaga | Naturaleza Sin Límites"
+        description="Vive la aventura en Málaga: barrancos, escalada y vías ferratas con guía titulado TD2. Grupos reducidos de máximo 6 personas y todo el material incluido. ¡Reserva tu plaza!"
         path="/"
       />
       <Navbar />
