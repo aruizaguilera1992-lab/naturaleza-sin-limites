@@ -17,6 +17,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -1407,7 +1408,7 @@ export default function Admin() {
                   id={c.id}
                   defaultConcept={`Reserva ${c.interes}`}
                   payments={payments.filter((p) => p.contact_id === c.id)}
-                  onCreated={loadData}
+                  onCreated={(msg) => { if (msg) setActionDone(msg); loadData(); }}
                 />
                 <DeleteRecordButton target="contact" id={c.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
               </>
@@ -1415,6 +1416,18 @@ export default function Admin() {
           })()}
         </SheetContent>
       </Sheet>
+      <Dialog open={actionDone !== null} onOpenChange={(o) => { if (!o) setActionDone(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <span className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full border border-primary/40 bg-primary/10">
+              <CheckCircle2 className="h-7 w-7 text-primary" aria-hidden="true" />
+            </span>
+            <DialogTitle className="text-center font-heading text-foreground">{actionDone?.title}</DialogTitle>
+            <DialogDescription className="text-center">{actionDone?.description}</DialogDescription>
+          </DialogHeader>
+          <Button className="min-h-11 w-full" onClick={() => setActionDone(null)}>Entendido</Button>
+        </DialogContent>
+      </Dialog>
     </div>
 
   );
