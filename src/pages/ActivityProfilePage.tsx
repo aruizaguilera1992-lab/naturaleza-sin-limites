@@ -214,7 +214,7 @@ export default function ActivityProfilePage() {
         </div>
       </main>
       <Footer />
-      {numericPrice && <MobileBookingBar price={activity.price} category={activity.category} slug={activity.slug} />}
+      <MobileBookingBar price={activity.price} category={activity.category} slug={activity.slug} whatsappUrl={numericPrice ? undefined : consultUrl} />
       <div className="hidden lg:block"><WhatsAppButton /></div><ScrollToTop />
     </div>
   );
