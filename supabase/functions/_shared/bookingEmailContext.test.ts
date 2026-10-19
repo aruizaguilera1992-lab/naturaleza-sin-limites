@@ -59,3 +59,14 @@ Deno.test("discounted total from persisted source and absent economics remain ho
   assert(!email.text.includes("Saldo pendiente"));
   assert(!email.text.includes("Pagado acumulado"));
 });
+Deno.test("deposit confirmation shows catalogue total when payment is exactly the official deposit", async () => {
+  const { readBookingEmailContext } = await import("./bookingEmailContext.ts");
+  const tables: Record<string, any> = {
+    bookings: { activity: "Río Guadalmina", preferred_date: "2027-05-18", number_of_people: "2", status: "contactada", discount_percent: 0 },
+    activity_event_bookings: null,
+    payment_requests: [{ id: "p1", kind: "manual", amount_cents: 2100, total_cents: null, status: "pendiente" }],
+  };
+  const q = (t: string) => { const o: any = { select: () => o, eq: () => o, limit: () => o, maybeSingle: async () => ({ data: tables[t], error: null }), then: (r: any) => r({ data: tables[t], error: null }) }; return o; };
+  const ctx = await readBookingEmailContext({ from: q }, "b1", { id: "p1", amount_cents: 2100 }, false, true, { depositConfirmationDate: "2027-05-18" });
+  if (ctx.money?.totalCents !== 7000 || ctx.money?.depositCents !== 2100) throw new Error(JSON.stringify(ctx.money));
+});

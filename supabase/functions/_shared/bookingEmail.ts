@@ -69,7 +69,7 @@ export function emailMoneyRows(m?: EmailMoney): [string, string][] {
   if (!m) return [];
   const rows: [string, string][] = [];
   if (validCents(m.totalCents) && m.totalCents > 0) rows.push([m.estimated ? "Total estimado · pendiente de confirmar" : "Total de la actividad", moneyText(m.totalCents, m.currency)]);
-  if (validCents(m.depositCents) && validCents(m.totalCents) && m.totalCents > 0 && m.depositCents <= m.totalCents) rows.push(["Señal · incluida en el total", moneyText(m.depositCents, m.currency)]);
+  if (validCents(m.depositCents) && validCents(m.totalCents) && m.totalCents > 0 && m.depositCents <= m.totalCents) rows.push(["Señal a abonar por adelantado · incluida en el total", moneyText(m.depositCents, m.currency)]);
   if (validCents(m.paymentCents)) rows.push(["Importe de este pago", moneyText(m.paymentCents, m.currency)]);
   if (validCents(m.paidCents)) rows.push(["Pagado acumulado", moneyText(m.paidCents, m.currency)]);
   if (!m.estimated && validCents(m.totalCents) && m.totalCents > 0 && validCents(m.paidCents)) rows.push(["Saldo pendiente", moneyText(Math.max(0, m.totalCents - m.paidCents), m.currency)]);
