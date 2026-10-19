@@ -300,15 +300,20 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
           "Revisa la configuración de correo. Puedes reintentarlo desde Notificaciones.",
         variant: "destructive",
       });
-    } else {
-      setDone(withEmail ? (explicitDeposit ? "Hecho: actividad confirmada y señal enviada al cliente. Reserva en «Pendiente de pago»." : "Hecho: enlace de pago enviado por email al cliente.") : "Hecho: enlace creado y copiado.");
-      toast({
-        title: withEmail ? (explicitDeposit ? "Actividad confirmada y señal enviada" : "Enlace enviado por email") : "Enlace creado y copiado",
-        description: data.url,
-      });
+      setAmount("");
+      onCreated();
+      return;
     }
+    const euros = formatAmount(Math.round(value * 100));
+    const title = withEmail ? (explicitDeposit ? "Reserva confirmada" : "Enlace enviado por email") : "Enlace de pago creado";
+    const description = withEmail
+      ? explicitDeposit
+        ? `El cliente ha recibido el correo de confirmación con el enlace para pagar la señal de ${euros}. La reserva ha pasado a «Pendiente de pago».`
+        : `El cliente ha recibido por email el enlace para pagar ${euros}.`
+      : `Enlace de ${euros} copiado al portapapeles.`;
+    setDone(`Hecho: ${description}`);
     setAmount("");
-    onCreated();
+    onCreated({ title, description });
   };
 
   return (
@@ -376,11 +381,16 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
         </div>
       )}
 
-      {amountHint && <p className="mt-2 text-xs text-muted-foreground">{amountHint}</p>}
+      {locked ? (
+        <p className="mt-2 text-xs text-muted-foreground">Se cobra la señal del resumen económico. Desmarca «Confirmar actividad» para otro importe.</p>
+      ) : (
+        amountHint && <p className="mt-2 text-xs text-muted-foreground">{amountHint}</p>
+      )}
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <Input
-          value={amount}
+          value={shownAmount}
           onChange={(e) => setAmount(e.target.value)}
+          readOnly={locked}
           inputMode="decimal"
           aria-label="Importe en euros"
           placeholder="Importe €"
