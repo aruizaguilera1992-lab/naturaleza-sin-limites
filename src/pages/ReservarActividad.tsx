@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { AlertTriangle, CalendarDays, CheckCircle2, ShieldCheck, Loader2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
-import { depositIntentId, savedDepositIntent } from "@/lib/depositIntent";
+import { depositIntentId, forgetDepositIntent, savedDepositIntent } from "@/lib/depositIntent";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -76,6 +76,8 @@ export default function ReservarActividad() {
           if (!error && typeof data?.token === "string" && /^[a-f0-9]{48}$/.test(data.token)) {
             setRecoveredToken(data.token);
             setRecoveryNotice("Hemos recuperado tu reserva anterior. Puedes retomarla sin bloquear nuevas plazas.");
+          } else if ((data as { reason?: string } | null)?.reason === "intent_expired" || /intent_expired/.test(String((error as { context?: unknown } | null)?.context ? "" : "")) ) {
+            forgetDepositIntent(requestedEventId!); setRecoveryNotice(null);
           } else setRecoveryNotice("No se ha podido recuperar la reserva anterior. Evita enviar otra hasta comprobar si el bloqueo sigue vigente.");
         }).catch(() => { if (active) setRecoveryNotice("No se pudo comprobar tu reserva anterior. Reintenta la comprobación más tarde antes de enviar otra."); });
     }
@@ -270,13 +272,19 @@ export default function ReservarActividad() {
           environment: getStripeEnvironment(),
           origin: window.location.origin,
       };
-      const requestId = await depositIntentId(depositBody);
-      const { data, error: fnError } = await supabase.functions.invoke("create-activity-deposit", {
-        body: { ...depositBody, requestId },
-      });
+      const attempt = async () => {
+        const requestId = await depositIntentId(depositBody);
+        const res = await supabase.functions.invoke("create-activity-deposit", { body: { ...depositBody, requestId } });
+        return { ...res, detail: res.error ? await readFnError(res.error) : null };
+      };
+      let { data, error: fnError, detail } = await attempt();
+      if (detail?.reason === "intent_expired") {
+        // The old hold lapsed: rotate the intent and try once with a fresh id.
+        forgetDepositIntent(String(depositBody.eventId));
+        ({ data, error: fnError, detail } = await attempt());
+      }
 
       if (fnError || !data?.token) {
-        const detail = fnError ? await readFnError(fnError) : null;
         if (detail?.reason && detail.reason !== "requires_confirmation") {
           chooseEvent(null);
           void reloadEvents();
