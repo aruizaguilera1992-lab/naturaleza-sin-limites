@@ -22,3 +22,7 @@ export async function depositIntentId(payload: Record<string, unknown>): Promise
   sessionStorage.setItem(key, JSON.stringify({ id, fingerprint }));
   return id;
 }
+/** Drop an expired intent so the next attempt gets a fresh id. */
+export function forgetDepositIntent(eventId: string): void {
+  try { sessionStorage.removeItem(`nsl-deposit-intent:${eventId}`); } catch { /* storage unavailable */ }
+}
