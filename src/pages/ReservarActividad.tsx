@@ -71,12 +71,14 @@ export default function ReservarActividad() {
     if (id) {
       setRecoveryNotice("Comprobando tu reserva anterior…");
       void supabase.functions.invoke("create-activity-deposit", { body: { action: "recover", requestId: id } })
-        .then(({ data, error }) => {
+        .then(async ({ data, error }) => {
+          const ctx = (error as { context?: Response } | null)?.context;
+          const reason = ctx && typeof ctx.json === "function" ? (await ctx.json().catch(() => null))?.reason : undefined;
           if (!active) return;
           if (!error && typeof data?.token === "string" && /^[a-f0-9]{48}$/.test(data.token)) {
             setRecoveredToken(data.token);
             setRecoveryNotice("Hemos recuperado tu reserva anterior. Puedes retomarla sin bloquear nuevas plazas.");
-          } else if ((data as { reason?: string } | null)?.reason === "intent_expired" || /intent_expired/.test(String((error as { context?: unknown } | null)?.context ? "" : "")) ) {
+          } else if (reason === "intent_expired") {
             forgetDepositIntent(requestedEventId!); setRecoveryNotice(null);
           } else setRecoveryNotice("No se ha podido recuperar la reserva anterior. Evita enviar otra hasta comprobar si el bloqueo sigue vigente.");
         }).catch(() => { if (active) setRecoveryNotice("No se pudo comprobar tu reserva anterior. Reintenta la comprobación más tarde antes de enviar otra."); });
