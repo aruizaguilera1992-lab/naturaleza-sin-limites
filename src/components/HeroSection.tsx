@@ -158,24 +158,8 @@ export function HeroSection() {
         }} transition={{
           delay: 1,
           duration: 0.6
-        }} className="mt-16 flex flex-col sm:flex-row flex-wrap justify-center items-stretch sm:items-center gap-3 sm:gap-4">
-            {[
-              { text: 'Formación técnica en montaña', icon: GraduationCap },
-              { text: 'Pasión por la aventura', icon: Flame },
-              { text: 'Compromiso con la seguridad', icon: ShieldCheck },
-            ].map(({ text, icon: Icon }) => (
-              <div
-                key={text}
-                className="group flex items-center gap-3 rounded-xl bg-secondary/80 border-l-4 border-primary px-4 py-3 shadow-lg shadow-black/20 transition-all duration-300 hover:bg-secondary active:scale-95"
-              >
-                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary/20">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </span>
-                <span className="font-heading text-sm font-semibold tracking-tight text-foreground/90 sm:text-base">
-                  {text}
-                </span>
-              </div>
-            ))}
+        }} className="mt-16 flex justify-center">
+            <TrustBadgeTicker reduceMotion={reduceMotion} />
           </motion.div>
         </motion.div>
       </div>
