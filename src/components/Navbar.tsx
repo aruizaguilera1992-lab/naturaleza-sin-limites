@@ -94,6 +94,11 @@ export function Navbar() {
       }}
       className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300 [text-shadow:0_1px_10px_rgba(0,0,0,0.5)] ${isScrolled ? "py-2" : "py-4"}`}
     >
+      {/* Fade suave para que el menú se lea sobre zonas claras; la barra sigue transparente */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-background/85 via-background/40 to-transparent"
+      />
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between">
           {/* Logo */}
