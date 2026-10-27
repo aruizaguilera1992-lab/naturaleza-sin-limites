@@ -184,3 +184,42 @@ export function HeroSection() {
       </motion.a>
     </section>;
 }
+
+const TRUST_BADGES = [
+  { text: 'Formación técnica en montaña', icon: GraduationCap },
+  { text: 'Pasión por la aventura', icon: Flame },
+  { text: 'Compromiso con la seguridad', icon: ShieldCheck },
+];
+
+function TrustBadgeTicker({ reduceMotion }: { reduceMotion: boolean }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % TRUST_BADGES.length), 3000);
+    return () => window.clearInterval(id);
+  }, []);
+  const { text, icon: Icon } = TRUST_BADGES[index];
+  return (
+    <div className="relative w-full max-w-sm overflow-hidden" aria-live="polite">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={text}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 80 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -80 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="flex items-center justify-center gap-3 rounded-xl bg-secondary/80 border-l-4 border-primary px-4 py-3 shadow-lg shadow-black/20"
+        >
+          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Icon className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <span className="font-heading text-sm font-semibold tracking-tight text-foreground/90 sm:text-base">{text}</span>
+        </motion.div>
+      </AnimatePresence>
+      <div className="mt-3 flex justify-center gap-2" aria-hidden="true">
+        {TRUST_BADGES.map((b, i) => (
+          <span key={b.text} className={`h-1.5 rounded-full transition-all duration-300 ${i === index ? 'w-6 bg-primary' : 'w-1.5 bg-foreground/30'}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
