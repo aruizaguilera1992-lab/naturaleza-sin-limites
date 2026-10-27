@@ -92,7 +92,7 @@ export function Navbar() {
         duration: 0.35,
         ease: "easeOut",
       }}
-      className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300 ${isScrolled ? "py-2" : "py-4"}`}
+      className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300 [text-shadow:0_1px_10px_rgba(0,0,0,0.5)] ${isScrolled ? "py-2" : "py-4"}`}
     >
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between">
