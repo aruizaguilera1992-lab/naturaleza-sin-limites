@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.get-plan-order]
 verify_jwt = false
+
+[functions.preapertura-lead]
+verify_jwt = false
