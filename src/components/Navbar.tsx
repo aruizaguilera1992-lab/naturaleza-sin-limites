@@ -92,8 +92,13 @@ export function Navbar() {
         duration: 0.35,
         ease: "easeOut",
       }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "nav-scrolled py-2" : "bg-transparent py-4"}`}
+      className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300 [text-shadow:0_1px_3px_rgba(0,0,0,0.9),0_0_14px_rgba(0,0,0,0.75)] ${isScrolled ? "py-2" : "py-4"}`}
     >
+      {/* Degradado suave sobre la altura de la barra: la cabecera sigue transparente */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/85 via-background/45 to-transparent"
+      />
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between">
           {/* Logo */}
