@@ -41,6 +41,15 @@ const navLinks = [
     isRoute: true,
   },
 ];
+// Resaltado de cada apartado de la cabecera al pasar el cursor (y también al
+// navegar con teclado): pastilla con tinte de la marca, texto en color
+// principal y subrayado que crece desde el centro.
+const navItemClass =
+  "group/nav relative inline-flex items-center rounded-full px-4 py-2 text-sm font-medium uppercase tracking-wider text-foreground/80 transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
+const navItemMobileClass =
+  "group/nav relative flex items-center rounded-xl px-3 py-2.5 font-medium uppercase tracking-wider text-foreground/80 transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
+const navItemUnderlineClass =
+  "pointer-events-none absolute inset-x-3 -bottom-0.5 h-0.5 origin-center scale-x-0 rounded-full bg-primary transition-transform duration-300 group-hover/nav:scale-x-100 group-focus-visible/nav:scale-x-100";
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isNearTop, setIsNearTop] = useState(true);
