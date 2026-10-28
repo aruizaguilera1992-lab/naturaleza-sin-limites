@@ -45,7 +45,7 @@ const navLinks = [
 // navegar con teclado): pastilla con tinte de la marca, texto en color
 // principal y subrayado que crece desde el centro.
 const navItemClass =
-  "group/nav relative inline-flex items-center whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium uppercase tracking-wider text-foreground/80 transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
+  "group/nav relative inline-flex items-center whitespace-nowrap rounded-full px-2.5 xl:px-4 py-2 text-sm font-medium uppercase tracking-wider text-foreground/80 transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
 const navItemMobileClass =
   "group/nav relative flex items-center whitespace-nowrap rounded-xl px-3 py-2.5 font-medium uppercase tracking-wider text-foreground/80 transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
 const navItemUnderlineClass =
@@ -131,7 +131,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <ul className="hidden lg:flex items-center gap-1">
+          <ul className="hidden lg:flex items-center gap-0.5 xl:gap-1">
             {navLinks.map((link) => (
               <li key={link.href}>
                 {link.isRoute ? (
