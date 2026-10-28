@@ -16,6 +16,7 @@ export type LeadRow = {
   interes: string;
   mensaje: string | null;
   personas: null;
+  source: "preapertura";
 };
 
 async function hmacHex(secret: string, body: string): Promise<string> {
@@ -78,6 +79,7 @@ export async function handleLead(
     interes: v.interes?.trim() || "Preapertura",
     mensaje: v.mensaje?.trim() || null,
     personas: null,
+    source: "preapertura",
   });
   if (error) return json({ ok: false, error: "save_failed" }, 500);
   return json({ ok: true }, 200);

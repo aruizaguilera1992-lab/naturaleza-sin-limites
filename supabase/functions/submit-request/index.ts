@@ -118,6 +118,7 @@ Deno.serve(async (req) => {
         interes: "Vértigo Sapiens Online · evaluación inicial",
         mensaje,
         rgpd_accepted_at: now,
+        source: "web_vertigo",
       })
       .select("id")
       .single();
@@ -204,6 +205,7 @@ Deno.serve(async (req) => {
       personas: data.personas || null,
       mensaje: data.mensaje || null,
       rgpd_accepted_at: now,
+      source: "web",
     })
     .select("id")
     .single();
