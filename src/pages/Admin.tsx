@@ -62,7 +62,7 @@ import { DEPOSIT_RATE } from "@/lib/deposit";
 import { BusinessSettingsPanel } from "@/components/admin/BusinessSettingsPanel";
 import { PlanOrdersPanel } from "@/components/admin/PlanOrdersPanel";
 import { AccessLayout } from "@/components/auth/AccessLayout";
-import { DeleteRecordButton, ResetAllButton } from "@/components/admin/DeleteControls";
+import { DeleteRecordButton } from "@/components/admin/DeleteControls";
 
 type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans";
 
@@ -1143,7 +1143,6 @@ export default function Admin() {
         </div>
         <div className="flex-1 overflow-y-auto px-3">{navList}</div>
         <div className="border-t border-border p-3">
-          <ResetAllButton onDone={() => { setSelectedId(null); loadData(); }} />
           <Button variant="ghost" onClick={() => supabase.auth.signOut()} className="min-h-11 w-full justify-start gap-2">
             <LogOut className="h-4 w-4" aria-hidden="true" /> Salir
           </Button>
@@ -1164,7 +1163,6 @@ export default function Admin() {
               </SheetTitle>
             </SheetHeader>
             {navList}
-            <div className="mt-6"><ResetAllButton onDone={() => { setSelectedId(null); loadData(); }} /></div>
             <Button variant="ghost" onClick={() => supabase.auth.signOut()} className="min-h-11 w-full justify-start gap-2">
               <LogOut className="h-4 w-4" aria-hidden="true" /> Salir
             </Button>
