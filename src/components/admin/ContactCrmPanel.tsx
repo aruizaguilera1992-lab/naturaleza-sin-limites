@@ -99,6 +99,7 @@ export function ContactCrmPanel({ contact, onSaved }: { contact: CrmContact; onS
     toast({ title: "Comunicación registrada", description: CHANNEL_LABEL[channel] });
     setPending(null);
     setLogBody("");
+    onSaved();
   };
 
   const copy = async (text: string, label: string) => {

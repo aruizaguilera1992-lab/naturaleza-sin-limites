@@ -8,6 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { EventsPanel } from "@/components/admin/EventsPanel";
 import { BookingEditForm } from "@/components/admin/BookingEditForm";
 import { ContactCrmPanel, type CrmContact } from "@/components/admin/ContactCrmPanel";
+import { ContactFollowUp } from "@/components/admin/ContactTimeline";
+import { NewContactDialog } from "@/components/admin/NewContactDialog";
+import { followUpBucket } from "@/lib/crmFollowUp";
 import {
   Select,
   SelectContent,
@@ -223,6 +226,10 @@ type Contact = {
   paid_amount_cents: number | null;
   paid_at: string | null;
   payment_reference: string | null;
+  email?: string | null;
+  phone?: string | null;
+  next_action?: string | null;
+  next_action_at?: string | null;
 };
 
 const STATUSES = ["nueva", "contactada", "pendiente_pago", "incidencia_plazas", "confirmada", "cancelada"] as const;
@@ -536,6 +543,7 @@ export default function Admin() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [crmTick, setCrmTick] = useState(0);
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
@@ -1309,6 +1317,17 @@ export default function Admin() {
 
           {tab === "contacts" && (
             <>
+              {(() => {
+                const overdue = contacts.filter((c) => followUpBucket(c.next_action_at) === "vencido").length;
+                const today = contacts.filter((c) => followUpBucket(c.next_action_at) === "hoy").length;
+                return (
+                  <div className="mb-4 flex flex-wrap items-center gap-3">
+                    <div className="rounded-lg border border-border bg-card px-4 py-2"><p className="text-xs uppercase tracking-wide text-muted-foreground">Seguimientos vencidos</p><p className={`font-heading text-xl ${overdue ? "text-destructive" : "text-foreground"}`}>{overdue}</p></div>
+                    <div className="rounded-lg border border-border bg-card px-4 py-2"><p className="text-xs uppercase tracking-wide text-muted-foreground">Para hoy</p><p className={`font-heading text-xl ${today ? "text-primary" : "text-foreground"}`}>{today}</p></div>
+                    <div className="ml-auto"><NewContactDialog existing={contacts} onCreated={async (id) => { await loadData(); setSelectedId(id); }} onOpenExisting={(id) => setSelectedId(id)} /></div>
+                  </div>
+                );
+              })()}
               {toolbar(contacts.length, filteredContacts.length, "Nombre, email o interés")}
               {filteredContacts.length === 0 ? (
                 emptyState(
@@ -1330,6 +1349,8 @@ export default function Admin() {
                             {c.interes} · {formatDate(c.created_at)}
                           </span>
                         </span>
+                        {followUpBucket(c.next_action_at) === "vencido" && <Badge variant="destructive">Vencido</Badge>}
+                        {followUpBucket(c.next_action_at) === "hoy" && <Badge>Hoy</Badge>}
                         <StatusBadge status={c.status} />
                         <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                       </button>
@@ -1401,7 +1422,8 @@ export default function Admin() {
                     <p className="mt-1 whitespace-pre-line rounded-lg bg-background/60 p-3 text-sm text-foreground">{c.mensaje}</p>
                   </div>
                 )}
-                <ContactCrmPanel key={`crm-${c.id}`} contact={c as unknown as CrmContact} onSaved={loadData} />
+                <ContactFollowUp key={`fu-${c.id}-${c.next_action_at ?? ""}`} contactId={c.id} nextAction={c.next_action ?? null} nextActionAt={c.next_action_at ?? null} refreshKey={crmTick} onSaved={() => { setCrmTick((t) => t + 1); loadData(); }} />
+                <ContactCrmPanel key={`crm-${c.id}`} contact={c as unknown as CrmContact} onSaved={() => { setCrmTick((t) => t + 1); loadData(); }} />
                 <div className="mt-6"><StatusSelect table="contact_submissions" id={c.id} value={c.status} /></div>
                 <NotesField key={c.id} id={c.id} value={c.admin_notes} onSave={(n) => updateNotes("contact_submissions", c.id, n)} />
                 <PaymentPanel
