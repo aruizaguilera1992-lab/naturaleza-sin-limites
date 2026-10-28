@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Loader2, Mail, MessageCircle, Phone, Save, CheckCircle2 } from "lucide-react";
 import { contactChannels, mailtoLink, telLink, whatsappLink } from "@/lib/crmContact";
+import { ContactSuggestions } from "@/components/admin/ContactSuggestions";
 
 export type CrmContact = {
   id: string;
@@ -26,6 +27,7 @@ export type CrmContact = {
   pipeline_stage?: string | null;
   recommended_service?: string | null;
   tags?: string[] | null;
+  activities_interest?: string[] | null;
 };
 
 const OPT = {
@@ -119,6 +121,13 @@ export function ContactCrmPanel({ contact, onSaved }: { contact: CrmContact; onS
 
   return (
     <div className="mt-6 space-y-6">
+      <ContactSuggestions
+        firstName={firstName}
+        interests={contact.activities_interest}
+        interes={contact.interes}
+        experience={form.experience_level || contact.experience_level}
+        onUseMessage={setMessage}
+      />
       <section aria-labelledby="crm-actions" className="rounded-lg border border-border bg-background/40 p-4">
         <h3 id="crm-actions" className="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">Acciones rápidas</h3>
         <Label htmlFor="crm-msg" className="mt-3 block text-xs text-muted-foreground">Mensaje (puedes editarlo antes de abrir la app)</Label>
