@@ -273,59 +273,174 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_events: {
+        Row: {
+          author_id: string | null
+          body: string | null
+          booking_id: string | null
+          contact_id: string
+          created_at: string
+          id: string
+          kind: string
+          occurred_at: string
+          origin: string
+          payment_request_id: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          body?: string | null
+          booking_id?: string | null
+          contact_id: string
+          created_at?: string
+          id?: string
+          kind: string
+          occurred_at?: string
+          origin?: string
+          payment_request_id?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          body?: string | null
+          booking_id?: string | null
+          contact_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          occurred_at?: string
+          origin?: string
+          payment_request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_events_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_events_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contact_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_events_payment_request_id_fkey"
+            columns: ["payment_request_id"]
+            isOneToOne: false
+            referencedRelation: "payment_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_submissions: {
         Row: {
+          activities_interest: string[]
           admin_notes: string | null
+          client_type: string | null
+          contact_preference: string | null
           contacto: string
           created_at: string
+          created_by: string | null
+          desired_dates: string | null
           email: string | null
+          email_normalized: string | null
+          experience_level: string | null
+          goal: string | null
           id: string
           interes: string
+          marketing_consent_at: string | null
           mensaje: string | null
+          next_action: string | null
+          next_action_at: string | null
           nombre: string
           paid_amount_cents: number | null
           paid_at: string | null
+          participants: number | null
           payment_reference: string | null
           personas: string | null
           phone: string | null
+          phone_normalized: string | null
+          pipeline_stage: string
+          priority: string | null
+          recommended_service: string | null
           rgpd_accepted_at: string | null
+          source: string | null
           status: string
+          tags: string[]
           updated_at: string
         }
         Insert: {
+          activities_interest?: string[]
           admin_notes?: string | null
+          client_type?: string | null
+          contact_preference?: string | null
           contacto: string
           created_at?: string
+          created_by?: string | null
+          desired_dates?: string | null
           email?: string | null
+          email_normalized?: string | null
+          experience_level?: string | null
+          goal?: string | null
           id?: string
           interes: string
+          marketing_consent_at?: string | null
           mensaje?: string | null
+          next_action?: string | null
+          next_action_at?: string | null
           nombre: string
           paid_amount_cents?: number | null
           paid_at?: string | null
+          participants?: number | null
           payment_reference?: string | null
           personas?: string | null
           phone?: string | null
+          phone_normalized?: string | null
+          pipeline_stage?: string
+          priority?: string | null
+          recommended_service?: string | null
           rgpd_accepted_at?: string | null
+          source?: string | null
           status?: string
+          tags?: string[]
           updated_at?: string
         }
         Update: {
+          activities_interest?: string[]
           admin_notes?: string | null
+          client_type?: string | null
+          contact_preference?: string | null
           contacto?: string
           created_at?: string
+          created_by?: string | null
+          desired_dates?: string | null
           email?: string | null
+          email_normalized?: string | null
+          experience_level?: string | null
+          goal?: string | null
           id?: string
           interes?: string
+          marketing_consent_at?: string | null
           mensaje?: string | null
+          next_action?: string | null
+          next_action_at?: string | null
           nombre?: string
           paid_amount_cents?: number | null
           paid_at?: string | null
+          participants?: number | null
           payment_reference?: string | null
           personas?: string | null
           phone?: string | null
+          phone_normalized?: string | null
+          pipeline_stage?: string
+          priority?: string | null
+          recommended_service?: string | null
           rgpd_accepted_at?: string | null
+          source?: string | null
           status?: string
+          tags?: string[]
           updated_at?: string
         }
         Relationships: []
