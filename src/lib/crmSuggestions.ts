@@ -4,7 +4,7 @@ export const SITE_URL = "https://naturalezasinlimites.es";
 export const NO_PRICE = "Precio a consultar";
 
 const KEYWORDS: Record<PublicActivityCategory, string[]> = {
-  barranquismo: ["barranc", "canyon"],
+  barranquismo: ["barran", "canyon"],
   escalada: ["escalad", "climb", "roca"],
   "vias-ferratas": ["ferrat"],
   espeleologia: ["espeleo", "cueva", "cavidad"],
