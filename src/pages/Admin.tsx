@@ -1398,11 +1398,11 @@ export default function Admin() {
       </main>
 
       <Sheet open={!!selectedContact && tab === "contacts"} onOpenChange={(o) => !o && setSelectedId(null)}>
-        <SheetContent side="right" className="w-full overflow-y-auto bg-card sm:max-w-lg">
+        <SheetContent side="right" className="w-full overflow-y-auto border-0 bg-card p-6 sm:max-w-none">
           {tab === "contacts" && selectedContact && (() => {
             const c = selectedContact;
             return (
-              <>
+              <div className="mx-auto w-full max-w-5xl">
                 <SheetHeader className="pr-8 text-left">
                   <SheetTitle className="font-heading text-xl text-foreground">{c.nombre}</SheetTitle>
                   <SheetDescription className="flex flex-wrap items-center gap-2">
@@ -1435,7 +1435,7 @@ export default function Admin() {
                   onCreated={(msg) => { if (msg) setActionDone(msg); loadData(); }}
                 />
                 <DeleteRecordButton target="contact" id={c.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
-              </>
+              </div>
             );
           })()}
         </SheetContent>
