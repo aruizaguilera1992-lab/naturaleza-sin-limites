@@ -122,23 +122,25 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <ul className="hidden lg:flex items-center gap-8">
+          <ul className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <li key={link.href}>
                 {link.isRoute ? (
                   <Link
                     to={link.href}
                     onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                    className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider"
+                    className={navItemClass}
                   >
                     {link.label}
+                    <span aria-hidden="true" className={navItemUnderlineClass} />
                   </Link>
                 ) : (
                   <a
                     href={link.href}
-                    className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider"
+                    className={navItemClass}
                   >
                     {link.label}
+                    <span aria-hidden="true" className={navItemUnderlineClass} />
                   </a>
                 )}
               </li>
@@ -157,7 +159,7 @@ export function Navbar() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden min-h-11 min-w-11 p-2 text-foreground hover:text-primary transition-colors"
+            className="lg:hidden min-h-11 min-w-11 rounded-full p-2 text-foreground transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label={isMobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-navigation"
@@ -200,17 +202,19 @@ export function Navbar() {
                           setIsMobileMenuOpen(false);
                           window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
-                        className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider"
+                        className={navItemMobileClass}
                       >
                         {link.label}
+                        <span aria-hidden="true" className={navItemUnderlineClass} />
                       </Link>
                     ) : (
                       <a
                         href={link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider"
+                        className={navItemMobileClass}
                       >
                         {link.label}
+                        <span aria-hidden="true" className={navItemUnderlineClass} />
                       </a>
                     )}
                   </li>
