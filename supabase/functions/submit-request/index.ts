@@ -205,6 +205,7 @@ Deno.serve(async (req) => {
       personas: data.personas || null,
       mensaje: data.mensaje || null,
       rgpd_accepted_at: now,
+      source: "web",
     })
     .select("id")
     .single();
