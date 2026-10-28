@@ -41,6 +41,15 @@ const navLinks = [
     isRoute: true,
   },
 ];
+// Resaltado de cada apartado de la cabecera al pasar el cursor (y también al
+// navegar con teclado): pastilla con tinte de la marca, texto en color
+// principal y subrayado que crece desde el centro.
+const navItemClass =
+  "group/nav relative inline-flex items-center whitespace-nowrap rounded-full px-2.5 xl:px-4 py-2 text-sm font-medium uppercase tracking-wider text-foreground/80 transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
+const navItemMobileClass =
+  "group/nav relative flex items-center whitespace-nowrap rounded-xl px-3 py-2.5 font-medium uppercase tracking-wider text-foreground/80 transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
+const navItemUnderlineClass =
+  "pointer-events-none absolute inset-x-3 -bottom-0.5 h-0.5 origin-center scale-x-0 rounded-full bg-primary transition-transform duration-300 group-hover/nav:scale-x-100 group-focus-visible/nav:scale-x-100";
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isNearTop, setIsNearTop] = useState(true);
@@ -122,23 +131,25 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <ul className="hidden lg:flex items-center gap-8">
+          <ul className="hidden lg:flex items-center gap-0.5 xl:gap-1">
             {navLinks.map((link) => (
               <li key={link.href}>
                 {link.isRoute ? (
                   <Link
                     to={link.href}
                     onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                    className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider"
+                    className={navItemClass}
                   >
                     {link.label}
+                    <span aria-hidden="true" className={navItemUnderlineClass} />
                   </Link>
                 ) : (
                   <a
                     href={link.href}
-                    className="text-foreground/80 hover:text-primary transition-colors duration-300 font-medium text-sm uppercase tracking-wider"
+                    className={navItemClass}
                   >
                     {link.label}
+                    <span aria-hidden="true" className={navItemUnderlineClass} />
                   </a>
                 )}
               </li>
@@ -157,7 +168,7 @@ export function Navbar() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden min-h-11 min-w-11 p-2 text-foreground hover:text-primary transition-colors"
+            className="lg:hidden min-h-11 min-w-11 rounded-full p-2 text-foreground transition-all duration-300 hover:bg-primary/15 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label={isMobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-navigation"
@@ -200,17 +211,19 @@ export function Navbar() {
                           setIsMobileMenuOpen(false);
                           window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
-                        className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider"
+                        className={navItemMobileClass}
                       >
                         {link.label}
+                        <span aria-hidden="true" className={navItemUnderlineClass} />
                       </Link>
                     ) : (
                       <a
                         href={link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block py-2 text-foreground/80 hover:text-primary transition-colors font-medium uppercase tracking-wider"
+                        className={navItemMobileClass}
                       >
                         {link.label}
+                        <span aria-hidden="true" className={navItemUnderlineClass} />
                       </a>
                     )}
                   </li>
