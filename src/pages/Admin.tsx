@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EventsPanel } from "@/components/admin/EventsPanel";
 import { BookingEditForm } from "@/components/admin/BookingEditForm";
+import { ContactCrmPanel, type CrmContact } from "@/components/admin/ContactCrmPanel";
 import {
   Select,
   SelectContent,
@@ -1400,6 +1401,7 @@ export default function Admin() {
                     <p className="mt-1 whitespace-pre-line rounded-lg bg-background/60 p-3 text-sm text-foreground">{c.mensaje}</p>
                   </div>
                 )}
+                <ContactCrmPanel key={`crm-${c.id}`} contact={c as unknown as CrmContact} onSaved={loadData} />
                 <div className="mt-6"><StatusSelect table="contact_submissions" id={c.id} value={c.status} /></div>
                 <NotesField key={c.id} id={c.id} value={c.admin_notes} onSave={(n) => updateNotes("contact_submissions", c.id, n)} />
                 <PaymentPanel
