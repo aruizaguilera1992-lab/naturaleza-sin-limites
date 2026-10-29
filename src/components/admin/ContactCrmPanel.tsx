@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,7 +52,11 @@ export function ContactCrmPanel({ contact, onSaved }: { contact: CrmContact; onS
   const [logBody, setLogBody] = useState("");
   const [logging, setLogging] = useState(false);
 
-  useEffect(() => setForm(toForm(contact)), [contact]);
+  // No se resincroniza al cambiar el objeto `contact`: un refresco de la lista
+  // (loadData) crea una identidad nueva y borraría los cambios sin guardar.
+  // El panel se remonta al cambiar de contacto (key `crm-${c.id}` en Admin.tsx).
+
+
 
   const { email, phone } = contactChannels(contact);
   const wa = whatsappLink(phone, message);
