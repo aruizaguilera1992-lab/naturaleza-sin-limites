@@ -7,7 +7,7 @@ export function AccessLayout({ title, description, children, busy = false, onLea
   return <main className="flex min-h-dvh items-center justify-center bg-background px-6 py-12 text-foreground" aria-busy={busy}>
     <div className="w-full max-w-sm">
       <Link to="/" onClick={onLeave} aria-label="Naturaleza Sin Límites · volver a la web" className="mx-auto mb-8 block w-fit rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-        <img src={absoluteUrl(LOGO_SRC)} alt="Naturaleza Sin Límites" className="h-28 w-28 object-contain" />
+        <img src={LOGO_SRC} alt="Naturaleza Sin Límites" className="h-28 w-28 object-contain" />
       </Link>
       <div className="mb-8 border-t-2 border-primary pt-8 text-center">
         <h1 className="mb-3 font-heading text-2xl font-bold sm:text-3xl">{title}</h1>

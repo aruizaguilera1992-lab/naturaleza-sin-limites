@@ -87,7 +87,7 @@ export function Footer() {
           <div>
             <button onClick={handleLogoClick} className="inline-block mb-6 cursor-pointer">
               <img
-                src={absoluteUrl(LOGO_SRC)}
+                src={LOGO_SRC}
                 alt="Naturaleza Sin Límites"
                 loading="lazy"
                 decoding="async"
