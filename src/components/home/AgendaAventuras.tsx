@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Clock,
   Flame,
-  Footprints,
   Gauge,
   Mountain,
   Users,
@@ -23,14 +22,13 @@ const MONTHS = [
   "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
 ];
 
-type FilterKey = "todos" | "barranquismo" | "espeleologia" | "vias-ferratas" | "senderismo";
+type FilterKey = "todos" | "barranquismo" | "espeleologia" | "vias-ferratas";
 
 const FILTERS: { key: FilterKey; label: string; icon: LucideIcon }[] = [
   { key: "todos", label: "Todos", icon: CalendarDays },
   { key: "barranquismo", label: "Barranquismo", icon: Waves },
   { key: "espeleologia", label: "Espeleología", icon: Mountain },
   { key: "vias-ferratas", label: "Vía ferrata", icon: Cable },
-  { key: "senderismo", label: "Senderismo", icon: Footprints },
 ];
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
