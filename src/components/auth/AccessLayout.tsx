@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { absoluteUrl, LOGO_SRC } from "@/lib/site";
-import { absoluteUrl } from "@/lib/site";
 
 export function AccessLayout({ title, description, children, busy = false, onLeave }: { title: string; description: string; children: ReactNode; busy?: boolean; onLeave?: () => void }) {
   return <main className="flex min-h-dvh items-center justify-center bg-background px-6 py-12 text-foreground" aria-busy={busy}>

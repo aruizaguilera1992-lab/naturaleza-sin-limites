@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, MapPin, MessageCircle, LockKeyhole } from "lucide-react";
 import { absoluteUrl, LOGO_SRC } from "@/lib/site";
 import { useCookieConsent } from "@/context/CookieConsentContext";
-import { absoluteUrl } from "@/lib/site";
 
 const navLinks = [
   { href: "/actividades", label: "Actividades" },
