@@ -113,7 +113,7 @@ export function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-3 pl-6 group"
             onClick={() => {
               window.scrollTo({
                 top: 0,
