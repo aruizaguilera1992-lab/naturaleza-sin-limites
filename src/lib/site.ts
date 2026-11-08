@@ -7,6 +7,12 @@
  */
 export const SITE_URL = 'https://naturalezasinlimites.es';
 
+/**
+ * Logotipo principal. Se sirve como archivo del sitio (no desde el almacén
+ * externo) porque en la vista previa las rutas del almacén devuelven HTML.
+ */
+export const LOGO_SRC = '/images/logo-naturaleza-sin-limites.webp';
+
 /** Devuelve la URL absoluta canónica de una ruta interna. */
 export function absoluteUrl(path = '/'): string {
   if (/^https?:\/\//i.test(path)) return path;
