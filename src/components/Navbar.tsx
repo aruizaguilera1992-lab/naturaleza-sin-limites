@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import logoAsset from "@/assets/naturaleza-sin-limites-logo.webp.asset.json";
+import { LOGO_SRC } from "@/lib/site";
 const navLinks = [
   {
     href: "/",
@@ -122,7 +122,7 @@ export function Navbar() {
             }}
           >
             <img
-              src={logoAsset.url}
+              src={LOGO_SRC}
               alt="Naturaleza Sin Límites"
               loading="eager"
               decoding="async"

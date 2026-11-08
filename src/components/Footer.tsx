@@ -2,9 +2,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, MapPin, MessageCircle, LockKeyhole } from "lucide-react";
-import logoAsset from "@/assets/naturaleza-sin-limites-logo.webp.asset.json";
+import { LOGO_SRC } from "@/lib/site";
 import { useCookieConsent } from "@/context/CookieConsentContext";
-import { absoluteUrl } from "@/lib/site";
 
 const navLinks = [
   { href: "/actividades", label: "Actividades" },
@@ -88,7 +87,7 @@ export function Footer() {
           <div>
             <button onClick={handleLogoClick} className="inline-block mb-6 cursor-pointer">
               <img
-                src={absoluteUrl(logoAsset.url)}
+                src={LOGO_SRC}
                 alt="Naturaleza Sin Límites"
                 loading="lazy"
                 decoding="async"

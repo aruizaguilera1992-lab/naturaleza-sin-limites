@@ -5,7 +5,7 @@ export const EMAIL_BRAND = {
   dark: "#1A1A1A", orange: "#FF6B35", ink: "#1A1A1A", muted: "#555555",
   paper: "#FFFFFF", line: "#DDDDDD", surface: "#F4F4F4",
   site: "https://naturalezasinlimites.es",
-  logo: "https://naturalezasinlimites.es/__l5e/assets-v1/13c1d0c4-81d5-4659-b701-19788a4d06da/naturaleza-sin-limites-logo.webp",
+  logo: "https://naturalezasinlimites.es/images/logo-naturaleza-sin-limites.webp",
   whatsapp: "https://wa.me/34685609542",
 };
 export const escapeEmail = (s: string) => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c);
