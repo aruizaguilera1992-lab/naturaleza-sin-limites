@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, MapPin, MessageCircle, LockKeyhole } from "lucide-react";
-import { absoluteUrl, LOGO_SRC } from "@/lib/site";
+import { LOGO_SRC } from "@/lib/site";
 import { useCookieConsent } from "@/context/CookieConsentContext";
 
 const navLinks = [
