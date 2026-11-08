@@ -40,7 +40,7 @@ export default function ActivityProfilePage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   }, [category, slug]);
-  if (!activity) return <Navigate to="/actividades" replace />;
+  if (!activity) return <Navigate to={category === 'escalada' ? '/escalada' : '/actividades'} replace />;
 
   const related = getRelatedProfiles(activity);
   const canonical = `${SITE_URL}/actividades/${activity.category}/${activity.slug}`;
