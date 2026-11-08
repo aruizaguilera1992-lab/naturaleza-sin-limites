@@ -7,7 +7,7 @@ import { getStripe } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Button } from "@/components/ui/button";
 import { activityProfiles, getActivityCatalogImage } from "@/data/activityProfiles";
-import logoAsset from "@/assets/logo.png";
+import logoAsset from "@/assets/naturaleza-sin-limites-logo.webp.asset.json";
 import {
   AlertTriangle,
   CalendarDays,
@@ -185,7 +185,7 @@ export default function Pago() {
       <div className="mx-auto flex min-h-[calc(100vh-41px)] max-w-[1440px] flex-col px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
         <header className="mb-5 flex min-h-14 items-center justify-between gap-4 lg:mb-7">
           <Link to="/" aria-label="Naturaleza Sin Límites, inicio" className="inline-flex min-h-12 items-center rounded-md focus-visible:ring-offset-background">
-            <img src={logoAsset} alt="Naturaleza Sin Límites" className="h-16 w-auto object-contain sm:h-20" />
+            <img src={logoAsset.url} alt="Naturaleza Sin Límites" className="h-16 w-auto object-contain sm:h-20" />
           </Link>
           <div className="flex flex-col items-end gap-2">
             {isDesignDemo && (
