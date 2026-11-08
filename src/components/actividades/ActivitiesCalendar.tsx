@@ -302,7 +302,6 @@ export function ActivitiesCalendar() {
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground sm:px-6">
           <div className="flex flex-wrap items-center gap-3 sm:gap-5">
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-cyan-500" /> Barranquismo</span>
-            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Escalada</span>
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-purple-500" /> Vías ferratas</span>
           </div>
           <p className="font-bold uppercase tracking-wide">Grupos máx. 6 personas · Reserva con señal 30%</p>

@@ -15,7 +15,7 @@ const navLinks = [
 
 const activities = [
   { href: "/barranquismo", label: "Barranquismo" },
-  { href: "/escalada", label: "Escalada" },
+  { href: "/escalada", label: "Iniciación a la escalada" },
   { href: "/vias-ferratas", label: "Vías Ferratas" },
   { href: "/espeleologia", label: "Espeleología" },
 ];

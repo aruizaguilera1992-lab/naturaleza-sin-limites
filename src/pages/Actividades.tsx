@@ -201,7 +201,7 @@ const Actividades = () => {
     >
       <Seo
         title="Todas las actividades de aventura en Málaga | Naturaleza Sin Límites"
-        description="Catálogo de barranquismo, escalada y vías ferratas en Málaga y Andalucía con precio, nivel, duración y reserva online."
+        description="Catálogo de barranquismo, vías ferratas y espeleología en Málaga y Andalucía con precio, nivel, duración y reserva online."
         path="/actividades"
       />
 

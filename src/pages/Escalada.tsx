@@ -1,153 +1,88 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowRight, Compass } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { CheckCircle2, Clock, MessageCircle, UserCheck } from "lucide-react";
 import { Seo } from "@/components/Seo";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Button } from "@/components/ui/button";
-import { ClimbingQuestionnaire } from "@/components/escalada/ClimbingQuestionnaire";
-import { CragResults } from "@/components/escalada/CragResults";
-import {
-  ClimbingOrientation,
-  ClimbingPractices,
-  ClimbingSectionNav,
-  ClimbingTrainingPath,
-} from "@/components/escalada/ClimbingTrainingSections";
+import { climbingLevels } from "@/data/climbingTraining";
 import { media } from "@/data/media";
 
-interface FilterAnswers {
-  nivel: string;
-  tipo: string;
-  duracion: string;
-  provincia: string;
-}
-
-const initialFilters: FilterAnswers = { nivel: "", tipo: "", duracion: "", provincia: "" };
-
-const pageTransition = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
-  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-};
+const initiation = climbingLevels.find((level) => level.code === "E1")!;
+const whatsappHref = `https://wa.me/34685609542?text=${encodeURIComponent(
+  "Hola, me interesa la iniciación a la escalada deportiva. ¿Me podéis informar de fechas y precio?",
+)}`;
 
 export default function Escalada() {
-  const [showResults, setShowResults] = useState(false);
-  const [filters, setFilters] = useState<FilterAnswers>(initialFilters);
-  const { hash } = useLocation();
-
   useEffect(() => {
-    if (!hash) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
-    const scrollToHash = () => {
-      const target = document.getElementById(decodeURIComponent(hash.slice(1)));
-      target?.scrollIntoView({ block: "start" });
-    };
-    const frame = window.requestAnimationFrame(scrollToHash);
-    const settledLayout = window.setTimeout(scrollToHash, 450);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.clearTimeout(settledLayout);
-    };
-  }, [hash]);
-
-  const showFilteredResults = (answers: FilterAnswers) => {
-    setFilters(answers);
-    setShowResults(true);
-    window.setTimeout(() => document.getElementById("resultados")?.scrollIntoView({ behavior: "smooth" }), 100);
-  };
-
-  const handleShowAll = () => {
-    setFilters(initialFilters);
-    setShowResults(true);
-    window.setTimeout(() => document.getElementById("resultados")?.scrollIntoView({ behavior: "smooth" }), 100);
-  };
-
-  const handleReset = () => {
-    setFilters(initialFilters);
-    setShowResults(false);
-    window.setTimeout(() => document.getElementById("cuestionario")?.scrollIntoView({ behavior: "smooth" }), 100);
-  };
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
-    <motion.div className="min-h-screen overflow-x-clip bg-background" initial="initial" animate="animate" exit="exit" variants={pageTransition}>
+    <div className="min-h-screen overflow-x-clip bg-background">
       <Seo
-        title="Escalada deportiva en Málaga: experiencias y formación | Naturaleza Sin Límites"
-        description="Escalada deportiva en Málaga y Andalucía: experiencias guiadas, formación propia NSL E1–E3 y prácticas tutorizadas en vías equipadas de un largo."
+        title="Iniciación a la escalada deportiva en Málaga | Naturaleza Sin Límites"
+        description={`${initiation.title}: ${initiation.duration}. ${initiation.access} Precio a consultar.`}
         path="/escalada"
       />
-
       <Navbar />
       <main>
-        <section className="relative flex min-h-[78vh] items-end overflow-hidden pb-24 pt-44 sm:min-h-[84vh] md:pt-32">
+        <section className="relative flex min-h-[78vh] items-end overflow-hidden pb-20 pt-44 md:pt-32">
           <div className="absolute inset-0">
-            <img src={media.climbing.src} alt={media.climbing.alt} loading="eager" decoding="async" className="h-full w-full object-cover object-center" />
+            <img src={media.climbing.src} alt={media.climbing.alt} loading="eager" decoding="async" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-background/15" />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
           </div>
-
           <div className="container relative z-10 mx-auto px-4">
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-4xl">
-              <h1 className="max-w-4xl font-heading text-4xl font-extrabold leading-[1.05] text-foreground sm:text-6xl lg:text-7xl">
-                Escalada deportiva: <span className="text-primary">vive, aprende y progresa</span>
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
+              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-primary">Escalada · Nivel {initiation.code}</p>
+              <h1 className="font-heading text-4xl font-extrabold leading-[1.05] text-foreground sm:text-6xl">
+                {initiation.title}
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-foreground/80 sm:text-xl">
-                Experiencias guiadas, formación progresiva y práctica tutorizada en Málaga y Andalucía.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button variant="hero" size="lg" className="gap-2" asChild><a href="#experiencias">Ver experiencias <ArrowDown className="h-5 w-5" /></a></Button>
-                <Button variant="heroOutline" size="lg" className="gap-2" asChild><a href="#orientacion">Encontrar mi nivel <Compass className="h-5 w-5" /></a></Button>
+              <div className="mt-6 flex flex-wrap gap-3 text-foreground/85">
+                <span className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm"><Clock className="h-4 w-4 text-primary" />{initiation.duration}</span>
+                <span className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm"><UserCheck className="h-4 w-4 text-primary" />{initiation.access}</span>
+              </div>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Button variant="hero" size="lg" className="gap-2 transition-all duration-300 active:scale-95" asChild>
+                  <a href={whatsappHref} target="_blank" rel="noopener noreferrer"><MessageCircle className="h-5 w-5" />Consultar por WhatsApp</a>
+                </Button>
+                <span className="font-heading text-lg font-bold text-foreground">Precio a consultar</span>
               </div>
             </motion.div>
           </div>
-
-          <a href={media.climbing.sourceUrl} target="_blank" rel="noopener noreferrer" className="absolute bottom-16 right-4 z-10 text-xs text-foreground/60 underline underline-offset-4 hover:text-foreground">
+          <a href={media.climbing.sourceUrl} target="_blank" rel="noopener noreferrer" className="absolute bottom-6 right-4 z-10 text-xs text-foreground/60 underline underline-offset-4 hover:text-foreground">
             Fotografía provisional · Pexels
           </a>
         </section>
 
-        <ClimbingSectionNav />
-
-        <section id="experiencias" className="scroll-mt-24 py-16 sm:py-24" aria-labelledby="experiences-title">
-          <div className="container mx-auto px-4">
-            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-              <div>
-                <p className="mb-3 text-sm font-bold uppercase text-primary">Salidas guiadas existentes</p>
-                <h2 id="experiences-title" className="font-heading text-3xl font-extrabold text-foreground sm:text-5xl">Vive la experiencia</h2>
-              </div>
-              <p className="max-w-2xl leading-7 text-muted-foreground lg:justify-self-end">
-                Elige según tu experiencia, tipo de escalada, tiempo y zona. Accederás a las fichas actuales y a su reserva habitual.
-              </p>
+        <section className="py-16 sm:py-24" aria-labelledby="learn-title">
+          <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-2">
+            <div>
+              <h2 id="learn-title" className="font-heading text-3xl font-extrabold text-foreground sm:text-4xl">Qué aprenderás</h2>
+              <ul className="mt-6 space-y-4">
+                {initiation.outcomes.map((item) => (
+                  <li key={item} className="flex gap-3 text-foreground/85"><CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />{item}</li>
+                ))}
+              </ul>
             </div>
-
-            {!showResults ? (
-              <div id="cuestionario" className="mt-10 scroll-mt-24">
-                <ClimbingQuestionnaire onComplete={showFilteredResults} onReset={handleReset} />
-                <div className="mt-6 text-center">
-                  <Button variant="link" onClick={handleShowAll}>Ver todas las escuelas <ArrowRight className="h-4 w-4" /></Button>
-                </div>
-              </div>
-            ) : (
-              <div id="resultados" className="mt-10 scroll-mt-24"><CragResults filters={filters} onReset={handleReset} /></div>
-            )}
+            <div className="rounded-lg border border-border bg-card p-6 sm:p-8">
+              <h2 className="font-heading text-2xl font-bold text-foreground">Contenidos</h2>
+              <ul className="mt-5 space-y-3">
+                {initiation.contents.map((item) => (
+                  <li key={item} className="flex gap-3 text-muted-foreground"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />{item}</li>
+                ))}
+              </ul>
+              <p className="mt-6 text-sm text-muted-foreground"><strong className="text-foreground">Evaluación:</strong> {initiation.assessment}</p>
+            </div>
           </div>
         </section>
-
-        <ClimbingOrientation />
-        <ClimbingTrainingPath />
-        <ClimbingPractices />
       </main>
-
       <Footer />
       <WhatsAppButton />
       <ScrollToTop />
-    </motion.div>
+    </div>
   );
 }
