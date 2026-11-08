@@ -456,7 +456,7 @@ function fromCave(item: ActividadEspeleologia): ActivityProfile {
 
 export const activityProfiles: ActivityProfile[] = [
   ...barrancos.map(fromBarranco),
-  ...crags.map(fromCrag),
+  // Escalada: solo iniciación en /escalada; los sectores no se ofertan.
   ...ferratas.map(fromFerrata),
   ...espeleologiaPublicada().map(fromCave),
 ];

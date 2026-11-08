@@ -35,7 +35,6 @@ interface ActivitiesFiltersProps {
 const tabs: { id: ActivityType; label: string; icon: React.ElementType }[] = [
   { id: "todas", label: "Todas", icon: Compass },
   { id: "barranquismo", label: "Barranquismo", icon: Waves },
-  { id: "escalada", label: "Escalada", icon: Mountain },
   { id: "ferratas", label: "Ferratas", icon: GitBranch },
   { id: "espeleologia", label: "Espeleología", icon: Lamp },
   { id: "calendario", label: "Calendario", icon: Calendar },

@@ -152,7 +152,7 @@ export function useActivitiesData() {
     });
     
     // Map crags
-    crags.forEach(c => {
+    ([] as Crag[]).forEach(c => {
       const levelInfo = mapCragLevel(c.gradoMinimo);
       unified.push({
         id: `crag-${c.id}`,

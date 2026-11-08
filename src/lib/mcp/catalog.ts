@@ -129,7 +129,6 @@ function fromFerrata(f: (typeof ferratas)[number]): CatalogDetail {
 export function allActivities(): CatalogDetail[] {
   return [
     ...barrancos.map(fromBarranco),
-    ...crags.map(fromCrag),
     ...ferratas.map(fromFerrata),
   ];
 }
