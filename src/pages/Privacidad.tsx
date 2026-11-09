@@ -4,7 +4,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
-import { Mail, Phone, MapPin, Shield } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import { BusinessLegalData } from '@/components/legal/BusinessLegalData';
 
 const sections = [
@@ -234,10 +234,6 @@ export default function Privacidad() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background pointer-events-none" />
             <div className="container mx-auto px-4 relative">
               <div className="max-w-3xl mx-auto text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
-                  <Shield className="h-4 w-4" />
-                  Protección de datos
-                </div>
                 <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
                   Política de <span className="text-primary">Privacidad</span>
                 </h1>

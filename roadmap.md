@@ -198,3 +198,7 @@
 - [x] /admin: el menú lateral solo en escritorio (lg); en tableta y móvil se abre con el botón ☰
 - [x] Descuentos por porcentaje (migración 0012: bookings.discount_percent 0-100); el importe fijo discount_cents queda como legado
 - [ ] Publicar la web (lo hace el usuario)
+
+## Etiquetas de sección y logros (09/11/2026)
+- [x] Quitar la etiqueta tipo pastilla de todos los títulos de sección (blog, cookies, privacidad, packs; componentes de Vértigo Sapiens no usados)
+- [x] Añadir al palmarés: 2º de España y Andalucía · Open de Travesía de Velocidad en Cueva · Sima de Villaluenga del Rosario
