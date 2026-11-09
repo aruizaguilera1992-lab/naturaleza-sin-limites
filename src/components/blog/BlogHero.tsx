@@ -17,8 +17,6 @@ export function BlogHero() {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto"
         >
-
-          
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 leading-tight">
             Aventuras, Técnicas
             <span className="block text-primary">y Consejos</span>

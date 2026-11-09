@@ -234,7 +234,6 @@ export default function Privacidad() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background pointer-events-none" />
             <div className="container mx-auto px-4 relative">
               <div className="max-w-3xl mx-auto text-center mb-16">
-
                 <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
                   Política de <span className="text-primary">Privacidad</span>
                 </h1>

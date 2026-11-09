@@ -54,7 +54,6 @@ export function VSFAQSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-
           <h2 className="text-section font-heading mb-4">
             Preguntas <span className="text-gradient">Frecuentes</span>
           </h2>

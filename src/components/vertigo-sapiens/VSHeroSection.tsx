@@ -33,8 +33,6 @@ export function VSHeroSection() {
 
       <div className="container mx-auto px-4 relative z-10 pt-48 md:pt-40">
         <div className="max-w-4xl mx-auto text-center">
-
-
           {/* Title */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
