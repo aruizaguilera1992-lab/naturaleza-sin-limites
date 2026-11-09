@@ -72,7 +72,7 @@ export function HeroSection() {
         }} transition={{
           delay: 0.3,
           duration: 0.6
-        }} className="text-hero font-heading mb-6">
+        }} className="text-hero font-heading mb-6 sr-only lg:not-sr-only">
             Naturaleza Sin Límites
             <span className="block text-gradient mt-2">
               Vive la Aventura
