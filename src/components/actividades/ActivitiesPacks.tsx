@@ -27,10 +27,6 @@ export function ActivitiesPacks() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-4">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-primary text-sm font-semibold">PACKS ESPECIALES</span>
-          </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold text-foreground mb-4">
             Ahorra con Nuestros <span className="text-gradient">Packs</span>
           </h2>
