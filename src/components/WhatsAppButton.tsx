@@ -15,7 +15,7 @@ export function WhatsAppButton() {
       transition={{ delay: 1, duration: 0.3 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
-      className="fixed bottom-24 right-6 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] rounded-full shadow-[0_12px_28px_-6px_rgba(37,211,102,0.6)] hover:shadow-[0_16px_36px_-6px_rgba(37,211,102,0.75)] transition-all duration-300 active:scale-95"
+      className="fixed bottom-24 left-6 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] rounded-full shadow-[0_12px_28px_-6px_rgba(37,211,102,0.6)] hover:shadow-[0_16px_36px_-6px_rgba(37,211,102,0.75)] transition-all duration-300 active:scale-95"
       aria-label="Contactar por WhatsApp"
     >
       {/* Official WhatsApp glyph */}
