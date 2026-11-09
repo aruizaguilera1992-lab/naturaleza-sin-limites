@@ -201,4 +201,4 @@
 
 ## Etiquetas de sección y logros (09/11/2026)
 - [x] Quitar la etiqueta tipo pastilla de todos los títulos de sección (blog, cookies, privacidad, packs; componentes de Vértigo Sapiens no usados)
-- [x] Añadir al palmarés: 2º de España y Andalucía · Open de Travesía de Velocidad en Cueva · Sima de Villaluenga del Rosario
+- [x] Añadir al palmarés: 2º de España y Andalucía · Open de Travesía de Velocidad en Cueva · Sima de Villaluenga del Rosario · 2026

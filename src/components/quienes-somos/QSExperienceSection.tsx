@@ -76,7 +76,7 @@ export function QSExperienceSection() {
                   <span className="text-3xl">🥈</span>
                   <div>
                     <p className="font-heading font-bold text-foreground text-lg">2º de España y Andalucía</p>
-                    <p className="text-xs text-muted-foreground">Open de Travesía de Velocidad en Cueva · Sima de Villaluenga del Rosario</p>
+                    <p className="text-xs text-muted-foreground">Open de Travesía de Velocidad en Cueva · Sima de Villaluenga del Rosario · 2026</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 bg-primary/10 rounded-xl p-4">
