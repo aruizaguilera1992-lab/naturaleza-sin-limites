@@ -52,7 +52,7 @@ export function HeroSection() {
       <div className="homepage-hero-overlay absolute inset-0 z-[1]" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-44 md:pt-32 pb-20 text-center">
+      <div className="relative z-10 container mx-auto px-4 pt-36 md:pt-32 pb-20 text-center">
         <motion.div initial={{
         opacity: 0,
         y: 30
@@ -72,7 +72,7 @@ export function HeroSection() {
         }} transition={{
           delay: 0.3,
           duration: 0.6
-        }} className="text-hero font-heading mb-6">
+        }} className="text-hero font-heading mb-6 sr-only lg:not-sr-only">
             Naturaleza Sin Límites
             <span className="block text-gradient mt-2">
               Vive la Aventura
