@@ -110,10 +110,13 @@ export function Navbar() {
       />
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between">
+          {/* En móvil y tablet, el logo se centra: este hueco equilibra el
+              ancho del botón de menú para que quede exactamente en el medio. */}
+          <span aria-hidden="true" className="w-11 shrink-0 lg:hidden" />
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 pl-6 group"
+            className="flex items-center gap-3 pl-6 group max-lg:flex-1 max-lg:justify-center max-lg:pl-0"
             onClick={() => {
               window.scrollTo({
                 top: 0,
@@ -126,7 +129,7 @@ export function Navbar() {
               alt="Naturaleza Sin Límites"
               loading="eager"
               decoding="async"
-              className="h-40 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110"
+              className="h-28 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-110 md:h-32 lg:h-40"
             />
           </Link>
 
