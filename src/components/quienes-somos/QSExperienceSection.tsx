@@ -75,6 +75,13 @@ export function QSExperienceSection() {
                 <div className="flex items-center gap-4 bg-primary/10 rounded-xl p-4">
                   <span className="text-3xl">🥈</span>
                   <div>
+                    <p className="font-heading font-bold text-foreground text-lg">2º de España y Andalucía</p>
+                    <p className="text-xs text-muted-foreground">Open de Travesía de Velocidad en Cueva · Sima de Villaluenga del Rosario</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 bg-primary/10 rounded-xl p-4">
+                  <span className="text-3xl">🥈</span>
+                  <div>
                     <p className="font-heading font-bold text-foreground text-lg">2º de España</p>
                     <p className="text-xs text-muted-foreground">Travesía de Velocidad en Cuevas · Mayor Masculino 2024</p>
                   </div>
