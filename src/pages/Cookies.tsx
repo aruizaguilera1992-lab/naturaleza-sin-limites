@@ -6,7 +6,6 @@ import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Button } from '@/components/ui/button';
-import { Cookie } from 'lucide-react';
 import { useCookieConsent } from '@/context/CookieConsentContext';
 
 const sections = [

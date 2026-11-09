@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Play, ChevronDown, Dumbbell } from 'lucide-react';
+import { Play, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function VSHeroSection() {
