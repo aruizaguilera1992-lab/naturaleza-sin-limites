@@ -33,16 +33,7 @@ export function VSHeroSection() {
 
       <div className="container mx-auto px-4 relative z-10 pt-48 md:pt-40">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-2 mb-8"
-          >
-            <Dumbbell className="h-4 w-4 text-primary" />
-            <span className="text-sm font-bold text-primary uppercase tracking-wider">Programa de Entrenamiento</span>
-          </motion.div>
+
 
           {/* Title */}
           <motion.h1

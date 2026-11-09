@@ -55,10 +55,7 @@ export function VSFAQSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-2 mb-6">
-            <HelpCircle className="h-4 w-4 text-primary" />
-            <span className="text-sm font-bold text-primary uppercase tracking-wider">FAQ</span>
-          </div>
+
           <h2 className="text-section font-heading mb-4">
             Preguntas <span className="text-gradient">Frecuentes</span>
           </h2>
