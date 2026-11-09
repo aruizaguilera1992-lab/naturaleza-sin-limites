@@ -138,7 +138,7 @@ export function HeroSection() {
               <Mountain className="h-5 w-5 mr-2" />
               Reserva tu aventura
             </Button>
-            <Button variant="heroOutline" size="lg" className="w-auto !min-h-10 !px-5 !py-2 !text-xs lg:!text-sm border-foreground/60 bg-background/20 backdrop-blur-md" onClick={() => {
+            <Button variant="heroOutline" size="lg" className="w-auto !min-h-11 !px-5 !py-2 !text-xs lg:!text-sm border-foreground/60 bg-background/20 backdrop-blur-md" onClick={() => {
             document.getElementById('actividades')?.scrollIntoView({
               behavior: 'smooth'
             });
