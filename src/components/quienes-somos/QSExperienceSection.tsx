@@ -4,7 +4,7 @@ import { GraduationCap, Users, Target, Award, Mountain, Rocket, Flag } from 'luc
 const credentials = [
   { icon: GraduationCap, text: 'Formación técnica específica en montaña y progresión vertical.' },
   { icon: Users, text: 'Experiencia real guiando a perfiles muy distintos, de iniciación a montañeros con años de práctica.' },
-  { icon: Target, text: 'Visión de competidor: obsesión por la técnica, la seguridad y los detalles.' },
+  { icon: Target, text: 'Visión de competidor: preparación técnica, entrenamiento específico y seguridad.' },
 ];
 
 const timeline = [
