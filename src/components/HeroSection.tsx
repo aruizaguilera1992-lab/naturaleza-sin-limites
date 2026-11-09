@@ -130,7 +130,7 @@ export function HeroSection() {
           delay: 0.7,
           duration: 0.6
           }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center sm:items-center w-full">
-            <Button variant="hero" size="xl" className="group w-auto" onClick={() => {
+            <Button variant="hero" size="lg" className="group w-auto" onClick={() => {
             document.getElementById('calendario')?.scrollIntoView({
               behavior: 'smooth'
             });
@@ -138,7 +138,7 @@ export function HeroSection() {
               <Mountain className="h-5 w-5 mr-2" />
               Reserva tu aventura
             </Button>
-            <Button variant="heroOutline" size="xl" className="w-auto" onClick={() => {
+            <Button variant="heroOutline" size="lg" className="w-auto" onClick={() => {
             document.getElementById('actividades')?.scrollIntoView({
               behavior: 'smooth'
             });
