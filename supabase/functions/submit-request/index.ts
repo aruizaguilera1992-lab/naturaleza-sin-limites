@@ -5,10 +5,10 @@ import {
   businessRecipients,
   escapeHtml,
   isEmail,
-  listLayout,
   sendTrackedNotification,
 } from "../_shared/email.ts";
 import { renderBookingEmail } from "../_shared/bookingEmail.ts";
+import { renderLeadAlert } from "../_shared/leadAlertEmail.ts";
 
 export const MAX_STANDARD_GROUP = 6;
 
@@ -126,20 +126,15 @@ Deno.serve(async (req) => {
       console.error("Insert online request error", error);
       return json({ error: "No se pudo guardar la solicitud" }, 500);
     }
-    const subject = `Solicitud Vértigo Sapiens Online: ${data.nombre}`;
+    const alert = renderLeadAlert({ nombre: data.nombre, origen: "Vértigo Sapiens Online", email: data.email, interes: "Vértigo Sapiens Online · evaluación inicial", mensaje });
     const business = await sendTrackedNotification(supabase, {
       kind: "contacto_negocio",
       dedupeKey: `online_business:${inserted.id}`,
       recipients: businessRecipients(),
-      subject,
+      subject: alert.subject,
       contactId: inserted.id,
-      html: listLayout(subject, [
-        `Nombre: ${data.nombre}`,
-        `Email: ${data.email}`,
-        `Disciplina: ${data.disciplina}`,
-        `Objetivo: ${data.objetivo}`,
-        `Disponibilidad: ${data.disponibilidad}`,
-      ]),
+      html: alert.html,
+      text: alert.text,
     });
     return json({ ok: true, id: inserted.id, notifications: { business: business.status } });
   }
@@ -215,21 +210,15 @@ Deno.serve(async (req) => {
     return json({ error: "No se pudo guardar la solicitud" }, 500);
   }
 
-  const businessSubject = `Nuevo contacto: ${data.nombre}`;
+  const alert = renderLeadAlert({ nombre: data.nombre, origen: "Formulario de contacto web", email: data.email, phone: data.phone, interes: data.interes, personas: data.personas, mensaje: data.mensaje });
   const business = await sendTrackedNotification(supabase, {
     kind: "contacto_negocio",
     dedupeKey: `contact_business:${inserted.id}`,
     recipients: businessRecipients(),
-    subject: businessSubject,
+    subject: alert.subject,
     contactId: inserted.id,
-    html: listLayout(businessSubject, [
-      `Nombre: ${data.nombre}`,
-      `Email: ${data.email}`,
-      `Teléfono: ${data.phone}`,
-      `Interés: ${data.interes}`,
-      `Personas: ${data.personas ?? "-"}`,
-      `Mensaje: ${data.mensaje ?? "-"}`,
-    ]),
+    html: alert.html,
+    text: alert.text,
   });
 
   const client = await sendTrackedNotification(supabase, {

@@ -1,6 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { handleLead } from "./handler.ts";
-import { businessRecipients, listLayout, sendTrackedNotification } from "../_shared/email.ts";
+import { businessRecipients, sendTrackedNotification } from "../_shared/email.ts";
+import { renderLeadAlert } from "../_shared/leadAlertEmail.ts";
 
 Deno.serve(async (req) => {
   const supabase = createClient(
@@ -11,21 +12,16 @@ Deno.serve(async (req) => {
     const { data, error } = await supabase.from("contact_submissions").insert(row).select("id").single();
     if (!error && data?.id) {
       // Internal alert only (never to the lead). Failures must not reject the lead.
-      const subject = `Nuevo contacto (preapertura): ${row.nombre}`;
+      const alert = renderLeadAlert({ nombre: row.nombre, origen: "Web de preapertura", contacto: row.contacto, interes: row.interes, mensaje: row.mensaje });
       try {
         await sendTrackedNotification(supabase, {
           kind: "contacto_negocio",
           dedupeKey: `contact_business:${data.id}`,
           recipients: businessRecipients(),
-          subject,
+          subject: alert.subject,
           contactId: data.id,
-          html: listLayout(subject, [
-            `Nombre: ${row.nombre}`,
-            `Contacto: ${row.contacto}`,
-            `Interés: ${row.interes}`,
-            `Mensaje: ${row.mensaje ?? "-"}`,
-            "Origen: web de preapertura",
-          ]),
+          html: alert.html,
+          text: alert.text,
         });
       } catch (e) {
         console.error("preapertura alert failed", e);
