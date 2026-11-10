@@ -5,7 +5,6 @@ import {
   businessRecipients,
   escapeHtml,
   isEmail,
-  listLayout,
   sendTrackedNotification,
 } from "../_shared/email.ts";
 import { renderBookingEmail } from "../_shared/bookingEmail.ts";
