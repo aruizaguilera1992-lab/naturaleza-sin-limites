@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { blogPosts } from '@/data/blogPosts';
-import { emptyPiece, validatePiece, mergeBlogPosts, safeInlineMarkdown } from './editorial';
+import { emptyPiece, validatePiece, mergeBlogPosts, safeInlineMarkdown, parseSafeImageMarkdown } from './editorial';
 
 describe('Editorial publication rules', () => {
   it('rejects a reserved existing article address', () => {
