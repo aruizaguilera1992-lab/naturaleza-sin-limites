@@ -1,0 +1,2 @@
+export { newsletterSegments, newsletterEligible, campaignDedupeKey, newsletterBody, renderNewsletter } from '../../supabase/functions/_shared/newsletterContent';
+export const disciplineLabels: Record<string, string> = { barranquismo: 'Barranquismo', ferratas: 'Vías ferratas', espeleologia: 'Espeleología' };
