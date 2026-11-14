@@ -208,4 +208,4 @@
 - [x] Sprint 1A: ficha de contacto con cabecera y pestañas
 - [x] Sprint 2: suscripción real con doble confirmación + 10 %
 - [x] Sprint 3: editor con vista previa y SEO, guardado/publicación/retirada atómicos solo admin, blog combinado conservando artículos y URLs. 95 pruebas OK; borrador guardado y reabierto con sesión real, no visible públicamente. No se publicó ningún artículo de prueba ni la web; sitemap de nuevos artículos pendiente del paso acordado posterior.
-- [ ] Sprint 4: campañas por disciplina, envío inmediato y programado
+- [ ] Sprint 4: campañas por disciplina, compositor y prueba al administrador, envío inmediato/programado, historial y consentimiento; verificar sin envío comercial ni publicación de la web
