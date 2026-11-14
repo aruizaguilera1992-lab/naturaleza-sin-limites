@@ -780,11 +780,11 @@ export default function Admin() {
 
   const agendaC = agendaCounts(contacts as unknown as AgendaContact[]);
   const agendaUrgent = agendaC.vencido + agendaC.hoy;
-  const NAV: { id: AdminTab; label: string; subtitle: string; icon: typeof Home; count?: number }[] = [
+  const NAV: { id: AdminTab; label: string; subtitle: string; icon: typeof Home; count?: number; heading?: string }[] = [
     { id: "overview", label: "Resumen", subtitle: "Lo pendiente de hoy, de un vistazo.", icon: Home },
     { id: "bookings", label: "Reservas", subtitle: "Solicitudes y reservas de actividades.", icon: CalendarCheck, count: newBookings },
     { id: "contacts", label: "Contactos", subtitle: "Mensajes recibidos desde la web.", icon: Inbox, count: newContacts },
-    { id: "agenda", label: "Agenda", subtitle: "Seguimiento comercial del día.", icon: CalendarClock, count: agendaUrgent || undefined },
+    { id: "agenda", label: "Agenda", heading: "Agenda comercial", subtitle: "Qué requiere atención y cuál es el siguiente paso.", icon: CalendarClock, count: agendaUrgent || undefined },
     { id: "events", label: "Calendario", subtitle: "Salidas programadas y plazas.", icon: CalendarDays },
     { id: "plans", label: "Planes", subtitle: "Suscripciones de Vértigo Sapiens.", icon: Repeat },
     { id: "editorial", label: "Editorial", subtitle: "Artículos del blog.", icon: FileText },
@@ -1199,7 +1199,7 @@ export default function Admin() {
       <main className="min-w-0 flex-1 px-4 py-6 md:px-10 md:py-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{current.label}</h1>
+            <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{current.heading ?? current.label}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{current.subtitle}</p>
           </div>
           <Button variant="outline" onClick={refresh} disabled={refreshing} className="hidden min-h-11 gap-2 lg:inline-flex">

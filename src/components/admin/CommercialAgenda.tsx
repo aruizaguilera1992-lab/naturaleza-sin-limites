@@ -28,11 +28,7 @@ export function CommercialAgenda<T extends AgendaContact>({ contacts, stageLabel
   const items = useMemo(() => buildAgenda(contacts, filter, q), [contacts, filter, q]);
 
   return (
-    <section aria-labelledby="agenda-title" className="space-y-5">
-      <div>
-        <h2 id="agenda-title" className="font-heading text-2xl text-foreground">Agenda comercial</h2>
-        <p className="text-sm text-muted-foreground">Qué requiere atención y cuál es el siguiente paso.</p>
-      </div>
+    <section aria-label="Agenda comercial" className="space-y-5">
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {BUCKETS.map((b) => {
