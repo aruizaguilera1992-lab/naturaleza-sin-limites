@@ -24,7 +24,6 @@ const FILTERS: { id: AgendaFilter; label: string }[] = [
   BUCKETS[3],
 ];
 const BUCKET_LABEL: Record<AgendaBucket, string> = { ...Object.fromEntries(BUCKETS.map((b) => [b.id, b.label])), mas_adelante: "Más adelante" } as Record<AgendaBucket, string>;
-const BUCKET_LABEL = Object.fromEntries(BUCKETS.map((b) => [b.id, b.label])) as Record<AgendaBucket, string>;
 
 /** Vista diaria de seguimiento comercial; solo lee los contactos ya cargados. */
 export function CommercialAgenda<T extends AgendaContact>({ contacts, stageLabels, onOpen }: Props<T>) {
