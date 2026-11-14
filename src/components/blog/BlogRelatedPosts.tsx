@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion';
-import { BlogPost, getRelatedPosts } from '@/data/blogPosts';
+import { BlogPost, blogPosts } from '@/data/blogPosts';
 import { BlogCard } from './BlogCard';
 
 interface BlogRelatedPostsProps {
   currentPost: BlogPost;
+  posts?: BlogPost[];
 }
 
-export function BlogRelatedPosts({ currentPost }: BlogRelatedPostsProps) {
-  const relatedPosts = getRelatedPosts(currentPost, 3);
+export function BlogRelatedPosts({ currentPost, posts = blogPosts }: BlogRelatedPostsProps) {
+  const relatedPosts = posts.filter(post => post.slug !== currentPost.slug && (post.category === currentPost.category || post.tags.some(tag => currentPost.tags.includes(tag)))).slice(0, 3);
 
   if (relatedPosts.length === 0) return null;
 

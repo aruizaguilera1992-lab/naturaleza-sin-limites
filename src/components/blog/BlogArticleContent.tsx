@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import { BlogPost } from '@/data/blogPosts';
+import { safeInlineMarkdown } from '@/lib/editorial';
 
 interface BlogArticleContentProps {
   post: BlogPost;
+  preview?: boolean;
 }
 
-export function BlogArticleContent({ post }: BlogArticleContentProps) {
+export function BlogArticleContent({ post, preview = false }: BlogArticleContentProps) {
   // Simple markdown-like parsing for content
   const renderContent = (content: string) => {
     const lines = content.trim().split('\n');
@@ -68,10 +70,7 @@ export function BlogArticleContent({ post }: BlogArticleContentProps) {
     };
 
     const parseInline = (text: string): string => {
-      return text
-        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`(.*?)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
+      return safeInlineMarkdown(text);
     };
 
     lines.forEach((line, index) => {
@@ -172,8 +171,8 @@ export function BlogArticleContent({ post }: BlogArticleContentProps) {
 
   return (
     <motion.article
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={preview ? false : { opacity: 0 }}
+      animate={preview ? undefined : { opacity: 1 }}
       transition={{ delay: 0.3 }}
       className="prose-custom max-w-3xl mx-auto px-4 py-8 sm:py-12"
       style={{ fontSize: '18px', lineHeight: '1.7' }}

@@ -138,6 +138,42 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_publications: {
+        Row: {
+          piece_id: string
+          published_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          piece_id: string
+          published_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          piece_id?: string
+          published_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_publications_piece_id_fkey"
+            columns: ["piece_id"]
+            isOneToOne: true
+            referencedRelation: "blog_posts_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_publications_piece_id_fkey"
+            columns: ["piece_id"]
+            isOneToOne: true
+            referencedRelation: "editorial_pieces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           activity: string
@@ -524,6 +560,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      editorial_pieces: {
+        Row: {
+          author_bio: string
+          author_name: string
+          category: string
+          content: string
+          created_at: string
+          created_by: string | null
+          excerpt: string
+          featured_image: string
+          id: string
+          meta_description: string
+          meta_title: string
+          slug: string
+          tags: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_bio?: string
+          author_name?: string
+          category?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string
+          featured_image?: string
+          id?: string
+          meta_description?: string
+          meta_title?: string
+          slug: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          author_bio?: string
+          author_name?: string
+          category?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string
+          featured_image?: string
+          id?: string
+          meta_description?: string
+          meta_title?: string
+          slug?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       newsletter_subscribers: {
         Row: {
@@ -921,6 +1011,24 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_posts_public: {
+        Row: {
+          author_bio: string | null
+          author_name: string | null
+          category: string | null
+          content: string | null
+          excerpt: string | null
+          featured_image: string | null
+          id: string | null
+          meta_description: string | null
+          meta_title: string | null
+          published_at: string | null
+          slug: string | null
+          tags: string[] | null
+          title: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_delete_booking: { Args: { _id: string }; Returns: Json }
@@ -998,6 +1106,10 @@ export type Database = {
           _participants: number
         }
         Returns: Json
+      }
+      save_editorial_piece: {
+        Args: { _expected_updated_at?: string; _piece: Json; _status: string }
+        Returns: string
       }
     }
     Enums: {

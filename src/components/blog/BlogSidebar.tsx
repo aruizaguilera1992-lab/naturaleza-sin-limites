@@ -5,16 +5,17 @@ import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BlogCategory, categoryLabels, categoryColors, getMostReadPosts, searchPosts, blogPosts } from '@/data/blogPosts';
+import { BlogCategory, categoryLabels, categoryColors, blogPosts, type BlogPost } from '@/data/blogPosts';
 
 interface BlogSidebarProps {
   onSearch: (query: string) => void;
   onCategoryClick: (category: BlogCategory) => void;
+  posts?: BlogPost[];
 }
 
-export function BlogSidebar({ onSearch, onCategoryClick }: BlogSidebarProps) {
+export function BlogSidebar({ onSearch, onCategoryClick, posts = blogPosts }: BlogSidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const mostReadPosts = getMostReadPosts(5);
+  const mostReadPosts = [...posts].filter(post => post.views !== undefined).sort((a, b) => (b.views ?? 0) - (a.views ?? 0)).slice(0, 5);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +23,7 @@ export function BlogSidebar({ onSearch, onCategoryClick }: BlogSidebarProps) {
   };
 
   const categoryCounts = Object.keys(categoryLabels).reduce((acc, category) => {
-    acc[category as BlogCategory] = blogPosts.filter(p => p.category === category).length;
+    acc[category as BlogCategory] = posts.filter(p => p.category === category).length;
     return acc;
   }, {} as Record<BlogCategory, number>);
 

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EventsPanel } from "@/components/admin/EventsPanel";
+import { EditorialPanel } from "@/components/admin/editorial/EditorialPanel";
 import { BookingEditForm } from "@/components/admin/BookingEditForm";
 import { ContactCrmPanel, type CrmContact } from "@/components/admin/ContactCrmPanel";
 import { ContactFollowUp } from "@/components/admin/ContactTimeline";
@@ -50,6 +51,7 @@ import {
   ChevronRight,
   AlertTriangle,
   Repeat,
+  FileText,
 } from "lucide-react";
 import {
   ACTIVITY_TZ,
@@ -67,7 +69,7 @@ import { PlanOrdersPanel } from "@/components/admin/PlanOrdersPanel";
 import { AccessLayout } from "@/components/auth/AccessLayout";
 import { DeleteRecordButton } from "@/components/admin/DeleteControls";
 
-type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans";
+type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans" | "editorial";
 
 
 type NotesFieldProps = {
@@ -553,6 +555,7 @@ export default function Admin() {
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
   const [tab, setTab] = useState<AdminTab>("overview");
+  const [editorialOpened, setEditorialOpened] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -773,11 +776,13 @@ export default function Admin() {
     { id: "contacts", label: "Contactos", subtitle: "Mensajes recibidos desde la web.", icon: Inbox, count: newContacts },
     { id: "events", label: "Calendario", subtitle: "Salidas programadas y plazas.", icon: CalendarDays },
     { id: "plans", label: "Planes", subtitle: "Suscripciones de Vértigo Sapiens.", icon: Repeat },
+    { id: "editorial", label: "Editorial", subtitle: "Artículos del blog.", icon: FileText },
     { id: "notifications", label: "Notificaciones", subtitle: "Correos enviados y fallidos.", icon: Bell, count: pendingNotifications },
     { id: "settings", label: "Ajustes legales", subtitle: "Datos legales del negocio.", icon: Settings },
   ];
-  const current = NAV.find((n) => n.id === tab)!;
+  const current = NAV.find((n) => n.id === tab) ?? NAV[0];
   const go = (t: AdminTab, filter = "all") => {
+    if (t === "editorial") setEditorialOpened(true);
     setTab(t);
     setSearch("");
     setStatusFilter(filter);
@@ -1270,6 +1275,7 @@ export default function Admin() {
           {tab === "settings" && <BusinessSettingsPanel />}
           {tab === "events" && <EventsPanel />}
           {tab === "plans" && <PlanOrdersPanel />}
+          {editorialOpened && <div className={tab === "editorial" ? "" : "hidden"}><EditorialPanel /></div>}
 
           {tab === "bookings" && (
             <>

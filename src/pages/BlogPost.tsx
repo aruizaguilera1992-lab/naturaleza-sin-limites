@@ -12,15 +12,19 @@ import { BlogShareBar } from '@/components/blog/BlogShareBar';
 import { BlogAuthorBox } from '@/components/blog/BlogAuthorBox';
 import { BlogRelatedPosts } from '@/components/blog/BlogRelatedPosts';
 import { BlogCTA } from '@/components/blog/BlogCTA';
-import { getPostBySlug } from '@/data/blogPosts';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
+import { Button } from '@/components/ui/button';
 import { getRelatedYoutubeVideo } from '@/data/youtubeVideos';
 import { YoutubeLitePlayer } from '@/components/YoutubeLitePlayer';
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const post = slug ? getPostBySlug(slug) : undefined;
+  const { posts, isPending, isError, refetch } = useBlogPosts();
+  const post = posts.find(post => post.slug === slug);
 
   if (!post) {
+    if (isPending) return <main className="min-h-screen bg-background p-8 text-foreground">Cargando artículo…</main>;
+    if (isError) return <main className="min-h-screen bg-background p-8 text-foreground"><p role="alert">No se pudo cargar el artículo.</p><Button onClick={() => refetch()}>Reintentar</Button></main>;
     return <Navigate to="/blog" replace />;
   }
   const relatedVideo = getRelatedYoutubeVideo(post.slug);
@@ -97,7 +101,7 @@ export default function BlogPost() {
             </section>
           )}
           <BlogAuthorBox author={post.author} />
-          <BlogRelatedPosts currentPost={post} />
+          <BlogRelatedPosts currentPost={post} posts={posts} />
           <BlogCTA />
         </main>
 
