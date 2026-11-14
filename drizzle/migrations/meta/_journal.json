@@ -134,6 +134,13 @@
       "when": 1794650783013,
       "tag": "0018_newsletter_subscribers_consent",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794651724813,
+      "tag": "0019_editorial_blog_publications",
+      "breakpoints": true
     }
   ]
 }
