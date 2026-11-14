@@ -555,6 +555,7 @@ export default function Admin() {
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
   const [tab, setTab] = useState<AdminTab>("overview");
+  const [editorialOpened, setEditorialOpened] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -781,6 +782,7 @@ export default function Admin() {
   ];
   const current = NAV.find((n) => n.id === tab) ?? NAV[0];
   const go = (t: AdminTab, filter = "all") => {
+    if (t === "editorial") setEditorialOpened(true);
     setTab(t);
     setSearch("");
     setStatusFilter(filter);
@@ -1273,7 +1275,7 @@ export default function Admin() {
           {tab === "settings" && <BusinessSettingsPanel />}
           {tab === "events" && <EventsPanel />}
           {tab === "plans" && <PlanOrdersPanel />}
-          <div className={tab === "editorial" ? "" : "hidden"}><EditorialPanel /></div>
+          {editorialOpened && <div className={tab === "editorial" ? "" : "hidden"}><EditorialPanel /></div>}
 
           {tab === "bookings" && (
             <>

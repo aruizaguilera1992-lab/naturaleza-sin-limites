@@ -172,7 +172,7 @@ export function BlogArticleContent({ post, preview = false }: BlogArticleContent
   return (
     <motion.article
       initial={preview ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
+      animate={preview ? undefined : { opacity: 1 }}
       transition={{ delay: 0.3 }}
       className="prose-custom max-w-3xl mx-auto px-4 py-8 sm:py-12"
       style={{ fontSize: '18px', lineHeight: '1.7' }}
