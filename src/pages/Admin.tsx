@@ -8,8 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { EventsPanel } from "@/components/admin/EventsPanel";
 import { EditorialPanel } from "@/components/admin/editorial/EditorialPanel";
 import { BookingEditForm } from "@/components/admin/BookingEditForm";
-import { ContactCrmPanel, type CrmContact } from "@/components/admin/ContactCrmPanel";
-import { ContactFollowUp } from "@/components/admin/ContactTimeline";
+import { ContactClassificationForm, ContactCommunicationLog, type CrmContact } from "@/components/admin/ContactCrmPanel";
+import { ContactDetail } from "@/components/admin/contact/ContactDetail";
+import { ContactFollowUp, ContactTimeline } from "@/components/admin/ContactTimeline";
 import { RelatedBookings } from "@/components/admin/contact/RelatedBookings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { contactChannels, mailtoLink, telLink, whatsappLink } from "@/lib/crmContact";
@@ -551,6 +552,7 @@ export default function Admin() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [crmTick, setCrmTick] = useState(0);
+  const onCrmSaved = () => { setCrmTick((t) => t + 1); loadData(); };
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
@@ -1411,47 +1413,15 @@ export default function Admin() {
           {tab === "contacts" && selectedContact && (() => {
             const c = selectedContact;
             return (
-              <div className="mx-auto w-full max-w-5xl">
-                {(() => {
-                  const ch = contactChannels(c as unknown as CrmContact);
-                  const greet = `Hola ${c.nombre.split(" ")[0]}, soy Antonio de Naturaleza Sin Límites.`;
-                  const wa = whatsappLink(ch.phone, greet), tel = telLink(ch.phone), mail = mailtoLink(ch.email, "Naturaleza Sin Límites", greet);
-                  const fu = followUpBucket(c.next_action_at);
-                  const stage = (c as unknown as CrmContact).pipeline_stage ?? "nuevo";
-                  const prio = (c as unknown as CrmContact).priority;
-                  return (
-                    <SheetHeader className="sticky -top-6 z-10 -mx-6 -mt-6 border-b border-border bg-card/95 px-6 pb-4 pt-6 pr-14 text-left backdrop-blur">
-                      <SheetTitle className="font-heading text-2xl text-foreground">{c.nombre}</SheetTitle>
-                      <SheetDescription asChild>
-                        <div className="flex flex-wrap items-center gap-2 text-sm">
-                          <span className="text-muted-foreground">{c.interes} · recibido el {formatDate(c.created_at)}</span>
-                        </div>
-                      </SheetDescription>
-                      <div className="mt-2 flex flex-wrap items-center gap-2">
-                        <Badge variant="secondary">Etapa comercial: {STAGE_LABEL[stage] ?? stage}</Badge>
-                        {prio && <Badge variant={prio === "alta" ? "destructive" : "outline"}>Prioridad {prio}</Badge>}
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">Reserva/pago: <StatusBadge status={c.status} /></span>
-                        {fu === "vencido" && <Badge variant="destructive">Seguimiento vencido</Badge>}
-                        {fu === "hoy" && <Badge>Seguimiento hoy</Badge>}
-                      </div>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {wa && <Button asChild size="sm"><a href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a></Button>}
-                        {tel && <Button asChild size="sm" variant="outline"><a href={tel}>Llamar</a></Button>}
-                        {mail && <Button asChild size="sm" variant="outline"><a href={mail} target="_blank" rel="noopener noreferrer">Email</a></Button>}
-                        {!wa && !tel && !mail && <span className="text-xs text-muted-foreground">Sin teléfono ni email válidos</span>}
-                      </div>
-                    </SheetHeader>
-                  );
-                })()}
-                <Tabs defaultValue="resumen" className="mt-4">
-                  <TabsList className="flex h-auto w-full flex-wrap justify-start">
-                    <TabsTrigger value="resumen">Resumen y seguimiento</TabsTrigger>
-                    <TabsTrigger value="reservas">Reservas y pagos</TabsTrigger>
-                    <TabsTrigger value="notas">Notas</TabsTrigger>
-                    <TabsTrigger value="gestion">Gestión</TabsTrigger>
-                  </TabsList>
-                  {/* forceMount: las pestañas ocultas no se desmontan, así no se pierden cambios sin guardar. */}
-                  <TabsContent value="resumen" forceMount className="data-[state=inactive]:hidden">
+              <ContactDetail
+                key={c.id}
+                contact={c as unknown as CrmContact & { created_at: string }}
+                stageLabel={STAGE_LABEL[(c as unknown as CrmContact).pipeline_stage ?? "nuevo"] ?? "Nuevo"}
+                receivedLabel={`recibido el ${formatDate(c.created_at)}`}
+                statusBadge={<StatusBadge status={c.status} />}
+                renderTitle={(n) => <SheetTitle className="font-heading text-2xl text-foreground">{n}</SheetTitle>}
+                onSaved={onCrmSaved}
+                ficha={<>
                     <dl className="mt-2 grid grid-cols-2 gap-4">
                       <Field label="Contacto" value={c.contacto} />
                       <Field label="Interés" value={c.interes} />
@@ -1464,10 +1434,14 @@ export default function Admin() {
                         <p className="mt-1 whitespace-pre-line rounded-lg bg-background/60 p-3 text-sm text-foreground">{c.mensaje}</p>
                       </div>
                     )}
-                    <ContactFollowUp key={`fu-${c.id}-${c.next_action_at ?? ""}`} contactId={c.id} nextAction={c.next_action ?? null} nextActionAt={c.next_action_at ?? null} refreshKey={crmTick} onSaved={() => { setCrmTick((t) => t + 1); loadData(); }} />
-                    <ContactCrmPanel key={`crm-${c.id}`} contact={c as unknown as CrmContact} onSaved={() => { setCrmTick((t) => t + 1); loadData(); }} />
-                  </TabsContent>
-                  <TabsContent value="reservas" forceMount className="space-y-6 data-[state=inactive]:hidden">
+                    <ContactClassificationForm key={`crm-${c.id}`} contact={c as unknown as CrmContact} onSaved={onCrmSaved} />
+                </>}
+                seguimiento={<>
+                    <ContactFollowUp key={`fu-${c.id}-${c.next_action_at ?? ""}`} contactId={c.id} nextAction={c.next_action ?? null} nextActionAt={c.next_action_at ?? null} refreshKey={crmTick} onSaved={onCrmSaved} />
+                    <ContactCommunicationLog key={`log-${c.id}`} contactId={c.id} onSaved={onCrmSaved} />
+                    <ContactTimeline contactId={c.id} refreshKey={crmTick} />
+                </>}
+                reservas={<>
                     <div><p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">Estado de reserva/pago (independiente de la etapa comercial)</p><StatusSelect table="contact_submissions" id={c.id} value={c.status} /></div>
                     <RelatedBookings contact={c} bookings={bookings} />
                     <PaymentPanel
@@ -1478,15 +1452,10 @@ export default function Admin() {
                       payments={payments.filter((p) => p.contact_id === c.id)}
                       onCreated={(msg) => { if (msg) setActionDone(msg); loadData(); }}
                     />
-                  </TabsContent>
-                  <TabsContent value="notas" forceMount className="data-[state=inactive]:hidden">
-                    <NotesField key={c.id} id={c.id} value={c.admin_notes} onSave={(n) => updateNotes("contact_submissions", c.id, n)} />
-                  </TabsContent>
-                  <TabsContent value="gestion" forceMount className="data-[state=inactive]:hidden">
-                    <DeleteRecordButton target="contact" id={c.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
-                  </TabsContent>
-                </Tabs>
-              </div>
+                </>}
+                notas={<NotesField key={c.id} id={c.id} value={c.admin_notes} onSave={(n) => updateNotes("contact_submissions", c.id, n)} />}
+                adminActions={<DeleteRecordButton className="mt-3 w-full" target="contact" id={c.id} onDeleted={() => { setSelectedId(null); loadData(); }} />}
+              />
             );
           })()}
         </SheetContent>
