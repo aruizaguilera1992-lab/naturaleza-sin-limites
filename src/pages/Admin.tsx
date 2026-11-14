@@ -798,6 +798,7 @@ export default function Admin() {
     setSearch("");
     setStatusFilter(filter);
     setSelectedId(null);
+    setContactTab("ficha");
     setMenuOpen(false);
   };
 
@@ -1417,7 +1418,7 @@ export default function Admin() {
         </div>
       </main>
 
-      <Sheet open={!!selectedContact && tab === "contacts"} onOpenChange={(o) => !o && setSelectedId(null)}>
+      <Sheet open={!!selectedContact && tab === "contacts"} onOpenChange={(o) => { if (!o) { setSelectedId(null); setContactTab("ficha"); } }}>
         <SheetContent side="right" className="w-full overflow-y-auto border-0 bg-card p-6 sm:max-w-none">
           {tab === "contacts" && selectedContact && (() => {
             const c = selectedContact;
