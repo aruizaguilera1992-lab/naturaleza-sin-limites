@@ -41,28 +41,133 @@ const OPT = {
 const CHANNEL_LABEL: Record<string, string> = { whatsapp: "WhatsApp", llamada: "Llamada", email: "Email", otro: "Otro" };
 const NONE = "__none";
 
-export function ContactCrmPanel({ contact, onSaved }: { contact: CrmContact; onSaved: () => void }) {
+export const CHANNEL_LABELS = CHANNEL_LABEL;
+
+/** Inserta un evento de comunicación (misma escritura que antes). */
+export function useRegisterCommunication(contactId: string, onSaved: () => void) {
   const { toast } = useToast();
-  const [form, setForm] = useState(() => toForm(contact));
-  const [saving, setSaving] = useState(false);
+  const [logging, setLogging] = useState(false);
+  const register = async (channel: string, body: string) => {
+    setLogging(true);
+    const { data: u } = await supabase.auth.getUser();
+    const { error } = await supabase.from("contact_events").insert({
+      contact_id: contactId,
+      kind: `comunicacion_${channel}`,
+      body: body.trim() || null,
+      origin: "manual",
+      author_id: u.user?.id ?? null,
+    });
+    setLogging(false);
+    if (error) { toast({ title: "No se pudo registrar", description: error.message, variant: "destructive" }); return false; }
+    toast({ title: "Comunicación registrada", description: CHANNEL_LABEL[channel] });
+    onSaved();
+    return true;
+  };
+  return { register, logging };
+}
+
+export function defaultProposalMessage(contact: CrmContact) {
   const firstName = contact.nombre.split(" ")[0] || "";
-  const [message, setMessage] = useState(`Hola ${firstName}, soy Antonio de Naturaleza Sin Límites. Te escribo por tu interés en ${contact.interes || "nuestras actividades"}.`);
-  const [pending, setPending] = useState<string | null>(null);
+  return `Hola ${firstName}, soy Antonio de Naturaleza Sin Límites. Te escribo por tu interés en ${contact.interes || "nuestras actividades"}.`;
+}
+
+/** Registro manual de comunicaciones (pestaña Seguimiento). */
+export function ContactCommunicationLog({ contactId, onSaved }: { contactId: string; onSaved: () => void }) {
   const [logChannel, setLogChannel] = useState("whatsapp");
   const [logBody, setLogBody] = useState("");
-  const [logging, setLogging] = useState(false);
+  const { register, logging } = useRegisterCommunication(contactId, onSaved);
+  return (
+    <section aria-labelledby="crm-log" className="border-t border-border pt-5">
+      <h3 id="crm-log" className="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">Registrar comunicación</h3>
+      <div className="mt-3 grid gap-2 sm:grid-cols-[140px_1fr_auto]">
+        <Select value={logChannel} onValueChange={setLogChannel}>
+          <SelectTrigger aria-label="Canal"><SelectValue /></SelectTrigger>
+          <SelectContent>{Object.entries(CHANNEL_LABEL).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}</SelectContent>
+        </Select>
+        <Input aria-label="Resumen" placeholder="Qué habéis hablado" value={logBody} onChange={(e) => setLogBody(e.target.value)} maxLength={1000} />
+        <Button disabled={logging || !logBody.trim()} onClick={async () => { if (await register(logChannel, logBody)) setLogBody(""); }}>
+          {logging ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}Registrar
+        </Button>
+      </div>
+    </section>
+  );
+}
 
-  // No se resincroniza al cambiar el objeto `contact`: un refresco de la lista
-  // (loadData) crea una identidad nueva y borraría los cambios sin guardar.
-  // El panel se remonta al cambiar de contacto (key `crm-${c.id}` en Admin.tsx).
-
-
-
+/** Contenido de «Preparar propuesta»: sugerencias del catálogo + mensaje + envío. */
+export function ProposalPanel({ contact, message, setMessage, onSaved }: {
+  contact: CrmContact; message: string; setMessage: (m: string) => void; onSaved: () => void;
+}) {
+  const { toast } = useToast();
+  const [pending, setPending] = useState<string | null>(null);
+  const { register, logging } = useRegisterCommunication(contact.id, onSaved);
+  const firstName = contact.nombre.split(" ")[0] || "";
   const { email, phone } = contactChannels(contact);
   const wa = whatsappLink(phone, message);
   const tel = telLink(phone);
   const mail = mailtoLink(email, "Naturaleza Sin Límites", message);
+  const copy = async (text: string, label: string) => {
+    try { await navigator.clipboard.writeText(text); toast({ title: `${label} copiado` }); }
+    catch { toast({ title: "No se pudo copiar", variant: "destructive" }); }
+  };
+  const action = (href: string | null, channel: string, label: string, Icon: typeof Mail) => (
+    <Button asChild={!!href} variant="outline" size="sm" disabled={!href} title={href ? undefined : "Dato no válido"}>
+      {href ? (
+        <a href={href} target={channel === "llamada" ? undefined : "_blank"} rel="noopener noreferrer" onClick={() => setPending(channel)}>
+          <Icon className="mr-1 h-4 w-4" />{label}
+        </a>
+      ) : (<span><Icon className="mr-1 h-4 w-4" />{label}</span>)}
+    </Button>
+  );
+  return (
+    <div className="space-y-5">
+      <ContactSuggestions
+        firstName={firstName}
+        interests={contact.activities_interest}
+        interes={contact.interes}
+        experience={contact.experience_level}
+        onUseMessage={setMessage}
+      />
+      <section aria-labelledby="crm-actions" className="border-t border-border pt-4">
+        <Label htmlFor="crm-msg" className="block text-xs text-muted-foreground">Mensaje (puedes editarlo antes de abrir la app)</Label>
+        <Textarea id="crm-msg" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} className="mt-1" />
+        <h3 id="crm-actions" className="sr-only">Enviar propuesta</h3>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {action(wa, "whatsapp", "WhatsApp", MessageCircle)}
+          {action(tel, "llamada", "Llamar", Phone)}
+          {action(mail, "email", "Email", Mail)}
+          <Button variant="ghost" size="sm" onClick={() => copy(message, "Mensaje")}><Copy className="mr-1 h-4 w-4" />Copiar mensaje</Button>
+        </div>
+        {!phone && !email && <p className="mt-2 text-xs text-muted-foreground">No hay teléfono ni email válidos para este contacto.</p>}
+        {pending && (
+          <div role="status" className="mt-3 flex flex-wrap items-center gap-2 rounded-md border border-primary/40 bg-primary/10 p-3 text-sm text-foreground">
+            <span>¿Has enviado el mensaje por {CHANNEL_LABEL[pending]}?</span>
+            <Button size="sm" disabled={logging} onClick={async () => { if (await register(pending, pending === "llamada" ? "Llamada realizada" : message)) setPending(null); }}>
+              <CheckCircle2 className="mr-1 h-4 w-4" />Sí, registrar
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setPending(null)}>No</Button>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
 
+/** Compatibilidad: clasificación + registro manual juntos. */
+export function ContactCrmPanel({ contact, onSaved }: { contact: CrmContact; onSaved: () => void }) {
+  return (
+    <div className="space-y-6">
+      <ContactClassificationForm contact={contact} onSaved={onSaved} />
+      <ContactCommunicationLog contactId={contact.id} onSaved={onSaved} />
+    </div>
+  );
+}
+
+/** Clasificación comercial (pestaña Ficha). Nunca escribe `status`. */
+export function ContactClassificationForm({ contact, onSaved }: { contact: CrmContact; onSaved: () => void }) {
+  const { toast } = useToast();
+  // No se resincroniza desde props: el padre remonta con key por contacto.
+  const [form, setForm] = useState(() => toForm(contact));
+  const [saving, setSaving] = useState(false);
   const set = (k: keyof ReturnType<typeof toForm>, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const save = async () => {
@@ -90,105 +195,25 @@ export function ContactCrmPanel({ contact, onSaved }: { contact: CrmContact; onS
     onSaved();
   };
 
-  const register = async (channel: string, body: string) => {
-    setLogging(true);
-    const { data: u } = await supabase.auth.getUser();
-    const { error } = await supabase.from("contact_events").insert({
-      contact_id: contact.id,
-      kind: `comunicacion_${channel}`,
-      body: body.trim() || null,
-      origin: "manual",
-      author_id: u.user?.id ?? null,
-    });
-    setLogging(false);
-    if (error) return toast({ title: "No se pudo registrar", description: error.message, variant: "destructive" });
-    toast({ title: "Comunicación registrada", description: CHANNEL_LABEL[channel] });
-    setPending(null);
-    setLogBody("");
-    onSaved();
-  };
-
-  const copy = async (text: string, label: string) => {
-    try { await navigator.clipboard.writeText(text); toast({ title: `${label} copiado` }); }
-    catch { toast({ title: "No se pudo copiar", variant: "destructive" }); }
-  };
-
-  const action = (href: string | null, channel: string, label: string, Icon: typeof Mail) => (
-    <Button asChild={!!href} variant="outline" size="sm" disabled={!href} title={href ? undefined : "Dato no válido"}>
-      {href ? (
-        <a href={href} target={channel === "llamada" ? undefined : "_blank"} rel="noopener noreferrer" onClick={() => setPending(channel)}>
-          <Icon className="mr-1 h-4 w-4" />{label}
-        </a>
-      ) : (<span><Icon className="mr-1 h-4 w-4" />{label}</span>)}
-    </Button>
-  );
-
   return (
-    <div className="mt-6 space-y-6">
-      <ContactSuggestions
-        firstName={firstName}
-        interests={contact.activities_interest}
-        interes={contact.interes}
-        experience={form.experience_level || contact.experience_level}
-        onUseMessage={setMessage}
-      />
-      <section aria-labelledby="crm-actions" className="rounded-lg border border-border bg-background/40 p-4">
-        <h3 id="crm-actions" className="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">Acciones rápidas</h3>
-        <Label htmlFor="crm-msg" className="mt-3 block text-xs text-muted-foreground">Mensaje (puedes editarlo antes de abrir la app)</Label>
-        <Textarea id="crm-msg" rows={3} value={message} onChange={(e) => setMessage(e.target.value)} className="mt-1" />
-        <div className="mt-3 flex flex-wrap gap-2">
-          {action(wa, "whatsapp", "WhatsApp", MessageCircle)}
-          {action(tel, "llamada", "Llamar", Phone)}
-          {action(mail, "email", "Email", Mail)}
-          <Button variant="ghost" size="sm" onClick={() => copy(message, "Mensaje")}><Copy className="mr-1 h-4 w-4" />Copiar mensaje</Button>
-          {phone && <Button variant="ghost" size="sm" onClick={() => copy(phone, "Teléfono")}><Copy className="mr-1 h-4 w-4" />Teléfono</Button>}
-          {email && <Button variant="ghost" size="sm" onClick={() => copy(email, "Email")}><Copy className="mr-1 h-4 w-4" />Email</Button>}
-        </div>
-        {!phone && !email && <p className="mt-2 text-xs text-muted-foreground">No hay teléfono ni email válidos para este contacto.</p>}
-        {pending && (
-          <div role="status" className="mt-3 flex flex-wrap items-center gap-2 rounded-md border border-primary/40 bg-primary/10 p-3 text-sm text-foreground">
-            <span>¿Has enviado el mensaje por {CHANNEL_LABEL[pending]}?</span>
-            <Button size="sm" disabled={logging} onClick={() => register(pending, pending === "llamada" ? "Llamada realizada" : message)}>
-              <CheckCircle2 className="mr-1 h-4 w-4" />Sí, registrar
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setPending(null)}>No</Button>
-          </div>
-        )}
-      </section>
-
-      <section aria-labelledby="crm-log" className="rounded-lg border border-border bg-background/40 p-4">
-        <h3 id="crm-log" className="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">Registrar comunicación</h3>
-        <div className="mt-3 grid gap-2 sm:grid-cols-[140px_1fr]">
-          <Select value={logChannel} onValueChange={setLogChannel}>
-            <SelectTrigger aria-label="Canal"><SelectValue /></SelectTrigger>
-            <SelectContent>{Object.entries(CHANNEL_LABEL).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}</SelectContent>
-          </Select>
-          <Input aria-label="Resumen" placeholder="Qué habéis hablado" value={logBody} onChange={(e) => setLogBody(e.target.value)} maxLength={1000} />
-        </div>
-        <Button className="mt-2" size="sm" disabled={logging || !logBody.trim()} onClick={() => register(logChannel, logBody)}>
-          {logging ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}Registrar
-        </Button>
-      </section>
-
-      <section aria-labelledby="crm-class" className="rounded-lg border border-border bg-background/40 p-4">
-        <h3 id="crm-class" className="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">Clasificación</h3>
-        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {sel("Etapa comercial", "pipeline_stage", false)}
-          {sel("Prioridad", "priority")}
-          {sel("Tipo de cliente", "client_type")}
-          {sel("Experiencia", "experience_level")}
-          {sel("Prefiere", "contact_preference")}
-          {txt("Participantes", "participants", "number")}
-          {txt("Fechas deseadas", "desired_dates")}
-          {txt("Servicio recomendado", "recommended_service")}
-          <div className="sm:col-span-2">{txt("Objetivo", "goal")}</div>
-          <div className="sm:col-span-2">{txt("Etiquetas (separadas por comas)", "tags")}</div>
-        </div>
-        <Button className="mt-3" size="sm" onClick={save} disabled={saving}>
-          {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}Guardar clasificación
-        </Button>
-      </section>
-    </div>
+    <section aria-labelledby="crm-class" className="border-t border-border pt-5">
+      <h3 id="crm-class" className="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">Clasificación comercial</h3>
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {sel("Etapa comercial", "pipeline_stage", false)}
+        {sel("Prioridad", "priority")}
+        {sel("Tipo de cliente", "client_type")}
+        {sel("Experiencia", "experience_level")}
+        {sel("Prefiere", "contact_preference")}
+        {txt("Participantes", "participants", "number")}
+        {txt("Fechas deseadas", "desired_dates")}
+        {txt("Servicio recomendado", "recommended_service")}
+        <div className="sm:col-span-2">{txt("Objetivo", "goal")}</div>
+        <div className="sm:col-span-2">{txt("Etiquetas (separadas por comas)", "tags")}</div>
+      </div>
+      <Button className="mt-3" size="sm" onClick={save} disabled={saving}>
+        {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}Guardar clasificación
+      </Button>
+    </section>
   );
 
   function sel(label: string, key: keyof typeof OPT, allowEmpty = true) {

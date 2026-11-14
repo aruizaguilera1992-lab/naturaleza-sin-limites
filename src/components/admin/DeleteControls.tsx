@@ -8,7 +8,7 @@ import {
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function DeleteRecordButton({ target, id, onDeleted }: { target: "booking" | "contact"; id: string; onDeleted: () => void }) {
+export function DeleteRecordButton({ target, id, onDeleted, className = "mt-6" }: { target: "booking" | "contact"; id: string; onDeleted: () => void; className?: string }) {
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
   const remove = async () => {
@@ -24,7 +24,7 @@ export function DeleteRecordButton({ target, id, onDeleted }: { target: "booking
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" className="mt-6 min-h-11 gap-2 border-destructive/50 text-destructive hover:bg-destructive/10">
+        <Button variant="outline" className={`${className} min-h-11 gap-2 border-destructive/50 text-destructive hover:bg-destructive/10`}>
           <Trash2 className="h-4 w-4" aria-hidden="true" /> Eliminar definitivamente
         </Button>
       </AlertDialogTrigger>
