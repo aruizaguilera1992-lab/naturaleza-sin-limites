@@ -89,7 +89,7 @@ export default function BlogPost() {
       <div className="min-h-screen bg-background">
         <Navbar />
 
-        <main className="pt-16 sm:pt-20 pb-16 lg:pb-0">
+        <main className="pt-44 sm:pt-48 md:pt-32 lg:pt-40 pb-16 lg:pb-0">
           <BlogBreadcrumbs post={post} />
           <BlogArticleHero post={post} />
           <BlogShareBar post={post} />
