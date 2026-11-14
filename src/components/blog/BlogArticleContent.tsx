@@ -4,9 +4,10 @@ import { safeInlineMarkdown } from '@/lib/editorial';
 
 interface BlogArticleContentProps {
   post: BlogPost;
+  preview?: boolean;
 }
 
-export function BlogArticleContent({ post }: BlogArticleContentProps) {
+export function BlogArticleContent({ post, preview = false }: BlogArticleContentProps) {
   // Simple markdown-like parsing for content
   const renderContent = (content: string) => {
     const lines = content.trim().split('\n');
@@ -170,7 +171,7 @@ export function BlogArticleContent({ post }: BlogArticleContentProps) {
 
   return (
     <motion.article
-      initial={{ opacity: 0 }}
+      initial={preview ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.3 }}
       className="prose-custom max-w-3xl mx-auto px-4 py-8 sm:py-12"

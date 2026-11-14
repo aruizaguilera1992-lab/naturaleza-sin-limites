@@ -75,7 +75,7 @@ export function PieceEditor({ initial, onSaved, onClose }: Props) {
         <TabsContent value="preview" forceMount className="pt-6 data-[state=inactive]:hidden">
           <h2 className="break-words font-heading text-3xl font-bold">{piece.title}</h2><p className="mt-3 text-muted-foreground">{piece.excerpt}</p>
           {piece.featured_image && <img src={piece.featured_image} alt={piece.title} className="mt-6 aspect-video w-full rounded-lg object-cover" />}
-          <BlogArticleContent post={pieceToPost(piece)} />
+          <BlogArticleContent post={pieceToPost(piece)} preview />
         </TabsContent>
         <TabsContent value="seo" forceMount className="space-y-5 pt-4 data-[state=inactive]:hidden">
           {field('meta_title', 'Título SEO')}<p className="text-sm text-muted-foreground">{piece.meta_title.length} / 60 caracteres</p>
