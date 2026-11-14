@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { BlogPost } from '@/data/blogPosts';
+import { safeInlineMarkdown } from '@/lib/editorial';
 
 interface BlogArticleContentProps {
   post: BlogPost;
@@ -68,10 +69,7 @@ export function BlogArticleContent({ post }: BlogArticleContentProps) {
     };
 
     const parseInline = (text: string): string => {
-      return text
-        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`(.*?)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
+      return safeInlineMarkdown(text);
     };
 
     lines.forEach((line, index) => {

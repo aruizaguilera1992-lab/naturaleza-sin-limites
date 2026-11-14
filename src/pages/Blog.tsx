@@ -12,9 +12,11 @@ import { BlogFilters } from '@/components/blog/BlogFilters';
 import { BlogSidebar } from '@/components/blog/BlogSidebar';
 import { YoutubeVideosSection } from '@/components/blog/YoutubeVideosSection';
 import { Button } from '@/components/ui/button';
-import { blogPosts, BlogCategory, searchPosts } from '@/data/blogPosts';
+import { BlogCategory } from '@/data/blogPosts';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
 
 export default function Blog() {
+  const { posts: blogPosts, isError, refetch } = useBlogPosts();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<BlogCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,13 +49,14 @@ export default function Blog() {
     let posts = blogPosts;
 
     if (searchQuery) {
-      posts = searchPosts(searchQuery);
+      const query = searchQuery.toLowerCase();
+      posts = posts.filter(post => `${post.title} ${post.excerpt} ${post.tags.join(' ')}`.toLowerCase().includes(query));
     } else if (selectedCategory !== 'all') {
       posts = posts.filter((post) => post.category === selectedCategory);
     }
 
     return posts;
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, blogPosts]);
 
   return (
     <>
@@ -90,6 +93,7 @@ export default function Blog() {
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
                 {/* Main Content */}
                 <div className="lg:col-span-3">
+                  {isError && <p role="alert" className="mb-4 text-muted-foreground">No se han podido cargar los artículos nuevos. <Button variant="link" onClick={() => refetch()}>Reintentar</Button></p>}
                   {searchQuery && (
                     <div className="mb-6">
                       <p className="text-muted-foreground">
@@ -128,6 +132,7 @@ export default function Blog() {
                 <div className="lg:col-span-1">
                   <div className="sticky top-24">
                     <BlogSidebar
+                      posts={blogPosts}
                       onSearch={handleSearch}
                       onCategoryClick={handleCategoryChange}
                     />
