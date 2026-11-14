@@ -1,5 +1,5 @@
 /** Pure helpers for the admin commercial agenda (Europe/Madrid calendar days). */
-export type AgendaBucket = "vencido" | "hoy" | "proximo7" | "sin_seguimiento";
+export type AgendaBucket = "vencido" | "hoy" | "proximo7" | "mas_adelante" | "sin_seguimiento";
 export type AgendaFilter = "todos" | AgendaBucket;
 
 export type AgendaContact = {
@@ -26,7 +26,7 @@ export function addDays(key: string, n: number): string {
 
 const isOpen = (c: AgendaContact) => c.pipeline_stage !== "ganado" && c.pipeline_stage !== "perdido";
 
-/** Bucket for a contact, or null when it does not belong in the agenda (beyond 7 days, or closed without follow-up). */
+/** Bucket for a contact, or null when it does not belong in the agenda (closed without follow-up). */
 export function agendaBucket(c: AgendaContact, now = new Date()): AgendaBucket | null {
   const at = c.next_action_at ? new Date(c.next_action_at) : null;
   const valid = at && !Number.isNaN(at.getTime());
@@ -35,16 +35,16 @@ export function agendaBucket(c: AgendaContact, now = new Date()): AgendaBucket |
   if (a < today) return "vencido";
   if (a === today) return "hoy";
   if (a <= addDays(today, 7)) return "proximo7";
-  return null;
+  return "mas_adelante";
 }
 
 export function agendaCounts(list: AgendaContact[], now = new Date()) {
-  const counts: Record<AgendaBucket, number> = { vencido: 0, hoy: 0, proximo7: 0, sin_seguimiento: 0 };
+  const counts: Record<AgendaBucket, number> = { vencido: 0, hoy: 0, proximo7: 0, mas_adelante: 0, sin_seguimiento: 0 };
   for (const c of list) { const b = agendaBucket(c, now); if (b) counts[b]++; }
   return counts;
 }
 
-const BUCKET_ORDER: Record<AgendaBucket, number> = { vencido: 0, hoy: 1, proximo7: 2, sin_seguimiento: 3 };
+const BUCKET_ORDER: Record<AgendaBucket, number> = { vencido: 0, hoy: 1, proximo7: 2, mas_adelante: 3, sin_seguimiento: 4 };
 const PRIORITY_ORDER: Record<string, number> = { alta: 0, media: 1, baja: 2 };
 const prio = (p?: string | null) => (p && p in PRIORITY_ORDER ? PRIORITY_ORDER[p] : 3);
 
