@@ -207,5 +207,5 @@
 - [x] Regla de coincidencias de reservas (crmMatching) con pruebas
 - [x] Sprint 1A: ficha de contacto con cabecera y pestañas
 - [x] Sprint 2: suscripción real con doble confirmación + 10 %
-- [ ] Sprint 3 (en curso): editor con vista previa, publicaciones protegidas y blog combinado sin alterar artículos existentes
+- [x] Sprint 3: editor con vista previa y SEO, guardado/publicación/retirada atómicos solo admin, blog combinado conservando artículos y URLs. 95 pruebas OK; borrador guardado y reabierto con sesión real, no visible públicamente. No se publicó ningún artículo de prueba ni la web; sitemap de nuevos artículos pendiente del paso acordado posterior.
 - [ ] Sprint 4: campañas por disciplina, envío inmediato y programado
