@@ -202,3 +202,10 @@
 ## Etiquetas de sección y logros (09/11/2026)
 - [x] Quitar la etiqueta tipo pastilla de todos los títulos de sección (blog, cookies, privacidad, packs; componentes de Vértigo Sapiens no usados)
 - [x] Añadir al palmarés: 2º de España y Andalucía · Open de Travesía de Velocidad en Cueva · Sima de Villaluenga del Rosario · 2026
+
+## Ficha de cliente + editorial/newsletter (plan aprobado 14-nov-2026)
+- [x] Regla de coincidencias de reservas (crmMatching) con pruebas
+- [ ] Sprint 1A: ficha de contacto con cabecera y pestañas
+- [ ] Sprint 2: suscripción real con doble confirmación + 10 %
+- [ ] Sprint 3: editor y blog desde el panel
+- [ ] Sprint 4: campañas por disciplina, envío inmediato y programado
