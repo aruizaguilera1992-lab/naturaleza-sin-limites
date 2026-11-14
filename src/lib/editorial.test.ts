@@ -25,4 +25,22 @@ describe('Editorial publication rules', () => {
     expect(value).toContain('&lt;img');
     expect(value).toContain('<strong');
   });
+  it('renders internal links as same-tab anchors', () => {
+    const value = safeInlineMarkdown('Ver [la guía de barrancos](/blog/guia-barrancos) antes de salir.');
+    expect(value).toContain('<a href="/blog/guia-barrancos"');
+    expect(value).toContain('>la guía de barrancos</a>');
+    expect(value).not.toContain('target="_blank"');
+  });
+  it('renders external https links with safe attributes', () => {
+    const value = safeInlineMarkdown('Más en [Infobarrancos](https://infobarrancos.com/fichas).');
+    expect(value).toContain('<a href="https://infobarrancos.com/fichas" target="_blank" rel="noopener noreferrer"');
+    expect(value).toContain('>Infobarrancos</a>');
+  });
+  it('never turns disallowed protocols into links', () => {
+    for (const url of ['javascript:alert(1)', 'data:text/html,x', 'http://inseguro.es', '//protocolo-relativo.es']) {
+      const value = safeInlineMarkdown(`[pulsa aquí](${url})`);
+      expect(value).not.toContain('<a href');
+      expect(value).toContain('[pulsa aquí]');
+    }
+  });
 });

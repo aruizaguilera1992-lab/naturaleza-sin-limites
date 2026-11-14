@@ -54,10 +54,26 @@ export function mergeBlogPosts(local: BlogPost[], remote: BlogPost[]): BlogPost[
 }
 
 // Escape HTML before adding the limited formatting supported by the existing blog.
-export function safeInlineMarkdown(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+// Links: internal paths must start with / (never //), external only https:// with
+// target="_blank" rel="noopener noreferrer". Any other protocol stays escaped text.
+const CODE_CLASS = 'bg-muted px-1.5 py-0.5 rounded text-sm font-mono';
+function inlineFormat(escaped: string): string {
+  return escaped
     .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/`(.*?)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
+    .replace(/`(.*?)`/g, `<code class="${CODE_CLASS}">$1</code>`);
+}
+export function safeInlineMarkdown(text: string): string {
+  const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  return escaped
+    .replace(/\[([^\]]+)\]\((\/[^\s)]*|https:\/\/[^\s)]+)\)/g, (match, label: string, url: string) => {
+      if (url.startsWith('//')) return match;
+      const external = url.startsWith('https://');
+      const attrs = external ? ' target="_blank" rel="noopener noreferrer"' : '';
+      return `<a href="${url}"${attrs} class="text-primary underline underline-offset-2 hover:opacity-80">${inlineFormat(label)}</a>`;
+    })
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, `<code class="${CODE_CLASS}">$1</code>`);
 }
