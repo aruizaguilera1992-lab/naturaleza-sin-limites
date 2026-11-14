@@ -206,6 +206,6 @@
 ## Ficha de cliente + editorial/newsletter (plan aprobado 14-nov-2026)
 - [x] Regla de coincidencias de reservas (crmMatching) con pruebas
 - [x] Sprint 1A: ficha de contacto con cabecera y pestañas
-- [ ] Sprint 2: suscripción real con doble confirmación + 10 %
+- [x] Sprint 2: suscripción real con doble confirmación + 10 %
 - [ ] Sprint 3: editor y blog desde el panel
 - [ ] Sprint 4: campañas por disciplina, envío inmediato y programado
