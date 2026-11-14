@@ -6,7 +6,7 @@ import { renderNewsletter, newsletterSegments } from '../_shared/newsletterConte
 import { sendTrackedNotification } from '../_shared/email.ts';
 import { processCampaigns } from './worker.ts';
 const schema = z.object({
-  action: z.enum(['save', 'start', 'cancel', 'test', 'tick']), id: z.string().uuid().optional(), expected: z.string().datetime().optional(),
+  action: z.enum(['save', 'start', 'cancel', 'test', 'tick']), id: z.string().uuid().optional(), expected: z.string().datetime({ offset: true }).optional(),
   scheduled_at: z.string().datetime().optional(), test_id: z.string().uuid().optional(),
   campaign: z.object({ piece_id: z.string().uuid().nullable(), subject: z.string().max(200), preheader: z.string().max(300), title: z.string().max(500), content: z.string().max(100000), segments: z.array(z.enum(newsletterSegments)).max(3) }).optional(),
 }).strict();
