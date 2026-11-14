@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+// Only the mocked email helper is imported into the browser test type-check.
+declare global { const Deno: { env: { get(name: string): string | undefined } }; }
 vi.mock('../../supabase/functions/_shared/email.ts', () => ({ enqueueNotification: vi.fn().mockResolvedValue('note'), sendEmail: vi.fn().mockResolvedValue({status:'enviado',providerId:'provider'}) }));
 import { processCampaigns } from '../../supabase/functions/newsletter-campaigns/worker';
 import { enqueueNotification, sendEmail } from '../../supabase/functions/_shared/email';
