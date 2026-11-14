@@ -49,7 +49,7 @@ export function ContactFollowUp({ contactId, nextAction, nextActionAt, onSaved, 
   };
 
   return (
-    <section aria-labelledby="crm-follow" className="mt-6 rounded-lg border border-border bg-background/40 p-4">
+    <section aria-labelledby="crm-follow" className="">
       <h3 id="crm-follow" className="flex items-center gap-2 font-heading text-sm font-semibold uppercase tracking-wide text-foreground">
         <CalendarClock className="h-4 w-4" />Próxima acción
         {bucket === "vencido" && <span className="rounded-full bg-destructive/20 px-2 py-0.5 text-xs normal-case text-destructive">Vencida</span>}
@@ -77,7 +77,6 @@ export function ContactFollowUp({ contactId, nextAction, nextActionAt, onSaved, 
           </Button>
         )}
       </div>
-      <ContactTimeline contactId={contactId} refreshKey={refreshKey} />
     </section>
   );
 }
@@ -96,8 +95,8 @@ export function ContactTimeline({ contactId, refreshKey }: { contactId: string; 
   useEffect(() => { load(); }, [load, refreshKey]);
 
   return (
-    <div className="mt-5">
-      <h4 className="text-xs uppercase tracking-wide text-muted-foreground">Historial</h4>
+    <div className="border-t border-border pt-5">
+      <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">Historial</h3>
       {error && <p role="alert" className="mt-2 text-sm text-destructive">No se pudo cargar el historial: {error}</p>}
       {!events && !error && <Loader2 className="mt-2 h-4 w-4 animate-spin text-muted-foreground" aria-label="Cargando historial" />}
       {events && events.length === 0 && <p className="mt-2 text-sm text-muted-foreground">Sin actividad registrada.</p>}
