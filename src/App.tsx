@@ -35,6 +35,7 @@ import ReservarActividad from "./pages/ReservarActividad";
 import MiSuscripcion from "./pages/MiSuscripcion";
 import ActivityProfilePage from "./pages/ActivityProfilePage";
 import NotFound from "./pages/NotFound";
+import NewsletterAccion from "./pages/NewsletterAccion";
 
 
 const queryClient = new QueryClient();
@@ -65,6 +66,7 @@ const App = () => (
             <AuthRedirectHandler>
             <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/newsletter" element={<NewsletterAccion />} />
             <Route path="/actividades" element={<Actividades />} />
             <Route path="/calendario" element={<Calendario />} />
             <Route path="/actividades/:category/:slug" element={<ActivityProfilePage />} />

@@ -3,16 +3,26 @@ import { Mail, Mountain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+
+const SEGMENTS = [['barranquismo', 'Barranquismo'], ['ferratas', 'Vías ferratas'], ['espeleologia', 'Espeleología']] as const;
 
 export function Newsletter() {
   const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [segments, setSegments] = useState<string[]>([]);
+  const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle newsletter signup
-    console.log('Newsletter signup:', email);
-    setEmail('');
+    if (!consent) return;
+    setState('sending');
+    const { error } = await supabase.functions.invoke('newsletter', { body: { action: 'subscribe', email, consent: true, segments } });
+    setState(error ? 'error' : 'done');
+    if (!error) setEmail('');
   };
+  const toggle = (v: string) => setSegments((s) => (s.includes(v) ? s.filter((x) => x !== v) : [...s, v]));
 
   return (
     <section id="newsletter" className="py-24 relative overflow-hidden">
@@ -41,26 +51,46 @@ export function Newsletter() {
             además de consejos exclusivos y ofertas especiales.
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <div className="relative flex-1">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                type="email"
-                placeholder="Tu email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 h-12 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary"
-                required
-              />
+          {state === 'done' ? (
+            <p role="status" className="mx-auto max-w-md rounded-xl border border-primary/40 bg-primary/10 p-4 text-foreground">
+              Revisa tu correo y pulsa «Confirmar suscripción». Al confirmar recibirás tu código del 10 %.
+            </p>
+          ) : (
+          <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-4 text-left">
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="relative flex-1">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="email"
+                  placeholder="Tu email"
+                  aria-label="Tu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10 h-12 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary"
+                  required
+                  maxLength={254}
+                />
+              </div>
+              <Button type="submit" variant="hero" size="lg" disabled={!consent || state === 'sending'}>
+                {state === 'sending' ? 'Enviando…' : 'Suscríbete'}
+              </Button>
             </div>
-            <Button type="submit" variant="hero" size="lg">
-              Suscríbete
-            </Button>
+            <fieldset className="flex flex-wrap gap-2">
+              <legend className="mb-2 text-sm text-muted-foreground">¿Qué te interesa? (opcional)</legend>
+              {SEGMENTS.map(([v, l]) => (
+                <button key={v} type="button" aria-pressed={segments.includes(v)} onClick={() => toggle(v)}
+                  className={`rounded-full border px-3 py-1 text-sm transition-all duration-300 active:scale-95 ${segments.includes(v) ? 'border-primary bg-primary/20 text-foreground' : 'border-border text-muted-foreground hover:border-primary/60'}`}>
+                  {l}
+                </button>
+              ))}
+            </fieldset>
+            <label className="flex items-start gap-2 text-sm text-foreground">
+              <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-primary" required />
+              <span>Acepto recibir la newsletter de Naturaleza Sin Límites con novedades, salidas y ofertas. Puedo darme de baja en cualquier momento. <Link to="/privacidad" className="text-primary underline">Política de privacidad</Link></span>
+            </label>
+            {state === 'error' && <p role="alert" className="text-sm text-destructive">No se ha podido enviar. Inténtalo de nuevo en unos minutos.</p>}
           </form>
-
-          <p className="text-xs text-muted-foreground mt-4">
-            Al suscribirte aceptas nuestra política de privacidad. Puedes darte de baja en cualquier momento.
-          </p>
+          )}
         </motion.div>
       </div>
     </section>
