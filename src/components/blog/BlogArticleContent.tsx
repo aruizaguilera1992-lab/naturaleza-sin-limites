@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { BlogPost } from '@/data/blogPosts';
-import { safeInlineMarkdown } from '@/lib/editorial';
+import { safeInlineMarkdown, parseSafeImageMarkdown } from '@/lib/editorial';
 
 interface BlogArticleContentProps {
   post: BlogPost;
@@ -89,6 +89,29 @@ export function BlogArticleContent({ post, preview = false }: BlogArticleContent
       // Empty line
       if (!trimmedLine) {
         flushList();
+        return;
+      }
+
+      // Standalone image line: ![alt](/images/ruta.ext)
+      const image = parseSafeImageMarkdown(trimmedLine);
+      if (image) {
+        flushList();
+        elements.push(
+          <figure key={index} className="my-8">
+            <img
+              src={image.src}
+              alt={image.alt}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-auto object-cover rounded-lg"
+            />
+            {image.alt && (
+              <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">
+                {image.alt}
+              </figcaption>
+            )}
+          </figure>
+        );
         return;
       }
 

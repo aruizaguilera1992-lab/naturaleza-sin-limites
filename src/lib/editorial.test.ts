@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { blogPosts } from '@/data/blogPosts';
-import { emptyPiece, validatePiece, mergeBlogPosts, safeInlineMarkdown } from './editorial';
+import { emptyPiece, validatePiece, mergeBlogPosts, safeInlineMarkdown, parseSafeImageMarkdown } from './editorial';
 
 describe('Editorial publication rules', () => {
   it('rejects a reserved existing article address', () => {
@@ -42,5 +42,27 @@ describe('Editorial publication rules', () => {
       expect(value).not.toContain('<a href');
       expect(value).toContain('[pulsa aquí]');
     }
+  });
+  it('parses a valid local image line', () => {
+    expect(parseSafeImageMarkdown('![Descenso del río Verde](/images/barrancos/rio-verde.webp)')).toEqual({
+      src: '/images/barrancos/rio-verde.webp',
+      alt: 'Descenso del río Verde',
+    });
+    expect(parseSafeImageMarkdown('![Foto](/images/foto.JPEG)')).toEqual({ src: '/images/foto.JPEG', alt: 'Foto' });
+  });
+  it('rejects path traversal in image lines', () => {
+    expect(parseSafeImageMarkdown('![x](/images/../secret.jpg)')).toBeNull();
+    expect(parseSafeImageMarkdown('![x](/images//doble.jpg)')).toBeNull();
+  });
+  it('rejects external protocols and URLs in image lines', () => {
+    expect(parseSafeImageMarkdown('![x](javascript:alert(1))')).toBeNull();
+    expect(parseSafeImageMarkdown('![x](https://externo.es/foto.jpg)')).toBeNull();
+    expect(parseSafeImageMarkdown('![x](//externo.es/foto.jpg)')).toBeNull();
+  });
+  it('rejects disallowed extensions and attributes in image lines', () => {
+    expect(parseSafeImageMarkdown('![x](/images/foto.gif)')).toBeNull();
+    expect(parseSafeImageMarkdown('![x](/images/foto.svg)')).toBeNull();
+    expect(parseSafeImageMarkdown('![x](/images/foto.jpg "título")')).toBeNull();
+    expect(parseSafeImageMarkdown('texto antes ![x](/images/foto.jpg)')).toBeNull();
   });
 });
