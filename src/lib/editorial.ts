@@ -77,3 +77,18 @@ export function safeInlineMarkdown(text: string): string {
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/`(.*?)`/g, `<code class="${CODE_CLASS}">$1</code>`);
 }
+
+// Full-line image syntax: ![alt](/images/ruta.ext). Only local /images/ paths with
+// jpg/jpeg/png/webp/avif; rejects //, .., external protocols, quotes and attributes.
+const IMAGE_LINE_RE = /^!\[([^\]"']*)\]\((\/images\/[^\s"')]+)\)$/;
+const IMAGE_EXT_RE = /\.(jpe?g|png|webp|avif)$/i;
+const IMAGE_PATH_RE = /^[A-Za-z0-9\-_./]+$/;
+export function parseSafeImageMarkdown(line: string): { src: string; alt: string } | null {
+  const match = IMAGE_LINE_RE.exec(line.trim());
+  if (!match) return null;
+  const [, alt, src] = match;
+  if (!IMAGE_EXT_RE.test(src)) return null;
+  if (!IMAGE_PATH_RE.test(src)) return null;
+  if (src.includes('..') || src.includes('//')) return null;
+  return { src, alt: alt.trim() };
+}
