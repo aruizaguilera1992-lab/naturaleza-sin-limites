@@ -615,6 +615,145 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_campaigns: {
+        Row: {
+          audience_at: string | null
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lease_expires_at: string | null
+          lease_id: string | null
+          piece_id: string | null
+          preheader: string
+          scheduled_at: string | null
+          segments: string[]
+          status: string
+          subject: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audience_at?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lease_expires_at?: string | null
+          lease_id?: string | null
+          piece_id?: string | null
+          preheader?: string
+          scheduled_at?: string | null
+          segments?: string[]
+          status?: string
+          subject?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          audience_at?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lease_expires_at?: string | null
+          lease_id?: string | null
+          piece_id?: string | null
+          preheader?: string
+          scheduled_at?: string | null
+          segments?: string[]
+          status?: string
+          subject?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_campaigns_piece_id_fkey"
+            columns: ["piece_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsletter_campaigns_piece_id_fkey"
+            columns: ["piece_id"]
+            isOneToOne: false
+            referencedRelation: "editorial_pieces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      newsletter_deliveries: {
+        Row: {
+          attempts: number
+          campaign_id: string
+          confirmed_at: string
+          email: string
+          id: string
+          last_error: string | null
+          next_attempt_at: string
+          notification_log_id: string | null
+          provider_id: string | null
+          sent_at: string | null
+          status: string
+          subscriber_id: string
+          unsubscribe_token: string
+        }
+        Insert: {
+          attempts?: number
+          campaign_id: string
+          confirmed_at: string
+          email: string
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          notification_log_id?: string | null
+          provider_id?: string | null
+          sent_at?: string | null
+          status?: string
+          subscriber_id: string
+          unsubscribe_token: string
+        }
+        Update: {
+          attempts?: number
+          campaign_id?: string
+          confirmed_at?: string
+          email?: string
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          notification_log_id?: string | null
+          provider_id?: string | null
+          sent_at?: string | null
+          status?: string
+          subscriber_id?: string
+          unsubscribe_token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_deliveries_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsletter_deliveries_notification_log_id_fkey"
+            columns: ["notification_log_id"]
+            isOneToOne: false
+            referencedRelation: "notification_log"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsletter_deliveries_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_subscribers: {
         Row: {
           confirm_token: string
@@ -1038,6 +1177,7 @@ export type Database = {
         Args: { _expired_session_id: string; _token: string }
         Returns: Json
       }
+      claim_newsletter_campaign: { Args: { _id: string }; Returns: Json }
       claim_notification: {
         Args: { _id: string; _lease_seconds?: number }
         Returns: Json
@@ -1062,6 +1202,10 @@ export type Database = {
         Args: { _id: string; _payload: Json }
         Returns: Json
       }
+      finish_newsletter_campaign: {
+        Args: { _id: string; _lease: string }
+        Returns: undefined
+      }
       finish_notification: {
         Args: {
           _error?: string
@@ -1079,6 +1223,16 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      manage_newsletter_campaign: {
+        Args: {
+          _action: string
+          _actor: string
+          _expected?: string
+          _id: string
+          _payload: Json
+        }
+        Returns: string
       }
       prepare_deposit_checkout: {
         Args: {

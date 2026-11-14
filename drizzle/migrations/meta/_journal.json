@@ -141,6 +141,13 @@
       "when": 1794651724813,
       "tag": "0019_editorial_blog_publications",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794655357558,
+      "tag": "0020_newsletter_campaigns",
+      "breakpoints": true
     }
   ]
 }
