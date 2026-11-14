@@ -273,6 +273,47 @@ export type Database = {
         }
         Relationships: []
       }
+      consent_records: {
+        Row: {
+          action: string
+          consent_text: string | null
+          consent_version: string | null
+          id: string
+          ip: string | null
+          occurred_at: string
+          subscriber_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          consent_text?: string | null
+          consent_version?: string | null
+          id?: string
+          ip?: string | null
+          occurred_at?: string
+          subscriber_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          consent_text?: string | null
+          consent_version?: string | null
+          id?: string
+          ip?: string | null
+          occurred_at?: string
+          subscriber_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_records_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_events: {
         Row: {
           author_id: string | null
@@ -483,6 +524,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      newsletter_subscribers: {
+        Row: {
+          confirm_token: string
+          confirmed_at: string | null
+          consent_version: string | null
+          created_at: string
+          discount_code: string | null
+          email: string
+          email_normalized: string
+          id: string
+          segments: string[]
+          source: string
+          status: string
+          unsubscribe_token: string
+          unsubscribed_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          confirm_token?: string
+          confirmed_at?: string | null
+          consent_version?: string | null
+          created_at?: string
+          discount_code?: string | null
+          email: string
+          email_normalized: string
+          id?: string
+          segments?: string[]
+          source?: string
+          status?: string
+          unsubscribe_token?: string
+          unsubscribed_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          confirm_token?: string
+          confirmed_at?: string | null
+          consent_version?: string | null
+          created_at?: string
+          discount_code?: string | null
+          email?: string
+          email_normalized?: string
+          id?: string
+          segments?: string[]
+          source?: string
+          status?: string
+          unsubscribe_token?: string
+          unsubscribed_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       notification_log: {
         Row: {

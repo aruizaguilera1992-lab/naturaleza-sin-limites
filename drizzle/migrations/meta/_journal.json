@@ -127,6 +127,13 @@
       "when": 1793187568137,
       "tag": "0017_crm_sprint3_manual_contacts",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1794650783013,
+      "tag": "0018_newsletter_subscribers_consent",
+      "breakpoints": true
     }
   ]
 }
