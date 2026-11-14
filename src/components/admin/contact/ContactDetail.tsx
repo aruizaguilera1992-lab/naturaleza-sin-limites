@@ -22,7 +22,11 @@ type Props = {
   onSaved: () => void;
   /** Contenedor del título (p. ej. SheetTitle) para accesibilidad. */
   renderTitle: (name: string) => ReactNode;
+  /** Pestaña inicial al montar (por defecto «ficha»). */
+  initialTab?: ContactTab;
 };
+
+export type ContactTab = "ficha" | "seguimiento" | "reservas" | "notas";
 
 const TABS = [["ficha", "Ficha"], ["seguimiento", "Seguimiento"], ["reservas", "Reservas y pagos"], ["notas", "Notas"]] as const;
 
@@ -76,7 +80,7 @@ export function ContactDetail(p: Props) {
         </div>
       </header>
 
-      <Tabs defaultValue="ficha" className="mt-4">
+      <Tabs defaultValue={p.initialTab ?? "ficha"} className="mt-4">
         <TabsList className="flex h-auto w-full justify-start overflow-x-auto whitespace-nowrap">
           {TABS.map(([v, l]) => <TabsTrigger key={v} value={v} className="shrink-0">{l}</TabsTrigger>)}
         </TabsList>

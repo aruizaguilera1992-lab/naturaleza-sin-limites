@@ -53,6 +53,7 @@ import {
   AlertTriangle,
   Repeat,
   FileText,
+  CalendarClock,
 } from "lucide-react";
 import {
   ACTIVITY_TZ,
@@ -69,8 +70,11 @@ import { BusinessSettingsPanel } from "@/components/admin/BusinessSettingsPanel"
 import { PlanOrdersPanel } from "@/components/admin/PlanOrdersPanel";
 import { AccessLayout } from "@/components/auth/AccessLayout";
 import { DeleteRecordButton } from "@/components/admin/DeleteControls";
+import { CommercialAgenda } from "@/components/admin/CommercialAgenda";
+import { agendaCounts, type AgendaContact } from "@/lib/commercialAgenda";
+import type { ContactTab } from "@/components/admin/contact/ContactDetail";
 
-type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans" | "editorial";
+type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans" | "editorial" | "agenda";
 
 
 type NotesFieldProps = {
@@ -562,6 +566,8 @@ export default function Admin() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [contactTab, setContactTab] = useState<ContactTab>("ficha");
+  const openContact = (id: string, t: ContactTab = "ficha") => { setContactTab(t); setSelectedId(id); };
   const [actionDone, setActionDone] = useState<{ title: string; description: string } | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState(false);
@@ -772,10 +778,13 @@ export default function Admin() {
     .reduce((sum, p) => sum + p.amount_cents, 0);
   const pendingLinks = payments.filter((p) => p.status === "pendiente").length;
 
-  const NAV: { id: AdminTab; label: string; subtitle: string; icon: typeof Home; count?: number }[] = [
+  const agendaC = agendaCounts(contacts as unknown as AgendaContact[]);
+  const agendaUrgent = agendaC.vencido + agendaC.hoy;
+  const NAV: { id: AdminTab; label: string; subtitle: string; icon: typeof Home; count?: number; heading?: string }[] = [
     { id: "overview", label: "Resumen", subtitle: "Lo pendiente de hoy, de un vistazo.", icon: Home },
     { id: "bookings", label: "Reservas", subtitle: "Solicitudes y reservas de actividades.", icon: CalendarCheck, count: newBookings },
     { id: "contacts", label: "Contactos", subtitle: "Mensajes recibidos desde la web.", icon: Inbox, count: newContacts },
+    { id: "agenda", label: "Agenda", heading: "Agenda comercial", subtitle: "Qué requiere atención y cuál es el siguiente paso.", icon: CalendarClock, count: agendaUrgent || undefined },
     { id: "events", label: "Calendario", subtitle: "Salidas programadas y plazas.", icon: CalendarDays },
     { id: "plans", label: "Planes", subtitle: "Suscripciones de Vértigo Sapiens.", icon: Repeat },
     { id: "editorial", label: "Editorial", subtitle: "Artículos del blog.", icon: FileText },
@@ -789,6 +798,7 @@ export default function Admin() {
     setSearch("");
     setStatusFilter(filter);
     setSelectedId(null);
+    setContactTab("ficha");
     setMenuOpen(false);
   };
 
@@ -1189,7 +1199,7 @@ export default function Admin() {
       <main className="min-w-0 flex-1 px-4 py-6 md:px-10 md:py-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{current.label}</h1>
+            <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">{current.heading ?? current.label}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{current.subtitle}</p>
           </div>
           <Button variant="outline" onClick={refresh} disabled={refreshing} className="hidden min-h-11 gap-2 lg:inline-flex">
@@ -1326,19 +1336,19 @@ export default function Admin() {
             </>
           )}
 
+          {tab === "agenda" && (
+            <CommercialAgenda
+              contacts={contacts as unknown as AgendaContact[]}
+              stageLabels={STAGE_LABEL}
+              onOpen={(id) => { setMenuOpen(false); setTab("contacts"); openContact(id, "seguimiento"); }}
+            />
+          )}
+
           {tab === "contacts" && (
             <>
-              {(() => {
-                const overdue = contacts.filter((c) => followUpBucket(c.next_action_at) === "vencido").length;
-                const today = contacts.filter((c) => followUpBucket(c.next_action_at) === "hoy").length;
-                return (
-                  <div className="mb-4 flex flex-wrap items-center gap-3">
-                    <div className="rounded-lg border border-border bg-card px-4 py-2"><p className="text-xs uppercase tracking-wide text-muted-foreground">Seguimientos vencidos</p><p className={`font-heading text-xl ${overdue ? "text-destructive" : "text-foreground"}`}>{overdue}</p></div>
-                    <div className="rounded-lg border border-border bg-card px-4 py-2"><p className="text-xs uppercase tracking-wide text-muted-foreground">Para hoy</p><p className={`font-heading text-xl ${today ? "text-primary" : "text-foreground"}`}>{today}</p></div>
-                    <div className="ml-auto"><NewContactDialog existing={contacts} onCreated={async (id) => { await loadData(); setSelectedId(id); }} onOpenExisting={(id) => setSelectedId(id)} /></div>
-                  </div>
-                );
-              })()}
+              <div className="mb-4 flex justify-end">
+                <NewContactDialog existing={contacts} onCreated={async (id) => { await loadData(); openContact(id); }} onOpenExisting={(id) => openContact(id)} />
+              </div>
               {toolbar(contacts.length, filteredContacts.length, "Nombre, email o interés")}
               {filteredContacts.length === 0 ? (
                 emptyState(
@@ -1351,7 +1361,7 @@ export default function Admin() {
                     <li key={c.id}>
                       <button
                         type="button"
-                        onClick={() => setSelectedId(c.id)}
+                        onClick={() => openContact(c.id)}
                         className="flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 focus-visible:outline-none focus-visible:bg-muted"
                       >
                         <span className="min-w-0 flex-1">
@@ -1408,13 +1418,14 @@ export default function Admin() {
         </div>
       </main>
 
-      <Sheet open={!!selectedContact && tab === "contacts"} onOpenChange={(o) => !o && setSelectedId(null)}>
+      <Sheet open={!!selectedContact && tab === "contacts"} onOpenChange={(o) => { if (!o) { setSelectedId(null); setContactTab("ficha"); } }}>
         <SheetContent side="right" className="w-full overflow-y-auto border-0 bg-card p-6 sm:max-w-none">
           {tab === "contacts" && selectedContact && (() => {
             const c = selectedContact;
             return (
               <ContactDetail
                 key={c.id}
+                initialTab={contactTab}
                 contact={c as unknown as CrmContact & { created_at: string }}
                 stageLabel={STAGE_LABEL[(c as unknown as CrmContact).pipeline_stage ?? "nuevo"] ?? "Nuevo"}
                 receivedLabel={`recibido el ${formatDate(c.created_at)}`}
