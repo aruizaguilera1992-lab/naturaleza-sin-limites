@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { BlogPost } from '@/data/blogPosts';
-import { safeInlineMarkdown } from '@/lib/editorial';
+import { safeInlineMarkdown, parseSafeImageMarkdown } from '@/lib/editorial';
 
 interface BlogArticleContentProps {
   post: BlogPost;
