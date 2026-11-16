@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Lock, Users } from 'lucide-react';
 import { EventsPanel } from '@/components/admin/EventsPanel';
 import { ActivitySheetsPanel, type SheetContact } from '@/components/admin/sheets/ActivitySheetsPanel';
-import type { CatalogItem } from '@/lib/adminCatalog';
+import { useAdminCatalog } from '@/lib/adminCatalog';
 
 type Mode = 'abierto' | 'privado';
 const MODES: { id: Mode; label: string; hint: string; icon: typeof Users }[] = [
@@ -11,7 +11,8 @@ const MODES: { id: Mode; label: string; hint: string; icon: typeof Users }[] = [
 ];
 
 /** Salidas unificadas: grupo abierto (calendario) y grupo privado (ficha con enlace). Ambos se mantienen montados. */
-export function SalidasPanel({ contacts, catalog }: { contacts: SheetContact[]; catalog: CatalogItem[] }) {
+export function SalidasPanel({ contacts }: { contacts: SheetContact[] }) {
+  const { items: catalog } = useAdminCatalog();
   const [mode, setMode] = useState<Mode>('abierto');
   return (
     <div className="space-y-5">

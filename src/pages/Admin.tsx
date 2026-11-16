@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { SalidasPanel } from "@/components/admin/SalidasPanel";
 import { CatalogPanel } from "@/components/admin/catalog/CatalogPanel";
-import { useAdminCatalog } from "@/lib/adminCatalog";
 import { ClipboardList } from "lucide-react";
 import { depositConfirmationOption, paymentLinkBody, type DepositConfirmationOption } from "@/lib/depositConfirmation";
 import { Helmet } from "react-helmet-async";
@@ -781,7 +780,6 @@ export default function Admin() {
     .reduce((sum, p) => sum + p.amount_cents, 0);
   const pendingLinks = payments.filter((p) => p.status === "pendiente").length;
 
-  const catalog = useAdminCatalog();
   const agendaC = agendaCounts(contacts as unknown as AgendaContact[]);
   const agendaUrgent = agendaC.vencido + agendaC.hoy;
   const NAV: { id: AdminTab; label: string; subtitle: string; icon: typeof Home; count?: number; heading?: string }[] = [
@@ -1290,8 +1288,8 @@ export default function Admin() {
             </>
           )}
           {tab === "settings" && <BusinessSettingsPanel />}
-          {tab === "events" && <SalidasPanel catalog={catalog.items} contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />}
-          {tab === "catalog" && <CatalogPanel items={catalog.items} reload={catalog.reload} />}
+          {tab === "events" && <SalidasPanel contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />}
+          {tab === "catalog" && <CatalogPanel />}
           {tab === "plans" && <PlanOrdersPanel />}
           {editorialOpened && <div className={tab === "editorial" ? "" : "hidden"}><EditorialPanel /></div>}
 

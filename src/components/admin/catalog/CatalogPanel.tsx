@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { CATALOG_BUCKET, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
+import { CATALOG_BUCKET, useAdminCatalog, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
 
 const DISC: Record<CatalogDiscipline, string> = { barranquismo: 'Barranquismo', ferratas: 'Vías ferratas', espeleologia: 'Espeleología' };
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
@@ -126,7 +126,8 @@ function ItemEditor({ item, onDone }: { item: CatalogItem; onDone: () => Promise
 }
 
 /** Catálogo original completo, editable al detalle (incluidas fotos propias). La web pública sigue mostrando niveles. */
-export function CatalogPanel({ items, reload }: { items: CatalogItem[]; reload: () => Promise<void> }) {
+export function CatalogPanel() {
+  const { items, reload } = useAdminCatalog();
   const [disc, setDisc] = useState<CatalogDiscipline | 'todas'>('todas');
   const [q, setQ] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
