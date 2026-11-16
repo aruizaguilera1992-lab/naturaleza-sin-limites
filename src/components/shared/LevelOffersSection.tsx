@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Check, MessageCircle, Mountain, Users } from 'lucide-react';
+import { Check, MessageCircle, Mountain } from 'lucide-react';
+import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { levelOfferHref, levelOfferPhotos, levelOffersFor, levelOfferWhatsapp, type LevelDiscipline } from '@/data/levelOffers';
@@ -35,7 +36,7 @@ export function LevelOffersSection({ discipline, title, intro }: { discipline: L
                   {o.caracteristicas.map((c) => <li key={c} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{c}</li>)}
                 </ul>
                 <Link to={levelOfferHref(o)} className="mt-4 text-sm font-semibold text-primary underline-offset-4 hover:underline">¿En qué consiste este nivel?</Link>
-                <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground"><Users className="h-4 w-4 text-primary" />Edad mínima {o.edadMinima} años · condición física {o.condicionFisica.toLowerCase()}</p>
+                <LevelVisualStrip className="mt-4" level={o.orden} minAge={o.edadMinima} fitness={o.condicionFisica} experience={o.experienciaPrevia} />
                 <div className="mt-auto pt-6">
                   {o.precioDesde ? (
                     <p className="text-sm text-muted-foreground">Desde <span className="text-2xl font-extrabold text-primary">{o.precioDesde} €</span> / persona</p>
