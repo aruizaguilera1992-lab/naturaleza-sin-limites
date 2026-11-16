@@ -11,7 +11,6 @@ import { CanyoningQuestionnaire } from '@/components/barranquismo/CanyoningQuest
 import { CanyonCatalog } from '@/components/barranquismo/CanyonCatalog';
 import type { LevelFilter, ProvinceFilter } from '@/data/canyonCatalog';
 import type { NivelExperiencia, DuracionPreferida, Caracteristica, Provincia } from '@/data/barrancos';
-import { media } from '@/data/media';
 
 interface FilterAnswers {
   nivel: NivelExperiencia | null;
@@ -86,18 +85,12 @@ const Barranquismo = () => {
       
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <img
-          src={media.canyoning.src}
-          alt={media.canyoning.alt}
-          loading="eager"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
-        
+        {/* Fondo gráfico sin fotografía: no hay foto con procedencia y licencia libre verificada */}
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-adventure-dark via-background to-background" />
+        <svg aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 w-full text-primary/15" viewBox="0 0 1440 400" preserveAspectRatio="none" fill="currentColor">
+          <path d="M0 400 L0 220 L240 90 L420 260 L600 40 L760 300 L940 120 L1120 280 L1300 70 L1440 200 L1440 400 Z" />
+        </svg>
+
         {/* Content */}
         <div className="container mx-auto px-4 relative z-10 text-center pt-44 md:pt-32">
           <motion.div
@@ -106,18 +99,18 @@ const Barranquismo = () => {
             transition={{ duration: 0.6 }}
           >
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-6">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-foreground mb-6">
               Barranquismo en{' '}
               <span className="text-gradient">Málaga y Granada</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-10">
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10">
               Recorridos de iniciación e intermedio, en grupos de hasta 6 personas.
             </p>
             
             <motion.a
               href="#catalogo"
-              className="inline-flex items-center gap-2 text-white/80 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
