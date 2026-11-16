@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { ArrowDown, ArrowRight, Award, Check, ClipboardCheck, Dumbbell, LineChart, Mountain, ShieldCheck, SlidersHorizontal, Timer, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import athleteImage from '@/assets/atleta-reto-naturaleza.jpg';
+import athleteImageAlt from '@/assets/atleta-reto-naturaleza-mujer.jpg';
 import { OnlineRequestForm } from './OnlineRequestForm';
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
