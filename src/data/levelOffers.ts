@@ -87,3 +87,15 @@ export const levelOfferWhatsapp = (o: LevelOffer) =>
 
 export const levelOfferHref = (o: LevelOffer) =>
   `/${o.discipline === 'ferratas' ? 'vias-ferratas' : 'barranquismo'}#${o.id}`;
+
+export interface LevelOfferPhoto { src: string; alt: string; autor: string; licencia: string; fuente: string }
+
+/** Fotos ilustrativas de uso libre (Wikimedia Commons). No muestran nuestros recorridos concretos. */
+export const levelOfferPhotos: Record<string, LevelOfferPhoto> = {
+  'barranquismo-iniciacion': { src: '/images/niveles/barranquismo-iniciacion.webp', alt: 'Cauce de un barranco con agua entre paredes de roca y vegetación', autor: 'Fredok64', licencia: 'CC0', fuente: 'https://commons.wikimedia.org/wiki/File:Canyon_du_Canceigt.jpg' },
+  'barranquismo-intermedio': { src: '/images/niveles/barranquismo-intermedio.webp', alt: 'Barranquista descendiendo una cascada con cuerda', autor: 'Fabricio Cardenas', licencia: 'CC BY-SA 4.0', fuente: 'https://commons.wikimedia.org/wiki/File:Cascade_des_Baoussous_-_Canyoning.jpg' },
+  'barranquismo-avanzado': { src: '/images/niveles/barranquismo-avanzado.webp', alt: 'Garganta estrecha y vertical con un rápel en cascada', autor: 'Haeferl', licencia: 'CC BY-SA 3.0', fuente: 'https://commons.wikimedia.org/wiki/File:Oetz_-_Canyoning_in_der_Auerklamm.jpg' },
+  'ferratas-iniciacion': { src: '/images/niveles/ferratas-iniciacion.webp', alt: 'Tramo sencillo de vía ferrata con cable de vida junto a un sendero', autor: 'Ajznponar', licencia: 'CC0', fuente: 'https://commons.wikimedia.org/wiki/File:Ajdna,_via_ferrata_at_eastern_face_01.jpg' },
+  'ferratas-intermedio': { src: '/images/niveles/ferratas-intermedio.webp', alt: 'Cable de vía ferrata sobre una ladera de roca caliza', autor: 'Ajznponar', licencia: 'CC0', fuente: 'https://commons.wikimedia.org/wiki/File:Begunjscica,_via_ferrata_on_north_slope.jpg' },
+  'ferratas-avanzado': { src: '/images/niveles/ferratas-avanzado.webp', alt: 'Persona progresando por una vía ferrata vertical con escalera metálica', autor: 'Autor anónimo', licencia: 'CC0', fuente: 'https://commons.wikimedia.org/wiki/File:Via-ferrata-1375709.jpg' },
+};
