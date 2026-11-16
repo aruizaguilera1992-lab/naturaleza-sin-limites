@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { ActivitySheetsPanel } from "@/components/admin/sheets/ActivitySheetsPanel";
+import { SalidasPanel } from "@/components/admin/SalidasPanel";
+import { CatalogPanel } from "@/components/admin/catalog/CatalogPanel";
 import { ClipboardList } from "lucide-react";
 import { depositConfirmationOption, paymentLinkBody, type DepositConfirmationOption } from "@/lib/depositConfirmation";
 import { Helmet } from "react-helmet-async";
@@ -7,7 +8,6 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { EventsPanel } from "@/components/admin/EventsPanel";
 import { EditorialPanel } from "@/components/admin/editorial/EditorialPanel";
 import { BookingEditForm } from "@/components/admin/BookingEditForm";
 import { ContactClassificationForm, ContactCommunicationLog, type CrmContact } from "@/components/admin/ContactCrmPanel";
@@ -76,7 +76,7 @@ import { CommercialAgenda } from "@/components/admin/CommercialAgenda";
 import { agendaCounts, type AgendaContact } from "@/lib/commercialAgenda";
 import type { ContactTab } from "@/components/admin/contact/ContactDetail";
 
-type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans" | "editorial" | "agenda" | "sheets";
+type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans" | "editorial" | "agenda" | "catalog";
 
 
 type NotesFieldProps = {
@@ -787,8 +787,8 @@ export default function Admin() {
     { id: "bookings", label: "Reservas", subtitle: "Solicitudes y reservas de actividades.", icon: CalendarCheck, count: newBookings },
     { id: "contacts", label: "Contactos", subtitle: "Mensajes recibidos desde la web.", icon: Inbox, count: newContacts },
     { id: "agenda", label: "Agenda", heading: "Agenda comercial", subtitle: "Qué requiere atención y cuál es el siguiente paso.", icon: CalendarClock, count: agendaUrgent || undefined },
-    { id: "sheets", label: "Fichas", heading: "Fichas de actividad", subtitle: "Crea fichas privadas y envía el enlace al cliente.", icon: ClipboardList },
-    { id: "events", label: "Calendario", subtitle: "Salidas programadas y plazas.", icon: CalendarDays },
+    { id: "events", label: "Salidas", heading: "Salidas y fichas", subtitle: "Grupo abierto en el calendario o grupo privado con ficha y enlace único.", icon: CalendarDays },
+    { id: "catalog", label: "Catálogo", heading: "Catálogo de actividades", subtitle: "Todos los recorridos con su información y fotos propias.", icon: ClipboardList },
     { id: "plans", label: "Planes", subtitle: "Suscripciones de Vértigo Sapiens.", icon: Repeat },
     { id: "editorial", label: "Editorial", subtitle: "Artículos del blog.", icon: FileText },
     { id: "notifications", label: "Notificaciones", subtitle: "Correos enviados y fallidos.", icon: Bell, count: pendingNotifications },
@@ -1288,7 +1288,8 @@ export default function Admin() {
             </>
           )}
           {tab === "settings" && <BusinessSettingsPanel />}
-          {tab === "events" && <EventsPanel />}
+          {tab === "events" && <SalidasPanel contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />}
+          {tab === "catalog" && <CatalogPanel />}
           {tab === "plans" && <PlanOrdersPanel />}
           {editorialOpened && <div className={tab === "editorial" ? "" : "hidden"}><EditorialPanel /></div>}
 
@@ -1337,10 +1338,6 @@ export default function Admin() {
               )}
               </div>
             </>
-          )}
-
-          {tab === "sheets" && (
-            <ActivitySheetsPanel contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />
           )}
 
           {tab === "agenda" && (

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Flame, GraduationCap, Mountain, ShieldCheck, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronDown, Flame, GraduationCap, ShieldCheck } from 'lucide-react';
 import { HeroYoutubeBackground } from '@/components/HeroYoutubeBackground';
 
 
@@ -42,7 +41,7 @@ export function HeroSection() {
     return () => window.clearInterval(interval);
   }, [reduceMotion]);
 
-  return <section id="inicio" style={reduceMotion ? undefined : { background: 'hsl(0 0% 0%)' }} className="homepage-hero relative min-h-[620px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
+  return <section id="inicio" style={reduceMotion ? undefined : { background: 'hsl(0 0% 0%)' }} className="homepage-hero relative min-h-[620px] lg:min-h-[88vh] flex items-center justify-center overflow-hidden">
       {/* Vídeo aleatorio del canal oficial (desde su segundo destacado); fondo negro hasta que empieza. */}
       {!reduceMotion && (
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true" style={{ background: 'hsl(0 0% 0%)' }}>
@@ -52,7 +51,7 @@ export function HeroSection() {
       <div className="homepage-hero-overlay absolute inset-0 z-[1]" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-36 md:pt-32 pb-20 text-center">
+      <div className="relative z-10 container mx-auto px-4 pt-40 md:pt-44 pb-12 text-center">
         <motion.div initial={{
         opacity: 0,
         y: 30
@@ -61,7 +60,7 @@ export function HeroSection() {
         y: 0
       }} transition={{
         duration: 0.8
-      }} className="max-w-4xl mx-auto my-[50px]">
+      }} className="max-w-4xl mx-auto">
           {/* Main Heading */}
           <motion.h1 initial={{
           opacity: 0,
@@ -89,7 +88,7 @@ export function HeroSection() {
         }} transition={{
           delay: 0.5,
           duration: 0.6
-        }} className="mb-10">
+        }} className="mb-6">
             {reduceMotion ? (
               <p className="text-hero-sub text-foreground/80 max-w-2xl mx-auto">
                 {HERO_DESCRIPTION_FULL}
@@ -119,34 +118,6 @@ export function HeroSection() {
             )}
           </motion.div>
 
-          {/* CTA Buttons */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          delay: 0.7,
-          duration: 0.6
-          }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center sm:items-center w-full">
-            <Button variant="hero" size="lg" className="group w-auto !min-h-11 !px-5 !py-2 !text-xs lg:!text-sm bg-primary/75 bg-none !shadow-none backdrop-blur-md" onClick={() => {
-            document.getElementById('calendario')?.scrollIntoView({
-              behavior: 'smooth'
-            });
-          }}>
-              <Mountain className="h-5 w-5 mr-2" />
-              Reserva tu aventura
-            </Button>
-            <Button variant="heroOutline" size="lg" className="w-auto !min-h-11 !px-5 !py-2 !text-xs lg:!text-sm border-foreground/60 bg-background/20 backdrop-blur-md" onClick={() => {
-            document.getElementById('actividades')?.scrollIntoView({
-              behavior: 'smooth'
-            });
-          }}>
-              <Users className="h-5 w-5 mr-2" />
-              Encuentra mi salida ideal
-            </Button>
-          </motion.div>
 
           {/* Trust Badges */}
           <motion.div initial={{

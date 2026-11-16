@@ -362,6 +362,33 @@ export type Database = {
         }
         Relationships: []
       }
+      catalog_entries: {
+        Row: {
+          created_at: string
+          data: Json
+          key: string
+          photos: string[]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          key: string
+          photos?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          key?: string
+          photos?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       consent_records: {
         Row: {
           action: string

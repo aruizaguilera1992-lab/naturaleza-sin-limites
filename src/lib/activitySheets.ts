@@ -1,5 +1,6 @@
 import { levelOffers, levelOfferExplanation, levelOfferPhotos } from '@/data/levelOffers';
 import { espeleologiaPublicada } from '@/data/espeleologia';
+import type { CatalogItem } from '@/lib/adminCatalog';
 
 export const MAX_SHEET_PEOPLE = 6;
 
@@ -23,7 +24,7 @@ export interface SheetContent {
   minAge: number;
   fitness: string;
   experience: boolean;
-  photo: string | null; // clave de levelOfferPhotos
+  photo: string | null; // clave de levelOfferPhotos o «storage:<ruta>» para fotos propias del catálogo
   customerName: string;
 }
 
@@ -87,4 +88,15 @@ export function sheetState(s: { status: string; expires_at: string | null; first
   if (s.status === 'borrador') return 'borrador';
   if (s.expires_at && new Date(s.expires_at) < now) return 'caducada';
   return s.first_viewed_at ? 'vista' : 'enviada';
+}
+
+export const STORAGE_PHOTO = 'storage:';
+
+/** Rellena una ficha desde un recorrido del catálogo editable (con su foto de portada propia si la hay). */
+export function sheetFromCatalog(item: CatalogItem): SheetContent {
+  return { base: `catalog:${item.key}`, discipline: item.discipline, level: item.level, levelLabel: item.levelLabel, title: item.name,
+    place: [item.zone, item.province].filter(Boolean).join(', '), date: '', duration: item.duration, meetingPoint: '', people: 2,
+    pricePerPersonEuros: item.pricePerPersonEuros, summary: item.summary, includes: [...item.includes], bring: [],
+    requirements: [...item.requirements], notes: '', minAge: item.minAge, fitness: item.fitness, experience: item.experience,
+    photo: item.photos[0] ? `${STORAGE_PHOTO}${item.photos[0]}` : null, customerName: '' };
 }
