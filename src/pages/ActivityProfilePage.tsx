@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { AlertTriangle, ArrowLeft, Check, Clock, ExternalLink, MapPin, Mountain, ShieldCheck, Sparkles, Sun, Users } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Camera, Check, Clock, ExternalLink, MapPin, Mountain, ShieldCheck, Sparkles, Sun, Users } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -60,14 +60,14 @@ export default function ActivityProfilePage() {
   });
 
   const structuredData = [
-    { '@context': 'https://schema.org', '@type': 'Product', name: activity.name, description: metaDescription, category: activity.categoryLabel, image: activity.image.startsWith('http') ? activity.image : undefined, url: canonical, brand: { '@type': 'Brand', name: 'Naturaleza Sin Límites' }, ...(numericPrice ? { offers: { '@type': 'Offer', priceCurrency: 'EUR', price: numericPrice, availability: 'https://schema.org/LimitedAvailability', url: canonical } } : {}) },
+    { '@context': 'https://schema.org', '@type': 'Product', name: activity.name, description: metaDescription, category: activity.categoryLabel, image: !activity.photoPending && activity.image.startsWith('http') ? activity.image : undefined, url: canonical, brand: { '@type': 'Brand', name: 'Naturaleza Sin Límites' }, ...(numericPrice ? { offers: { '@type': 'Offer', priceCurrency: 'EUR', price: numericPrice, availability: 'https://schema.org/LimitedAvailability', url: canonical } } : {}) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: activity.faqs.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) },
     { '@context': 'https://schema.org', '@type': 'LocalBusiness', '@id': `${SITE_URL}/#business`, name: 'Naturaleza Sin Límites', areaServed: `${activity.province}, Andalucía`, telephone: '+34685609542', email: 'naturaleza.s.limites@gmail.com', url: SITE_URL },
   ];
 
   const highlightIcons = [Sparkles, Mountain, Users, Sun];
   const technicalRows = ([
-    ['Tipo de actividad', activity.type], ['Duración total', activity.totalDuration], ['Duración efectiva', activity.effectiveDuration], ['Nivel técnico', activity.technicalLevel], ['Nivel físico', activity.physicalLevel], ['Temporada', activity.season], ['Grupo mínimo/máximo', activity.group], ['Ratio guía-participantes', activity.guideRatio], ['Aproximación y retorno', activity.approachReturn], ['Elementos técnicos', activity.technicalElements.join(', ')], ['Zona de encuentro', activity.meetingPoint],
+    ['Tipo de actividad', activity.type], ['Duración total', activity.totalDuration], ['Duración efectiva', activity.effectiveDuration], ['Grado técnico', activity.technicalLevel], ['Nivel de experiencia', activity.experienceLevel ?? ''], ['Nivel físico', activity.physicalLevel], ['Temporada', activity.season], ['Grupo mínimo/máximo', activity.group], ['Ratio guía-participantes', activity.guideRatio], ['Aproximación y retorno', activity.approachReturn], ['Elementos técnicos', activity.technicalElements.join(', ')], ['Zona de encuentro', activity.meetingPoint],
   ] as [string, string][]).filter(([, value]) => Boolean(value?.trim()));
   const list = (items: string[], Icon = Check) => <ul className="grid gap-2.5 text-sm text-muted-foreground">{items.map((item) => <li key={item} className="flex gap-2"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul>;
   const extraSafety = activity.safetyRequirements.filter((item) =>
@@ -90,7 +90,16 @@ export default function ActivityProfilePage() {
       </Helmet>
       <Navbar />
       <main className="pt-20 sm:pt-24 lg:pt-28">
-        <ActivityHeroCarousel key={`${activity.category}/${activity.slug}`} title={activity.name} media={gallery} fallbackSrc={getActivityCatalogImage(activity.category, activity.slug) ?? undefined} />
+        {activity.photoPending ? (
+          <div role="img" aria-label={`Fotografía de ${activity.name} pendiente`} className="container mx-auto px-4">
+            <div className="flex aspect-[21/9] min-h-48 flex-col items-center justify-center gap-2 rounded-lg border border-border bg-muted/40 text-muted-foreground">
+              <Camera className="h-8 w-8" aria-hidden="true" />
+              <span className="text-sm font-medium">Fotografía del recorrido pendiente</span>
+            </div>
+          </div>
+        ) : (
+          <ActivityHeroCarousel key={`${activity.category}/${activity.slug}`} title={activity.name} media={gallery} fallbackSrc={getActivityCatalogImage(activity.category, activity.slug) ?? undefined} />
+        )}
 
         {/* CABECERA: título, descripción comercial breve y datos clave justo tras la galería */}
         <div className="container mx-auto px-4">
@@ -101,7 +110,8 @@ export default function ActivityProfilePage() {
             <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">{headerDescription}</p>
             <ul className="mt-6 flex flex-wrap gap-3 text-sm">
               <li className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4"><MapPin className="h-4 w-4 text-primary" />{activity.zone}, {activity.province}</li>
-              <li className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4"><Mountain className="h-4 w-4 text-primary" />{activity.technicalLevel}</li>
+              <li className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4"><Mountain className="h-4 w-4 text-primary" />{activity.experienceLevel ? `Grado técnico ${activity.technicalLevel}` : activity.technicalLevel}</li>
+              {activity.experienceLevel && <li className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4"><Sparkles className="h-4 w-4 text-primary" />Experiencia: {activity.experienceLevel}</li>}
               <li className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4"><Clock className="h-4 w-4 text-primary" />{activity.totalDuration}</li>
               <li className="inline-flex min-h-11 items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 font-semibold text-primary"><Users className="h-4 w-4" />Máximo 6 participantes</li>
             </ul>
@@ -194,7 +204,7 @@ export default function ActivityProfilePage() {
               </Accordion>
             </section>
 
-            <section><h2 className="mb-5 font-heading text-2xl font-bold">Actividades relacionadas</h2><div className="grid gap-4 sm:grid-cols-3">{related.map((item) => <Link key={item.id} to={`/actividades/${item.category}/${item.slug}`} className="group overflow-hidden rounded-lg border border-border bg-card"><img src={item.image} alt={item.imageAlt} loading="lazy" decoding="async" className="aspect-video w-full object-cover" /><div className="p-4"><p className="text-xs text-primary">{item.categoryLabel} · {item.zone}</p><h3 className="mt-1 text-base group-hover:text-primary [overflow-wrap:anywhere]">{item.name}</h3></div></Link>)}</div></section>
+            <section><h2 className="mb-5 font-heading text-2xl font-bold">Actividades relacionadas</h2><div className="grid gap-4 sm:grid-cols-3">{related.map((item) => <Link key={item.id} to={`/actividades/${item.category}/${item.slug}`} className="group overflow-hidden rounded-lg border border-border bg-card">{item.category === 'barranquismo' ? <div className="flex aspect-video w-full items-center justify-center gap-2 bg-muted/40 text-xs text-muted-foreground"><Camera className="h-4 w-4" aria-hidden="true" />Fotografía pendiente</div> : <img src={item.image} alt={item.imageAlt} loading="lazy" decoding="async" className="aspect-video w-full object-cover" />}<div className="p-4"><p className="text-xs text-primary">{item.categoryLabel} · {item.zone}</p><h3 className="mt-1 text-base group-hover:text-primary [overflow-wrap:anywhere]">{item.name}</h3></div></Link>)}</div></section>
           </article>
 
           {/* RESERVA: panel lateral sticky con precio, fechas y plazas reales */}
