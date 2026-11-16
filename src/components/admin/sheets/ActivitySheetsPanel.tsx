@@ -164,9 +164,15 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
           <select id="sh-photo" className={sel} value={c.photo ?? ''} onChange={(e) => set('photo', e.target.value || null)}>
             <option value="">Sin foto</option>
             {ownPhotos.map((p, i) => <option key={p} value={`${STORAGE_PHOTO}${p}`}>Foto propia {i + 1} del recorrido</option>)}
+            {uploaded.map((p, i) => <option key={p} value={`${STORAGE_PHOTO}${p}`}>Foto subida {i + 1}</option>)}
+            {c.photo?.startsWith(STORAGE_PHOTO) && !ownPhotos.includes(c.photo.slice(STORAGE_PHOTO.length)) && !uploaded.includes(c.photo.slice(STORAGE_PHOTO.length)) && <option value={c.photo}>Foto subida guardada</option>}
             {sheetPhotoOptions.map((p) => <option key={p.key} value={p.key}>{p.alt} ({p.licencia})</option>)}
           </select>
-          <p className="mt-1 text-xs text-muted-foreground">Fotos propias del recorrido (catálogo) o fotos de uso libre, que se muestran como ilustrativas.</p></div>
+          <div className="mt-2 flex items-center gap-2">
+            <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => fileRef.current?.click()}><ImagePlus className="mr-1 h-4 w-4" />Subir foto desde el PC</Button>
+            <input ref={fileRef} type="file" accept={IMG_TYPES.join(',')} className="hidden" onChange={(e) => uploadPhoto(e.target.files)} />
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">Fotos propias del recorrido (catálogo), fotos subidas por ti o fotos de uso libre, que se muestran como ilustrativas.</p></div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div><Label htmlFor="sh-email">Email del cliente</Label><Input id="sh-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
           <div><Label htmlFor="sh-phone">WhatsApp del cliente</Label><Input id="sh-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
