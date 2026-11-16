@@ -213,5 +213,5 @@
 - Quitar los dos botones del inicio (hecho)
 - Centrar texto de la portada sin tapar el vídeo (hecho)
 
-- [ ] Vídeo de portada: mostrar el vídeo completo (sin recorte) en cualquier dispositivo
-- [ ] Barrancos de Andalucía (RocJumper) en catálogo admin
+- [x] Vídeo de portada completo
+- [x] Barrancos de Andalucía en catálogo admin
