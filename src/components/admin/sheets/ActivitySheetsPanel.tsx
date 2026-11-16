@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, Eye, Link2Off, Mail, MessageCircle, Plus, Save, Trash2 } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Copy, Eye, ImagePlus, Link2Off, Mail, MessageCircle, Plus, Save, Trash2 } from 'lucide-react';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { SheetView } from './SheetView';
-import type { CatalogItem } from '@/lib/adminCatalog';
+import { CATALOG_BUCKET, type CatalogItem } from '@/lib/adminCatalog';
 import {
   MAX_SHEET_PEOPLE, STORAGE_PHOTO, sheetBases, sheetFromBase, sheetFromCatalog, sheetPhotoOptions, sheetState, sheetUrl, sheetWhatsappUrl, validateSheet,
   type SheetContent, type SheetState,
