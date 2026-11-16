@@ -8,7 +8,8 @@ import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { CanyoningQuestionnaire } from '@/components/barranquismo/CanyoningQuestionnaire';
-import { CanyonResults } from '@/components/barranquismo/CanyonResults';
+import { CanyonCatalog } from '@/components/barranquismo/CanyonCatalog';
+import type { LevelFilter, ProvinceFilter } from '@/data/canyonCatalog';
 import type { NivelExperiencia, DuracionPreferida, Caracteristica, Provincia } from '@/data/barrancos';
 import { media } from '@/data/media';
 
@@ -27,13 +28,8 @@ const pageTransition = {
 };
 
 const Barranquismo = () => {
-  const [showResults, setShowResults] = useState(false);
-  const [filters, setFilters] = useState<FilterAnswers>({
-    nivel: null,
-    duracion: null,
-    caracteristica: null,
-    provincia: null,
-  });
+  const [provincia, setProvincia] = useState<ProvinceFilter>('todas');
+  const [nivel, setNivel] = useState<LevelFilter>('todos');
 
   // Scroll to top on page load; with a URL hash, scroll to the target section instead.
   const { hash } = useLocation();
@@ -53,38 +49,18 @@ const Barranquismo = () => {
     };
   }, [hash]);
 
+  // El cuestionario es una ayuda opcional: solo preajusta los filtros del catálogo.
   const handleQuestionnaireComplete = (answers: FilterAnswers) => {
-    setFilters(answers);
-    setShowResults(true);
-    
-    // Scroll to results
+    setNivel(answers.nivel === 'principiante' ? 'iniciacion' : answers.nivel === 'intermedio' ? 'intermedio' : 'todos');
+    setProvincia(answers.provincia === 'Málaga' || answers.provincia === 'Granada' ? answers.provincia : 'todas');
     setTimeout(() => {
-      document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
-
-  const handleShowAll = () => {
-    setFilters({ nivel: null, duracion: null, caracteristica: null, provincia: null });
-    setShowResults(true);
-    setTimeout(() => {
-      document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
 
   const handleReset = () => {
-    setShowResults(false);
-    setFilters({
-      nivel: null,
-      duracion: null,
-      caracteristica: null,
-      provincia: null,
-    });
-    
-    // Scroll to questionnaire
-    setTimeout(() => {
-      document.getElementById('cuestionario')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    setProvincia('todas');
+    setNivel('todos');
   };
 
   return (
@@ -96,8 +72,8 @@ const Barranquismo = () => {
       variants={pageTransition}
     >
       <Seo
-        title="Barranquismo en Málaga y Andalucía | Naturaleza Sin Límites"
-        description="Descensos de barrancos guiados en Málaga y Andalucía para todos los niveles. Encuentra tu barranco por nivel, duración y zona."
+        title="Barranquismo en Málaga y Granada | Naturaleza Sin Límites"
+        description="Barrancos guiados de iniciación e intermedio en Málaga y Granada. Filtra por provincia y experiencia; grupos de hasta 6 personas."
         path="/barranquismo"
       />
 
@@ -131,73 +107,56 @@ const Barranquismo = () => {
           >
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-6">
-              Descubre tu{' '}
-              <span className="text-gradient">barranco ideal</span>
+              Barranquismo en{' '}
+              <span className="text-gradient">Málaga y Granada</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-10">
-              Responde unas preguntas rápidas y te recomendaremos los mejores barrancos 
-              de Málaga, Granada y Cádiz adaptados a tu nivel y preferencias.
+              Recorridos de iniciación e intermedio, en grupos de hasta 6 personas.
             </p>
             
             <motion.a
-              href="#cuestionario"
+              href="#catalogo"
               className="inline-flex items-center gap-2 text-white/80 hover:text-primary transition-colors"
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <span>Empezar</span>
+              <span>Ver barrancos</span>
               <ChevronDown className="h-5 w-5" />
             </motion.a>
           </motion.div>
         </div>
       </section>
 
-      {/* Questionnaire Section */}
-      <section id="cuestionario" className="py-20 bg-background">
+      {/* Catalog Section */}
+      <section id="catalogo" className="scroll-mt-32 py-20 bg-background">
         <div className="container mx-auto px-4">
-          {!showResults ? (
-            <>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-center mb-12"
-              >
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
-                  Encuentra tu aventura perfecta
-                </h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Solo 4 preguntas para recomendarte los barrancos que mejor se adaptan a ti
-                </p>
-              </motion.div>
-              
-              <CanyoningQuestionnaire 
-                onComplete={handleQuestionnaireComplete}
-                onReset={handleReset}
-              />
-            <div className="mt-6 text-center">
-              <button
-                onClick={handleShowAll}
-                className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors duration-300 active:scale-95"
-              >
-                Prefiero ver todos los barrancos
-              </button>
-            </div>
-
-            </>
-          ) : null}
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
+              Barrancos de Málaga y Granada
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Iniciación e intermedio. El nivel de experiencia es orientativo y va aparte del grado técnico.
+            </p>
+          </div>
+          <CanyonCatalog provincia={provincia} nivel={nivel} onProvinciaChange={setProvincia} onNivelChange={setNivel} />
         </div>
       </section>
 
-      {/* Results Section */}
-      {showResults && (
-        <section id="resultados" className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <CanyonResults filters={filters} onReset={handleReset} />
+      {/* Optional questionnaire */}
+      <section id="cuestionario" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
+              ¿Te ayudamos a elegir?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Responde unas preguntas y ajustaremos los filtros del catálogo.
+            </p>
           </div>
-        </section>
-      )}
+          <CanyoningQuestionnaire onComplete={handleQuestionnaireComplete} onReset={handleReset} />
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-adventure-dark to-background">
