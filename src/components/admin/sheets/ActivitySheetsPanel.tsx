@@ -217,8 +217,8 @@ export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetCont
           ))}
         </ul>
       )}
-      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} />}
-      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onSaved={async () => { await load(); }} />}
+      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} onDeleted={async () => { await load(); setSelected(null); }} />}
+      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onSaved={async () => { await load(); }} onDeleted={async () => { await load(); setSelected(null); }} />}
       {!selected && rows.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Aún no hay fichas. Crea una y envía el enlace al cliente.</p>}
     </div>
   );
