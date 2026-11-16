@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Normas y pasos de salidas
-- [ ] Añadir campos editables y listados visibles al cliente en salidas privadas y abiertas; verificar guardado sin alterar pagos.
+- [x] Añadir campos editables y listados visibles al cliente en salidas privadas y abiertas; guardado/reapertura de ambos y enlace privado en móvil comprobados, pruebas temporales eliminadas; 139 pruebas y compilación OK, sin alterar pagos ni publicar.
 
 ## Aclaración comercial de correos (15/10/2026)
 - [x] Distinguir señales administrativas confirmadas de solicitudes y pagos genéricos con evidencia fiable
