@@ -91,7 +91,7 @@ export default function ActivityProfilePage() {
       <Navbar />
       <main className="pt-20 sm:pt-24 lg:pt-28">
         {activity.photoPending ? (
-          <div role="img" aria-label={`Fotografía de ${activity.name} pendiente`} className="container mx-auto px-4">
+          <div role="img" aria-label={`Fotografía de ${activity.name} pendiente`} className="container mx-auto px-4 pt-24 sm:pt-16 lg:pt-10">
             <div className="flex h-48 w-full sm:h-64 lg:h-80 flex-col items-center justify-center gap-2 rounded-lg border border-border bg-muted/40 text-muted-foreground">
               <Camera className="h-8 w-8" aria-hidden="true" />
               <span className="text-sm font-medium">Fotografía del recorrido pendiente</span>
