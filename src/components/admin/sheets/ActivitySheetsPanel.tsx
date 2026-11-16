@@ -10,8 +10,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { SheetView } from './SheetView';
+import type { CatalogItem } from '@/lib/adminCatalog';
 import {
-  MAX_SHEET_PEOPLE, sheetBases, sheetFromBase, sheetPhotoOptions, sheetState, sheetUrl, sheetWhatsappUrl, validateSheet,
+  MAX_SHEET_PEOPLE, STORAGE_PHOTO, sheetBases, sheetFromBase, sheetFromCatalog, sheetPhotoOptions, sheetState, sheetUrl, sheetWhatsappUrl, validateSheet,
   type SheetContent, type SheetState,
 } from '@/lib/activitySheets';
 
@@ -22,7 +23,7 @@ const STATE_LABEL: Record<SheetState, string> = { borrador: 'Borrador', enviada:
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 
-function Editor({ row, contacts, onSaved }: { row: SheetRow | null; contacts: SheetContact[]; onSaved: (id: string) => Promise<void> }) {
+function Editor({ row, contacts, catalog, onSaved }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void> }) {
   const { toast } = useToast();
   const [c, setC] = useState<SheetContent>(() => row?.content ?? sheetFromBase(sheetBases[0].id));
   const [contactId, setContactId] = useState<string>(row?.contact_id ?? '');
@@ -31,6 +32,7 @@ function Editor({ row, contacts, onSaved }: { row: SheetRow | null; contacts: Sh
   const [email, setEmail] = useState<string>(contact?.email ?? '');
   const [phone, setPhone] = useState<string>(contact?.phone ?? '');
   const [busy, setBusy] = useState(false);
+  const ownPhotos = catalog.find((x) => `catalog:${x.key}` === c.base)?.photos ?? [];
   const set = <K extends keyof SheetContent>(k: K, v: SheetContent[K]) => setC((p) => ({ ...p, [k]: v }));
   const errors = validateSheet(c);
   const state = row ? sheetState(row) : 'borrador';
@@ -93,8 +95,9 @@ function Editor({ row, contacts, onSaved }: { row: SheetRow | null; contacts: Sh
           {row?.first_viewed_at && <span className="text-xs text-muted-foreground">Vista {row.view_count} {row.view_count === 1 ? 'vez' : 'veces'}</span>}
         </div>
         <div><Label htmlFor="sh-base">Nivel de partida</Label>
-          <select id="sh-base" className={sel} value={c.base} onChange={(e) => setC((p) => ({ ...sheetFromBase(e.target.value), customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes }))}>
-            {sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}
+          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); setC((p) => ({ ...(it ? sheetFromCatalog(it) : sheetFromBase(v)), customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes })); }}>
+            <optgroup label="Niveles">{sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>
+            <optgroup label="Catálogo (recorridos)">{catalog.map((it) => <option key={it.key} value={`catalog:${it.key}`}>{it.name} · {it.levelLabel}</option>)}</optgroup>
           </select>
           <p className="mt-1 text-xs text-muted-foreground">Cambiarlo rellena texto, indicadores, incluye y edad.</p></div>
         <div><Label htmlFor="sh-contact">Cliente del CRM (opcional)</Label>
@@ -123,9 +126,10 @@ function Editor({ row, contacts, onSaved }: { row: SheetRow | null; contacts: Sh
         <div><Label htmlFor="sh-photo">Foto</Label>
           <select id="sh-photo" className={sel} value={c.photo ?? ''} onChange={(e) => set('photo', e.target.value || null)}>
             <option value="">Sin foto</option>
+            {ownPhotos.map((p, i) => <option key={p} value={`${STORAGE_PHOTO}${p}`}>Foto propia {i + 1} del recorrido</option>)}
             {sheetPhotoOptions.map((p) => <option key={p.key} value={p.key}>{p.alt} ({p.licencia})</option>)}
           </select>
-          <p className="mt-1 text-xs text-muted-foreground">Solo fotos de uso libre ya verificadas; se muestran como ilustrativas.</p></div>
+          <p className="mt-1 text-xs text-muted-foreground">Fotos propias del recorrido (catálogo) o fotos de uso libre, que se muestran como ilustrativas.</p></div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div><Label htmlFor="sh-email">Email del cliente</Label><Input id="sh-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
           <div><Label htmlFor="sh-phone">WhatsApp del cliente</Label><Input id="sh-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
@@ -149,7 +153,7 @@ function Editor({ row, contacts, onSaved }: { row: SheetRow | null; contacts: Sh
 }
 
 /** Constructor de fichas privadas de actividad con enlace único. */
-export function ActivitySheetsPanel({ contacts }: { contacts: SheetContact[] }) {
+export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetContact[]; catalog: CatalogItem[] }) {
   const [rows, setRows] = useState<SheetRow[]>([]);
   const [selected, setSelected] = useState<string | 'new' | null>(null);
   const load = useCallback(async () => {
@@ -180,8 +184,8 @@ export function ActivitySheetsPanel({ contacts }: { contacts: SheetContact[] }) 
           ))}
         </ul>
       )}
-      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} onSaved={async (id) => { await load(); setSelected(id); }} />}
-      {current && <Editor key={current.id} row={current} contacts={contacts} onSaved={async () => { await load(); }} />}
+      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} />}
+      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onSaved={async () => { await load(); }} />}
       {!selected && rows.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Aún no hay fichas. Crea una y envía el enlace al cliente.</p>}
     </div>
   );

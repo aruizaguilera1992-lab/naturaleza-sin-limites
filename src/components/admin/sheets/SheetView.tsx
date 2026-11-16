@@ -3,7 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
 import { levelOfferPhotos } from '@/data/levelOffers';
-import { sheetTotalEuros, type SheetContent } from '@/lib/activitySheets';
+import { STORAGE_PHOTO, sheetTotalEuros, type SheetContent } from '@/lib/activitySheets';
+import { usePhotoUrls } from '@/lib/adminCatalog';
 
 const DISC: Record<SheetContent['discipline'], string> = { barranquismo: 'Barranquismo', ferratas: 'Vía ferrata', espeleologia: 'Espeleología' };
 const fmtDate = (d: string) => { try { return new Date(`${d}T12:00:00`).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch { return d; } };
@@ -20,7 +21,9 @@ function List({ title, icon: Icon, items }: { title: string; icon: typeof Check;
 
 /** Ficha de actividad privada; se usa en la vista previa del panel y en el enlace del cliente. */
 export function SheetView({ c, reference }: { c: SheetContent; reference?: string }) {
-  const photo = c.photo ? levelOfferPhotos[c.photo] : null;
+  const ownPath = c.photo?.startsWith(STORAGE_PHOTO) ? c.photo.slice(STORAGE_PHOTO.length) : null;
+  const ownUrls = usePhotoUrls(ownPath ? [ownPath] : []);
+  const photo = ownPath ? (ownUrls[ownPath] ? { src: ownUrls[ownPath], alt: c.title, autor: '', licencia: '', fuente: '' } : null) : c.photo ? levelOfferPhotos[c.photo] : null;
   const total = sheetTotalEuros(c);
   const wa = `https://wa.me/34685609542?text=${encodeURIComponent(`Hola, quiero confirmar la actividad «${c.title}»${reference ? ` (ficha ${reference})` : ''}.`)}`;
   const facts = [
@@ -42,7 +45,7 @@ export function SheetView({ c, reference }: { c: SheetContent; reference?: strin
       {photo && (
         <figure className="mt-6 overflow-hidden rounded-xl border border-border">
           <img src={photo.src} alt={photo.alt} className="h-56 sm:h-72 w-full object-cover" />
-          <figcaption className="px-3 py-2 text-xs text-muted-foreground">Foto ilustrativa: <a href={photo.fuente} target="_blank" rel="noopener noreferrer" className="underline">{photo.autor}</a>, {photo.licencia}</figcaption>
+          {!ownPath && <figcaption className="px-3 py-2 text-xs text-muted-foreground">Foto ilustrativa: <a href={photo.fuente} target="_blank" rel="noopener noreferrer" className="underline">{photo.autor}</a>, {photo.licencia}</figcaption>}
         </figure>
       )}
       {c.meetingPoint && <p className="mt-6 flex gap-2 rounded-lg border border-border bg-card p-4"><MapPin className="h-5 w-5 shrink-0 text-primary" /><span><span className="font-semibold">Punto de encuentro: </span>{c.meetingPoint}</span></p>}

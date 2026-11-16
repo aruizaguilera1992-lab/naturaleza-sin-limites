@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { CATALOG_BUCKET, baseCatalog, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
+import { CATALOG_BUCKET, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
 
 const DISC: Record<CatalogDiscipline, string> = { barranquismo: 'Barranquismo', ferratas: 'Vías ferratas', espeleologia: 'Espeleología' };
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
@@ -132,7 +132,6 @@ export function CatalogPanel({ items, reload }: { items: CatalogItem[]; reload: 
   const [selected, setSelected] = useState<string | null>(null);
   const list = useMemo(() => items.filter((i) => (disc === 'todas' || i.discipline === disc) && `${i.name} ${i.zone} ${i.province}`.toLowerCase().includes(q.toLowerCase())), [items, disc, q]);
   const current = items.find((i) => i.key === selected);
-  void baseCatalog;
   if (current) return (
     <div className="space-y-3">
       <Button variant="ghost" onClick={() => setSelected(null)}><ArrowLeft className="mr-1 h-4 w-4" />Volver al catálogo</Button>
