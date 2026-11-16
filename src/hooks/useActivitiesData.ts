@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { barrancos, Barranco } from '@/data/barrancos';
 import { crags, Crag } from '@/data/crags';
 import { ferratas, Ferrata } from '@/data/ferratas';
+import { levelOffers, levelOfferHref, type LevelOffer } from '@/data/levelOffers';
 import { espeleologiaPublicada, ActividadEspeleologia } from '@/data/espeleologia';
 
 export interface UnifiedActivity {
@@ -37,7 +38,9 @@ export interface UnifiedActivity {
     previousExperience: boolean;
   };
   // Type-specific data
-  originalData: Barranco | Crag | Ferrata | ActividadEspeleologia;
+  originalData: Barranco | Crag | Ferrata | ActividadEspeleologia | LevelOffer;
+  /** Enlace propio (ofertas por nivel, sin ficha individual). */
+  href?: string;
 }
 
 function parsePrice(price: string): number {
@@ -114,7 +117,8 @@ export function useActivitiesData() {
     const unified: UnifiedActivity[] = [];
     
     // Map barrancos
-    barrancos.forEach(b => {
+    // Barrancos y ferratas individuales ya no se publican: se ofertan por niveles.
+    ([] as Barranco[]).forEach(b => {
       const levelInfo = mapBarrancoLevel(b.nivel);
       unified.push({
         id: `barranco-${b.id}`,
@@ -191,7 +195,7 @@ export function useActivitiesData() {
     });
     
     // Map ferratas
-    ferratas.forEach(f => {
+    ([] as Ferrata[]).forEach(f => {
       const levelInfo = mapFerrataLevel(f.clasificacion);
       unified.push({
         id: `ferrata-${f.id}`,
@@ -229,6 +233,23 @@ export function useActivitiesData() {
       });
     });
     
+    levelOffers.forEach(o => {
+      unified.push({
+        id: o.id, name: o.nombre, activityType: o.discipline,
+        province: 'Málaga y Andalucía', zone: 'Recorrido según grupo',
+        level: o.nivel, levelLabel: o.nivel === 'Iniciación' ? 'Principiante' : o.nivel, levelOrder: o.orden === 1 ? 1 : o.orden === 2 ? 3 : 4,
+        duration: 'Según recorrido', durationHours: 0,
+        price: o.precioDesde ? `${o.precioDesde}€` : 'Precio a consultar', priceValue: o.precioDesde ?? 0,
+        shortDescription: o.descripcionCorta, longDescription: o.descripcionCorta,
+        image: '', imageLarge: '', characteristics: o.caracteristicas, bestSeason: 'Según época',
+        minGroup: 2, materialIncluded: true, access: 'Según recorrido',
+        externalUrl: levelOfferHref(o), externalSource: 'naturalezasinlimites.es',
+        includes: o.incluye, highlights: o.caracteristicas,
+        requirements: { minAge: o.edadMinima, physicalCondition: o.condicionFisica, previousExperience: o.experienciaPrevia },
+        originalData: o, href: levelOfferHref(o),
+      });
+    });
+
     // Map espeleología (catálogo público editable en src/data/espeleologia.ts)
     espeleologiaPublicada().forEach(e => {
       unified.push({
@@ -271,7 +292,7 @@ export function useActivitiesData() {
     // Excepción: la espeleología se muestra siempre como disciplina propia con
     // precio "Consultar disponibilidad" y CTA de consulta (sin reserva online)
     // hasta confirmar precios y cavidades.
-    return unified.filter(a => a.priceValue > 0 || a.activityType === 'espeleologia');
+    return unified.filter(a => a.priceValue > 0 || a.activityType === 'espeleologia' || Boolean(a.href));
   }, []);
 
   
