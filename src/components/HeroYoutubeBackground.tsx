@@ -42,7 +42,7 @@ export function HeroYoutubeBackground() {
   if (reduceMotion) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+    <div className="hero-video-frame pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
       <iframe
         ref={iframeRef}
         title={youtubeVideo.title}
