@@ -13,6 +13,7 @@ export async function readBookingEmailContext(db: any, bookingId: string | null,
   const { data: link } = await db.from("activity_event_bookings").select("event_id").eq("booking_id", bookingId).maybeSingle();
   const { data: event } = link?.event_id ? await db.from("activity_events").select("starts_at, price_cents").eq("id", link.event_id).maybeSingle() : { data: null };
   const context: Partial<BookingEmailData> = { activity: booking.activity, date: event?.starts_at ?? booking.preferred_date, people: booking.number_of_people, name: booking.name, email: booking.email, phone: booking.phone, scheduled: Boolean(link) };
+  context.bookingDateConfirmed = received && !link && Boolean(booking.preferred_date) && booking.status !== "cancelada";
   if (!payment) return context;
   const { data: rows, error: paymentError } = await db.from("payment_requests").select("id, kind, amount_cents, total_cents, status").eq("booking_id", bookingId);
   if (paymentError || !rows) return { ...context, money: { paymentCents: payment.amount_cents, currency: payment.currency } };
@@ -45,6 +46,16 @@ export async function readBookingEmailContext(db: any, bookingId: string | null,
     if (explicit) { context.paymentKind = "senal"; context.manualConfirmation = true; }
   }
   const money = reliableEmailMoney(payments, payment, DEPOSIT_RATE, event?.price_cents, Number(booking.number_of_people));
+  // An accepted private proposal is the agreed price, independently of the amount
+  // of this payment (a manual partial payment is not necessarily a 30% deposit).
+  const { data: acceptedSheet } = await db.from("activity_sheets").select("content, accepted_at").eq("booking_id", bookingId).maybeSingle();
+  const sheetUnit = Number(acceptedSheet?.content?.pricePerPersonEuros);
+  if (acceptedSheet?.accepted_at && Number.isFinite(sheetUnit) && sheetUnit > 0 && validPeople(booking.number_of_people)) {
+    money.unitCents = Math.round(sheetUnit * 100);
+    money.totalCents = money.unitCents * Number(booking.number_of_people);
+  } else if (money.totalCents == null && Number.isSafeInteger(current?.total_cents) && current.total_cents > 0) {
+    money.totalCents = current.total_cents;
+  }
   if (money.totalCents != null) {
     const percent = Math.min(100, Math.max(0, Number(booking.discount_percent) || 0));
     const discount = Math.min(money.totalCents, percent > 0 ? Math.round(money.totalCents * percent / 100) : Math.max(0, Number(booking.discount_cents) || 0));
