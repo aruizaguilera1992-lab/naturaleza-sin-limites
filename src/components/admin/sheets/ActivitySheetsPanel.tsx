@@ -36,6 +36,10 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
   const [email, setEmail] = useState<string>(contact?.email ?? '');
   const [phone, setPhone] = useState<string>(contact?.phone ?? '');
   const [busy, setBusy] = useState(false);
+  // Texto en bruto de los listados: si se guardara ya filtrado, el salto de línea de Enter desaparecería al reescribir el campo.
+  const [incRaw, setIncRaw] = useState(() => (row?.content.includes ?? sheetFromBase(sheetBases[0].id).includes).join('\n'));
+  const [bringRaw, setBringRaw] = useState(() => (row?.content.bring ?? sheetFromBase(sheetBases[0].id).bring).join('\n'));
+  const [reqRaw, setReqRaw] = useState(() => (row?.content.requirements ?? sheetFromBase(sheetBases[0].id).requirements).join('\n'));
   const ownPhotos = catalog.find((x) => `catalog:${x.key}` === c.base)?.photos ?? [];
   const set = <K extends keyof SheetContent>(k: K, v: SheetContent[K]) => setC((p) => ({ ...p, [k]: v }));
   const errors = validateSheet(c);
