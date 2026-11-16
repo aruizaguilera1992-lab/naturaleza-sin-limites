@@ -86,7 +86,7 @@ export const levelOfferWhatsapp = (o: LevelOffer) =>
   `https://wa.me/34685609542?text=${encodeURIComponent(`Hola, me interesa «${o.nombre}». ¿Me podéis dar precio y disponibilidad?`)}`;
 
 export const levelOfferHref = (o: LevelOffer) =>
-  `/${o.discipline === 'ferratas' ? 'vias-ferratas' : 'barranquismo'}#${o.id}`;
+  `/niveles/${o.id}`;
 
 export interface LevelOfferPhoto { src: string; alt: string; autor: string; licencia: string; fuente: string }
 
@@ -98,4 +98,50 @@ export const levelOfferPhotos: Record<string, LevelOfferPhoto> = {
   'ferratas-iniciacion': { src: '/images/niveles/ferratas-iniciacion.webp', alt: 'Tramo sencillo de vía ferrata con cable de vida junto a un sendero', autor: 'Ajznponar', licencia: 'CC0', fuente: 'https://commons.wikimedia.org/wiki/File:Ajdna,_via_ferrata_at_eastern_face_01.jpg' },
   'ferratas-intermedio': { src: '/images/niveles/ferratas-intermedio.webp', alt: 'Cable de vía ferrata sobre una ladera de roca caliza', autor: 'Ajznponar', licencia: 'CC0', fuente: 'https://commons.wikimedia.org/wiki/File:Begunjscica,_via_ferrata_on_north_slope.jpg' },
   'ferratas-avanzado': { src: '/images/niveles/ferratas-avanzado.webp', alt: 'Persona progresando por una vía ferrata vertical con escalera metálica', autor: 'theviktoriakiss (Pixabay)', licencia: 'CC0', fuente: 'https://commons.wikimedia.org/wiki/File:Via-ferrata-1375709.jpg' },
+};
+
+/** Explicación de en qué consiste cada nivel (se muestra en su ficha propia). */
+export const levelOfferExplanation: Record<string, { consiste: string[]; paraQuien: string }> = {
+  'barranquismo-iniciacion': {
+    consiste: [
+      'Es el primer contacto con el barranquismo: descendemos un cauce siguiendo el curso del agua, caminando, nadando en pozas y bajando pequeños resaltes.',
+      'Los rápeles son cortos y los saltos siempre opcionales: cada obstáculo tiene una alternativa más sencilla. Antes de empezar el guía explica el material, cómo colocarse y cómo moverse por el barranco.',
+    ],
+    paraQuien: 'Personas sin experiencia previa, familias con niños desde 10 años y grupos que quieren descubrir la actividad.',
+  },
+  'barranquismo-intermedio': {
+    consiste: [
+      'Recorridos más largos y verticales: rápeles de mayor altura encadenados, más tiempo dentro del agua y tramos donde hay que moverse con soltura por el cauce.',
+      'Se trabaja la técnica de cuerda con más autonomía, siempre con el guía supervisando cada maniobra.',
+    ],
+    paraQuien: 'Quien ya ha hecho algún barranco de iniciación, se siente cómodo en el agua y tiene una condición física media.',
+  },
+  'barranquismo-avanzado': {
+    consiste: [
+      'Jornadas largas en barrancos técnicos con grandes cascadas, rápeles de gran altura y tramos comprometidos donde salir a mitad de recorrido no siempre es posible.',
+      'Cada salida se planifica a medida según el grupo, la época y el caudal.',
+    ],
+    paraQuien: 'Grupos adultos con experiencia contrastada en barranquismo y buena condición física.',
+  },
+  'ferratas-iniciacion': {
+    consiste: [
+      'Una vía ferrata es un itinerario equipado en la roca con un cable de vida y grapas metálicas: avanzas trepando por la pared, siempre asegurado al cable con tu arnés y disipador.',
+      'En el nivel de iniciación (K1–K2) las grapas son continuas, los pasos sencillos y la exposición al vacío baja. El guía enseña a usar los mosquetones y acompaña cada tramo.',
+    ],
+    paraQuien: 'Personas sin experiencia previa y niños desde 10 años que quieren probar la vertical con seguridad.',
+  },
+  'ferratas-intermedio': {
+    consiste: [
+      'Ferratas K3–K4 con tramos verticales seguidos, menos puntos de descanso, puentes y más altura sobre el vacío.',
+      'Exigen algo de fuerza en brazos y gestionar la sensación de altura durante más tiempo.',
+    ],
+    paraQuien: 'Quien ya ha hecho alguna ferrata de iniciación y no tiene problemas con la altura.',
+  },
+  'ferratas-avanzado': {
+    consiste: [
+      'Ferratas K5–K6: pasos atléticos, tramos desplomados y fuerte exposición, donde la fuerza de brazos y la técnica marcan la diferencia.',
+      'Se planifican a medida según el grupo y las condiciones del día.',
+    ],
+    paraQuien: 'Personas con experiencia en ferratas, buena condición física y fuerza en brazos.',
+  },
 };
