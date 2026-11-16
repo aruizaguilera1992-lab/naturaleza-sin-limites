@@ -155,6 +155,26 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
           <Button variant="outline" disabled={busy || state === 'desactivada'} onClick={whatsapp}><MessageCircle className="mr-1 h-4 w-4" />WhatsApp</Button>
           {row && state !== 'desactivada' && <Button variant="ghost" disabled={busy} onClick={disable}><Link2Off className="mr-1 h-4 w-4" />Desactivar enlace</Button>}
           {row && row.status !== 'borrador' && <Button variant="ghost" asChild><a href={link} target="_blank" rel="noopener noreferrer"><Eye className="mr-1 h-4 w-4" />Abrir</a></Button>}
+          {row && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" disabled={busy} className="text-destructive hover:bg-destructive/10 hover:text-destructive"><Trash2 className="mr-1 h-4 w-4" />Eliminar</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Eliminar esta ficha definitivamente?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Se borrará «{c.title || 'Sin título'}» y su enlace dejará de funcionar. No se puede deshacer.
+                    {row.accepted_at && row.booking_id ? ' Esta ficha fue aceptada y tiene una reserva vinculada: elimina primero la reserva desde «Reservas».' : ''}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction disabled={busy} onClick={remove} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Eliminar</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </div>
       <div className="rounded-xl border border-border bg-background p-4 sm:p-6">
