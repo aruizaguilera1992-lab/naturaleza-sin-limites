@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { barrancos, Barranco } from '@/data/barrancos';
 import { crags, Crag } from '@/data/crags';
 import { ferratas, Ferrata } from '@/data/ferratas';
-import { levelOffers, levelOfferHref, type LevelOffer } from '@/data/levelOffers';
+import { levelOffers, levelOfferHref, levelOfferPhotos, type LevelOffer } from '@/data/levelOffers';
 import { espeleologiaPublicada, ActividadEspeleologia } from '@/data/espeleologia';
 
 export interface UnifiedActivity {
@@ -241,7 +241,7 @@ export function useActivitiesData() {
         duration: 'Según recorrido', durationHours: 0,
         price: o.precioDesde ? `${o.precioDesde}€` : 'Precio a consultar', priceValue: o.precioDesde ?? 0,
         shortDescription: o.descripcionCorta, longDescription: o.descripcionCorta,
-        image: '', imageLarge: '', characteristics: o.caracteristicas, bestSeason: 'Según época',
+        image: levelOfferPhotos[o.id]?.src ?? '', imageLarge: levelOfferPhotos[o.id]?.src ?? '', characteristics: o.caracteristicas, bestSeason: 'Según época',
         minGroup: 2, materialIncluded: true, access: 'Según recorrido',
         externalUrl: levelOfferHref(o), externalSource: 'naturalezasinlimites.es',
         includes: o.incluye, highlights: o.caracteristicas,

@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { Check, MessageCircle, Mountain, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { levelOffersFor, levelOfferWhatsapp, type LevelDiscipline } from '@/data/levelOffers';
+import { levelOfferPhotos, levelOffersFor, levelOfferWhatsapp, type LevelDiscipline } from '@/data/levelOffers';
 
 const contactInterest: Record<LevelDiscipline, string> = { barranquismo: 'barranquismo', ferratas: 'vias-ferratas' };
 
-/** Tres tarjetas de nivel sin fotografía (no hay fotos propias verificadas de cada recorrido). */
+/** Tres tarjetas de nivel con foto ilustrativa de uso libre (no es el recorrido concreto). */
 export function LevelOffersSection({ discipline, title, intro }: { discipline: LevelDiscipline; title: string; intro: string }) {
   const offers = levelOffersFor(discipline);
   return (
@@ -20,13 +20,13 @@ export function LevelOffersSection({ discipline, title, intro }: { discipline: L
           {offers.map((o, i) => (
             <motion.article key={o.id} id={o.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
               className="scroll-mt-32 flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300">
-              <div aria-hidden="true" className="relative h-40 bg-gradient-to-br from-adventure-dark via-muted to-background">
-                <svg className="absolute inset-x-0 bottom-0 h-3/4 w-full text-primary/20" viewBox="0 0 400 120" preserveAspectRatio="none" fill="currentColor">
-                  <path d="M0 120 L0 80 L70 30 L130 90 L200 10 L260 80 L330 40 L400 75 L400 120 Z" />
-                </svg>
+              <figure className="relative h-48 bg-muted">
+                {levelOfferPhotos[o.id] && <img src={levelOfferPhotos[o.id].src} alt={levelOfferPhotos[o.id].alt} loading="lazy" decoding="async" className="h-full w-full object-cover" />}
+                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+                {levelOfferPhotos[o.id] && <figcaption className="absolute right-2 bottom-2 rounded bg-background/75 px-1.5 py-0.5 text-[10px] text-muted-foreground">Foto ilustrativa: <a href={levelOfferPhotos[o.id].fuente} target="_blank" rel="noopener noreferrer" className="underline">{levelOfferPhotos[o.id].autor}</a>, {levelOfferPhotos[o.id].licencia}</figcaption>}
                 <div className="absolute left-4 top-4 flex gap-1">{[1, 2, 3].map((n) => <Mountain key={n} className={n <= o.orden ? 'h-6 w-6 text-primary' : 'h-6 w-6 text-muted-foreground/30'} />)}</div>
-                <span className="absolute bottom-4 left-4 font-heading text-4xl font-extrabold text-foreground/90">Nivel {o.orden}</span>
-              </div>
+                <span className="absolute bottom-4 left-4 font-heading text-4xl font-extrabold text-foreground">Nivel {o.orden}</span>
+              </figure>
               <div className="flex flex-1 flex-col p-6">
                 <div className="mb-2 flex flex-wrap gap-2"><Badge className="border-primary/40 bg-primary/15 text-primary">{o.nivel}</Badge><Badge variant="outline">{o.grado}</Badge></div>
                 <h3 className="text-xl font-heading font-bold text-foreground">{o.nombre}</h3>
