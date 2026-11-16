@@ -73,14 +73,14 @@ export function ActivitiesComparison({ activities, isOpen, onClose, onRemove }: 
                         >
                           <X className="h-4 w-4" />
                         </button>
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-xl overflow-hidden mb-2">
-                          <img 
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-xl overflow-hidden mb-2 bg-gradient-to-br from-adventure-dark to-muted">
+                          {activity.image && <img 
                             src={activity.image} 
                             alt={`${activity.name} en ${activity.zone}`}
                             loading="lazy"
                             decoding="async"
                             className="w-full h-full object-cover"
-                          />
+                          />}
                         </div>
                         <h3 className="font-heading font-bold text-sm sm:text-base text-foreground line-clamp-1">
                           {activity.name}

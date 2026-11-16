@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mountain, ChevronDown, ShieldCheck } from "lucide-react";
@@ -7,27 +7,10 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { FerrataQuestionnaire } from "@/components/ferratas/FerrataQuestionnaire";
-import { FerrataResults } from "@/components/ferratas/FerrataResults";
-import type { NivelExperiencia, ToleranciaVertigo, DuracionPreferida, ElementoPreferido } from "@/data/ferratas";
+import { LevelOffersSection } from "@/components/shared/LevelOffersSection";
 import { media } from "@/data/media";
 
-interface FilterAnswers {
-  nivel: NivelExperiencia | null;
-  vertigo: ToleranciaVertigo | null;
-  duracion: DuracionPreferida | null;
-  elemento: ElementoPreferido | null;
-}
-
 const ViasFerratas = () => {
-  const [showResults, setShowResults] = useState(false);
-  const [filters, setFilters] = useState<FilterAnswers>({
-    nivel: null,
-    vertigo: null,
-    duracion: null,
-    elemento: null,
-  });
-
   // Scroll to top on page load; with a URL hash, scroll to the target section instead.
   const { hash } = useLocation();
   useEffect(() => {
@@ -46,45 +29,11 @@ const ViasFerratas = () => {
     };
   }, [hash]);
 
-  const handleQuestionnaireComplete = (answers: FilterAnswers) => {
-    setFilters(answers);
-    setShowResults(true);
-
-    // Scroll to results
-    setTimeout(() => {
-      document.getElementById("resultados")?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
-
-  const handleShowAll = () => {
-    setFilters({ nivel: null, vertigo: null, duracion: null, elemento: null });
-    setShowResults(true);
-    setTimeout(() => {
-      document.getElementById('resultados')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
-  const handleReset = () => {
-    setShowResults(false);
-    setFilters({
-      nivel: null,
-      vertigo: null,
-      duracion: null,
-      elemento: null,
-    });
-
-    // Scroll to questionnaire
-    setTimeout(() => {
-      document.getElementById("cuestionario")?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Seo
         title="Vías ferratas en Málaga y Andalucía | Naturaleza Sin Límites"
-        description="Vías ferratas guiadas en Málaga y Andalucía por dificultad K1-K6, exposición y duración. Material homologado y grupos reducidos."
+        description="Vías ferratas guiadas en Málaga y Andalucía en tres niveles: iniciación (K1–K2), intermedio (K3–K4) y avanzado (K5–K6). Grupos reducidos."
         path="/vias-ferratas"
       />
       <Navbar />
@@ -124,62 +73,25 @@ const ViasFerratas = () => {
               </span>
             </div>
 
-            {/* APARTADO ENCUENTRA TU FERRATA DEBAJO DEL BOTÓN VERDE */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="mt-4 mb-6 text-center"
-            >
-              <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-2">
-                Encuentra tu vía ferrata perfecta
-              </h2>
-              <p className="text-white/80 max-w-2xl mx-auto">
-                Solo 4 preguntas para recomendarte las ferratas que mejor se adaptan a tu nivel y preferencias
-              </p>
-            </motion.div>
-
             {/* Flecha para hacer scroll al cuestionario */}
             <motion.a
-              href="#cuestionario"
+              href="#experiencias"
               className="inline-flex items-center gap-2 text-white/80 hover:text-primary transition-colors"
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <span>Ir al cuestionario</span>
+              <span>Ver niveles</span>
               <ChevronDown className="h-5 w-5" />
             </motion.a>
           </motion.div>
         </div>
       </section>
 
-      {/* Questionnaire Section */}
-      <section id="cuestionario" className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          {!showResults ? (
-            <>
-              <FerrataQuestionnaire onComplete={handleQuestionnaireComplete} onReset={handleReset} />
-              <div className="mt-6 text-center">
-                <button
-                  onClick={handleShowAll}
-                  className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary transition-colors duration-300 active:scale-95"
-                >
-                  Prefiero ver todas las vías ferratas
-                </button>
-              </div>
-            </>
-          ) : null}
-        </div>
-      </section>
-
-      {/* Results Section */}
-      {showResults && (
-        <section id="resultados" className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <FerrataResults filters={filters} onReset={handleReset} />
-          </div>
-        </section>
-      )}
+      <LevelOffersSection
+        discipline="ferratas"
+        title="Nuestras salidas de vía ferrata"
+        intro="Tres niveles según tu experiencia y tu tolerancia a la altura. La vía concreta se confirma al cerrar la salida."
+      />
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-adventure-dark to-background">

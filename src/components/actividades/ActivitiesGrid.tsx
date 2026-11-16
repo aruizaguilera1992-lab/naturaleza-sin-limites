@@ -34,14 +34,14 @@ function ActivityCard({ activity, index, isInCompareList, isFavorite, onToggleCo
 }) {
   const category = activity.activityType === 'ferratas' ? 'vias-ferratas' : activity.activityType;
   const rawId = 'id' in activity.originalData ? activity.originalData.id : activity.id.replace(/^[^-]+-/, '');
-  const profileUrl = `/actividades/${category}/${rawId}`;
+  const profileUrl = activity.href ?? `/actividades/${category}/${rawId}`;
   const bookUrl = `/reservar/${category}/${rawId}`;
   const isList = viewMode === 'list';
 
   return (
     <motion.article initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: Math.min(index, 8) * 0.04 }} className={cn('group flex h-full min-w-0 overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:shadow-card', isList ? 'flex-col sm:flex-row' : 'flex-col')}>
       <Link to={profileUrl} className={cn('relative block shrink-0 overflow-hidden', isList ? 'aspect-[16/9] w-full sm:aspect-auto sm:w-56 lg:w-72' : 'aspect-[4/3] w-full')}>
-        <img src={activity.image} alt={`${typeLabels[activity.activityType]} en ${activity.zone}, ${activity.province}`} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        {activity.image ? <img src={activity.image} alt={`${typeLabels[activity.activityType]} en ${activity.zone}, ${activity.province}`} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /> : <div aria-hidden="true" className="h-full w-full bg-gradient-to-br from-adventure-dark via-muted to-background"><Mountain className="absolute right-6 bottom-10 h-16 w-16 text-primary/25" /></div>}
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
         <Badge className="absolute left-3 top-3 border-primary/30 bg-background/85 text-foreground backdrop-blur">{typeLabels[activity.activityType]}</Badge>
         <span className="absolute bottom-3 left-3 flex items-center gap-1 text-xs font-semibold text-foreground"><MapPin className="h-3.5 w-3.5 text-primary" />{activity.zone}, {activity.province}</span>
@@ -80,7 +80,9 @@ function ActivityCard({ activity, index, isInCompareList, isFavorite, onToggleCo
         <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><CalendarCheck className="h-4 w-4 text-primary" />Salidas bajo petición</p>
 
         <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
-          {activity.priceValue > 0 ? (
+          {activity.href ? (
+            <Button variant="hero" size="sm" className="min-h-11 px-2" asChild><Link to={activity.href}>Ver nivel</Link></Button>
+          ) : activity.priceValue > 0 ? (
             <Button variant="hero" size="sm" className="min-h-11 px-2" asChild><Link to={bookUrl}>Reservar</Link></Button>
           ) : (
             <Button variant="hero" size="sm" className="min-h-11 px-2" asChild>
