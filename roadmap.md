@@ -1,5 +1,9 @@
 # Roadmap
 
+## Assistant IA de fiches
+- [ ] Ajouter propositions éditables dans les sorties privées et ouvertes, sans écriture/envoi automatique ni modification des données opérationnelles.
+- [ ] Vérifier accès admin, génération réelle, application manuelle et annulation; sans publication web.
+
 ## Recibo final de pagos (17/11/2026)
 - [x] Corregir confirmación de fecha en reservas privadas pagadas, mantener incidencias reales de plazas.
 - [x] Mostrar total acordado, pagado acumulado y saldo en recibo y página de pago; felicitación y próximos pasos.
