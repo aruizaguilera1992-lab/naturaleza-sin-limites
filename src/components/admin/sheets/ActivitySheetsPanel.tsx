@@ -26,6 +26,7 @@ interface SheetRow { id: string; token: string; content: SheetContent; status: s
 const STATE_LABEL: Record<SheetState, string> = { borrador: 'Borrador', enviada: 'Enviada', vista: 'Vista', aceptada: 'Aceptada', caducada: 'Caducada', desactivada: 'Desactivada' };
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
+const IMG_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
 function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void> }) {
   const { toast } = useToast();
@@ -36,6 +37,8 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
   const [email, setEmail] = useState<string>(contact?.email ?? '');
   const [phone, setPhone] = useState<string>(contact?.phone ?? '');
   const [busy, setBusy] = useState(false);
+  const [uploaded, setUploaded] = useState<string[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
   // Texto en bruto de los listados: si se guardara ya filtrado, el salto de línea de Enter desaparecería al reescribir el campo.
   const [incRaw, setIncRaw] = useState(() => (row?.content.includes ?? sheetFromBase(sheetBases[0].id).includes).join('\n'));
   const [bringRaw, setBringRaw] = useState(() => (row?.content.bring ?? sheetFromBase(sheetBases[0].id).bring).join('\n'));
