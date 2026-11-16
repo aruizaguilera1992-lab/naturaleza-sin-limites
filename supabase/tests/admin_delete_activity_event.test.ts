@@ -2,6 +2,7 @@ import { PGlite } from "npm:@electric-sql/pglite@0.3.14";
 import { assertEquals, assertRejects } from "jsr:@std/assert@1";
 
 const migration = await Deno.readTextFile("drizzle/migrations/0028_admin_delete_activity_event.sql");
+const grantsMigration = await Deno.readTextFile("drizzle/migrations/0029_admin_delete_activity_event_grants.sql");
 
 const EVENT = "11111111-1111-4111-8111-111111111111";
 const BOOKING = "22222222-2222-4222-8222-222222222221";
@@ -30,6 +31,7 @@ async function database(state: string | null) {
     await db.exec(`INSERT INTO public.activity_event_bookings VALUES ('${EVENT}','${BOOKING}','${state}')`);
   }
   await db.exec(migration);
+  await db.exec(grantsMigration);
   await db.exec(`SELECT set_config('test.uid','${ADMIN}',false)`);
   return db;
 }
@@ -95,9 +97,10 @@ Deno.test("una salida inexistente se rechaza sin borrar nada", async () => {
 Deno.test("la función no es ejecutable por usuarios anónimos", async () => {
   const db = await database(null);
   try {
-    const permissions = await db.query<{ anon: boolean; service: boolean }>(`SELECT
+    const permissions = await db.query<{ anon: boolean; authenticated: boolean; service: boolean }>(`SELECT
       has_function_privilege('anon','public.admin_delete_activity_event(uuid)','EXECUTE') AS anon,
+      has_function_privilege('authenticated','public.admin_delete_activity_event(uuid)','EXECUTE') AS authenticated,
       has_function_privilege('service_role','public.admin_delete_activity_event(uuid)','EXECUTE') AS service`);
-    assertEquals(permissions.rows[0], { anon: false, service: true });
+    assertEquals(permissions.rows[0], { anon: false, authenticated: true, service: true });
   } finally { await db.close(); }
 });
