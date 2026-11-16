@@ -17,9 +17,9 @@ import {
 } from '@/lib/activitySheets';
 
 export interface SheetContact { id: string; nombre: string; email: string | null; phone: string | null }
-interface SheetRow { id: string; token: string; content: SheetContent; status: string; contact_id: string | null; expires_at: string | null; sent_at: string | null; first_viewed_at: string | null; view_count: number; updated_at: string }
+interface SheetRow { id: string; token: string; content: SheetContent; status: string; contact_id: string | null; expires_at: string | null; sent_at: string | null; first_viewed_at: string | null; view_count: number; updated_at: string; accepted_at: string | null; booking_id: string | null }
 
-const STATE_LABEL: Record<SheetState, string> = { borrador: 'Borrador', enviada: 'Enviada', vista: 'Vista', caducada: 'Caducada', desactivada: 'Desactivada' };
+const STATE_LABEL: Record<SheetState, string> = { borrador: 'Borrador', enviada: 'Enviada', vista: 'Vista', aceptada: 'Aceptada', caducada: 'Caducada', desactivada: 'Desactivada' };
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 
@@ -91,7 +91,8 @@ function Editor({ row, contacts, catalog, onSaved }: { row: SheetRow | null; con
     <div className="grid gap-6 xl:grid-cols-2">
       <div className="space-y-4 rounded-xl border border-border bg-card p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">{STATE_LABEL[state]}</Badge>
+          <Badge variant={state === 'aceptada' ? 'default' : 'outline'}>{STATE_LABEL[state]}</Badge>
+          {row?.accepted_at && <span className="text-xs text-muted-foreground">Aceptada el {new Date(row.accepted_at).toLocaleString('es-ES')} · reserva creada en «Reservas»{row.booking_id ? ` (${row.booking_id.slice(0, 8)})` : ''}; envía el enlace de señal desde allí.</span>}
           {row?.first_viewed_at && <span className="text-xs text-muted-foreground">Vista {row.view_count} {row.view_count === 1 ? 'vez' : 'veces'}</span>}
         </div>
         <div><Label htmlFor="sh-base">Nivel de partida</Label>

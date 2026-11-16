@@ -20,6 +20,8 @@ describe('activity sheets', () => {
   it('expired and disabled links are not active', () => {
     const now = new Date('2026-11-16T12:00:00Z');
     expect(sheetState({ status: 'enviada', expires_at: '2026-11-15T00:00:00Z', first_viewed_at: null }, now)).toBe('caducada');
+    expect(sheetState({ status: 'enviada', expires_at: null, first_viewed_at: '2026-11-16T10:00:00Z', accepted_at: '2026-11-16T11:00:00Z' }, now)).toBe('aceptada');
+    expect(sheetState({ status: 'desactivada', expires_at: null, first_viewed_at: null, accepted_at: '2026-11-16T11:00:00Z' }, now)).toBe('desactivada');
     expect(sheetState({ status: 'desactivada', expires_at: null, first_viewed_at: null }, now)).toBe('desactivada');
     expect(sheetState({ status: 'enviada', expires_at: null, first_viewed_at: '2026-11-16T10:00:00Z' }, now)).toBe('vista');
   });

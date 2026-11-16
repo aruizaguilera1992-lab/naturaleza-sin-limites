@@ -60,7 +60,8 @@ export function SheetView({ c, reference }: { c: SheetContent; reference?: strin
           <p className="text-muted-foreground"><span className="text-2xl font-extrabold text-primary">{c.pricePerPersonEuros} €</span> / persona{total !== null && c.people > 1 && <> · total <span className="font-bold text-foreground">{total} €</span></>}</p>
         ) : <p className="text-lg font-bold text-primary">Precio a consultar</p>}
         <div className="mt-4 flex flex-wrap gap-2">
-          <Button variant="hero" className="min-h-11" asChild><a href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Confirmar por WhatsApp</a></Button>
+          {accept}
+          <Button variant={accept ? 'outline' : 'hero'} className="min-h-11" asChild><a href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Confirmar por WhatsApp</a></Button>
           <Button variant="outline" className="min-h-11" asChild><a href={`/contacto?interes=${c.discipline === 'ferratas' ? 'vias-ferratas' : c.discipline}`}>Consultar</a></Button>
         </div>
       </div>
