@@ -1,5 +1,10 @@
 # Roadmap
 
+## Recibo final de pagos (17/11/2026)
+- [ ] Corregir confirmación de fecha en reservas privadas pagadas, mantener incidencias reales de plazas.
+- [ ] Mostrar total acordado, pagado acumulado y saldo en recibo y página de pago; felicitación y próximos pasos.
+- [ ] Enlazar suscripción voluntaria con doble confirmación, probar y desplegar funciones afectadas sin publicar la web.
+
 ## Normas y pasos de salidas
 - [x] Añadir campos editables y listados visibles al cliente en salidas privadas y abiertas; guardado/reapertura de ambos y enlace privado en móvil comprobados, pruebas temporales eliminadas; 139 pruebas y compilación OK, sin alterar pagos ni publicar.
 
