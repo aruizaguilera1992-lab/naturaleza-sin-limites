@@ -598,8 +598,11 @@ export default function Admin() {
         ? { ...row, status: "incidencia_plazas" } : row));
     }
     if (c.data) setContacts(c.data as Contact[]);
-    const sh = await supabase.from("activity_sheets").select("id, booking_id").not("booking_id", "is", null);
-    setSheetByBooking(Object.fromEntries((sh.data ?? []).map((r) => [r.booking_id as string, r.id])));
+    // Enlace reserva → ficha de origen; opcional, nunca bloquea la carga del panel.
+    try {
+      const sh = await supabase.from("activity_sheets").select("id, booking_id");
+      setSheetByBooking(Object.fromEntries(((sh?.data ?? []) as { id: string; booking_id: string | null }[]).filter((r) => r.booking_id).map((r) => [r.booking_id as string, r.id])));
+    } catch { /* sin enlace de origen */ }
     if (p.data) setPayments(p.data as PaymentRequest[]);
     if (n.data) setNotifications(n.data as NotificationRow[]);
     const ids = [...new Set((b.data ?? []).map((r) => r.event_id).filter(Boolean))] as string[];
