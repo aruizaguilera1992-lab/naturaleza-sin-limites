@@ -85,10 +85,12 @@ export type Database = {
           meeting_point_public: string | null
           notes: string | null
           price_cents: number | null
+          rules: string | null
           seats_reserved: number
           slug: string
           starts_at: string
           status: string
+          steps: string | null
           title: string
           updated_at: string
         }
@@ -107,10 +109,12 @@ export type Database = {
           meeting_point_public?: string | null
           notes?: string | null
           price_cents?: number | null
+          rules?: string | null
           seats_reserved?: number
           slug: string
           starts_at: string
           status?: string
+          steps?: string | null
           title: string
           updated_at?: string
         }
@@ -129,10 +133,12 @@ export type Database = {
           meeting_point_public?: string | null
           notes?: string | null
           price_cents?: number | null
+          rules?: string | null
           seats_reserved?: number
           slug?: string
           starts_at?: string
           status?: string
+          steps?: string | null
           title?: string
           updated_at?: string
         }
@@ -1203,10 +1209,12 @@ export type Database = {
           longitude: number | null
           meeting_point_public: string | null
           price_cents: number | null
+          rules: string | null
           seats_reserved: number | null
           slug: string | null
           starts_at: string | null
           status: string | null
+          steps: string | null
           title: string | null
         }
         Insert: {
@@ -1219,10 +1227,12 @@ export type Database = {
           longitude?: number | null
           meeting_point_public?: string | null
           price_cents?: number | null
+          rules?: string | null
           seats_reserved?: number | null
           slug?: string | null
           starts_at?: string | null
           status?: string | null
+          steps?: string | null
           title?: string | null
         }
         Update: {
@@ -1235,10 +1245,12 @@ export type Database = {
           longitude?: number | null
           meeting_point_public?: string | null
           price_cents?: number | null
+          rules?: string | null
           seats_reserved?: number | null
           slug?: string | null
           starts_at?: string | null
           status?: string | null
+          steps?: string | null
           title?: string | null
         }
         Relationships: []

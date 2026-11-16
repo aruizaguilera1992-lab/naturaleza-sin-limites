@@ -3,6 +3,7 @@ import { Clock, MapPin, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
+import { OutingInstructions } from '@/components/shared/OutingInstructions';
 
 const euros = (value: number) =>
   new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(value);
@@ -61,6 +62,7 @@ export function EventCard({ event, showDate = true }: EventCardProps) {
       </div>
 
       <div className="mt-auto flex flex-wrap gap-2 pt-1">
+        <div className="w-full"><OutingInstructions rules={event.rules} steps={event.steps} /></div>
         <Button asChild size="sm" variant="outline" className="transition-all duration-300 active:scale-95">
           <Link to={`/actividades/${event.category}/${event.slug}`}>Ver experiencia</Link>
         </Button>

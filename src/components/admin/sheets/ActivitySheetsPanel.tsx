@@ -139,11 +139,11 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking }: {
         {row?.booking_id && onOpenBooking && (
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
             <span className="text-foreground">Reserva creada. Siguiente paso: enviar el enlace de la señal.</span>
-            <Button size="sm" variant="hero" className="min-h-11" onClick={() => onOpenBooking(row.booking_id!)}>Abrir reserva</Button>
+            <Button size="sm" variant="hero" className="min-h-11" onClick={() => { if (row.booking_id) onOpenBooking(row.booking_id); }}>Abrir reserva</Button>
           </div>
         )}
         <div><Label htmlFor="sh-base">Nivel de partida</Label>
-          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes })); setIncRaw(next.includes.join('\n')); setBringRaw(next.bring.join('\n')); setReqRaw(next.requirements.join('\n')); }}>
+          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes, rules: p.rules, steps: p.steps })); setIncRaw(next.includes.join('\n')); setBringRaw(next.bring.join('\n')); setReqRaw(next.requirements.join('\n')); }}>
             <optgroup label="Niveles">{sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>
             <optgroup label="Catálogo (recorridos)">{catalog.map((it) => <option key={it.key} value={`catalog:${it.key}`}>{it.name} · {it.levelLabel}</option>)}</optgroup>
           </select>
@@ -171,6 +171,11 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking }: {
           <div><Label htmlFor="sh-req">Requisitos</Label><Textarea id="sh-req" rows={5} value={reqRaw} onChange={(e) => { setReqRaw(e.target.value); set('requirements', lines(e.target.value)); }} /></div>
         </div>
         <div><Label htmlFor="sh-notes">Notas para el cliente</Label><Textarea id="sh-notes" rows={3} value={c.notes} onChange={(e) => set('notes', e.target.value)} /></div>
+        <fieldset className="space-y-3 border-t border-border pt-4">
+          <legend className="font-heading font-semibold text-foreground">Normas y pasos a seguir</legend>
+          <div><Label htmlFor="sh-rules">Normas (una por línea)</Label><Textarea id="sh-rules" rows={4} value={c.rules ?? ''} onChange={(e) => set('rules', e.target.value)} /></div>
+          <div><Label htmlFor="sh-steps">Pasos a seguir (uno por línea)</Label><Textarea id="sh-steps" rows={4} value={c.steps ?? ''} onChange={(e) => set('steps', e.target.value)} /></div>
+        </fieldset>
         <div><Label htmlFor="sh-photo">Foto</Label>
           <select id="sh-photo" className={sel} value={c.photo ?? ''} onChange={(e) => set('photo', e.target.value || null)}>
             <option value="">Sin foto</option>

@@ -211,6 +211,13 @@
       "when": 1794871073156,
       "tag": "0029_admin_delete_activity_event_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1794871883091,
+      "tag": "0030_outing_rules_steps",
+      "breakpoints": true
     }
   ]
 }
