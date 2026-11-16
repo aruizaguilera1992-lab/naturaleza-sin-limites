@@ -59,15 +59,19 @@ export async function readBookingEmailContext(db: any, bookingId: string | null,
     const wanted = String(booking.activity ?? "").trim().toLowerCase();
     // Bookings store "Categoría · Nombre"; also accept the bare catalogue name.
     const entry = Object.values(ACTIVITY_PRICES).find((e) => [e.name, `${e.category} · ${e.name}`].some((n) => n.trim().toLowerCase() === wanted));
-    if (entry && Number.isInteger(people) && people > 0) {
-      const gross = Math.round(entry.pricePerPerson * 100) * people;
+    // Private proposal accepted by the client: its confirmed price per person is the agreed price.
+    const { data: sheet } = await db.from("activity_sheets").select("content").eq("booking_id", bookingId).maybeSingle();
+    const sheetPrice = Number(sheet?.content?.pricePerPersonEuros);
+    const unitEuros = Number.isFinite(sheetPrice) && sheetPrice > 0 ? sheetPrice : entry?.pricePerPerson;
+    if (unitEuros && Number.isInteger(people) && people > 0) {
+      const gross = Math.round(unitEuros * 100) * people;
       const percent = Math.min(100, Math.max(0, Number(booking.discount_percent) || 0));
       const discount = percent > 0 ? Math.round(gross * percent / 100) : Math.max(0, Number(booking.discount_cents) || 0);
       const net = Math.max(0, gross - discount);
       if (net > 0 && payment.amount_cents === Math.round(net * DEPOSIT_RATE)) {
         money.totalCents = net;
         money.depositCents = payment.amount_cents;
-        money.unitCents = Math.round(entry.pricePerPerson * 100);
+        money.unitCents = Math.round(unitEuros * 100);
         if (discount > 0) { money.grossCents = gross; money.discountCents = Math.min(discount, gross); money.discountPercent = percent > 0 ? percent : undefined; }
       }
     }
