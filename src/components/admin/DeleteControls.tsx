@@ -8,14 +8,26 @@ import {
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function DeleteRecordButton({ target, id, onDeleted, className = "mt-6" }: { target: "booking" | "contact"; id: string; onDeleted: () => void; className?: string }) {
+type Target = "booking" | "contact" | "event";
+
+const RPC: Record<Target, string> = {
+  booking: "admin_delete_booking",
+  contact: "admin_delete_contact",
+  event: "admin_delete_activity_event",
+};
+
+const WARNING: Record<Target, string> = {
+  booking: "la reserva",
+  contact: "el contacto",
+  event: "la salida del calendario público",
+};
+
+export function DeleteRecordButton({ target, id, onDeleted, className = "mt-6", label = "Eliminar definitivamente" }: { target: Target; id: string; onDeleted: () => void; className?: string; label?: string }) {
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
   const remove = async () => {
     setBusy(true);
-    const { error } = target === "booking"
-      ? await supabase.rpc("admin_delete_booking", { _id: id })
-      : await supabase.rpc("admin_delete_contact", { _id: id });
+    const { error } = await supabase.rpc(RPC[target] as never, { _id: id } as never);
     setBusy(false);
     if (error) return toast({ title: "No se pudo eliminar", description: error.message, variant: "destructive" });
     toast({ title: "Eliminado definitivamente" });
@@ -25,14 +37,17 @@ export function DeleteRecordButton({ target, id, onDeleted, className = "mt-6" }
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="outline" className={`${className} min-h-11 gap-2 border-destructive/50 text-destructive hover:bg-destructive/10`}>
-          <Trash2 className="h-4 w-4" aria-hidden="true" /> Eliminar definitivamente
+          <Trash2 className="h-4 w-4" aria-hidden="true" /> {label}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>¿Eliminar definitivamente?</AlertDialogTitle>
           <AlertDialogDescription>
-            Se borrarán {target === "booking" ? "la reserva" : "el contacto"}, sus enlaces de pago y su historial de correos. No se puede deshacer. Los cobros ya hechos en Stripe no se devuelven.
+            Se borrarán {WARNING[target]}
+            {target === "event"
+              ? " y sus enlaces de reserva ya liberados. Si tiene reservas activas, primero deberás eliminarlas desde Reservas. No se puede deshacer."
+              : ", sus enlaces de pago y su historial de correos. No se puede deshacer. Los cobros ya hechos en Stripe no se devuelven."}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
