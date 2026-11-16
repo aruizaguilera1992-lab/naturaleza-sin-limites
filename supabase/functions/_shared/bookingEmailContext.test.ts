@@ -23,7 +23,7 @@ Deno.test("enrichment is read-only, current validated payment counted once witho
   assertEquals(before.money?.paidCents, 0);
   assertEquals(after.money?.paidCents, 5400);
   assertEquals(after.money?.totalCents, 18000);
-  assert(db.reads.every(t => ["bookings", "activity_event_bookings", "activity_events", "payment_requests", "notification_log"].includes(t)));
+  assert(db.reads.every(t => ["bookings", "activity_event_bookings", "activity_events", "payment_requests", "notification_log", "activity_sheets"].includes(t)));
 });
 
 Deno.test("manual signal uses admin emission or exact accepted notification, never date/status alone", async () => {
@@ -36,7 +36,7 @@ Deno.test("manual signal uses admin emission or exact accepted notification, nev
   const receipt = await readBookingEmailContext(accepted, "b1", payment, true);
   assertEquals(receipt.manualConfirmation, true);
   assertEquals(accepted.filters.filter(f => f[0] === "notification_log"), [["notification_log", "payment_request_id", "p1"], ["notification_log", "booking_id", "b1"], ["notification_log", "kind", "enlace_pago"], ["notification_log", "status", "enviado"]]);
-  assertStringIncludesLocal(renderBookingEmail({ ...receipt, activity: "Ejemplo", variant: "receipt", state: "fecha_pendiente" }).subject, "Señal recibida");
+  assertStringIncludesLocal(renderBookingEmail({ ...receipt, activity: "Ejemplo", variant: "receipt", state: "fecha_pendiente" }).subject, "Reserva confirmada");
   for (const kind of ["manual", "saldo", "pack"]) {
     const generic = await readBookingEmailContext(fakeDb({ rows: [{ ...rows[0], kind }], sent: true }), "b1", payment, true);
     assertEquals(generic.manualConfirmation, undefined);
