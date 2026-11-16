@@ -190,6 +190,13 @@
       "when": 1794868799028,
       "tag": "0026_accept_sheet_without_contact_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1794869583814,
+      "tag": "0027_catalog_photos_admin_read",
+      "breakpoints": true
     }
   ]
 }
