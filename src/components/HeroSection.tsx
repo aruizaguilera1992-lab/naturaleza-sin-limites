@@ -41,7 +41,7 @@ export function HeroSection() {
     return () => window.clearInterval(interval);
   }, [reduceMotion]);
 
-  return <section id="inicio" style={reduceMotion ? undefined : { background: 'hsl(0 0% 0%)' }} className="homepage-hero relative min-h-[620px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden">
+  return <section id="inicio" style={reduceMotion ? undefined : { background: 'hsl(0 0% 0%)' }} className="homepage-hero relative min-h-[620px] lg:min-h-[88vh] flex items-center justify-center overflow-hidden">
       {/* Vídeo aleatorio del canal oficial (desde su segundo destacado); fondo negro hasta que empieza. */}
       {!reduceMotion && (
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true" style={{ background: 'hsl(0 0% 0%)' }}>
@@ -51,7 +51,7 @@ export function HeroSection() {
       <div className="homepage-hero-overlay absolute inset-0 z-[1]" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-32 md:pt-28 pb-10 text-center">
+      <div className="relative z-10 container mx-auto px-4 pt-40 md:pt-44 pb-12 text-center">
         <motion.div initial={{
         opacity: 0,
         y: 30
