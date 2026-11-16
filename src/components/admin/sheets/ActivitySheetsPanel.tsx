@@ -28,7 +28,7 @@ const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 const IMG_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
-function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void> }) {
+function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void>; onOpenBooking?: (bookingId: string) => void }) {
   const { toast } = useToast();
   const [c, setC] = useState<SheetContent>(() => row?.content ?? sheetFromBase(sheetBases[0].id));
   const [contactId, setContactId] = useState<string>(row?.contact_id ?? '');
@@ -128,9 +128,20 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
       <div className="space-y-4 rounded-xl border border-border bg-card p-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={state === 'aceptada' ? 'default' : 'outline'}>{STATE_LABEL[state]}</Badge>
-          {row?.accepted_at && <span className="text-xs text-muted-foreground">Aceptada el {new Date(row.accepted_at).toLocaleString('es-ES')} · reserva creada en «Reservas»{row.booking_id ? ` (${row.booking_id.slice(0, 8)})` : ''}; envía el enlace de señal desde allí.</span>}
+          {row?.accepted_at && <span className="text-xs text-muted-foreground">Confirmada el {new Date(row.accepted_at).toLocaleString('es-ES')}</span>}
           {row?.first_viewed_at && <span className="text-xs text-muted-foreground">Vista {row.view_count} {row.view_count === 1 ? 'vez' : 'veces'}</span>}
         </div>
+        <ol aria-label="Flujo de la salida" className="grid grid-cols-4 gap-1 text-center text-[11px]">
+          {[['Ficha', true], ['Enviada', !!row?.sent_at || state !== 'borrador'], ['Confirmada', !!row?.accepted_at], ['Reserva', !!row?.booking_id]].map(([l, on], i) => (
+            <li key={i} className={`rounded-md border px-1 py-1.5 ${on ? 'border-primary bg-primary/10 text-foreground' : 'border-border text-muted-foreground'}`}>{i + 1}. {l as string}</li>
+          ))}
+        </ol>
+        {row?.booking_id && onOpenBooking && (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
+            <span className="text-foreground">Reserva creada. Siguiente paso: enviar el enlace de la señal.</span>
+            <Button size="sm" variant="hero" className="min-h-11" onClick={() => onOpenBooking(row.booking_id!)}>Abrir reserva</Button>
+          </div>
+        )}
         <div><Label htmlFor="sh-base">Nivel de partida</Label>
           <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes })); setIncRaw(next.includes.join('\n')); setBringRaw(next.bring.join('\n')); setReqRaw(next.requirements.join('\n')); }}>
             <optgroup label="Niveles">{sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>
@@ -216,9 +227,10 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
 }
 
 /** Constructor de fichas privadas de actividad con enlace único. */
-export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetContact[]; catalog: CatalogItem[] }) {
+export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBooking }: { contacts: SheetContact[]; catalog: CatalogItem[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
   const [rows, setRows] = useState<SheetRow[]>([]);
-  const [selected, setSelected] = useState<string | 'new' | null>(null);
+  const [selected, setSelected] = useState<string | 'new' | null>(focusSheetId ?? null);
+  useEffect(() => { if (focusSheetId) setSelected(focusSheetId); }, [focusSheetId]);
   const load = useCallback(async () => {
     const { data } = await supabase.from('activity_sheets').select('*').order('updated_at', { ascending: false });
     setRows((data ?? []) as unknown as SheetRow[]);
@@ -240,7 +252,7 @@ export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetCont
             <li key={r.id}>
               <button type="button" onClick={() => setSelected(r.id)} aria-current={selected === r.id || undefined}
                 className={`w-full rounded-lg border p-3 text-left transition-all duration-300 active:scale-95 ${selected === r.id ? 'border-primary bg-primary/10' : 'border-border bg-card hover:border-primary/50'}`}>
-                <div className="flex items-center justify-between gap-2"><span className="truncate font-semibold text-foreground">{r.content?.title || 'Sin título'}</span><Badge variant="outline">{STATE_LABEL[sheetState(r)]}</Badge></div>
+                <div className="flex items-center justify-between gap-2"><span className="truncate font-semibold text-foreground">{r.content?.title || 'Sin título'}</span><Badge variant={r.booking_id ? 'default' : 'outline'}>{r.booking_id ? 'Con reserva' : STATE_LABEL[sheetState(r)]}</Badge></div>
                 <p className="mt-1 truncate text-xs text-muted-foreground">{name(r.contact_id) ?? r.content?.customerName ?? 'Sin cliente'}{r.content?.date ? ` · ${r.content.date}` : ''}</p>
               </button>
             </li>
@@ -248,7 +260,7 @@ export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetCont
         </ul>
       )}
       {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} onDeleted={async () => { await load(); setSelected(null); }} />}
-      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onSaved={async () => { await load(); }} onDeleted={async () => { await load(); setSelected(null); }} />}
+      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onOpenBooking={onOpenBooking} onSaved={async () => { await load(); }} onDeleted={async () => { await load(); setSelected(null); }} />}
       {!selected && rows.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Aún no hay fichas. Crea una y envía el enlace al cliente.</p>}
     </div>
   );

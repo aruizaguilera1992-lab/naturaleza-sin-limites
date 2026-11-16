@@ -563,6 +563,8 @@ export default function Admin() {
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
   const [tab, setTab] = useState<AdminTab>("overview");
+  const [focusSheet, setFocusSheet] = useState<string | null>(null);
+  const [sheetByBooking, setSheetByBooking] = useState<Record<string, string>>({});
   const [editorialOpened, setEditorialOpened] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -596,6 +598,11 @@ export default function Admin() {
         ? { ...row, status: "incidencia_plazas" } : row));
     }
     if (c.data) setContacts(c.data as Contact[]);
+    // Enlace reserva → ficha de origen; opcional, nunca bloquea la carga del panel.
+    try {
+      const sh = await supabase.from("activity_sheets").select("id, booking_id");
+      setSheetByBooking(Object.fromEntries(((sh?.data ?? []) as { id: string; booking_id: string | null }[]).filter((r) => r.booking_id).map((r) => [r.booking_id as string, r.id])));
+    } catch { /* sin enlace de origen */ }
     if (p.data) setPayments(p.data as PaymentRequest[]);
     if (n.data) setNotifications(n.data as NotificationRow[]);
     const ids = [...new Set((b.data ?? []).map((r) => r.event_id).filter(Boolean))] as string[];
@@ -802,6 +809,7 @@ export default function Admin() {
     setStatusFilter(filter);
     setSelectedId(null);
     setContactTab("ficha");
+    setFocusSheet(null);
     setMenuOpen(false);
   };
 
@@ -985,6 +993,11 @@ export default function Admin() {
             <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <StatusBadge status={b.status} />
               <span>Recibida el {formatDate(b.created_at)}</span>
+              {sheetByBooking[b.id] && (
+                <button type="button" className="rounded-full border border-primary/50 px-2 py-0.5 text-xs text-primary hover:bg-primary/10" onClick={() => { const sid = sheetByBooking[b.id]; setSelectedId(null); setFocusSheet(sid); setTab("events"); }}>
+                  Origen: ficha privada · Ver ficha
+                </button>
+              )}
             </p>
           </div>
           <Button variant="ghost" className="min-h-11 gap-2 lg:hidden" onClick={() => setSelectedId(null)}>
@@ -1288,7 +1301,7 @@ export default function Admin() {
             </>
           )}
           {tab === "settings" && <BusinessSettingsPanel />}
-          {tab === "events" && <SalidasPanel contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />}
+          {tab === "events" && <SalidasPanel focusSheetId={focusSheet} onOpenBooking={(id) => { setTab("bookings"); setSearch(""); setStatusFilter("all"); setSelectedId(id); void loadData(); }} contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />}
           {tab === "catalog" && <CatalogPanel />}
           {tab === "plans" && <PlanOrdersPanel />}
           {editorialOpened && <div className={tab === "editorial" ? "" : "hidden"}><EditorialPanel /></div>}

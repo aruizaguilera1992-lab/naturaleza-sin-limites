@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Lock, Users } from 'lucide-react';
 import { EventsPanel } from '@/components/admin/EventsPanel';
 import { ActivitySheetsPanel, type SheetContact } from '@/components/admin/sheets/ActivitySheetsPanel';
@@ -11,9 +11,10 @@ const MODES: { id: Mode; label: string; hint: string; icon: typeof Users }[] = [
 ];
 
 /** Salidas unificadas: grupo abierto (calendario) y grupo privado (ficha con enlace). Ambos se mantienen montados. */
-export function SalidasPanel({ contacts }: { contacts: SheetContact[] }) {
+export function SalidasPanel({ contacts, focusSheetId, onOpenBooking }: { contacts: SheetContact[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
   const { items: catalog } = useAdminCatalog();
-  const [mode, setMode] = useState<Mode>('abierto');
+  const [mode, setMode] = useState<Mode>(focusSheetId ? 'privado' : 'abierto');
+  useEffect(() => { if (focusSheetId) setMode('privado'); }, [focusSheetId]);
   return (
     <div className="space-y-5">
       <div role="radiogroup" aria-label="Tipo de salida" className="grid gap-3 sm:grid-cols-2">
@@ -26,7 +27,7 @@ export function SalidasPanel({ contacts }: { contacts: SheetContact[] }) {
         ))}
       </div>
       <div className={mode === 'abierto' ? '' : 'hidden'}><EventsPanel /></div>
-      <div className={mode === 'privado' ? '' : 'hidden'}><ActivitySheetsPanel contacts={contacts} catalog={catalog} /></div>
+      <div className={mode === 'privado' ? '' : 'hidden'}><ActivitySheetsPanel contacts={contacts} catalog={catalog} focusSheetId={focusSheetId} onOpenBooking={onOpenBooking} /></div>
     </div>
   );
 }
