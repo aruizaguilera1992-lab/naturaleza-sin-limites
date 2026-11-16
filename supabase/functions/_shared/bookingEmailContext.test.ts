@@ -23,7 +23,7 @@ Deno.test("enrichment is read-only, current validated payment counted once witho
   assertEquals(before.money?.paidCents, 0);
   assertEquals(after.money?.paidCents, 5400);
   assertEquals(after.money?.totalCents, 18000);
-  assert(db.reads.every(t => ["bookings", "activity_event_bookings", "activity_events", "payment_requests", "notification_log"].includes(t)));
+  assert(db.reads.every(t => ["bookings", "activity_event_bookings", "activity_events", "payment_requests", "notification_log", "activity_sheets"].includes(t)));
 });
 
 Deno.test("manual signal uses admin emission or exact accepted notification, never date/status alone", async () => {
@@ -36,7 +36,7 @@ Deno.test("manual signal uses admin emission or exact accepted notification, nev
   const receipt = await readBookingEmailContext(accepted, "b1", payment, true);
   assertEquals(receipt.manualConfirmation, true);
   assertEquals(accepted.filters.filter(f => f[0] === "notification_log"), [["notification_log", "payment_request_id", "p1"], ["notification_log", "booking_id", "b1"], ["notification_log", "kind", "enlace_pago"], ["notification_log", "status", "enviado"]]);
-  assertStringIncludesLocal(renderBookingEmail({ ...receipt, activity: "Ejemplo", variant: "receipt", state: "fecha_pendiente" }).subject, "Señal recibida");
+  assertStringIncludesLocal(renderBookingEmail({ ...receipt, activity: "Ejemplo", variant: "receipt", state: "fecha_pendiente" }).subject, "Reserva confirmada");
   for (const kind of ["manual", "saldo", "pack"]) {
     const generic = await readBookingEmailContext(fakeDb({ rows: [{ ...rows[0], kind }], sent: true }), "b1", payment, true);
     assertEquals(generic.manualConfirmation, undefined);
@@ -82,4 +82,26 @@ Deno.test("deposit email invoice: Guadalmina booking stored as 'Categoría · No
   const mail = renderBookingEmail({ variant: "payment_link", state: "pendiente_pago", activity: "Río Guadalmina", date: "2099-01-10", people: 2, ...ctx } as any);
   for (const s of ["2 × 35,00 € por persona", "Total de la actividad: 70,00 €", "A PAGAR AHORA (señal del 30 %, incluida en el total): 21,00 €", "Resto pendiente: 49,00 €"])
     if (!mail.text.replace(/\u00a0/g, " ").includes(s)) throw new Error("missing " + s + "\n" + mail.text);
+});
+
+Deno.test("paid private booking confirms date and uses accepted proposal for any partial amount", async () => {
+  const tables: Record<string, any> = {
+    bookings: { activity: "Barranco de Jorox", preferred_date: "2026-11-21", number_of_people: "2", status: "pendiente", discount_percent: 0, discount_cents: 0 },
+    activity_event_bookings: null,
+    activity_sheets: { accepted_at: "2026-11-16", content: { pricePerPersonEuros: 45 } },
+    payment_requests: [{ id: "p1", kind: "manual", amount_cents: 100, total_cents: null, status: "pendiente" }],
+    notification_log: [],
+  };
+  const db = { from: (t: string) => { const q: any = { select: () => q, eq: () => q, limit: () => q, maybeSingle: async () => ({ data: tables[t], error: null }), then: (r: any) => r({ data: tables[t], error: null }) }; return q; } };
+  const ctx = await readBookingEmailContext(db, "b1", { id: "p1", amount_cents: 100 }, true);
+  assertEquals(ctx.bookingDateConfirmed, true);
+  assertEquals(ctx.money?.totalCents, 9000);
+  assertEquals(ctx.money?.paidCents, 100);
+  const mail = renderBookingEmail({ ...ctx, variant: "receipt", state: "fecha_pendiente", activity: "Barranco de Jorox" });
+  assertEquals(mail.subject, "Reserva confirmada · Barranco de Jorox");
+  assert(mail.text.replace(/\u00a0/g, " ").includes("Saldo pendiente: 89,00 €"));
+  tables.activity_sheets.accepted_at = null;
+  assertEquals((await readBookingEmailContext(db, "b1", { id: "p1", amount_cents: 100 }, true)).money?.totalCents, null);
+  tables.bookings.preferred_date = null;
+  assertEquals((await readBookingEmailContext(db, "b1", { id: "p1", amount_cents: 100 }, true)).bookingDateConfirmed, false);
 });

@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LOGO_SRC } from "@/lib/site";
+import { Newsletter } from "@/components/Newsletter";
 
 type View = { title: string; body: string; code?: string };
 
@@ -22,6 +23,8 @@ export default function NewsletterAccion() {
       else setView({ title: "Te has dado de baja", body: "No volverás a recibir la newsletter. Puedes volver a suscribirte cuando quieras." });
     });
   }, [accion, token]);
+
+  if (!accion && !token) return <main className="min-h-screen bg-background pt-32"><Helmet><title>Newsletter · Naturaleza Sin Límites</title><meta name="robots" content="noindex" /></Helmet><Newsletter /></main>;
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4">

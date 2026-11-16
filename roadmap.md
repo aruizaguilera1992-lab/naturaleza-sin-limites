@@ -1,5 +1,10 @@
 # Roadmap
 
+## Recibo final de pagos (17/11/2026)
+- [x] Corregir confirmación de fecha en reservas privadas pagadas, mantener incidencias reales de plazas.
+- [x] Mostrar total acordado, pagado acumulado y saldo en recibo y página de pago; felicitación y próximos pasos.
+- [x] Enlazar suscripción voluntaria con doble confirmación; 20 pruebas de recibos y 139 del proyecto pasan, enlace real de Jorox verificado en escritorio/móvil (90 € total, 1 € pagado, 89 € pendiente); get-payment, payments-webhook y create-payment-link desplegadas. Sin nuevos cobros, envíos ni publicación web; los correos ya enviados no se modifican.
+
 ## Normas y pasos de salidas
 - [x] Añadir campos editables y listados visibles al cliente en salidas privadas y abiertas; guardado/reapertura de ambos y enlace privado en móvil comprobados, pruebas temporales eliminadas; 139 pruebas y compilación OK, sin alterar pagos ni publicar.
 
