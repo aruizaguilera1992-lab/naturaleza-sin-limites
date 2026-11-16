@@ -28,7 +28,7 @@ const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 const IMG_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
-function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void> }) {
+function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void>; onOpenBooking?: (bookingId: string) => void }) {
   const { toast } = useToast();
   const [c, setC] = useState<SheetContent>(() => row?.content ?? sheetFromBase(sheetBases[0].id));
   const [contactId, setContactId] = useState<string>(row?.contact_id ?? '');
@@ -227,9 +227,10 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
 }
 
 /** Constructor de fichas privadas de actividad con enlace único. */
-export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetContact[]; catalog: CatalogItem[] }) {
+export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBooking }: { contacts: SheetContact[]; catalog: CatalogItem[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
   const [rows, setRows] = useState<SheetRow[]>([]);
-  const [selected, setSelected] = useState<string | 'new' | null>(null);
+  const [selected, setSelected] = useState<string | 'new' | null>(focusSheetId ?? null);
+  useEffect(() => { if (focusSheetId) setSelected(focusSheetId); }, [focusSheetId]);
   const load = useCallback(async () => {
     const { data } = await supabase.from('activity_sheets').select('*').order('updated_at', { ascending: false });
     setRows((data ?? []) as unknown as SheetRow[]);
@@ -251,7 +252,7 @@ export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetCont
             <li key={r.id}>
               <button type="button" onClick={() => setSelected(r.id)} aria-current={selected === r.id || undefined}
                 className={`w-full rounded-lg border p-3 text-left transition-all duration-300 active:scale-95 ${selected === r.id ? 'border-primary bg-primary/10' : 'border-border bg-card hover:border-primary/50'}`}>
-                <div className="flex items-center justify-between gap-2"><span className="truncate font-semibold text-foreground">{r.content?.title || 'Sin título'}</span><Badge variant="outline">{STATE_LABEL[sheetState(r)]}</Badge></div>
+                <div className="flex items-center justify-between gap-2"><span className="truncate font-semibold text-foreground">{r.content?.title || 'Sin título'}</span><Badge variant={r.booking_id ? 'default' : 'outline'}>{r.booking_id ? 'Con reserva' : STATE_LABEL[sheetState(r)]}</Badge></div>
                 <p className="mt-1 truncate text-xs text-muted-foreground">{name(r.contact_id) ?? r.content?.customerName ?? 'Sin cliente'}{r.content?.date ? ` · ${r.content.date}` : ''}</p>
               </button>
             </li>
@@ -259,7 +260,7 @@ export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetCont
         </ul>
       )}
       {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} onDeleted={async () => { await load(); setSelected(null); }} />}
-      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onSaved={async () => { await load(); }} onDeleted={async () => { await load(); setSelected(null); }} />}
+      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onOpenBooking={onOpenBooking} onSaved={async () => { await load(); }} onDeleted={async () => { await load(); setSelected(null); }} />}
       {!selected && rows.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Aún no hay fichas. Crea una y envía el enlace al cliente.</p>}
     </div>
   );
