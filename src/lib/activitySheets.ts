@@ -82,10 +82,11 @@ export function sheetWhatsappUrl(phone: string | null | undefined, c: Pick<Sheet
   return `https://wa.me/${p ?? ''}?text=${encodeURIComponent(text)}`;
 }
 
-export type SheetState = 'borrador' | 'enviada' | 'vista' | 'caducada' | 'desactivada';
-export function sheetState(s: { status: string; expires_at: string | null; first_viewed_at: string | null }, now = new Date()): SheetState {
+export type SheetState = 'borrador' | 'enviada' | 'vista' | 'aceptada' | 'caducada' | 'desactivada';
+export function sheetState(s: { status: string; expires_at: string | null; first_viewed_at: string | null; accepted_at?: string | null }, now = new Date()): SheetState {
   if (s.status === 'desactivada') return 'desactivada';
   if (s.status === 'borrador') return 'borrador';
+  if (s.accepted_at) return 'aceptada';
   if (s.expires_at && new Date(s.expires_at) < now) return 'caducada';
   return s.first_viewed_at ? 'vista' : 'enviada';
 }

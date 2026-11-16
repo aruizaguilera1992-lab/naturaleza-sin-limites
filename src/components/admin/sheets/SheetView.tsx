@@ -1,3 +1,4 @@
+import type React from 'react';
 import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,7 @@ function List({ title, icon: Icon, items }: { title: string; icon: typeof Check;
 }
 
 /** Ficha de actividad privada; se usa en la vista previa del panel y en el enlace del cliente. */
-export function SheetView({ c, reference }: { c: SheetContent; reference?: string }) {
+export function SheetView({ c, reference, accept }: { c: SheetContent; reference?: string; accept?: React.ReactNode }) {
   const ownPath = c.photo?.startsWith(STORAGE_PHOTO) ? c.photo.slice(STORAGE_PHOTO.length) : null;
   const ownUrls = usePhotoUrls(ownPath ? [ownPath] : []);
   const photo = ownPath ? (ownUrls[ownPath] ? { src: ownUrls[ownPath], alt: c.title, autor: '', licencia: '', fuente: '' } : null) : c.photo ? levelOfferPhotos[c.photo] : null;
@@ -60,7 +61,8 @@ export function SheetView({ c, reference }: { c: SheetContent; reference?: strin
           <p className="text-muted-foreground"><span className="text-2xl font-extrabold text-primary">{c.pricePerPersonEuros} €</span> / persona{total !== null && c.people > 1 && <> · total <span className="font-bold text-foreground">{total} €</span></>}</p>
         ) : <p className="text-lg font-bold text-primary">Precio a consultar</p>}
         <div className="mt-4 flex flex-wrap gap-2">
-          <Button variant="hero" className="min-h-11" asChild><a href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Confirmar por WhatsApp</a></Button>
+          {accept}
+          <Button variant={accept ? 'outline' : 'hero'} className="min-h-11" asChild><a href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Confirmar por WhatsApp</a></Button>
           <Button variant="outline" className="min-h-11" asChild><a href={`/contacto?interes=${c.discipline === 'ferratas' ? 'vias-ferratas' : c.discipline}`}>Consultar</a></Button>
         </div>
       </div>
