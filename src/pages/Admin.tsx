@@ -565,6 +565,7 @@ export default function Admin() {
   const [tab, setTab] = useState<AdminTab>("overview");
   const [focusSheet, setFocusSheet] = useState<string | null>(null);
   const [sheetByBooking, setSheetByBooking] = useState<Record<string, string>>({});
+  const [sheetPriceByBooking, setSheetPriceByBooking] = useState<Record<string, number>>({});
   const [editorialOpened, setEditorialOpened] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -600,8 +601,11 @@ export default function Admin() {
     if (c.data) setContacts(c.data as Contact[]);
     // Enlace reserva → ficha de origen; opcional, nunca bloquea la carga del panel.
     try {
-      const sh = await supabase.from("activity_sheets").select("id, booking_id");
-      setSheetByBooking(Object.fromEntries(((sh?.data ?? []) as { id: string; booking_id: string | null }[]).filter((r) => r.booking_id).map((r) => [r.booking_id as string, r.id])));
+      const sh = await supabase.from("activity_sheets").select("id, booking_id, content");
+      const linked = ((sh?.data ?? []) as { id: string; booking_id: string | null; content: { pricePerPersonEuros?: number | null } | null }[]).filter((r) => r.booking_id);
+      setSheetByBooking(Object.fromEntries(linked.map((r) => [r.booking_id as string, r.id])));
+      // Precio por persona confirmado en la ficha: la reserva aceptada hereda su resumen económico.
+      setSheetPriceByBooking(Object.fromEntries(linked.filter((r) => (r.content?.pricePerPersonEuros ?? 0) > 0).map((r) => [r.booking_id as string, Math.round((r.content!.pricePerPersonEuros as number) * 100)])));
     } catch { /* sin enlace de origen */ }
     if (p.data) setPayments(p.data as PaymentRequest[]);
     if (n.data) setNotifications(n.data as NotificationRow[]);
@@ -970,7 +974,7 @@ export default function Admin() {
       bookingId: b.id,
       participantsRaw: b.number_of_people,
       activity: b.activity,
-      eventPriceCents: ev?.price_cents ?? null,
+      eventPriceCents: ev?.price_cents ?? sheetPriceByBooking[b.id] ?? null,
       payments,
       discountCents: b.discount_cents ?? 0,
       discountPercent: b.discount_percent ?? 0,
