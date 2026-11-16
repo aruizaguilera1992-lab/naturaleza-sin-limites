@@ -17,6 +17,7 @@ import Barranquismo from "./pages/Barranquismo";
 import Escalada from "./pages/Escalada";
 import ViasFerratas from "./pages/ViasFerratas";
 import Espeleologia from "./pages/Espeleologia";
+import LevelOfferPage from "./pages/LevelOfferPage";
 import VertigoSapiensPage from "./pages/VertigoSapiensPage";
 import QuienesSomos from "./pages/QuienesSomos";
 import Contacto from "./pages/Contacto";
