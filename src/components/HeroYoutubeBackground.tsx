@@ -42,7 +42,7 @@ export function HeroYoutubeBackground() {
   if (reduceMotion) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+    <div className="hero-video-frame pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
       <iframe
         ref={iframeRef}
         title={youtubeVideo.title}
@@ -50,7 +50,7 @@ export function HeroYoutubeBackground() {
         src={`https://www.youtube-nocookie.com/embed/${youtubeVideo.youtubeId}?autoplay=1&mute=1&start=${youtubeVideo.heroStart ?? 60}&loop=1&playlist=${youtubeVideo.youtubeId}&controls=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&disablekb=1&enablejsapi=1`}
         allow="autoplay; encrypted-media; picture-in-picture"
         tabIndex={-1}
-        className={`absolute inset-0 h-full w-full border-0 transition-opacity duration-1000 ${videoPlaying ? 'opacity-100' : 'opacity-0'}`}
+        className={`hero-video-iframe border-0 transition-opacity duration-1000 ${videoPlaying ? 'opacity-100' : 'opacity-0'}`}
       />
     </div>
   );

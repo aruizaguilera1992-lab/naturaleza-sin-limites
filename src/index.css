@@ -172,6 +172,26 @@
     background: hsl(0 0% 0% / 0.53);
   }
 
+  /* El vídeo de fondo ocupa todo el ancho sin deformarse: conserva su
+     proporción 16:9 y recorta por arriba/abajo en lugar de dejar bandas. */
+  .hero-video-frame {
+    container-type: size;
+  }
+
+  .hero-video-iframe {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* Respaldo en navegadores sin unidades de contenedor: estirar. */
+    width: 100%;
+    height: 100%;
+    /* Ancho mínimo = el del contenedor; si hace falta, se agranda para cubrir el alto. */
+    width: max(100cqw, calc(100cqh * 16 / 9));
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
   @media (min-width: 768px) {
     .homepage-hero {
       background-position: center;
