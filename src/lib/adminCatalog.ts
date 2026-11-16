@@ -64,7 +64,7 @@ export function baseCatalog(): Omit<CatalogItem, 'photos' | 'edited'>[] {
     pricePerPersonEuros: e.precioDesde > 0 ? e.precioDesde : null, summary: e.descripcionCorta, description: e.descripcionLarga,
     includes: [...e.incluye], requirements: [...e.caracteristicas], minAge: e.requisitos.edadMinima, fitness: e.requisitos.condicionFisica,
     experience: e.requisitos.experienciaPrevia }));
-  const norm = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/^(barranco|rio|arroyo)\s+(de(l)?\s+)?/, '').split(/[\s(]/)[0];
+  const norm = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/^(barranco|rio|arroyo|canon)\s+/, '').replace(/^(de|del)\s+/, '').replace(/^(la|las|el|los)\s+/, '').split(/[\s(]/)[0];
   const commercial = new Set(canyonCatalog.map((c) => norm(c.nombre)));
   const refs = andaluciaCanyonsRef.filter((r) => !commercial.has(norm(r.nombre))).map((r) => {
     const level = refLevelFromGrade(r.grado); const o = offerFor('barranquismo', level);
