@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Check, MessageCircle, Mountain, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { levelOfferPhotos, levelOffersFor, levelOfferWhatsapp, type LevelDiscipline } from '@/data/levelOffers';
+import { levelOfferHref, levelOfferPhotos, levelOffersFor, levelOfferWhatsapp, type LevelDiscipline } from '@/data/levelOffers';
 
 const contactInterest: Record<LevelDiscipline, string> = { barranquismo: 'barranquismo', ferratas: 'vias-ferratas' };
 
@@ -34,6 +34,7 @@ export function LevelOffersSection({ discipline, title, intro }: { discipline: L
                 <ul className="mt-4 grid gap-2 text-sm text-muted-foreground">
                   {o.caracteristicas.map((c) => <li key={c} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{c}</li>)}
                 </ul>
+                <Link to={levelOfferHref(o)} className="mt-4 text-sm font-semibold text-primary underline-offset-4 hover:underline">¿En qué consiste este nivel?</Link>
                 <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground"><Users className="h-4 w-4 text-primary" />Edad mínima {o.edadMinima} años · condición física {o.condicionFisica.toLowerCase()}</p>
                 <div className="mt-auto pt-6">
                   {o.precioDesde ? (
