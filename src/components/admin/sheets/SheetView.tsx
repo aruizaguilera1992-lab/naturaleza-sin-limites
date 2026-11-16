@@ -1,3 +1,4 @@
+import type React from 'react';
 import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,7 @@ function List({ title, icon: Icon, items }: { title: string; icon: typeof Check;
 }
 
 /** Ficha de actividad privada; se usa en la vista previa del panel y en el enlace del cliente. */
-export function SheetView({ c, reference }: { c: SheetContent; reference?: string }) {
+export function SheetView({ c, reference, accept }: { c: SheetContent; reference?: string; accept?: React.ReactNode }) {
   const ownPath = c.photo?.startsWith(STORAGE_PHOTO) ? c.photo.slice(STORAGE_PHOTO.length) : null;
   const ownUrls = usePhotoUrls(ownPath ? [ownPath] : []);
   const photo = ownPath ? (ownUrls[ownPath] ? { src: ownUrls[ownPath], alt: c.title, autor: '', licencia: '', fuente: '' } : null) : c.photo ? levelOfferPhotos[c.photo] : null;
