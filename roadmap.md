@@ -212,3 +212,6 @@
 - [ ] Verificar aceptación del correo de prueba y entrega comercial del sprint 4 (requiere autorización para enviar; no se enviaron correos durante esta implementación).
 - Quitar los dos botones del inicio (hecho)
 - Centrar texto de la portada sin tapar el vídeo (hecho)
+
+- [ ] Vídeo de portada: mostrar el vídeo completo (sin recorte) en cualquier dispositivo
+- [ ] Barrancos de Andalucía (RocJumper) en catálogo admin
