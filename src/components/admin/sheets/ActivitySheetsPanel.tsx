@@ -112,7 +112,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
           {row?.first_viewed_at && <span className="text-xs text-muted-foreground">Vista {row.view_count} {row.view_count === 1 ? 'vez' : 'veces'}</span>}
         </div>
         <div><Label htmlFor="sh-base">Nivel de partida</Label>
-          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); setC((p) => ({ ...(it ? sheetFromCatalog(it) : sheetFromBase(v)), customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes })); }}>
+          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes })); setIncRaw(next.includes.join('\n')); setBringRaw(next.bring.join('\n')); setReqRaw(next.requirements.join('\n')); }}>
             <optgroup label="Niveles">{sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>
             <optgroup label="Catálogo (recorridos)">{catalog.map((it) => <option key={it.key} value={`catalog:${it.key}`}>{it.name} · {it.levelLabel}</option>)}</optgroup>
           </select>
@@ -135,9 +135,9 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
         <div><Label htmlFor="sh-meet">Punto de encuentro</Label><Input id="sh-meet" value={c.meetingPoint} onChange={(e) => set('meetingPoint', e.target.value)} /></div>
         <div><Label htmlFor="sh-sum">Descripción breve</Label><Textarea id="sh-sum" rows={3} value={c.summary} onChange={(e) => set('summary', e.target.value)} /></div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <div><Label htmlFor="sh-inc">Incluye (una por línea)</Label><Textarea id="sh-inc" rows={5} value={c.includes.join('\n')} onChange={(e) => set('includes', lines(e.target.value))} /></div>
-          <div><Label htmlFor="sh-bring">Qué llevar</Label><Textarea id="sh-bring" rows={5} value={c.bring.join('\n')} onChange={(e) => set('bring', lines(e.target.value))} /></div>
-          <div><Label htmlFor="sh-req">Requisitos</Label><Textarea id="sh-req" rows={5} value={c.requirements.join('\n')} onChange={(e) => set('requirements', lines(e.target.value))} /></div>
+          <div><Label htmlFor="sh-inc">Incluye (una por línea)</Label><Textarea id="sh-inc" rows={5} value={incRaw} onChange={(e) => { setIncRaw(e.target.value); set('includes', lines(e.target.value)); }} /></div>
+          <div><Label htmlFor="sh-bring">Qué llevar</Label><Textarea id="sh-bring" rows={5} value={bringRaw} onChange={(e) => { setBringRaw(e.target.value); set('bring', lines(e.target.value)); }} /></div>
+          <div><Label htmlFor="sh-req">Requisitos</Label><Textarea id="sh-req" rows={5} value={reqRaw} onChange={(e) => { setReqRaw(e.target.value); set('requirements', lines(e.target.value)); }} /></div>
         </div>
         <div><Label htmlFor="sh-notes">Notas para el cliente</Label><Textarea id="sh-notes" rows={3} value={c.notes} onChange={(e) => set('notes', e.target.value)} /></div>
         <div><Label htmlFor="sh-photo">Foto</Label>
