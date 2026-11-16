@@ -4,6 +4,7 @@ import { canyonCatalog, COMMERCIAL_LEVEL_LABEL } from '@/data/canyonCatalog';
 import { ferratas } from '@/data/ferratas';
 import { espeleologiaPublicada } from '@/data/espeleologia';
 import { levelOffers } from '@/data/levelOffers';
+import { andaluciaCanyonsRef, refLevelFromGrade } from '@/data/andaluciaCanyonsRef';
 
 export type CatalogDiscipline = 'barranquismo' | 'ferratas' | 'espeleologia';
 
@@ -32,6 +33,9 @@ export interface CatalogItem extends CatalogItemData {
   /** Rutas de fotos propias en el almacenamiento (orden = portada primero). */
   photos: string[];
   edited: boolean;
+  /** Recorrido de referencia documental (RocJumper), pendiente de validación comercial. */
+  reference?: boolean;
+  sourceUrl?: string;
 }
 
 const euros = (v: string | null | undefined) => { const n = parseInt(v?.match(/\d+/)?.[0] ?? '', 10); return n > 0 ? n : null; };
@@ -60,7 +64,18 @@ export function baseCatalog(): Omit<CatalogItem, 'photos' | 'edited'>[] {
     pricePerPersonEuros: e.precioDesde > 0 ? e.precioDesde : null, summary: e.descripcionCorta, description: e.descripcionLarga,
     includes: [...e.incluye], requirements: [...e.caracteristicas], minAge: e.requisitos.edadMinima, fitness: e.requisitos.condicionFisica,
     experience: e.requisitos.experienciaPrevia }));
-  return [...canyons, ...fer, ...esp];
+  const norm = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/^(barranco|rio|arroyo|canon)\s+/, '').replace(/^(de|del)\s+/, '').replace(/^(la|las|el|los)\s+/, '').split(/[\s(]/)[0];
+  const commercial = new Set(canyonCatalog.map((c) => norm(c.nombre)));
+  const refs = andaluciaCanyonsRef.filter((r) => !commercial.has(norm(r.nombre))).map((r) => {
+    const level = refLevelFromGrade(r.grado); const o = offerFor('barranquismo', level);
+    return { key: `barranquismo:ref-${r.slug}`, discipline: 'barranquismo' as const, name: r.nombre, province: r.provincia, zone: r.poblacion,
+      levelLabel: `${LEVEL_LABEL[level - 1]} (orientativo)`, level, grade: r.grado, duration: r.duracion, pricePerPersonEuros: null,
+      summary: 'Referencia documental pendiente de revisar: no confirma acceso, permisos ni idoneidad para clientes.',
+      description: r.rapelMaximo ? `Rápel más largo según la fuente: ${r.rapelMaximo}.` : '',
+      includes: o ? [...o.incluye] : [], requirements: o ? [...o.caracteristicas] : [], minAge: o?.edadMinima ?? 10,
+      fitness: o?.condicionFisica ?? 'Básica', experience: level > 1, reference: true, sourceUrl: r.url };
+  });
+  return [...canyons, ...refs, ...fer, ...esp];
 }
 
 export interface CatalogOverride { key: string; data: Partial<CatalogItemData>; photos: string[] }
