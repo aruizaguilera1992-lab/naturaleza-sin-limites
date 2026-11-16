@@ -1000,7 +1000,7 @@ export default function Admin() {
               )}
             </p>
           </div>
-          <Button variant="ghost" className="min-h-11 gap-2 lg:hidden" onClick={() => setSelectedId(null)}>
+          <Button variant="ghost" className="min-h-11 gap-2" onClick={() => setSelectedId(null)}>
             <ChevronRight className="h-4 w-4 rotate-180" aria-hidden="true" /> Volver a la lista
           </Button>
         </div>
@@ -1309,8 +1309,8 @@ export default function Admin() {
           {tab === "bookings" && (
             <>
               {toolbar(bookings.length, filteredBookings.length, "Cliente, email o actividad")}
-              <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-              <div className={selectedBooking ? "hidden lg:block" : ""}>
+              <div className="grid gap-4">
+              <div className={selectedBooking ? "hidden" : ""}>
               {filteredBookings.length === 0 ? (
                 emptyState(
                   bookings.length === 0 ? "Todavía no hay reservas" : "Ninguna reserva coincide",
