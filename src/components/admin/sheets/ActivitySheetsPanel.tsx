@@ -27,7 +27,7 @@ const STATE_LABEL: Record<SheetState, string> = { borrador: 'Borrador', enviada:
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 
-function Editor({ row, contacts, catalog, onSaved }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void> }) {
+function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void> }) {
   const { toast } = useToast();
   const [c, setC] = useState<SheetContent>(() => row?.content ?? sheetFromBase(sheetBases[0].id));
   const [contactId, setContactId] = useState<string>(row?.contact_id ?? '');
@@ -89,6 +89,14 @@ function Editor({ row, contacts, catalog, onSaved }: { row: SheetRow | null; con
     if (!row) return;
     const { error } = await supabase.from('activity_sheets').update({ status: 'desactivada' }).eq('id', row.id);
     if (error) toast({ title: 'No se pudo desactivar', variant: 'destructive' }); else { toast({ title: 'Enlace desactivado' }); await onSaved(row.id); }
+  };
+  const remove = async () => {
+    if (!row) return;
+    setBusy(true);
+    const { error } = await supabase.rpc('admin_delete_activity_sheet', { _id: row.id });
+    setBusy(false);
+    if (error) toast({ title: 'No se pudo eliminar', description: error.message, variant: 'destructive' });
+    else { toast({ title: 'Ficha eliminada definitivamente' }); await onDeleted(); }
   };
 
   return (
