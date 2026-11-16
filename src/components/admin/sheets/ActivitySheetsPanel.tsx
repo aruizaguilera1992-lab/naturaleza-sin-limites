@@ -128,9 +128,20 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
       <div className="space-y-4 rounded-xl border border-border bg-card p-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={state === 'aceptada' ? 'default' : 'outline'}>{STATE_LABEL[state]}</Badge>
-          {row?.accepted_at && <span className="text-xs text-muted-foreground">Aceptada el {new Date(row.accepted_at).toLocaleString('es-ES')} · reserva creada en «Reservas»{row.booking_id ? ` (${row.booking_id.slice(0, 8)})` : ''}; envía el enlace de señal desde allí.</span>}
+          {row?.accepted_at && <span className="text-xs text-muted-foreground">Confirmada el {new Date(row.accepted_at).toLocaleString('es-ES')}</span>}
           {row?.first_viewed_at && <span className="text-xs text-muted-foreground">Vista {row.view_count} {row.view_count === 1 ? 'vez' : 'veces'}</span>}
         </div>
+        <ol aria-label="Flujo de la salida" className="grid grid-cols-4 gap-1 text-center text-[11px]">
+          {[['Ficha', true], ['Enviada', !!row?.sent_at || state !== 'borrador'], ['Confirmada', !!row?.accepted_at], ['Reserva', !!row?.booking_id]].map(([l, on], i) => (
+            <li key={i} className={`rounded-md border px-1 py-1.5 ${on ? 'border-primary bg-primary/10 text-foreground' : 'border-border text-muted-foreground'}`}>{i + 1}. {l as string}</li>
+          ))}
+        </ol>
+        {row?.booking_id && onOpenBooking && (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
+            <span className="text-foreground">Reserva creada. Siguiente paso: enviar el enlace de la señal.</span>
+            <Button size="sm" variant="hero" className="min-h-11" onClick={() => onOpenBooking(row.booking_id!)}>Abrir reserva</Button>
+          </div>
+        )}
         <div><Label htmlFor="sh-base">Nivel de partida</Label>
           <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes })); setIncRaw(next.includes.join('\n')); setBringRaw(next.bring.join('\n')); setReqRaw(next.requirements.join('\n')); }}>
             <optgroup label="Niveles">{sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>
