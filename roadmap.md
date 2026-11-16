@@ -210,3 +210,4 @@
 - [x] Sprint 3: editor con vista previa y SEO, guardado/publicación/retirada atómicos solo admin, blog combinado conservando artículos y URLs. 95 pruebas OK; borrador guardado y reabierto con sesión real, no visible públicamente. No se publicó ningún artículo de prueba ni la web; sitemap de nuevos artículos pendiente del paso acordado posterior.
 - [x] Sprint 4: campañas por disciplina, compositor compartido con vista previa, prueba al administrador, envío inmediato/programado, historial y consentimiento. Guardado/reapertura/programación/cancelación verificados con sesión admin y callback autorizado 200; sin envíos comerciales ni publicación de la web.
 - [ ] Verificar aceptación del correo de prueba y entrega comercial del sprint 4 (requiere autorización para enviar; no se enviaron correos durante esta implementación).
+- Quitar los dos botones del inicio (hecho)

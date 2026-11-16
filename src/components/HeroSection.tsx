@@ -130,22 +130,6 @@ export function HeroSection() {
           delay: 0.7,
           duration: 0.6
           }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center sm:items-center w-full">
-            <Button variant="hero" size="lg" className="group w-auto !min-h-11 !px-5 !py-2 !text-xs lg:!text-sm bg-primary/75 bg-none !shadow-none backdrop-blur-md" onClick={() => {
-            document.getElementById('calendario')?.scrollIntoView({
-              behavior: 'smooth'
-            });
-          }}>
-              <Mountain className="h-5 w-5 mr-2" />
-              Reserva tu aventura
-            </Button>
-            <Button variant="heroOutline" size="lg" className="w-auto !min-h-11 !px-5 !py-2 !text-xs lg:!text-sm border-foreground/60 bg-background/20 backdrop-blur-md" onClick={() => {
-            document.getElementById('actividades')?.scrollIntoView({
-              behavior: 'smooth'
-            });
-          }}>
-              <Users className="h-5 w-5 mr-2" />
-              Encuentra mi salida ideal
-            </Button>
           </motion.div>
 
           {/* Trust Badges */}
