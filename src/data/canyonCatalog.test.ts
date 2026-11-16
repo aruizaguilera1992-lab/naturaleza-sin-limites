@@ -49,3 +49,20 @@ describe('canyonCatalog', () => {
     }
   });
 });
+
+import { getActivityProfile } from './activityProfiles';
+
+describe('fichas enlazadas desde el catálogo', () => {
+  it('Lentegí es intermedio y no se anuncia como iniciación', () => {
+    const p = getActivityProfile('barranquismo', 'rio-lentegi')!;
+    expect(p.experienceLevel).toBe('Intermedio');
+    expect(p.technicalLevel).toBe('V2 A3 II');
+    expect(JSON.stringify(p).toLowerCase()).not.toContain('perfecto para iniciación');
+  });
+
+  it('las cuatro fichas enlazadas no muestran fotografía hasta verificarla', () => {
+    for (const slug of ['guadalmina', 'sima-diablo', 'jorox', 'rio-lentegi']) {
+      expect(getActivityProfile('barranquismo', slug)?.photoPending).toBe(true);
+    }
+  });
+});
