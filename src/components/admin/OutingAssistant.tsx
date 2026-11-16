@@ -40,7 +40,7 @@ export function OutingAssistant({ context, fields, onApply }: { context: Record<
   };
   return <Dialog open={open} onOpenChange={value => { setOpen(value); if (!value) abort.current?.abort(); }}>
     <DialogTrigger asChild><Button type="button" variant="outline"><Sparkles className="mr-2 h-4 w-4" />Asistente con IA</Button></DialogTrigger>
-    <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-2xl">
+    <DialogContent className="max-h-[85dvh] w-[calc(100%-2rem)] overflow-y-auto rounded-lg sm:max-w-2xl">
       <DialogHeader><DialogTitle>Completar ficha · Lovable AI</DialogTitle></DialogHeader>
       <Label htmlFor="ai-instructions">¿Qué quieres completar?</Label>
       <Textarea id="ai-instructions" value={instructions} maxLength={2000} onChange={e => setInstructions(e.target.value)} rows={3} disabled={busy} />
