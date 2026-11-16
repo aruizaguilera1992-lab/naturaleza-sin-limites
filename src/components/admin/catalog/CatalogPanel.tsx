@@ -72,7 +72,9 @@ function ItemEditor({ item, onDone }: { item: CatalogItem; onDone: () => Promise
 
   return (
     <div className="space-y-4 rounded-xl border border-border bg-card p-4">
-      <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{DISC[item.discipline]}</Badge>{item.edited && <Badge className="border-primary/40 bg-primary/15 text-primary">Editada</Badge>}</div>
+      <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{DISC[item.discipline]}</Badge>{item.edited && <Badge className="border-primary/40 bg-primary/15 text-primary">Editada</Badge>}
+        {item.reference && <Badge variant="outline">Referencia documental · pendiente de revisar</Badge>}
+        {item.sourceUrl && <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Ver fuente (RocJumper)</a>}</div>
       <section aria-labelledby="ph-title">
         <h3 id="ph-title" className="font-heading font-bold text-foreground">Fotografías</h3>
         <p className="text-xs text-muted-foreground">Sube fotos propias del recorrido. La primera es la portada.</p>
@@ -130,8 +132,10 @@ export function CatalogPanel() {
   const { items, reload } = useAdminCatalog();
   const [disc, setDisc] = useState<CatalogDiscipline | 'todas'>('todas');
   const [q, setQ] = useState('');
+  const [prov, setProv] = useState('todas');
+  const provinces = useMemo(() => [...new Set(items.map((i) => i.province).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es')), [items]);
   const [selected, setSelected] = useState<string | null>(null);
-  const list = useMemo(() => items.filter((i) => (disc === 'todas' || i.discipline === disc) && `${i.name} ${i.zone} ${i.province}`.toLowerCase().includes(q.toLowerCase())), [items, disc, q]);
+  const list = useMemo(() => items.filter((i) => (disc === 'todas' || i.discipline === disc) && (prov === 'todas' || i.province === prov) && `${i.name} ${i.zone} ${i.province}`.toLowerCase().includes(q.toLowerCase())), [items, disc, q, prov]);
   const current = items.find((i) => i.key === selected);
   if (current) return (
     <div className="space-y-3">
@@ -146,7 +150,11 @@ export function CatalogPanel() {
           <Button key={d} size="sm" variant={disc === d ? 'hero' : 'outline'} onClick={() => setDisc(d)}>{d === 'todas' ? 'Todas' : DISC[d]}</Button>
         ))}
         <Input aria-label="Buscar en el catálogo" placeholder="Buscar por nombre o zona" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+        <select aria-label="Filtrar por provincia" className={`${sel} w-auto`} value={prov} onChange={(e) => setProv(e.target.value)}>
+          <option value="todas">Todas las provincias</option>{provinces.map((p) => <option key={p}>{p}</option>)}
+        </select>
       </div>
+      <p className="text-xs text-muted-foreground">{list.length} recorridos</p>
       <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {list.map((i) => (
           <li key={i.key}>
@@ -156,6 +164,7 @@ export function CatalogPanel() {
                 <p className="truncate font-semibold text-foreground">{i.name}</p>
                 <p className="truncate text-xs text-muted-foreground">{DISC[i.discipline]} · {i.levelLabel}{i.grade ? ` · ${i.grade}` : ''}</p>
                 <p className="truncate text-xs text-muted-foreground">{i.zone}, {i.province}{i.edited ? ' · editada' : ''}</p>
+                {i.reference && <Badge variant="outline" className="mt-1 text-[10px]">Referencia · pendiente de revisar</Badge>}
               </div>
             </button>
           </li>
