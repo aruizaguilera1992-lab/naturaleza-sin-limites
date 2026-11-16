@@ -140,6 +140,8 @@ export type Database = {
       }
       activity_sheets: {
         Row: {
+          accepted_at: string | null
+          booking_id: string | null
           contact_id: string | null
           content: Json
           created_at: string
@@ -154,6 +156,8 @@ export type Database = {
           view_count: number
         }
         Insert: {
+          accepted_at?: string | null
+          booking_id?: string | null
           contact_id?: string | null
           content?: Json
           created_at?: string
@@ -168,6 +172,8 @@ export type Database = {
           view_count?: number
         }
         Update: {
+          accepted_at?: string | null
+          booking_id?: string | null
           contact_id?: string | null
           content?: Json
           created_at?: string
@@ -182,6 +188,13 @@ export type Database = {
           view_count?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "activity_sheets_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "activity_sheets_contact_id_fkey"
             columns: ["contact_id"]
@@ -1250,6 +1263,16 @@ export type Database = {
       }
     }
     Functions: {
+      accept_activity_sheet: {
+        Args: {
+          _email: string
+          _name: string
+          _phone: string
+          _rgpd: boolean
+          _token: string
+        }
+        Returns: Json
+      }
       admin_delete_booking: { Args: { _id: string }; Returns: Json }
       admin_delete_contact: { Args: { _id: string }; Returns: Json }
       admin_reset_all: { Args: { _confirm: string }; Returns: Json }
