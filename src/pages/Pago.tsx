@@ -22,6 +22,9 @@ import {
 type Payment = {
   kind: "senal" | "manual";
   totalCents: number | null;
+  paidCents?: number;
+  unitCents?: number | null;
+  discountCents?: number | null;
   environment: string;
   sessionState: "procesando" | "confirmando" | null;
   bookingState: "confirmada" | "fecha_pendiente" | "en_revision" | null;
@@ -267,24 +270,25 @@ export default function Pago() {
   // ---- Paid: payment state and booking state shown separately ----
   if (payment.status === "pagado") {
     const ok = <CheckCircle2 className="h-10 w-10 text-primary" />;
-    const paidLine = <p>Hemos recibido tu pago de {amount}.</p>;
-    if (payment.bookingState === "confirmada") {
-      return card(ok, "Reserva confirmada",
-        <>{paidLine}<p className="mt-2">Tu plaza en la salida está confirmada.</p></>,
-        <Button asChild variant="outline"><Link to="/">Volver al inicio</Link></Button>);
-    }
-    if (payment.bookingState === "en_revision") {
-      return card(<Clock className="h-10 w-10 text-primary" />, "Pago recibido · estamos revisando tu reserva",
-        <>{paidLine}<p className="mt-2">Estamos comprobando la disponibilidad de plazas y te contactaremos. No necesitas volver a pagar.</p></>,
-        contactButtons);
-    }
-    if (payment.bookingState === "fecha_pendiente") {
-      return card(ok, "Pago recibido · fecha pendiente de confirmación",
-        <>{paidLine}<p className="mt-2">Te contactaremos para confirmar la fecha. No necesitas volver a pagar.</p></>,
-        contactButtons);
-    }
-    return card(ok, "Pago recibido", <>{paidLine}<p className="mt-2">No necesitas volver a pagar.</p></>,
-      <Button asChild variant="outline"><Link to="/">Volver al inicio</Link></Button>);
+    const paid = payment.paidCents ?? payment.amountCents;
+    const confirmed = payment.bookingState === "confirmada";
+    return wrapper(<div className="space-y-5">
+      <div className="flex items-center gap-3">{ok}<h1 className="font-heading text-3xl font-bold text-foreground">{confirmed ? "Reserva confirmada" : "Pago recibido"}</h1></div>
+      <p className="font-heading text-xl text-foreground">{payment.activity}</p>
+      {formatDate(payment.date) && <p className="text-muted-foreground">{confirmed ? "Fecha confirmada" : "Fecha"}: {formatDate(payment.date)}</p>}
+      {payment.people && <p className="text-muted-foreground">{payment.people} participante(s)</p>}
+      {payment.bookingState === "en_revision" && <p className="text-muted-foreground">Estamos comprobando la disponibilidad de plazas y te contactaremos. No necesitas volver a pagar.</p>}
+      <dl className="space-y-3 border-y border-border py-5 text-foreground">
+        {payment.unitCents != null && payment.people && <div className="flex justify-between gap-4"><dt>{payment.people} × {formatAmount(payment.unitCents, payment.currency)} por persona</dt><dd>{formatAmount(payment.unitCents * Number(payment.people), payment.currency)}</dd></div>}
+        {!!payment.discountCents && <div className="flex justify-between gap-4"><dt>Descuento</dt><dd>− {formatAmount(payment.discountCents, payment.currency)}</dd></div>}
+        <div className="flex justify-between gap-4 font-bold"><dt>Precio total</dt><dd>{payment.totalCents != null ? formatAmount(payment.totalCents, payment.currency) : "No disponible"}</dd></div>
+        <div className="flex justify-between gap-4"><dt>Importe pagado</dt><dd>{formatAmount(paid, payment.currency)}</dd></div>
+        <div className="flex justify-between gap-4 font-bold text-primary"><dt>Importe por pagar</dt><dd>{payment.totalCents != null ? formatAmount(Math.max(0, payment.totalCents - paid), payment.currency) : "No disponible"}</dd></div>
+      </dl>
+      {confirmed && <><p className="text-foreground">¡Felicidades por contratar Naturaleza Sin Límites! Tu próxima aventura ya tiene fecha.</p><Button asChild className="w-full"><a href={`https://wa.me/34685609542?text=${encodeURIComponent(`Hola, quiero preparar mi actividad contratada: ${payment.activity}.`)}`} target="_blank" rel="noopener noreferrer">Preparar mi actividad</a></Button></>}
+      <Button asChild variant="outline" className="w-full"><Link to="/newsletter">Suscribirme a la newsletter</Link></Button>
+      <p className="text-sm text-muted-foreground">Suscripción opcional, con consentimiento separado y confirmación por correo.</p>
+    </div>);
   }
 
   if (payment.status !== "pendiente") {

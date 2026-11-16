@@ -1,3 +1,4 @@
+import { readBookingEmailContext } from "../_shared/bookingEmailContext.ts";
 import { paymentsAllowed } from "../_shared/paymentSafety.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -172,13 +173,17 @@ Deno.serve(async (req) => {
   let bookingState: "confirmada" | "fecha_pendiente" | "en_revision" | null = null;
   if (pr.status === "pagado") {
     if (!pr.booking_id) bookingState = null;
-    else if (!hasEvent) bookingState = "fecha_pendiente";
+    else if (!hasEvent) bookingState = date ? "confirmada" : "fecha_pendiente";
     else bookingState = seatState === "confirmada" ? "confirmada" : "en_revision";
   }
 
+  const context = await readBookingEmailContext(supabase, pr.booking_id, { id: pr.id, amount_cents: pr.amount_cents, currency: pr.currency }, pr.status === "pagado");
   const payment = {
     kind: pr.kind === "senal" ? "senal" : "manual",
-    totalCents: pr.kind === "senal" && Number.isInteger(pr.total_cents) ? pr.total_cents : null,
+    totalCents: context.money?.totalCents ?? null,
+    paidCents: context.money?.paidCents ?? (pr.status === "pagado" ? pr.amount_cents : 0),
+    unitCents: context.money?.unitCents ?? null,
+    discountCents: context.money?.discountCents ?? null,
     environment: pr.environment,
     sessionState,
     bookingState,
