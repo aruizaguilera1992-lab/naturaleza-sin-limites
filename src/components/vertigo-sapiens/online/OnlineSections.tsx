@@ -2,7 +2,6 @@ import { ArrowDown, ArrowRight, Award, Check, ClipboardCheck, Dumbbell, LineChar
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import athleteImage from '@/assets/atleta-reto-naturaleza.jpg';
-import coachImage from '@/assets/founder-antonio.png';
 import { OnlineRequestForm } from './OnlineRequestForm';
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
@@ -116,12 +115,12 @@ export function OnlineValue() {
 }
 
 const included = [
-  { text: 'Evaluación inicial' },
-  { text: 'Plan semanal adaptado' },
-  { text: 'Vídeos de ejercicios' },
-  { text: 'Registro semanal' },
-  { text: 'Revisión quincenal' },
-  { text: 'Hasta 2 vídeos al mes y evaluación final' },
+  { text: 'Evaluación inicial', icon: ClipboardCheck },
+  { text: 'Plan semanal', icon: Dumbbell },
+  { text: 'Vídeos de ejercicios', icon: Mountain },
+  { text: 'Registro semanal', icon: LineChart },
+  { text: 'Revisión quincenal', icon: SlidersHorizontal },
+  { text: 'Evaluación final', icon: Award },
 ];
 const excluded = ['Sesiones presenciales', 'Salidas outdoor', 'Asesoramiento nutricional', 'Mensajería ilimitada', 'Cursos técnicos o evaluación de seguridad'];
 const details = [
@@ -132,62 +131,42 @@ const details = [
 
 export function OnlineProgram() {
   return (
-    <section id="programa" className="scroll-mt-28 py-20 sm:py-28">
-      <div className="container mx-auto max-w-5xl px-4">
-        <div className="overflow-hidden border border-primary/40 bg-card shadow-card md:grid md:grid-cols-[0.85fr_1.15fr]">
-          <div className="relative isolate flex flex-col overflow-hidden bg-primary p-7 text-background sm:p-10">
-            <div className="relative -mx-7 -mt-7 mb-7 h-44 overflow-hidden sm:-mx-10 sm:-mt-10 sm:h-52">
-              <img src="/images/escalada.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[28%_50%]" />
-              <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,hsl(var(--primary))_100%)]" />
-            </div>
-            <div className="relative flex flex-1 flex-col justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em]">El programa</p>
-                <h2 className="mt-4 text-3xl font-extrabold leading-[1.04] sm:text-5xl">Vértigo<br />Sapiens<br />Online</h2>
-                <p className="mt-6 max-w-sm text-base font-semibold leading-7">
-                  Ocho semanas de entrenamiento personalizado para llegar a la montaña más fuerte, más móvil y más entero.
-                </p>
-              </div>
-              <div className="mt-8 border-t border-background/25 pt-5">
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em]">Para quién es</p>
-                <p className="mt-2 max-w-xs text-sm font-semibold leading-6">Barranquismo, espeleología, escalada, ferratas o montaña.</p>
-              </div>
-              <ul className="mt-7 flex flex-wrap gap-2" aria-label="Claves del programa">
-                {['8 semanas', '100 % online', 'Seguimiento de Antonio'].map((item) => (
-                  <li key={item} className="rounded-full border border-background/35 bg-background/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider">{item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="flex flex-col p-6 sm:p-10">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Qué incluye</p>
-            <ul className="mt-5 grid flex-1 content-center gap-3 sm:grid-cols-2">
-              {included.map(({ text }) => (
-                <li key={text} className="flex items-start gap-3 border border-border bg-background/60 p-4 text-[15px] font-semibold leading-6 transition-all duration-300 hover:border-primary/60">
-                  <span aria-hidden className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center bg-primary"><Check className="h-4 w-4 text-primary-foreground" /></span>
-                  {text}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-auto border-t border-border pt-6">
-              <Button variant="hero" size="lg" className="w-full shrink-0 sm:w-auto" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
-              <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">Sin pago ni compromiso. Confirmamos precio y disponibilidad antes de contratar.</p>
-            </div>
-            <Accordion type="single" collapsible className="mt-6 border-t border-border">
-              <AccordionItem value="detalles" className="border-b-0">
-                <AccordionTrigger className="py-4 text-left text-sm font-bold">Detalles y qué no incluye</AccordionTrigger>
-                <AccordionContent>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    {excluded.map((item) => <li key={item} className="flex gap-2"><X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />No incluye: {item.toLowerCase()}</li>)}
-                  </ul>
-                  <dl className="mt-5 space-y-3 text-sm">
-                    {details.map((d) => <div key={d.q}><dt className="font-bold">{d.q}</dt><dd className="text-muted-foreground">{d.a}</dd></div>)}
-                  </dl>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+    <section id="programa" className="relative isolate scroll-mt-28 overflow-hidden py-20 sm:py-28">
+      <img src="/images/escalada.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-20" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-background/85 to-background" />
+      <div className="container mx-auto max-w-5xl px-4 text-center">
+        <Eyebrow>El programa</Eyebrow>
+        <h2 className="text-3xl font-extrabold sm:text-5xl">Vértigo Sapiens <span className="text-primary">Online</span></h2>
+        <ul className="mt-6 flex flex-wrap justify-center gap-2" aria-label="Claves del programa">
+          {['8 semanas', '100 % online', 'Seguimiento 1 a 1'].map((item) => (
+            <li key={item} className="rounded-full border border-primary/50 bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary">{item}</li>
+          ))}
+        </ul>
+        <ul className="mt-12 grid grid-cols-2 gap-px overflow-hidden border border-border bg-border sm:grid-cols-3">
+          {included.map(({ text, icon: Icon }) => (
+            <li key={text} className="flex flex-col items-center gap-3 bg-card/90 p-6 transition-all duration-300 hover:bg-card">
+              <Icon className="h-8 w-8 text-primary" aria-hidden />
+              <span className="text-sm font-bold uppercase tracking-wide">{text}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <Button variant="hero" size="lg" className="transition-all duration-300 active:scale-95" onClick={() => go('punto-de-partida')}>Solicitar mi evaluación <ArrowRight /></Button>
+          <p className="text-xs text-muted-foreground">Sin pago ni compromiso</p>
         </div>
+        <Accordion type="single" collapsible className="mx-auto mt-8 max-w-2xl text-left">
+          <AccordionItem value="detalles" className="border-border">
+            <AccordionTrigger className="py-4 text-sm font-bold">Detalles y qué no incluye</AccordionTrigger>
+            <AccordionContent>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {excluded.map((item) => <li key={item} className="flex gap-2"><X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />No incluye: {item.toLowerCase()}</li>)}
+              </ul>
+              <dl className="mt-5 space-y-3 text-sm">
+                {details.map((d) => <div key={d.q}><dt className="font-bold">{d.q}</dt><dd className="text-muted-foreground">{d.a}</dd></div>)}
+              </dl>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </section>
   );
@@ -227,7 +206,7 @@ export function OnlineCoach() {
     <section className="overflow-hidden">
       <div className="grid md:grid-cols-2">
         <div className="relative min-h-[420px] md:min-h-[600px]">
-          <img src={coachImage} alt="Antonio Ruiz Aguilera en una pared de roca durante una actividad vertical" width={625} height={691} loading="lazy" className="absolute inset-0 h-full w-full object-cover object-center" />
+          <img src="/images/guia-retrato.png" alt="Antonio Ruiz Aguilera con casco y frontal en la entrada de una cueva" loading="lazy" className="absolute inset-0 h-full w-full object-cover object-center" />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-background" />
         </div>
         <div className="flex items-center px-4 py-16 sm:px-10 lg:px-16">
