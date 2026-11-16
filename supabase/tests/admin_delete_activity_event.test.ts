@@ -66,7 +66,7 @@ for (const [state, label] of [["confirmada", "confirmada"], ["bloqueada", "pendi
     const db = await database(state);
     try {
       const error = await assertRejects(() => remove(db));
-      assertEquals(String(error.message).includes("reservas activas"), true);
+      assertEquals(String(error).includes("reservas activas"), true);
       assertEquals(await eventCount(db), 1);
       assertEquals(await bookingCount(db), 1);
     } finally { await db.close(); }
@@ -78,7 +78,7 @@ Deno.test("quien no es admin no puede borrar salidas", async () => {
   try {
     await db.exec(`SELECT set_config('test.uid','${OTHER}',false)`);
     const error = await assertRejects(() => remove(db));
-    assertEquals(String(error.message).includes("No autorizado"), true);
+    assertEquals(String(error).includes("No autorizado"), true);
     assertEquals(await eventCount(db), 1);
   } finally { await db.close(); }
 });
@@ -87,7 +87,7 @@ Deno.test("una salida inexistente se rechaza sin borrar nada", async () => {
   const db = await database(null);
   try {
     const error = await assertRejects(() => remove(db, MISSING));
-    assertEquals(String(error.message).includes("Salida no encontrada"), true);
+    assertEquals(String(error).includes("Salida no encontrada"), true);
     assertEquals(await eventCount(db), 1);
   } finally { await db.close(); }
 });
