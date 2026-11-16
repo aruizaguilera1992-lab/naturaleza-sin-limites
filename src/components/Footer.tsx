@@ -198,6 +198,37 @@ export function Footer() {
                   Registro de Turismo Activo de Andalucía: {registry}
                 </p>
               )}
+              <div className="mt-4 flex flex-col items-center gap-3 md:items-start">
+                <p className="max-w-prose text-xs leading-relaxed text-muted-foreground">
+                  Proyecto financiado por el Instituto Andaluz de la Juventud (Junta de Andalucía) a través de las
+                  ayudas al emprendimiento juvenil,{" "}
+                  <a
+                    href="https://www.juntadeandalucia.es/servicios/sede/tramites/procedimientos/detalle/8577.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Programa «Innovactiva»
+                  </a>
+                  .
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
+                  <img
+                    src="/images/junta_innovactiva.png"
+                    alt="Programa Innovactiva 2026. Apoyo a la iniciativa empresarial joven en Andalucía"
+                    loading="lazy"
+                    decoding="async"
+                    className="h-14 w-auto max-w-full rounded-lg bg-white p-2"
+                  />
+                  <img
+                    src="/images/instituto_andaluz_juventud.png"
+                    alt="Instituto Andaluz de la Juventud. Consejería de Empleo, Formación y Trabajo Autónomo"
+                    loading="lazy"
+                    decoding="async"
+                    className="h-14 w-auto max-w-full rounded-lg bg-white p-2"
+                  />
+                </div>
+              </div>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <Link to="/privacidad" className="hover:text-primary transition-colors">
