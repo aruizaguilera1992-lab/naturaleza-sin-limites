@@ -218,7 +218,7 @@ export function Footer() {
                     alt="Programa Innovactiva 2026. Apoyo a la iniciativa empresarial joven en Andalucía"
                     loading="lazy"
                     decoding="async"
-                    className="h-14 w-auto max-w-full rounded-lg"
+                    className="h-14 w-auto max-w-full rounded-lg bg-white p-2"
                   />
                   <img
                     src="/images/instituto_andaluz_juventud.png"
