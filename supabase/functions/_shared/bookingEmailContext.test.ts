@@ -83,3 +83,25 @@ Deno.test("deposit email invoice: Guadalmina booking stored as 'Categoría · No
   for (const s of ["2 × 35,00 € por persona", "Total de la actividad: 70,00 €", "A PAGAR AHORA (señal del 30 %, incluida en el total): 21,00 €", "Resto pendiente: 49,00 €"])
     if (!mail.text.replace(/\u00a0/g, " ").includes(s)) throw new Error("missing " + s + "\n" + mail.text);
 });
+
+Deno.test("paid private booking confirms date and uses accepted proposal for any partial amount", async () => {
+  const tables: Record<string, any> = {
+    bookings: { activity: "Barranco de Jorox", preferred_date: "2026-11-21", number_of_people: "2", status: "pendiente", discount_percent: 0, discount_cents: 0 },
+    activity_event_bookings: null,
+    activity_sheets: { accepted_at: "2026-11-16", content: { pricePerPersonEuros: 45 } },
+    payment_requests: [{ id: "p1", kind: "manual", amount_cents: 100, total_cents: null, status: "pendiente" }],
+    notification_log: [],
+  };
+  const db = { from: (t: string) => { const q: any = { select: () => q, eq: () => q, limit: () => q, maybeSingle: async () => ({ data: tables[t], error: null }), then: (r: any) => r({ data: tables[t], error: null }) }; return q; } };
+  const ctx = await readBookingEmailContext(db, "b1", { id: "p1", amount_cents: 100 }, true);
+  assertEquals(ctx.bookingDateConfirmed, true);
+  assertEquals(ctx.money?.totalCents, 9000);
+  assertEquals(ctx.money?.paidCents, 100);
+  const mail = renderBookingEmail({ ...ctx, variant: "receipt", state: "fecha_pendiente", activity: "Barranco de Jorox" });
+  assertEquals(mail.subject, "Reserva confirmada · Barranco de Jorox");
+  assert(mail.text.replace(/\u00a0/g, " ").includes("Saldo pendiente: 89,00 €"));
+  tables.activity_sheets.accepted_at = null;
+  assertEquals((await readBookingEmailContext(db, "b1", { id: "p1", amount_cents: 100 }, true)).money?.totalCents, null);
+  tables.bookings.preferred_date = null;
+  assertEquals((await readBookingEmailContext(db, "b1", { id: "p1", amount_cents: 100 }, true)).bookingDateConfirmed, false);
+});

@@ -137,3 +137,15 @@ Deno.test("fully paid never invites another payment; unknown balance has no fabr
   assert(!unknown.text.includes("Total de la actividad:"));
   assertStringIncludes(unknown.text, "El importe restante puedes abonarlo");
 });
+Deno.test("final private receipt uses paid balance without inventing a deposit", () => {
+  const mail = renderBookingEmail({ variant: "receipt", state: "fecha_pendiente", bookingDateConfirmed: true, activity: "Barranco de Jorox", date: "2026-11-21", people: 2, money: { totalCents: 9000, unitCents: 4500, paymentCents: 100, paidCents: 100 } });
+  const text = mail.text.replace(/\u00a0/g, " ");
+  assertStringIncludes(text, "Total de la actividad: 90,00 €");
+  assertStringIncludes(text, "Ya pagado: 1,00 €");
+  assertStringIncludes(text, "Saldo pendiente: 89,00 €");
+  assert(!text.includes("A PAGAR AHORA"));
+  assert(!text.includes("Señal (30"));
+  const full = renderBookingEmail({ variant: "receipt", state: "confirmada", bookingDateConfirmed: true, activity: "Ejemplo", date: "2026-11-21", money: { totalCents: 9000, paidCents: 9000 } });
+  assertStringIncludes(full.text.replace(/\u00a0/g, " "), "Saldo pendiente: 0,00 €");
+  assert(!full.text.includes("Bizum"));
+});
