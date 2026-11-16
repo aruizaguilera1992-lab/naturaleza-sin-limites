@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { activityProfiles, isSellable } from "@/data/activityProfiles";
+import { DeleteRecordButton } from "@/components/admin/DeleteControls";
 
 interface EventRow {
   id: string;
