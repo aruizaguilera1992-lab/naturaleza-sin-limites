@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { ArrowDown, ArrowRight, Award, Check, ClipboardCheck, Dumbbell, LineChart, Mountain, ShieldCheck, SlidersHorizontal, Timer, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import athleteImage from '@/assets/atleta-reto-naturaleza.jpg';
+import athleteImageAlt from '@/assets/atleta-reto-naturaleza-mujer.jpg';
 import { OnlineRequestForm } from './OnlineRequestForm';
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
@@ -12,17 +14,40 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 
 const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+const heroSlides = [athleteImage, athleteImageAlt];
+const HERO_ROTATE_MS = 10000;
+
+function useHeroSlide(count: number) {
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    if (count < 2) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = window.setInterval(() => setActive((current) => (current + 1) % count), HERO_ROTATE_MS);
+    return () => window.clearInterval(id);
+  }, [count]);
+  return active;
+}
+
 export function OnlineHero() {
+  const active = useHeroSlide(heroSlides.length);
   return (
     <section className="relative flex min-h-[100svh] items-end overflow-hidden border-b border-border pt-36 lg:min-h-[860px]">
-      <img
-        src={athleteImage}
-        alt="Deportista progresando por terreno de montaña al atardecer"
-        width={1408}
-        height={1008}
-        fetchPriority="high"
-        className="absolute inset-0 h-full w-full object-cover object-[62%_center] motion-safe:animate-[nsl-hero-drift_18s_ease-in-out_infinite_alternate]"
-      />
+      <div role="img" aria-label="Deportista progresando por terreno de montaña al atardecer" className="absolute inset-0">
+        {heroSlides.map((src, index) => (
+          <img
+            key={src}
+            src={src}
+            alt=""
+            aria-hidden
+            width={1408}
+            height={1008}
+            loading="eager"
+            decoding="async"
+            fetchPriority={index === 0 ? 'high' : 'low'}
+            className={`absolute inset-0 h-full w-full object-cover object-[62%_center] transition-opacity duration-[1800ms] ease-in-out motion-safe:animate-[nsl-hero-drift_18s_ease-in-out_infinite_alternate] ${index === active ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ))}
+      </div>
       <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/10" />
       <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
       <div className="container relative mx-auto px-4 pb-12 sm:pb-20 lg:pb-24">
