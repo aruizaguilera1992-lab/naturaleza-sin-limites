@@ -1,4 +1,5 @@
 import { barrancos, barrancosImagenLocal, type Barranco } from "@/data/barrancos";
+import { canyonCatalog, COMMERCIAL_LEVEL_LABEL } from "@/data/canyonCatalog";
 import { crags, cragsImagenLocal, type Crag } from "@/data/crags";
 import { ferratas, ferratasImagenLocal, type Ferrata } from "@/data/ferratas";
 import { espeleologiaPublicada, type ActividadEspeleologia } from "@/data/espeleologia";
@@ -24,6 +25,10 @@ export interface ActivityProfile {
   totalDuration: string;
   effectiveDuration: string;
   technicalLevel: string;
+  /** Nivel de experiencia comercial, separado del grado técnico. */
+  experienceLevel?: string;
+  /** Sin fotografía con procedencia y licencia verificadas: mostrar panel sin foto. */
+  photoPending?: boolean;
   physicalLevel: string;
   minimumAge: string;
   season: string;
@@ -247,6 +252,8 @@ function sanitizeProfile(profile: ActivityProfile): ActivityProfile {
 }
 
 function fromBarranco(item: Barranco): ActivityProfile {
+  const catalogItem = canyonCatalog.find((c) => c.productoExistenteId === item.id);
+  const experience = catalogItem ? COMMERCIAL_LEVEL_LABEL[catalogItem.nivelComercial] : undefined;
   const included = item.incluye.length ? item.incluye : [PENDING];
   const activityImage = getActivityMedia(item.id);
   return buildEditorial({
@@ -264,7 +271,9 @@ function fromBarranco(item: Barranco): ActivityProfile {
     priceValue: parsePrice(item.precio),
     totalDuration: item.duracion,
     effectiveDuration: PENDING,
-    technicalLevel: `${item.clasificacionTecnica} (${item.nivel})`,
+    technicalLevel: catalogItem?.gradoTecnico ?? `${item.clasificacionTecnica} (${item.nivel})`,
+    experienceLevel: experience,
+    photoPending: Boolean(catalogItem),
     physicalLevel: cap(item.requisitos.condicionFisica),
     minimumAge: `${item.requisitos.edadMinima} años`,
     season: item.mejorEpoca,
@@ -282,7 +291,9 @@ function fromBarranco(item: Barranco): ActivityProfile {
       ...item.caracteristicas,
     ],
     previousExperience:
-      item.nivelExperiencia === "principiante"
+      experience
+        ? `Nivel de experiencia ${experience.toLowerCase()}; sujeto a valoración previa`
+        : item.nivelExperiencia === "principiante"
         ? "No; sujeto a valoración previa"
         : `Sí o experiencia equivalente; nivel ${item.nivelExperiencia}`,
     included,
