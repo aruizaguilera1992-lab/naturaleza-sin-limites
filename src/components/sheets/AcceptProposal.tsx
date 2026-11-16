@@ -32,6 +32,8 @@ export function AcceptProposal({ token, defaultName, acceptedAt, onAccepted }: {
     if (err || !r?.ok) { setError(REASONS[r?.reason ?? ''] ?? 'No se pudo confirmar. Inténtalo de nuevo o escríbenos.'); return; }
     setOpen(false);
     onAccepted(r.accepted_at ?? new Date().toISOString());
+    // Aviso interno al equipo; si falla no afecta a la confirmación del cliente.
+    supabase.functions.invoke('notify-sheet-acceptance', { body: { token, origin: window.location.origin } }).catch(() => {});
   };
 
   return (
