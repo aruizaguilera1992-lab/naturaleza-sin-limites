@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Flame, GraduationCap, Mountain, ShieldCheck, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronDown, Flame, GraduationCap, ShieldCheck } from 'lucide-react';
 import { HeroYoutubeBackground } from '@/components/HeroYoutubeBackground';
 
 
