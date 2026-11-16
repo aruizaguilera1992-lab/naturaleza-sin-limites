@@ -215,5 +215,5 @@
 
 - [x] Vídeo de portada completo
 - [x] Barrancos de Andalucía en catálogo admin
-- [ ] Enter en campos de listado de fichas (Incluye/Qué llevar/Requisitos) no inserta salto de línea — en curso
-- [ ] Sustituir todas las fotos donde aparece la cara del usuario por la nueva foto natural subida (Imagen_de_ChatGPT_16_nov_2026_23_30_58.png), empezando por GuideAuthority
+- [x] Enter en campos de listado de fichas (Incluye/Qué llevar/Requisitos) — corregido con texto en bruto por campo
+- [x] Fotos del guía sustituidas por la nueva foto natural (retrato + recorte del hero de contacto)
