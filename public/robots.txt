@@ -1,16 +1,21 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /ficha/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /ficha/
 
 User-agent: Twitterbot
 Allow: /
+Disallow: /ficha/
 
 User-agent: facebookexternalhit
 Allow: /
+Disallow: /ficha/
 
 User-agent: *
 Allow: /
+Disallow: /ficha/
 
 Sitemap: https://naturalezasinlimites.es/sitemap.xml
