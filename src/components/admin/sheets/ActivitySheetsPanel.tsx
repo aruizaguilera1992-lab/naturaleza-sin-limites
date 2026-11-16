@@ -92,6 +92,23 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
     } else toast({ title: 'Ficha enviada por email' });
     await onSaved(r.id);
   };
+  const uploadPhoto = async (files: FileList | null) => {
+    const f = files?.[0];
+    if (!f) return;
+    if (!IMG_TYPES.includes(f.type)) { toast({ title: 'Formato no admitido (JPG, PNG, WebP o AVIF)', variant: 'destructive' }); return; }
+    if (f.size > 10 * 1024 * 1024) { toast({ title: 'Máximo 10 MB', variant: 'destructive' }); return; }
+    setBusy(true);
+    const ext = f.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const path = `fichas/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from(CATALOG_BUCKET).upload(path, f, { contentType: f.type });
+    setBusy(false);
+    if (fileRef.current) fileRef.current.value = '';
+    if (error) { toast({ title: 'No se pudo subir la foto', description: error.message, variant: 'destructive' }); return; }
+    setUploaded((p) => [...p, path]);
+    set('photo', `${STORAGE_PHOTO}${path}`);
+    toast({ title: 'Foto subida y seleccionada' });
+  };
+
   const disable = async () => {
     if (!row) return;
     const { error } = await supabase.from('activity_sheets').update({ status: 'desactivada' }).eq('id', row.id);
