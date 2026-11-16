@@ -155,6 +155,13 @@
       "when": 1794655827117,
       "tag": "0021_newsletter_notification_consent_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1794864072597,
+      "tag": "0022_activity_sheets",
+      "breakpoints": true
     }
   ]
 }
