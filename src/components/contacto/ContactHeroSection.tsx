@@ -35,7 +35,7 @@ export function ContactHeroSection() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 0.15 }}
-            className="h-auto w-[78%] max-w-[420px] md:h-[72%] md:w-auto md:max-w-none object-contain object-bottom translate-x-4 drop-shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+            className="h-auto w-[78%] max-w-[420px] md:h-[62%] md:w-auto md:max-w-none object-contain object-bottom translate-x-4 md:translate-x-8 drop-shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
           />
         </div>
       </div>
@@ -62,7 +62,7 @@ export function ContactHeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-heading text-5xl sm:text-6xl md:text-8xl font-extrabold uppercase tracking-tighter text-foreground leading-[0.9] mb-8"
+            className="font-heading text-5xl sm:text-6xl md:text-6xl lg:text-8xl font-extrabold uppercase tracking-tighter text-foreground leading-[0.9] mb-8"
           >
             Hablemos
             <br />
