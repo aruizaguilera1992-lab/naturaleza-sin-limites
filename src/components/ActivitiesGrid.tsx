@@ -17,7 +17,7 @@ const DISCIPLINES = [
   },
   {
     name: 'Escalada',
-    description: 'Vive la pared con seguridad y guía',
+    description: 'Vive la vertical con seguridad y guía',
     to: '/escalada',
     image: getActivityCatalogImage('escalada', 'chorro-frontales') ?? '',
     imageAlt: 'Escalador deportivo en una pared de roca caliza en Andalucía',
