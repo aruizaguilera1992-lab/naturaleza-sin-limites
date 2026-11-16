@@ -51,7 +51,7 @@ export function HeroSection() {
       <div className="homepage-hero-overlay absolute inset-0 z-[1]" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-36 md:pt-32 pb-20 text-center">
+      <div className="relative z-10 container mx-auto px-4 pt-32 md:pt-28 pb-10 text-center">
         <motion.div initial={{
         opacity: 0,
         y: 30
@@ -60,7 +60,7 @@ export function HeroSection() {
         y: 0
       }} transition={{
         duration: 0.8
-      }} className="max-w-4xl mx-auto my-[50px]">
+      }} className="max-w-4xl mx-auto">
           {/* Main Heading */}
           <motion.h1 initial={{
           opacity: 0,
@@ -88,7 +88,7 @@ export function HeroSection() {
         }} transition={{
           delay: 0.5,
           duration: 0.6
-        }} className="mb-10">
+        }} className="mb-6">
             {reduceMotion ? (
               <p className="text-hero-sub text-foreground/80 max-w-2xl mx-auto">
                 {HERO_DESCRIPTION_FULL}
@@ -118,18 +118,6 @@ export function HeroSection() {
             )}
           </motion.div>
 
-          {/* CTA Buttons */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          delay: 0.7,
-          duration: 0.6
-          }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center sm:items-center w-full">
-          </motion.div>
 
           {/* Trust Badges */}
           <motion.div initial={{

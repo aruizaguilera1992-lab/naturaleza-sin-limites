@@ -211,3 +211,4 @@
 - [x] Sprint 4: campañas por disciplina, compositor compartido con vista previa, prueba al administrador, envío inmediato/programado, historial y consentimiento. Guardado/reapertura/programación/cancelación verificados con sesión admin y callback autorizado 200; sin envíos comerciales ni publicación de la web.
 - [ ] Verificar aceptación del correo de prueba y entrega comercial del sprint 4 (requiere autorización para enviar; no se enviaron correos durante esta implementación).
 - Quitar los dos botones del inicio (hecho)
+- Centrar texto de la portada sin tapar el vídeo (hecho)
