@@ -1,7 +1,6 @@
 import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
-import { ActivitiesGrid } from '@/components/ActivitiesGrid';
 import { GuideAuthority } from '@/components/GuideAuthority';
 import { VertigoSapiens } from '@/components/VertigoSapiens';
 import { WhyChooseUs } from '@/components/WhyChooseUs';
@@ -28,7 +27,6 @@ const Index = () => {
       <main>
         <HeroSection />
         <SafetyAssuranceSection />
-        <ActivitiesGrid />
         <HomeCalendarSection />
 
         <GuideAuthority />
