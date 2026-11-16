@@ -197,6 +197,20 @@
       "when": 1794869583814,
       "tag": "0027_catalog_photos_admin_read",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1794871004636,
+      "tag": "0028_admin_delete_activity_event",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1794871073156,
+      "tag": "0029_admin_delete_activity_event_grants",
+      "breakpoints": true
     }
   ]
 }

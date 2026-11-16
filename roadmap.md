@@ -218,3 +218,5 @@
 - [x] Enter en campos de listado de fichas (Incluye/Qué llevar/Requisitos) — corregido con texto en bruto por campo
 - [x] Fotos del guía sustituidas por la nueva foto natural (retrato + recorte del hero de contacto)
 - [x] Subir fotos desde el PC en el editor de fichas (botón junto al selector de foto)
+- [x] Retrato de Contacto recolocado en tablet para que no tape la cara (márgenes negativos + título text-6xl en md-lg)
+- [x] Borrar salidas de grupo abierto desde Salidas (RPC admin_delete_activity_event; rechaza si hay reservas activas)

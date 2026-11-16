@@ -1273,6 +1273,7 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_delete_activity_event: { Args: { _id: string }; Returns: Json }
       admin_delete_activity_sheet: { Args: { _id: string }; Returns: Json }
       admin_delete_booking: { Args: { _id: string }; Returns: Json }
       admin_delete_contact: { Args: { _id: string }; Returns: Json }

@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { activityProfiles, isSellable } from "@/data/activityProfiles";
+import { DeleteRecordButton } from "@/components/admin/DeleteControls";
 
 interface EventRow {
   id: string;
@@ -403,6 +404,13 @@ export function EventsPanel() {
           <Button size="sm" variant="outline" onClick={() => duplicate(event)} aria-label="Duplicar">
             <Copy className="h-4 w-4" />
           </Button>
+          <DeleteRecordButton
+            target="event"
+            id={event.id}
+            onDeleted={() => void load()}
+            className=""
+            label="Eliminar"
+          />
         </div>
         {openId === event.id && (
           <div className="w-full border-t border-border pt-3">
