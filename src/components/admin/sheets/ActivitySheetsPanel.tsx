@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, Eye, Link2Off, Mail, MessageCircle, Plus, Save } from 'lucide-react';
+import { Copy, Eye, Link2Off, Mail, MessageCircle, Plus, Save, Trash2 } from 'lucide-react';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
@@ -8,6 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { SheetView } from './SheetView';
 import type { CatalogItem } from '@/lib/adminCatalog';
@@ -23,7 +27,7 @@ const STATE_LABEL: Record<SheetState, string> = { borrador: 'Borrador', enviada:
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 
-function Editor({ row, contacts, catalog, onSaved }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void> }) {
+function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void> }) {
   const { toast } = useToast();
   const [c, setC] = useState<SheetContent>(() => row?.content ?? sheetFromBase(sheetBases[0].id));
   const [contactId, setContactId] = useState<string>(row?.contact_id ?? '');
@@ -86,6 +90,14 @@ function Editor({ row, contacts, catalog, onSaved }: { row: SheetRow | null; con
     const { error } = await supabase.from('activity_sheets').update({ status: 'desactivada' }).eq('id', row.id);
     if (error) toast({ title: 'No se pudo desactivar', variant: 'destructive' }); else { toast({ title: 'Enlace desactivado' }); await onSaved(row.id); }
   };
+  const remove = async () => {
+    if (!row) return;
+    setBusy(true);
+    const { error } = await supabase.rpc('admin_delete_activity_sheet', { _id: row.id });
+    setBusy(false);
+    if (error) toast({ title: 'No se pudo eliminar', description: error.message, variant: 'destructive' });
+    else { toast({ title: 'Ficha eliminada definitivamente' }); await onDeleted(); }
+  };
 
   return (
     <div className="grid gap-6 xl:grid-cols-2">
@@ -143,6 +155,26 @@ function Editor({ row, contacts, catalog, onSaved }: { row: SheetRow | null; con
           <Button variant="outline" disabled={busy || state === 'desactivada'} onClick={whatsapp}><MessageCircle className="mr-1 h-4 w-4" />WhatsApp</Button>
           {row && state !== 'desactivada' && <Button variant="ghost" disabled={busy} onClick={disable}><Link2Off className="mr-1 h-4 w-4" />Desactivar enlace</Button>}
           {row && row.status !== 'borrador' && <Button variant="ghost" asChild><a href={link} target="_blank" rel="noopener noreferrer"><Eye className="mr-1 h-4 w-4" />Abrir</a></Button>}
+          {row && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" disabled={busy} className="text-destructive hover:bg-destructive/10 hover:text-destructive"><Trash2 className="mr-1 h-4 w-4" />Eliminar</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Eliminar esta ficha definitivamente?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Se borrará «{c.title || 'Sin título'}» y su enlace dejará de funcionar. No se puede deshacer.
+                    {row.accepted_at && row.booking_id ? ' Esta ficha fue aceptada y tiene una reserva vinculada: elimina primero la reserva desde «Reservas».' : ''}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction disabled={busy} onClick={remove} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Eliminar</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </div>
       <div className="rounded-xl border border-border bg-background p-4 sm:p-6">
@@ -185,8 +217,8 @@ export function ActivitySheetsPanel({ contacts, catalog }: { contacts: SheetCont
           ))}
         </ul>
       )}
-      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} />}
-      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onSaved={async () => { await load(); }} />}
+      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} onDeleted={async () => { await load(); setSelected(null); }} />}
+      {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onSaved={async () => { await load(); }} onDeleted={async () => { await load(); setSelected(null); }} />}
       {!selected && rows.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Aún no hay fichas. Crea una y envía el enlace al cliente.</p>}
     </div>
   );
