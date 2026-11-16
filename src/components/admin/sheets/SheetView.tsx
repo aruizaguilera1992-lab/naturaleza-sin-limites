@@ -21,9 +21,10 @@ function List({ title, icon: Icon, items }: { title: string; icon: typeof Check;
 }
 
 /** Ficha de actividad privada; se usa en la vista previa del panel y en el enlace del cliente. */
-export function SheetView({ c, reference, accept }: { c: SheetContent; reference?: string; accept?: React.ReactNode }) {
+export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetContent; reference?: string; accept?: React.ReactNode; /** Customer view: URL signed server-side (the bucket is admin-only). */ ownPhotoUrl?: string | null }) {
   const ownPath = c.photo?.startsWith(STORAGE_PHOTO) ? c.photo.slice(STORAGE_PHOTO.length) : null;
-  const ownUrls = usePhotoUrls(ownPath ? [ownPath] : []);
+  const adminUrls = usePhotoUrls(ownPath && ownPhotoUrl === undefined ? [ownPath] : []);
+  const ownUrls: Record<string, string> = ownPath && ownPhotoUrl ? { [ownPath]: ownPhotoUrl } : adminUrls;
   const photo = ownPath ? (ownUrls[ownPath] ? { src: ownUrls[ownPath], alt: c.title, autor: '', licencia: '', fuente: '' } : null) : c.photo ? levelOfferPhotos[c.photo] : null;
   const total = sheetTotalEuros(c);
   const wa = `https://wa.me/34685609542?text=${encodeURIComponent(`Hola, quiero confirmar la actividad «${c.title}»${reference ? ` (ficha ${reference})` : ''}.`)}`;

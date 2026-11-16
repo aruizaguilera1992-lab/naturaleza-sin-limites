@@ -15,12 +15,14 @@ export default function FichaPrivada() {
   const [state, setState] = useState<'loading' | 'ok' | 'off'>('loading');
   const [content, setContent] = useState<SheetContent | null>(null);
   const [acceptedAt, setAcceptedAt] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   useEffect(() => {
     let alive = true;
     supabase.rpc('get_activity_sheet', { _token: token }).then(({ data, error }) => {
       if (!alive) return;
       const r = data as { available?: boolean; content?: SheetContent; accepted_at?: string | null } | null;
-      if (error || !r?.available || !r.content) setState('off'); else { setContent(r.content); setAcceptedAt(r.accepted_at ?? null); setState('ok'); }
+      if (error || !r?.available || !r.content) setState('off'); else { setContent(r.content); setAcceptedAt(r.accepted_at ?? null); setState('ok');
+        if (r.content.photo?.startsWith('storage:')) void supabase.functions.invoke('activity-sheet-photo', { body: { token } }).then(({ data: p }) => { if (alive) setPhotoUrl((p as { url?: string | null } | null)?.url ?? null); }); }
     });
     return () => { alive = false; };
   }, [token]);
@@ -30,7 +32,7 @@ export default function FichaPrivada() {
       <Navbar />
       <main className="container mx-auto max-w-4xl px-4 pt-44 sm:pt-48 md:pt-32 lg:pt-40 pb-16">
         {state === 'loading' && <p className="text-muted-foreground">Cargando tu ficha…</p>}
-        {state === 'ok' && content && <SheetView c={content} reference={token.slice(0, 8)} accept={<AcceptProposal token={token} defaultName={content.customerName} acceptedAt={acceptedAt} onAccepted={setAcceptedAt} />} />}
+        {state === 'ok' && content && <SheetView c={content} ownPhotoUrl={photoUrl} reference={token.slice(0, 8)} accept={<AcceptProposal token={token} defaultName={content.customerName} acceptedAt={acceptedAt} onAccepted={setAcceptedAt} />} />}
         {state === 'off' && (
           <div className="rounded-xl border border-border bg-card p-8 text-center">
             <h1 className="text-2xl font-heading font-bold text-foreground">Este enlace ya no está disponible</h1>
