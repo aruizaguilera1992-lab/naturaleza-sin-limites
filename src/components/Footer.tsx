@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, MapPin, MessageCircle, LockKeyhole } from "lucide-react";
 import { LOGO_SRC } from "@/lib/site";
-import innovactivaLogo from "@/assets/junta_innovactiva.png.asset.json";
-import iajLogo from "@/assets/instituto_andaluz_juventud.png.asset.json";
 import { useCookieConsent } from "@/context/CookieConsentContext";
 
 const navLinks = [
@@ -216,14 +214,14 @@ export function Footer() {
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
                   <img
-                    src={innovactivaLogo.url}
+                    src="/images/junta_innovactiva.png"
                     alt="Programa Innovactiva 2026. Apoyo a la iniciativa empresarial joven en Andalucía"
                     loading="lazy"
                     decoding="async"
                     className="h-14 w-auto max-w-full rounded-lg"
                   />
                   <img
-                    src={iajLogo.url}
+                    src="/images/instituto_andaluz_juventud.png"
                     alt="Instituto Andaluz de la Juventud. Consejería de Empleo, Formación y Trabajo Autónomo"
                     loading="lazy"
                     decoding="async"
