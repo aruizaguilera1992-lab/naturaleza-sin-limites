@@ -34,10 +34,12 @@ interface EventRow {
   event_type: string;
   guide_name: string | null;
   notes: string | null;
+  rules: string | null;
+  steps: string | null;
 }
 
 const EVENT_FIELDS =
-  "id, category, slug, title, starts_at, ends_at, meeting_point_public, meeting_point_private, latitude, longitude, capacity_total, seats_reserved, price_cents, status, event_type, guide_name, notes";
+  "id, category, slug, title, starts_at, ends_at, meeting_point_public, meeting_point_private, latitude, longitude, capacity_total, seats_reserved, price_cents, status, event_type, guide_name, notes, rules, steps";
 
 const STATUS_LABELS: Record<string, string> = {
   borrador: "Borrador",
@@ -105,6 +107,8 @@ const emptyForm = {
   latitude: "",
   longitude: "",
   notes: "",
+  rules: "",
+  steps: "",
 };
 
 type FormState = typeof emptyForm;
@@ -208,7 +212,8 @@ export function EventsPanel() {
   };
 
   const buildPayload = (startsAt: string) => {
-    const activity = selectedActivity!;
+    const activity = selectedActivity;
+    if (!activity) throw new Error("Elige una actividad del catálogo vendible.");
     const price = form.priceEuros.trim() ? Math.round(Number(form.priceEuros) * 100) : null;
     return {
       category: activity.category,
@@ -226,6 +231,8 @@ export function EventsPanel() {
       latitude: form.latitude.trim() ? Number(form.latitude) : null,
       longitude: form.longitude.trim() ? Number(form.longitude) : null,
       notes: form.notes.trim() || null,
+      rules: form.rules.trim() || null,
+      steps: form.steps.trim() || null,
     };
   };
 
@@ -320,6 +327,8 @@ export function EventsPanel() {
       latitude: event.latitude != null ? String(event.latitude) : "",
       longitude: event.longitude != null ? String(event.longitude) : "",
       notes: event.notes ?? "",
+      rules: event.rules ?? "",
+      steps: event.steps ?? "",
     });
   };
 
@@ -698,6 +707,13 @@ export function EventsPanel() {
               </div>
             </>
           )}
+          <div className="flex gap-2 sm:col-span-2">
+            <fieldset className="w-full space-y-3 border-t border-border pt-4">
+              <legend className="font-heading font-semibold text-foreground">Normas y pasos a seguir</legend>
+              <div><Label htmlFor="event-rules">Normas (una por línea)</Label><Textarea id="event-rules" rows={4} value={form.rules} onChange={(e) => setForm({ ...form, rules: e.target.value })} /></div>
+              <div><Label htmlFor="event-steps">Pasos a seguir (uno por línea)</Label><Textarea id="event-steps" rows={4} value={form.steps} onChange={(e) => setForm({ ...form, steps: e.target.value })} /></div>
+            </fieldset>
+          </div>
           <div className="flex gap-2 sm:col-span-2">
             <Button onClick={save} disabled={saving}>
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

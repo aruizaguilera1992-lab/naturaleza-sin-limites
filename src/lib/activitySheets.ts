@@ -21,6 +21,8 @@ export interface SheetContent {
   bring: string[];
   requirements: string[];
   notes: string;
+  rules?: string;
+  steps?: string;
   minAge: number;
   fitness: string;
   experience: boolean;

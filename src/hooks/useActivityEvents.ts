@@ -20,6 +20,8 @@ export interface ActivityEventRow {
   seats_reserved: number;
   price_cents: number | null;
   status: string;
+  rules?: string | null;
+  steps?: string | null;
 }
 
 export interface ActivityEvent extends ActivityEventRow {
@@ -32,7 +34,7 @@ export interface ActivityEvent extends ActivityEventRow {
 }
 
 const EVENT_FIELDS =
-  "id, category, slug, title, starts_at, ends_at, meeting_point_public, latitude, longitude, capacity_total, seats_reserved, price_cents, status";
+  "id, category, slug, title, starts_at, ends_at, meeting_point_public, latitude, longitude, capacity_total, seats_reserved, price_cents, status, rules, steps";
 
 /** Only events whose activity exists in the commercial catalogue with a real price. */
 const decorate = (row: ActivityEventRow): ActivityEvent | null => {

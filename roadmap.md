@@ -1,5 +1,8 @@
 # Roadmap
 
+## Normas y pasos de salidas
+- [ ] Añadir campos editables y listados visibles al cliente en salidas privadas y abiertas; verificar guardado sin alterar pagos.
+
 ## Aclaración comercial de correos (15/10/2026)
 - [x] Distinguir señales administrativas confirmadas de solicitudes y pagos genéricos con evidencia fiable
 - [x] Actualizar economía/resto, pruebas y muestras ficticias; revisar escritorio/móvil sin envíos ni despliegue

@@ -6,6 +6,7 @@ import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
 import { levelOfferPhotos } from '@/data/levelOffers';
 import { STORAGE_PHOTO, sheetTotalEuros, type SheetContent } from '@/lib/activitySheets';
 import { usePhotoUrls } from '@/lib/adminCatalog';
+import { OutingInstructions } from '@/components/shared/OutingInstructions';
 
 const DISC: Record<SheetContent['discipline'], string> = { barranquismo: 'Barranquismo', ferratas: 'Vía ferrata', espeleologia: 'Espeleología' };
 const fmtDate = (d: string) => { try { return new Date(`${d}T12:00:00`).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch { return d; } };
@@ -57,6 +58,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
         <List title="Requisitos" icon={Check} items={c.requirements} />
       </div>
       {c.notes && <p className="mt-6 whitespace-pre-line rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm">{c.notes}</p>}
+      <div className="mt-6"><OutingInstructions rules={c.rules} steps={c.steps} /></div>
       <div className="mt-6 rounded-xl border border-border bg-card p-5">
         {c.pricePerPersonEuros !== null ? (
           <p className="text-muted-foreground"><span className="text-2xl font-extrabold text-primary">{c.pricePerPersonEuros} €</span> / persona{total !== null && c.people > 1 && <> · total <span className="font-bold text-foreground">{total} €</span></>}</p>

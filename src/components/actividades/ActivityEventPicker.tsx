@@ -1,6 +1,7 @@
 import { CalendarDays, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
+import { OutingInstructions } from '@/components/shared/OutingInstructions';
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" });
@@ -79,6 +80,7 @@ export function ActivityEventPicker({
           Solicitar otra fecha o salida privada (sin pago)
         </button>
       )}
+      {events.filter((event) => event.id === selectedId).map((event) => <OutingInstructions key={event.id} rules={event.rules} steps={event.steps} />)}
     </div>
   );
 }
