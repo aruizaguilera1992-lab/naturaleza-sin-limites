@@ -11,7 +11,6 @@ import { ActivitiesGrid } from "@/components/actividades/ActivitiesGrid";
 import { ActivitiesToolbar } from "@/components/actividades/ActivitiesToolbar";
 import { ActivitiesComparison } from "@/components/actividades/ActivitiesComparison";
 import { ActivitiesCalendar } from "@/components/actividades/ActivitiesCalendar";
-import { ActivitiesPacks } from "@/components/actividades/ActivitiesPacks";
 import { useActivitiesData, UnifiedActivity } from "@/hooks/useActivitiesData";
 import { ArrowRight, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -282,8 +281,6 @@ const Actividades = () => {
             </AnimatePresence>
           </div>
         </section>
-
-        <ActivitiesPacks />
       </motion.main>
       <Footer />
       <WhatsAppButton />
