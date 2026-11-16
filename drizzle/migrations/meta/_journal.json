@@ -183,6 +183,13 @@
       "when": 1794867912908,
       "tag": "0025_admin_delete_activity_sheet",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1794868799028,
+      "tag": "0026_accept_sheet_without_contact_fields",
+      "breakpoints": true
     }
   ]
 }
