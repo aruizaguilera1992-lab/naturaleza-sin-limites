@@ -215,3 +215,6 @@
 
 - [x] Vídeo de portada completo
 - [x] Barrancos de Andalucía en catálogo admin
+- [x] Enter en campos de listado de fichas (Incluye/Qué llevar/Requisitos) — corregido con texto en bruto por campo
+- [x] Fotos del guía sustituidas por la nueva foto natural (retrato + recorte del hero de contacto)
+- [x] Subir fotos desde el PC en el editor de fichas (botón junto al selector de foto)

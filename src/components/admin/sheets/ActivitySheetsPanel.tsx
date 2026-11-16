@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, Eye, Link2Off, Mail, MessageCircle, Plus, Save, Trash2 } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Copy, Eye, ImagePlus, Link2Off, Mail, MessageCircle, Plus, Save, Trash2 } from 'lucide-react';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { SheetView } from './SheetView';
-import type { CatalogItem } from '@/lib/adminCatalog';
+import { CATALOG_BUCKET, type CatalogItem } from '@/lib/adminCatalog';
 import {
   MAX_SHEET_PEOPLE, STORAGE_PHOTO, sheetBases, sheetFromBase, sheetFromCatalog, sheetPhotoOptions, sheetState, sheetUrl, sheetWhatsappUrl, validateSheet,
   type SheetContent, type SheetState,
@@ -26,6 +26,7 @@ interface SheetRow { id: string; token: string; content: SheetContent; status: s
 const STATE_LABEL: Record<SheetState, string> = { borrador: 'Borrador', enviada: 'Enviada', vista: 'Vista', aceptada: 'Aceptada', caducada: 'Caducada', desactivada: 'Desactivada' };
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
+const IMG_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
 function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void> }) {
   const { toast } = useToast();
@@ -36,6 +37,12 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
   const [email, setEmail] = useState<string>(contact?.email ?? '');
   const [phone, setPhone] = useState<string>(contact?.phone ?? '');
   const [busy, setBusy] = useState(false);
+  const [uploaded, setUploaded] = useState<string[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
+  // Texto en bruto de los listados: si se guardara ya filtrado, el salto de línea de Enter desaparecería al reescribir el campo.
+  const [incRaw, setIncRaw] = useState(() => (row?.content.includes ?? sheetFromBase(sheetBases[0].id).includes).join('\n'));
+  const [bringRaw, setBringRaw] = useState(() => (row?.content.bring ?? sheetFromBase(sheetBases[0].id).bring).join('\n'));
+  const [reqRaw, setReqRaw] = useState(() => (row?.content.requirements ?? sheetFromBase(sheetBases[0].id).requirements).join('\n'));
   const ownPhotos = catalog.find((x) => `catalog:${x.key}` === c.base)?.photos ?? [];
   const set = <K extends keyof SheetContent>(k: K, v: SheetContent[K]) => setC((p) => ({ ...p, [k]: v }));
   const errors = validateSheet(c);
@@ -85,6 +92,23 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
     } else toast({ title: 'Ficha enviada por email' });
     await onSaved(r.id);
   };
+  const uploadPhoto = async (files: FileList | null) => {
+    const f = files?.[0];
+    if (!f) return;
+    if (!IMG_TYPES.includes(f.type)) { toast({ title: 'Formato no admitido (JPG, PNG, WebP o AVIF)', variant: 'destructive' }); return; }
+    if (f.size > 10 * 1024 * 1024) { toast({ title: 'Máximo 10 MB', variant: 'destructive' }); return; }
+    setBusy(true);
+    const ext = f.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const path = `fichas/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from(CATALOG_BUCKET).upload(path, f, { contentType: f.type });
+    setBusy(false);
+    if (fileRef.current) fileRef.current.value = '';
+    if (error) { toast({ title: 'No se pudo subir la foto', description: error.message, variant: 'destructive' }); return; }
+    setUploaded((p) => [...p, path]);
+    set('photo', `${STORAGE_PHOTO}${path}`);
+    toast({ title: 'Foto subida y seleccionada' });
+  };
+
   const disable = async () => {
     if (!row) return;
     const { error } = await supabase.from('activity_sheets').update({ status: 'desactivada' }).eq('id', row.id);
@@ -108,7 +132,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
           {row?.first_viewed_at && <span className="text-xs text-muted-foreground">Vista {row.view_count} {row.view_count === 1 ? 'vez' : 'veces'}</span>}
         </div>
         <div><Label htmlFor="sh-base">Nivel de partida</Label>
-          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); setC((p) => ({ ...(it ? sheetFromCatalog(it) : sheetFromBase(v)), customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes })); }}>
+          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes })); setIncRaw(next.includes.join('\n')); setBringRaw(next.bring.join('\n')); setReqRaw(next.requirements.join('\n')); }}>
             <optgroup label="Niveles">{sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>
             <optgroup label="Catálogo (recorridos)">{catalog.map((it) => <option key={it.key} value={`catalog:${it.key}`}>{it.name} · {it.levelLabel}</option>)}</optgroup>
           </select>
@@ -131,18 +155,24 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted }: { row: SheetRow 
         <div><Label htmlFor="sh-meet">Punto de encuentro</Label><Input id="sh-meet" value={c.meetingPoint} onChange={(e) => set('meetingPoint', e.target.value)} /></div>
         <div><Label htmlFor="sh-sum">Descripción breve</Label><Textarea id="sh-sum" rows={3} value={c.summary} onChange={(e) => set('summary', e.target.value)} /></div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <div><Label htmlFor="sh-inc">Incluye (una por línea)</Label><Textarea id="sh-inc" rows={5} value={c.includes.join('\n')} onChange={(e) => set('includes', lines(e.target.value))} /></div>
-          <div><Label htmlFor="sh-bring">Qué llevar</Label><Textarea id="sh-bring" rows={5} value={c.bring.join('\n')} onChange={(e) => set('bring', lines(e.target.value))} /></div>
-          <div><Label htmlFor="sh-req">Requisitos</Label><Textarea id="sh-req" rows={5} value={c.requirements.join('\n')} onChange={(e) => set('requirements', lines(e.target.value))} /></div>
+          <div><Label htmlFor="sh-inc">Incluye (una por línea)</Label><Textarea id="sh-inc" rows={5} value={incRaw} onChange={(e) => { setIncRaw(e.target.value); set('includes', lines(e.target.value)); }} /></div>
+          <div><Label htmlFor="sh-bring">Qué llevar</Label><Textarea id="sh-bring" rows={5} value={bringRaw} onChange={(e) => { setBringRaw(e.target.value); set('bring', lines(e.target.value)); }} /></div>
+          <div><Label htmlFor="sh-req">Requisitos</Label><Textarea id="sh-req" rows={5} value={reqRaw} onChange={(e) => { setReqRaw(e.target.value); set('requirements', lines(e.target.value)); }} /></div>
         </div>
         <div><Label htmlFor="sh-notes">Notas para el cliente</Label><Textarea id="sh-notes" rows={3} value={c.notes} onChange={(e) => set('notes', e.target.value)} /></div>
         <div><Label htmlFor="sh-photo">Foto</Label>
           <select id="sh-photo" className={sel} value={c.photo ?? ''} onChange={(e) => set('photo', e.target.value || null)}>
             <option value="">Sin foto</option>
             {ownPhotos.map((p, i) => <option key={p} value={`${STORAGE_PHOTO}${p}`}>Foto propia {i + 1} del recorrido</option>)}
+            {uploaded.map((p, i) => <option key={p} value={`${STORAGE_PHOTO}${p}`}>Foto subida {i + 1}</option>)}
+            {c.photo?.startsWith(STORAGE_PHOTO) && !ownPhotos.includes(c.photo.slice(STORAGE_PHOTO.length)) && !uploaded.includes(c.photo.slice(STORAGE_PHOTO.length)) && <option value={c.photo}>Foto subida guardada</option>}
             {sheetPhotoOptions.map((p) => <option key={p.key} value={p.key}>{p.alt} ({p.licencia})</option>)}
           </select>
-          <p className="mt-1 text-xs text-muted-foreground">Fotos propias del recorrido (catálogo) o fotos de uso libre, que se muestran como ilustrativas.</p></div>
+          <div className="mt-2 flex items-center gap-2">
+            <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => fileRef.current?.click()}><ImagePlus className="mr-1 h-4 w-4" />Subir foto desde el PC</Button>
+            <input ref={fileRef} type="file" accept={IMG_TYPES.join(',')} className="hidden" onChange={(e) => uploadPhoto(e.target.files)} />
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">Fotos propias del recorrido (catálogo), fotos subidas por ti o fotos de uso libre, que se muestran como ilustrativas.</p></div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div><Label htmlFor="sh-email">Email del cliente</Label><Input id="sh-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
           <div><Label htmlFor="sh-phone">WhatsApp del cliente</Label><Input id="sh-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
