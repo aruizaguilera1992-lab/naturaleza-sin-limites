@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Check, MessageCircle, Mountain, Users } from 'lucide-react';
+import { ArrowLeft, Check, MessageCircle, Mountain } from 'lucide-react';
 import { Seo } from '@/components/Seo';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { levelOfferExplanation, levelOfferPhotos, levelOffers, levelOfferWhatsapp } from '@/data/levelOffers';
@@ -32,6 +33,7 @@ export default function LevelOfferPage() {
         </div>
         <h1 className="mt-3 text-3xl sm:text-4xl font-heading font-bold text-foreground">{o.nombre}</h1>
         <p className="mt-3 text-lg text-muted-foreground">{o.descripcionCorta}</p>
+        <LevelVisualStrip className="mt-6 max-w-xl" level={o.orden} minAge={o.edadMinima} fitness={o.condicionFisica} experience={o.experienciaPrevia} />
         {photo && (
           <figure className="mt-6 overflow-hidden rounded-xl border border-border">
             <img src={photo.src} alt={photo.alt} className="h-64 sm:h-80 w-full object-cover" />
@@ -47,7 +49,6 @@ export default function LevelOfferPage() {
           <section className="rounded-xl border border-border bg-card p-5">
             <h2 className="font-heading font-bold text-foreground">Características</h2>
             <ul className="mt-3 grid gap-2 text-sm text-muted-foreground">{o.caracteristicas.map((c) => <li key={c} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{c}</li>)}</ul>
-            <p className="mt-4 flex items-center gap-2 text-sm text-muted-foreground"><Users className="h-4 w-4 text-primary" />Edad mínima {o.edadMinima} años · condición física {o.condicionFisica.toLowerCase()}</p>
           </section>
           <section className="rounded-xl border border-border bg-card p-5">
             <h2 className="font-heading font-bold text-foreground">Incluye</h2>

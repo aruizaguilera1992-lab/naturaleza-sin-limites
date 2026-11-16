@@ -11,6 +11,7 @@ import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { PracticalInfo } from '@/components/shared/PracticalInfo';
+import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -135,12 +136,13 @@ const Espeleologia = () => {
                     <h3 className="text-lg font-heading font-bold text-foreground mb-2">{a.nombre}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{a.descripcionCorta}</p>
 
+                    <LevelVisualStrip className="mb-4" level={i + 1} minAge={a.requisitos.edadMinima} fitness={a.requisitos.condicionFisica} experience={a.requisitos.experienciaPrevia} />
                     <ul className="space-y-1.5 text-sm text-muted-foreground mb-4">
                       <li className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-primary" /> {a.duracion}
                       </li>
                       <li className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-primary" /> Grupo mínimo {a.grupoMinimo} · desde {a.requisitos.edadMinima} años
+                        <Users className="h-4 w-4 text-primary" /> Grupo mínimo {a.grupoMinimo}
                       </li>
                       <li className="flex items-center gap-2">
                         <MapPin className="h-4 w-4 text-primary" /> {a.provincia}
