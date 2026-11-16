@@ -45,6 +45,12 @@ const pageTransition = {
   transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
 };
 
+const CATALOG_GROUPS = [
+  { type: "barranquismo", title: "Barranquismo", href: "/barranquismo" },
+  { type: "ferratas", title: "Vías ferratas", href: "/vias-ferratas" },
+  { type: "espeleologia", title: "Espeleología", href: "/espeleologia" },
+] as const;
+
 const Actividades = () => {
   const [activeTab, setActiveTab] = useState<ActivityType>("todas");
   const [filters, setFilters] = useState<Filters>(initialFilters);
@@ -206,79 +212,38 @@ const Actividades = () => {
 
       <Navbar />
       <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
-        <ActivitiesHeroSection
-          onSearch={(search) => handleFilterChange({ search })}
-        />
+        <ActivitiesHeroSection showSearch={false} />
 
         <section id="activities-results" className="py-8 lg:py-12">
           <div className="container mx-auto px-2 sm:px-4">
-            {/* Unified tabs + filters bar */}
-            <ActivitiesFilters
-              filters={filters}
-              counts={counts}
-              activeTab={activeTab}
-              onTabChange={handleTabChange}
-              onFilterChange={handleFilterChange}
-              onClearFilters={handleClearFilters}
-            />
-
-            <AnimatePresence mode="wait">
-              {activeTab === "calendario" ? (
-                <motion.div
-                  key="calendar"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                >
-                  <ActivitiesCalendar />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="grid"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="flex flex-col gap-6"
-                >
-                  {/* Main Content */}
-                  <div className="flex-1 min-w-0">
-                    {activeTab === "escalada" && (
-                      <div className="mb-5 flex flex-col gap-4 rounded-md border border-primary/30 bg-primary/10 p-5 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex min-w-0 gap-3">
-                          <GraduationCap className="mt-1 h-6 w-6 shrink-0 text-primary" />
-                          <div>
-                            <h2 className="font-heading text-lg font-bold text-foreground">¿Quieres aprender paso a paso?</h2>
-                            <p className="mt-1 text-sm leading-6 text-muted-foreground">Conoce el itinerario propio NSL E1–E3 y las prácticas tutorizadas.</p>
-                          </div>
-                        </div>
-                        <Button variant="outline" className="shrink-0 gap-2" asChild>
-                          <Link to="/escalada#formacion">Ver formación <ArrowRight className="h-4 w-4" /></Link>
-                        </Button>
-                      </div>
-                    )}
-                    <ActivitiesToolbar
-                      totalCount={filteredActivities.length}
-                      viewMode={viewMode}
-                      sortBy={sortBy}
-                      compareCount={compareList.length}
-                      favoritesCount={favorites.length}
-                      onViewModeChange={setViewMode}
-                      onSortChange={setSortBy}
-                      onOpenComparison={() => setShowComparison(true)}
-                    />
-
-                    <ActivitiesGrid
-                      activities={filteredActivities}
-                      viewMode={viewMode}
-                      compareList={compareList}
-                      favorites={favorites}
-                      onToggleCompare={handleToggleCompare}
-                      onToggleFavorite={handleToggleFavorite}
-                    />
+            {/* Catálogo por niveles: filtros, buscador y comparador ocultos (componentes conservados). */}
+            <div className="flex flex-col gap-12">
+              {CATALOG_GROUPS.map((g) => {
+                const items = activities.filter((a) => a.activityType === g.type);
+                if (!items.length) return null;
+                return (
+                  <section key={g.type} aria-labelledby={`cat-${g.type}`}>
+                    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+                      <h2 id={`cat-${g.type}`} className="text-2xl sm:text-3xl font-heading font-bold text-foreground">{g.title}</h2>
+                      <Link to={g.href} className="text-sm font-semibold text-primary underline-offset-4 hover:underline">Ver {g.title.toLowerCase()}</Link>
+                    </div>
+                    <ActivitiesGrid activities={items} viewMode="grid" compareList={[]} favorites={[]} onToggleCompare={() => {}} onToggleFavorite={() => {}} showTools={false} />
+                  </section>
+                );
+              })}
+              <div className="flex flex-col gap-4 rounded-md border border-primary/30 bg-primary/10 p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 gap-3">
+                  <GraduationCap className="mt-1 h-6 w-6 shrink-0 text-primary" />
+                  <div>
+                    <h2 className="font-heading text-lg font-bold text-foreground">¿Quieres aprender escalada paso a paso?</h2>
+                    <p className="mt-1 text-sm leading-6 text-muted-foreground">Conoce la iniciación E1 y el itinerario propio NSL.</p>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+                <Button variant="outline" className="shrink-0 gap-2" asChild>
+                  <Link to="/escalada#formacion">Ver formación <ArrowRight className="h-4 w-4" /></Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </section>
       </motion.main>
