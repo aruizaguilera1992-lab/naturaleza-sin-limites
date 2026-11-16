@@ -1,0 +1,188 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Copy, Eye, Link2Off, Mail, MessageCircle, Plus, Save } from 'lucide-react';
+import { FunctionsHttpError } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { SheetView } from './SheetView';
+import {
+  MAX_SHEET_PEOPLE, sheetBases, sheetFromBase, sheetPhotoOptions, sheetState, sheetUrl, sheetWhatsappUrl, validateSheet,
+  type SheetContent, type SheetState,
+} from '@/lib/activitySheets';
+
+export interface SheetContact { id: string; nombre: string; email: string | null; phone: string | null }
+interface SheetRow { id: string; token: string; content: SheetContent; status: string; contact_id: string | null; expires_at: string | null; sent_at: string | null; first_viewed_at: string | null; view_count: number; updated_at: string }
+
+const STATE_LABEL: Record<SheetState, string> = { borrador: 'Borrador', enviada: 'Enviada', vista: 'Vista', caducada: 'Caducada', desactivada: 'Desactivada' };
+const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
+const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
+
+function Editor({ row, contacts, onSaved }: { row: SheetRow | null; contacts: SheetContact[]; onSaved: (id: string) => Promise<void> }) {
+  const { toast } = useToast();
+  const [c, setC] = useState<SheetContent>(() => row?.content ?? sheetFromBase(sheetBases[0].id));
+  const [contactId, setContactId] = useState<string>(row?.contact_id ?? '');
+  const [expires, setExpires] = useState<string>(row?.expires_at?.slice(0, 10) ?? '');
+  const contact = contacts.find((x) => x.id === contactId);
+  const [email, setEmail] = useState<string>(contact?.email ?? '');
+  const [phone, setPhone] = useState<string>(contact?.phone ?? '');
+  const [busy, setBusy] = useState(false);
+  const set = <K extends keyof SheetContent>(k: K, v: SheetContent[K]) => setC((p) => ({ ...p, [k]: v }));
+  const errors = validateSheet(c);
+  const state = row ? sheetState(row) : 'borrador';
+  const link = row ? sheetUrl(window.location.origin, row.token) : '';
+
+  const save = async (activate = false): Promise<SheetRow | null> => {
+    if (errors.length) { toast({ title: 'Revisa la ficha', description: errors.join(' · '), variant: 'destructive' }); return null; }
+    setBusy(true);
+    const payload = { content: c as unknown as Json, contact_id: contactId || null, expires_at: expires ? `${expires}T23:59:59+01:00` : null, ...(activate && row?.status !== 'desactivada' ? { status: 'enviada' } : {}) };
+    const { data: u } = await supabase.auth.getUser();
+    const q = row
+      ? supabase.from('activity_sheets').update(payload).eq('id', row.id).select().single()
+      : supabase.from('activity_sheets').insert({ ...payload, created_by: u.user?.id ?? null }).select().single();
+    const { data, error } = await q;
+    setBusy(false);
+    if (error || !data) { toast({ title: 'No se pudo guardar', description: error?.message, variant: 'destructive' }); return null; }
+    await onSaved(data.id);
+    return data as unknown as SheetRow;
+  };
+
+  const logContact = async (kind: string, body: string) => {
+    if (!contactId) return;
+    const { data: u } = await supabase.auth.getUser();
+    await supabase.from('contact_events').insert({ contact_id: contactId, kind, body, origin: 'manual', author_id: u.user?.id ?? null });
+  };
+
+  const copy = async () => {
+    const r = await save(true); if (!r) return;
+    await navigator.clipboard.writeText(sheetUrl(window.location.origin, r.token)).catch(() => {});
+    toast({ title: 'Enlace copiado y activado' });
+  };
+  const whatsapp = async () => {
+    const r = await save(true); if (!r) return;
+    window.open(sheetWhatsappUrl(phone, c, sheetUrl(window.location.origin, r.token)), '_blank', 'noopener,noreferrer');
+    await logContact('comunicacion_whatsapp', `Ficha de actividad enviada por WhatsApp: ${c.title}`);
+  };
+  const sendEmail = async () => {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) { toast({ title: 'Email no válido', variant: 'destructive' }); return; }
+    const r = await save(); if (!r) return;
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke('send-activity-sheet', { body: { id: r.id, email: email.trim(), origin: window.location.origin, send_id: crypto.randomUUID() } });
+    setBusy(false);
+    if (error || !data?.ok) {
+      const details = error instanceof FunctionsHttpError ? await error.context.text() : (data?.error ?? error?.message);
+      toast({ title: 'No se pudo enviar el email', description: String(details ?? ''), variant: 'destructive' });
+    } else toast({ title: 'Ficha enviada por email' });
+    await onSaved(r.id);
+  };
+  const disable = async () => {
+    if (!row) return;
+    const { error } = await supabase.from('activity_sheets').update({ status: 'desactivada' }).eq('id', row.id);
+    if (error) toast({ title: 'No se pudo desactivar', variant: 'destructive' }); else { toast({ title: 'Enlace desactivado' }); await onSaved(row.id); }
+  };
+
+  return (
+    <div className="grid gap-6 xl:grid-cols-2">
+      <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="outline">{STATE_LABEL[state]}</Badge>
+          {row?.first_viewed_at && <span className="text-xs text-muted-foreground">Vista {row.view_count} {row.view_count === 1 ? 'vez' : 'veces'}</span>}
+        </div>
+        <div><Label htmlFor="sh-base">Nivel de partida</Label>
+          <select id="sh-base" className={sel} value={c.base} onChange={(e) => setC((p) => ({ ...sheetFromBase(e.target.value), customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes }))}>
+            {sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}
+          </select>
+          <p className="mt-1 text-xs text-muted-foreground">Cambiarlo rellena texto, indicadores, incluye y edad.</p></div>
+        <div><Label htmlFor="sh-contact">Cliente del CRM (opcional)</Label>
+          <select id="sh-contact" className={sel} value={contactId} onChange={(e) => { const x = contacts.find((k) => k.id === e.target.value); setContactId(e.target.value); if (x) { setEmail(x.email ?? ''); setPhone(x.phone ?? ''); set('customerName', x.nombre); } }}>
+            <option value="">Sin vincular</option>
+            {contacts.map((k) => <option key={k.id} value={k.id}>{k.nombre}{k.email ? ` · ${k.email}` : ''}</option>)}
+          </select></div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div><Label htmlFor="sh-name">Nombre del cliente</Label><Input id="sh-name" value={c.customerName} onChange={(e) => set('customerName', e.target.value)} /></div>
+          <div><Label htmlFor="sh-title">Título</Label><Input id="sh-title" value={c.title} onChange={(e) => set('title', e.target.value)} /></div>
+          <div><Label htmlFor="sh-place">Recorrido / lugar</Label><Input id="sh-place" value={c.place} onChange={(e) => set('place', e.target.value)} /></div>
+          <div><Label htmlFor="sh-date">Fecha propuesta</Label><Input id="sh-date" type="date" value={c.date} onChange={(e) => set('date', e.target.value)} /></div>
+          <div><Label htmlFor="sh-dur">Duración</Label><Input id="sh-dur" value={c.duration} onChange={(e) => set('duration', e.target.value)} placeholder="p. ej. 4 horas" /></div>
+          <div><Label htmlFor="sh-people">Personas (máx. {MAX_SHEET_PEOPLE})</Label><Input id="sh-people" type="number" min={1} max={MAX_SHEET_PEOPLE} value={c.people} onChange={(e) => set('people', Number(e.target.value))} /></div>
+          <div><Label htmlFor="sh-price">Precio por persona (€)</Label><Input id="sh-price" type="number" min={0} value={c.pricePerPersonEuros ?? ''} placeholder="Vacío = a consultar" onChange={(e) => set('pricePerPersonEuros', e.target.value === '' ? null : Number(e.target.value))} /></div>
+          <div><Label htmlFor="sh-exp">Caduca el</Label><Input id="sh-exp" type="date" value={expires} onChange={(e) => setExpires(e.target.value)} /></div>
+        </div>
+        <div><Label htmlFor="sh-meet">Punto de encuentro</Label><Input id="sh-meet" value={c.meetingPoint} onChange={(e) => set('meetingPoint', e.target.value)} /></div>
+        <div><Label htmlFor="sh-sum">Descripción breve</Label><Textarea id="sh-sum" rows={3} value={c.summary} onChange={(e) => set('summary', e.target.value)} /></div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div><Label htmlFor="sh-inc">Incluye (una por línea)</Label><Textarea id="sh-inc" rows={5} value={c.includes.join('\n')} onChange={(e) => set('includes', lines(e.target.value))} /></div>
+          <div><Label htmlFor="sh-bring">Qué llevar</Label><Textarea id="sh-bring" rows={5} value={c.bring.join('\n')} onChange={(e) => set('bring', lines(e.target.value))} /></div>
+          <div><Label htmlFor="sh-req">Requisitos</Label><Textarea id="sh-req" rows={5} value={c.requirements.join('\n')} onChange={(e) => set('requirements', lines(e.target.value))} /></div>
+        </div>
+        <div><Label htmlFor="sh-notes">Notas para el cliente</Label><Textarea id="sh-notes" rows={3} value={c.notes} onChange={(e) => set('notes', e.target.value)} /></div>
+        <div><Label htmlFor="sh-photo">Foto</Label>
+          <select id="sh-photo" className={sel} value={c.photo ?? ''} onChange={(e) => set('photo', e.target.value || null)}>
+            <option value="">Sin foto</option>
+            {sheetPhotoOptions.map((p) => <option key={p.key} value={p.key}>{p.alt} ({p.licencia})</option>)}
+          </select>
+          <p className="mt-1 text-xs text-muted-foreground">Solo fotos de uso libre ya verificadas; se muestran como ilustrativas.</p></div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div><Label htmlFor="sh-email">Email del cliente</Label><Input id="sh-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+          <div><Label htmlFor="sh-phone">WhatsApp del cliente</Label><Input id="sh-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
+        </div>
+        {errors.length > 0 && <p role="alert" className="text-sm text-destructive">{errors.join(' · ')}</p>}
+        <div className="flex flex-wrap gap-2 border-t border-border pt-4">
+          <Button variant="outline" disabled={busy} onClick={() => save()}><Save className="mr-1 h-4 w-4" />Guardar borrador</Button>
+          <Button variant="outline" disabled={busy || state === 'desactivada'} onClick={copy}><Copy className="mr-1 h-4 w-4" />Copiar enlace</Button>
+          <Button variant="hero" disabled={busy || state === 'desactivada'} onClick={sendEmail}><Mail className="mr-1 h-4 w-4" />Enviar por email</Button>
+          <Button variant="outline" disabled={busy || state === 'desactivada'} onClick={whatsapp}><MessageCircle className="mr-1 h-4 w-4" />WhatsApp</Button>
+          {row && state !== 'desactivada' && <Button variant="ghost" disabled={busy} onClick={disable}><Link2Off className="mr-1 h-4 w-4" />Desactivar enlace</Button>}
+          {row && row.status !== 'borrador' && <Button variant="ghost" asChild><a href={link} target="_blank" rel="noopener noreferrer"><Eye className="mr-1 h-4 w-4" />Abrir</a></Button>}
+        </div>
+      </div>
+      <div className="rounded-xl border border-border bg-background p-4 sm:p-6">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Vista previa del cliente</p>
+        <SheetView c={c} />
+      </div>
+    </div>
+  );
+}
+
+/** Constructor de fichas privadas de actividad con enlace único. */
+export function ActivitySheetsPanel({ contacts }: { contacts: SheetContact[] }) {
+  const [rows, setRows] = useState<SheetRow[]>([]);
+  const [selected, setSelected] = useState<string | 'new' | null>(null);
+  const load = useCallback(async () => {
+    const { data } = await supabase.from('activity_sheets').select('*').order('updated_at', { ascending: false });
+    setRows((data ?? []) as unknown as SheetRow[]);
+  }, []);
+  useEffect(() => { void load(); }, [load]);
+  const current = useMemo(() => rows.find((r) => r.id === selected) ?? null, [rows, selected]);
+  const name = (id: string | null) => contacts.find((c) => c.id === id)?.nombre;
+  const [newKey, setNewKey] = useState(0);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="hero" onClick={() => { setSelected('new'); setNewKey((k) => k + 1); }}><Plus className="mr-1 h-4 w-4" />Nueva ficha</Button>
+        <p className="text-sm text-muted-foreground">{rows.length} {rows.length === 1 ? 'ficha' : 'fichas'}</p>
+      </div>
+      {rows.length > 0 && (
+        <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          {rows.map((r) => (
+            <li key={r.id}>
+              <button type="button" onClick={() => setSelected(r.id)} aria-current={selected === r.id || undefined}
+                className={`w-full rounded-lg border p-3 text-left transition-all duration-300 active:scale-95 ${selected === r.id ? 'border-primary bg-primary/10' : 'border-border bg-card hover:border-primary/50'}`}>
+                <div className="flex items-center justify-between gap-2"><span className="truncate font-semibold text-foreground">{r.content?.title || 'Sin título'}</span><Badge variant="outline">{STATE_LABEL[sheetState(r)]}</Badge></div>
+                <p className="mt-1 truncate text-xs text-muted-foreground">{name(r.contact_id) ?? r.content?.customerName ?? 'Sin cliente'}{r.content?.date ? ` · ${r.content.date}` : ''}</p>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} onSaved={async (id) => { await load(); setSelected(id); }} />}
+      {current && <Editor key={current.id} row={current} contacts={contacts} onSaved={async () => { await load(); }} />}
+      {!selected && rows.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Aún no hay fichas. Crea una y envía el enlace al cliente.</p>}
+    </div>
+  );
+}

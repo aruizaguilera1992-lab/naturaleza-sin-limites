@@ -138,6 +138,59 @@ export type Database = {
         }
         Relationships: []
       }
+      activity_sheets: {
+        Row: {
+          contact_id: string | null
+          content: Json
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          first_viewed_at: string | null
+          id: string
+          sent_at: string | null
+          status: string
+          token: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          contact_id?: string | null
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          first_viewed_at?: string | null
+          id?: string
+          sent_at?: string | null
+          status?: string
+          token?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          contact_id?: string | null
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          first_viewed_at?: string | null
+          id?: string
+          sent_at?: string | null
+          status?: string
+          token?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_sheets_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contact_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_publications: {
         Row: {
           piece_id: string
@@ -1217,6 +1270,7 @@ export type Database = {
         }
         Returns: Json
       }
+      get_activity_sheet: { Args: { _token: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

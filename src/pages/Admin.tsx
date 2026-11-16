@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { ActivitySheetsPanel } from "@/components/admin/sheets/ActivitySheetsPanel";
+import { ClipboardList } from "lucide-react";
 import { depositConfirmationOption, paymentLinkBody, type DepositConfirmationOption } from "@/lib/depositConfirmation";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
@@ -74,7 +76,7 @@ import { CommercialAgenda } from "@/components/admin/CommercialAgenda";
 import { agendaCounts, type AgendaContact } from "@/lib/commercialAgenda";
 import type { ContactTab } from "@/components/admin/contact/ContactDetail";
 
-type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans" | "editorial" | "agenda";
+type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans" | "editorial" | "agenda" | "sheets";
 
 
 type NotesFieldProps = {
@@ -785,6 +787,7 @@ export default function Admin() {
     { id: "bookings", label: "Reservas", subtitle: "Solicitudes y reservas de actividades.", icon: CalendarCheck, count: newBookings },
     { id: "contacts", label: "Contactos", subtitle: "Mensajes recibidos desde la web.", icon: Inbox, count: newContacts },
     { id: "agenda", label: "Agenda", heading: "Agenda comercial", subtitle: "Qué requiere atención y cuál es el siguiente paso.", icon: CalendarClock, count: agendaUrgent || undefined },
+    { id: "sheets", label: "Fichas", heading: "Fichas de actividad", subtitle: "Crea fichas privadas y envía el enlace al cliente.", icon: ClipboardList },
     { id: "events", label: "Calendario", subtitle: "Salidas programadas y plazas.", icon: CalendarDays },
     { id: "plans", label: "Planes", subtitle: "Suscripciones de Vértigo Sapiens.", icon: Repeat },
     { id: "editorial", label: "Editorial", subtitle: "Artículos del blog.", icon: FileText },
@@ -1334,6 +1337,10 @@ export default function Admin() {
               )}
               </div>
             </>
+          )}
+
+          {tab === "sheets" && (
+            <ActivitySheetsPanel contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />
           )}
 
           {tab === "agenda" && (

@@ -14,6 +14,7 @@ interface ActivitiesGridProps {
   favorites: string[];
   onToggleCompare: (activity: UnifiedActivity) => void;
   onToggleFavorite: (activityId: string) => void;
+  showTools?: boolean;
 }
 
 const typeLabels: Record<UnifiedActivity['activityType'], string> = {
@@ -23,7 +24,8 @@ const typeLabels: Record<UnifiedActivity['activityType'], string> = {
   espeleologia: 'Espeleología',
 };
 
-function ActivityCard({ activity, index, isInCompareList, isFavorite, onToggleCompare, onToggleFavorite, viewMode }: {
+function ActivityCard({ activity, index, isInCompareList, isFavorite, onToggleCompare, onToggleFavorite, viewMode, showTools = true }: {
+  showTools?: boolean;
   activity: UnifiedActivity;
   index: number;
   isInCompareList: boolean;
@@ -46,8 +48,8 @@ function ActivityCard({ activity, index, isInCompareList, isFavorite, onToggleCo
         <Badge className="absolute left-3 top-3 border-primary/30 bg-background/85 text-foreground backdrop-blur">{typeLabels[activity.activityType]}</Badge>
         <span className="absolute bottom-3 left-3 flex items-center gap-1 text-xs font-semibold text-foreground"><MapPin className="h-3.5 w-3.5 text-primary" />{activity.zone}, {activity.province}</span>
         <div className="absolute right-3 top-3 flex gap-2">
-          <Button variant={isInCompareList ? 'default' : 'secondary'} size="icon" className="h-10 w-10 bg-background/85 backdrop-blur" onClick={(event) => { event.preventDefault(); onToggleCompare(); }} title="Comparar" aria-label={`Comparar ${activity.name}`}><Scale /></Button>
-          <Button variant={isFavorite ? 'default' : 'secondary'} size="icon" className="h-10 w-10 bg-background/85 backdrop-blur" onClick={(event) => { event.preventDefault(); onToggleFavorite(); }} title="Guardar en favoritos" aria-label={`Guardar ${activity.name} en favoritos`}><Heart className={cn(isFavorite && 'fill-current')} /></Button>
+          {showTools && <Button variant={isInCompareList ? 'default' : 'secondary'} size="icon" className="h-10 w-10 bg-background/85 backdrop-blur" onClick={(event) => { event.preventDefault(); onToggleCompare(); }} title="Comparar" aria-label={`Comparar ${activity.name}`}><Scale /></Button>}
+          {showTools && <Button variant={isFavorite ? 'default' : 'secondary'} size="icon" className="h-10 w-10 bg-background/85 backdrop-blur" onClick={(event) => { event.preventDefault(); onToggleFavorite(); }} title="Guardar en favoritos" aria-label={`Guardar ${activity.name} en favoritos`}><Heart className={cn(isFavorite && 'fill-current')} /></Button>}
         </div>
       </Link>
 
@@ -96,14 +98,14 @@ function ActivityCard({ activity, index, isInCompareList, isFavorite, onToggleCo
   );
 }
 
-export function ActivitiesGrid({ activities, viewMode, compareList, favorites, onToggleCompare, onToggleFavorite }: ActivitiesGridProps) {
+export function ActivitiesGrid({ activities, viewMode, compareList, favorites, onToggleCompare, onToggleFavorite, showTools = true }: ActivitiesGridProps) {
   if (activities.length === 0) return <div className="py-16 text-center"><h3 className="text-xl font-bold">No se encontraron actividades</h3><p className="mt-2 text-muted-foreground">Prueba a ajustar los filtros para ver más resultados.</p></div>;
 
   if (viewMode === 'map') return <div className="rounded-lg border border-border bg-card p-10 text-center"><MapPin className="mx-auto h-9 w-9 text-primary" /><h3 className="mt-4 text-lg font-bold">Vista de mapa</h3><p className="mt-2 text-sm text-muted-foreground">Próximamente disponible.</p></div>;
 
   return (
     <div className={cn('grid items-stretch gap-4 sm:gap-5', viewMode === 'list' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3')}>
-      {activities.map((activity, index) => <ActivityCard key={activity.id} activity={activity} index={index} isInCompareList={compareList.some((item) => item.id === activity.id)} isFavorite={favorites.includes(activity.id)} onToggleCompare={() => onToggleCompare(activity)} onToggleFavorite={() => onToggleFavorite(activity.id)} viewMode={viewMode} />)}
+      {activities.map((activity, index) => <ActivityCard key={activity.id} activity={activity} index={index} isInCompareList={compareList.some((item) => item.id === activity.id)} isFavorite={favorites.includes(activity.id)} onToggleCompare={() => onToggleCompare(activity)} onToggleFavorite={() => onToggleFavorite(activity.id)} viewMode={viewMode} showTools={showTools} />)}
     </div>
   );
 }
