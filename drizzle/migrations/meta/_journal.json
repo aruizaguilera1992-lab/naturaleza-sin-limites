@@ -176,6 +176,13 @@
       "when": 1794867722965,
       "tag": "0024_accept_activity_sheet",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1794867912908,
+      "tag": "0025_admin_delete_activity_sheet",
+      "breakpoints": true
     }
   ]
 }
