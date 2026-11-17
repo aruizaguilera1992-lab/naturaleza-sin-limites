@@ -410,7 +410,7 @@ export function EventTechSheet({
           {
             key: "detalle",
             eyebrow: "La actividad",
-            title: "Con detalle",
+            title: "En detalle",
             blocks: ["detalle"],
           },
         ]
