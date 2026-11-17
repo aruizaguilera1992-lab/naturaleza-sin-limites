@@ -23,7 +23,7 @@ export function MeetingPointActions({ text, target, className = 'mt-3 flex flex-
 export function MeetingPointLabel({ text, target }: { text: string; target?: MapsTarget | null }) {
   const base = textWithoutUrl(text).replace(/\s*[:;,]\s*$/, '') || 'Punto de quedada';
   const name = target?.name && !base.toLowerCase().includes(target.name.toLowerCase()) ? target.name : null;
-  return <span>{base}{name ? <span className="text-muted-foreground"> — {name}</span> : null}</span>;
+  return <span>{base}{name ? <span className="text-foreground/80"> — {name}</span> : null}</span>;
 }
 
 /** Paso del cronograma que es el punto de quedada: texto limpio + botones de mapas. */
