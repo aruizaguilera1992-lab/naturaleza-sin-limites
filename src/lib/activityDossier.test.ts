@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { suggestWetsuit, suggestBootie, participantErrors, isCanyoning, SELAND_WETSUIT } from './activityDossier';
+import { suggestWetsuit, suggestBootie, participantErrors, isCanyoning, SELAND_WETSUIT, SELAND_BOOTIES } from './activityDossier';
 const ok = { fullName: 'Ana López', docId: '12345678Z', birthDate: '1990-01-01', phone: '600000000', emergencyName: 'Luis', emergencyPhone: '611111111' };
 describe('dossier', () => {
   it('talla SELAND según tabla oficial', () => {
@@ -9,7 +9,19 @@ describe('dossier', () => {
     expect(suggestWetsuit({ sizeGroup: 'nino', heightCm: 130, weightKg: 28 })).toBe('C5');
     expect(suggestWetsuit({ sizeGroup: 'hombre', heightCm: 150, weightKg: 40 })).toBeNull();
     expect(suggestWetsuit({ heightCm: 175, weightKg: 80 })).toBeNull();
-    expect(suggestBootie(42)).toBeNull();
+  });
+  it('escarpín SELAND según tabla oficial', () => {
+    expect(SELAND_BOOTIES.length).toBe(8);
+    expect(suggestBootie(42)).toBe('M');
+    expect(suggestBootie(37)).toBe('XS');
+    expect(suggestBootie(40)).toBe('S');
+    expect(suggestBootie(44)).toBe('L');
+    expect(suggestBootie(47)).toBe('2XL');
+    expect(suggestBootie(35)).toBe('3XS');
+    expect(suggestBootie(36)).toBe('2XS');
+    expect(suggestBootie(33)).toBeNull();
+    expect(suggestBootie(49)).toBeNull();
+    expect(suggestBootie(null)).toBeNull();
   });
   it('escarpín usa la tabla cuando exista', () => {
     expect(suggestBootie(42, [{ size: '42-43', footMin: 42, footMax: 43 }])).toBe('42-43');

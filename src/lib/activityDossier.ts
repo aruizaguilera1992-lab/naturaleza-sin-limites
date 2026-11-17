@@ -9,7 +9,7 @@ export interface DossierParticipant {
 export type SizeRow = { group: 'nino' | 'hombre' | 'mujer'; size: string; heightMin: number; heightMax: number; weightMin: number; weightMax: number };
 export type BootieRow = { size: string; footMin: number; footMax: number };
 
-/** Official SELAND wetsuit chart (owner-provided). Bootie chart still pending: empty = no suggestion. */
+/** Official SELAND wetsuit chart (owner-provided). */
 export const SELAND_WETSUIT: SizeRow[] = [
   { group: 'nino', size: 'C2', heightMin: 108, heightMax: 115, weightMin: 13, weightMax: 18 },
   { group: 'nino', size: 'C3', heightMin: 112, heightMax: 119, weightMin: 16, weightMax: 23 },
@@ -45,7 +45,17 @@ export const SELAND_WETSUIT: SizeRow[] = [
   { group: 'mujer', size: '2XL**', heightMin: 180, heightMax: 185, weightMin: 75, weightMax: 85 },
   { group: 'mujer', size: '3XL**', heightMin: 180, heightMax: 185, weightMin: 80, weightMax: 90 },
 ];
-export const SELAND_BOOTIES: BootieRow[] = [];
+/** Official SELAND bootie (escarpín) chart, verified against seland.com and the 2024 canyoning catalog. Overlaps resolve to the first size listed. */
+export const SELAND_BOOTIES: BootieRow[] = [
+  { size: '3XS', footMin: 34, footMax: 35 },
+  { size: '2XS', footMin: 35, footMax: 36 },
+  { size: 'XS', footMin: 37, footMax: 38 },
+  { size: 'S', footMin: 39, footMax: 40 },
+  { size: 'M', footMin: 41, footMax: 42 },
+  { size: 'L', footMin: 43, footMax: 44 },
+  { size: 'XL', footMin: 45, footMax: 46 },
+  { size: '2XL', footMin: 47, footMax: 48 },
+];
 
 export function suggestWetsuit(p: Pick<DossierParticipant, 'heightCm' | 'weightKg' | 'sizeGroup'>, table: SizeRow[] = SELAND_WETSUIT): string | null {
   if (!p.heightCm || !p.weightKg || !p.sizeGroup) return null;
