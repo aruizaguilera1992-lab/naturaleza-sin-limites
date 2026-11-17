@@ -1,5 +1,8 @@
 # Roadmap
 
+## Motivos visuales de capacidades físicas
+- [ ] Añadir un motivo de marca distinto a cada capacidad en Vértigo Sapiens y comprobar su presentación.
+
 ## Completar barrancos del catálogo admin (17/11/2026)
 - [x] Incorporar Mina y Raja de Alicún; conservar Magdalena completa, recorridos originales, Zarzalones integral y superior distintos de los tramos comerciales.
 - [x] Revisar grados avanzados de Aguilera/Castillejos contra el mapa; 5 pruebas y compilación OK, 44 barrancos visibles con sesión admin y editor integral comprobado sin escrituras ni publicación. Las referencias siguen pendientes de validación comercial y sin precios/fotos nuevos; no supone inventario exhaustivo de todos los barrancos de Andalucía.
