@@ -6,7 +6,6 @@ export type MapsTarget = { name: string | null; latitude: number | null; longitu
 
 /** Único host permitido: el acortador de Google Maps. Nada de URLs arbitrarias. */
 const ALLOWED_HOSTS = new Set(["maps.app.goo.gl", "goo.gl"]);
-const MAX_HOPS = 3;
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 const TTL_MS = 24 * 60 * 60 * 1000;
 
