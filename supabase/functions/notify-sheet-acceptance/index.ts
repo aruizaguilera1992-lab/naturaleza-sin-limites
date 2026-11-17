@@ -1,7 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { z } from 'npm:zod@3.23.8';
-import { businessRecipients, sendTrackedNotification } from '../_shared/email.ts';
+import { businessRecipients, escapeHtml, isEmail, layout, sendTrackedNotification } from '../_shared/email.ts';
 import { renderLeadAlert } from '../_shared/leadAlertEmail.ts';
 import { isTrustedSiteOrigin } from '../_shared/siteOrigins.ts';
 
@@ -78,7 +78,33 @@ Deno.serve(async (req) => {
       contactId: sheet.contact_id,
       bookingId: sheet.booking_id,
     });
-    return json({ ok: ['enviado', 'ya_enviado'].includes(result.status), status: result.status });
+    // Copia al cliente: confirma la fecha y anuncia el enlace de la señal (sin cobrar nada aquí).
+    let customerStatus: string | null = null;
+    if (email && isEmail(email)) {
+      const rows = [
+        `<strong>Actividad:</strong> ${escapeHtml(title)}`,
+        date ? `<strong>Fecha:</strong> ${escapeHtml(date)}` : null,
+        people ? `<strong>Personas:</strong> ${people}` : null,
+        price != null ? `<strong>Precio por persona:</strong> ${escapeHtml(String(price))} €` : null,
+      ].filter(Boolean).map((r) => `<li>${r}</li>`).join('');
+      const body = `<p>Hola ${escapeHtml(nombre)},</p>
+        <p>Hemos recibido la confirmación de tu fecha. Tu reserva queda <strong>pendiente de pago</strong>.</p>
+        <ul>${rows}</ul>
+        <p>En breve te enviaremos el enlace para pagar la señal del 30 % y asegurar tu plaza. Hasta entonces no se te cobra nada.</p>`;
+      try {
+        const r = await sendTrackedNotification(db, {
+          kind: 'ficha_confirmada_cliente',
+          dedupeKey: `sheet_accepted_customer:${sheet.id}`,
+          recipients: [email.trim()],
+          subject: `Fecha confirmada · ${title}`,
+          html: layout('Fecha confirmada', body),
+          contactId: sheet.contact_id,
+          bookingId: sheet.booking_id,
+        });
+        customerStatus = r.status;
+      } catch (e) { customerStatus = `error: ${String(e)}`; }
+    }
+    return json({ ok: ['enviado', 'ya_enviado'].includes(result.status), status: result.status, customer: customerStatus });
   } catch (e) {
     return json({ error: 'No se pudo enviar', details: String(e) }, 500);
   }
