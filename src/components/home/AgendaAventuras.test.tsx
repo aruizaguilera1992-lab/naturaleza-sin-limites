@@ -145,7 +145,7 @@ it("opens the full technical sheet and offers booking from every slide", async (
   // La reserva se ofrece en todas las diapositivas, siempre con el mismo destino.
   expect(bookingHrefs.length).toBeGreaterThan(1);
   expect(bookingHrefs.every((href) => href === BOOKING_HREF)).toBe(true);
-  expect(within(sheet).getByText("Dudas frecuentes")).toBeInTheDocument();
+  expect(within(sheet).getByText(/Dudas frecuentes/)).toBeInTheDocument();
 });
 
 it("reúne la logística y el recorrido en una sola diapositiva", async () => {

@@ -146,8 +146,7 @@ describe("mergeOutingSheet", () => {
     );
     expect(sheet.highlights).toContain("Duración total estimada: 1 a 3 horas");
     expect(sheet.highlights).toContain("Espeleología en Archidona, Málaga");
-    expect(sheet.faqs[0].answer).toContain("Duración total: 1 a 3 horas.");
-    expect(sheet.faqs[0].answer).toContain("Parte efectiva del recorrido");
+    expect(sheet.faqs[1].answer).toContain("Duración total: 1 a 3 horas.");
   });
 
   it("sin duración en el catálogo, la ficha conserva su redacción", () => {
@@ -160,7 +159,7 @@ describe("mergeOutingSheet", () => {
       { key: "espeleologia:iniciacion" },
     );
     expect(sheet.highlights).toEqual(["Duración total estimada: 4 horas"]);
-    expect(sheet.faqs[0].answer).toBe("Duración total: 4 horas.");
+    expect(sheet.faqs[1].answer).toContain("Duración total: 4 horas.");
   });
 });
 
@@ -177,21 +176,27 @@ describe("levelFromLabel", () => {
   });
 });
 
-describe("faqs de la ficha", () => {
-  it("lleva las preguntas frecuentes a la diapositiva de dudas", () => {
+describe("preguntas frecuentes por ficha", () => {
+  it("usa los datos concretos del catálogo de la Cueva de la Higuera", () => {
     const sheet = mergeOutingSheet(
-      event,
-      profile({
-        faqs: [{ question: "¿Necesito experiencia previa?", answer: "No para iniciación." }],
-      }),
-      {},
+      { title: "Espeleología", zone: "Archidona", meeting_point_public: null, price_cents: 5500 },
+      undefined,
+      {
+        key: "espeleologia:iniciacion",
+        name: "Travesía Cueva de la Higuera",
+        zone: "Travesía de la Higuera, Archidona",
+        province: "Málaga",
+        duration: "1 a 3 horas",
+        minAge: 12,
+        includes: ["Casco con iluminación frontal"],
+      },
     );
-    expect(sheet.faqs).toEqual([
-      { question: "¿Necesito experiencia previa?", answer: "No para iniciación." },
-    ]);
-  });
-
-  it("sin preguntas en el perfil, la diapositiva de dudas queda vacía", () => {
-    expect(mergeOutingSheet(event, profile(), {}).faqs).toEqual([]);
+    const all = sheet.faqs.map((f) => `${f.question} ${f.answer}`).join(" | ");
+    expect(all).toContain("¿Dónde se realiza Travesía Cueva de la Higuera?");
+    expect(all).toContain("En Travesía de la Higuera, Archidona, Málaga.");
+    expect(all).toContain("Duración total: 1 a 3 horas.");
+    expect(all).toContain("Edad mínima: 12 años.");
+    expect(all).toContain("55 € por persona");
+    expect(all).toContain("Incluye: Casco con iluminación frontal.");
   });
 });

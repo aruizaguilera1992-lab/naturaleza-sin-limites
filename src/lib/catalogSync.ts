@@ -124,7 +124,7 @@ export function mergeOutingSheet(
         ? o.pricePerPersonEuros
         : p?.priceValue ?? null;
 
-  return {
+  const sheet: OutingSheet = {
     title: text(o.name, event.title, p?.name),
     summary: text(o.summary, p?.shortDescription),
     description: withDuration(text(o.description, p?.commercialDescription), catalogDuration),
@@ -161,4 +161,108 @@ export function mergeOutingSheet(
       : [],
     fromCatalog: Boolean(o.key),
   };
+  sheet.faqs = buildOutingFaqs(sheet, {
+    place: text(o.zone, event.meeting_point_public, event.zone, p?.zone),
+    province: text(o.province, p?.province),
+  });
+  return sheet;
+}
+
+const PENDING_RE = /pendiente|consultar disponibilidad/i;
+const known = (v?: string) => (v && v.trim() && !PENDING_RE.test(v) ? v.trim().replace(/[.\s]+$/, "") : "");
+const joinList = (items: string[]) => items.map((i) => i.replace(/[.\s]+$/, "")).filter(Boolean).join(", ");
+
+/**
+ * Preguntas frecuentes redactadas con los datos concretos de esta ficha
+ * (catálogo del panel > salida > ficha original). Si un dato no existe, se dice
+ * que se confirma antes de la salida; nunca se inventa.
+ */
+export function buildOutingFaqs(
+  s: OutingSheet,
+  where: { place: string; province: string },
+): { question: string; answer: string }[] {
+  const name = s.title.replace(/[.\s]+$/, "");
+  const place = [known(where.place), known(where.province)].filter(Boolean).join(", ");
+  const meeting = known(s.meetingPoint);
+  const approach = known(s.approachReturn);
+  const duration = known(s.duration);
+  const effective = known(s.effectiveDuration);
+  const level = known(s.levelLabel);
+  const grade = known(s.grade);
+  const fitness = known(s.fitness);
+  const minAge = known(s.minAge);
+  const group = known(s.group);
+  const ratio = known(s.guideRatio);
+  const season = known(s.season);
+  const includes = s.includes.filter((i) => known(i));
+  const bring = s.bring.filter((i) => known(i));
+  const reqs = s.requirements.filter((i) => known(i));
+  const later = "se confirma antes de la salida";
+  const faqs: { question: string; answer: string }[] = [
+    {
+      question: `¿Dónde se realiza ${name}?`,
+      answer: [
+        place ? `En ${place}.` : `El lugar exacto ${later}.`,
+        meeting && meeting !== known(where.place) ? `Zona de encuentro: ${meeting}.` : "",
+        approach ? `Aproximación y retorno: ${approach}.` : "",
+        "El punto exacto se envía al confirmar la plaza.",
+      ].filter(Boolean).join(" "),
+    },
+    {
+      question: `¿Cuánto dura ${name}?`,
+      answer: [
+        duration ? `Duración total: ${duration}.` : `La duración ${later}.`,
+        effective && effective !== duration ? `Actividad efectiva: ${effective}.` : "",
+        "El tiempo real depende del ritmo del grupo y de las condiciones del día.",
+      ].filter(Boolean).join(" "),
+    },
+    {
+      question: "¿Qué nivel tiene?",
+      answer: [
+        level ? `Nivel: ${level}.` : "",
+        grade ? `Grado técnico: ${grade}.` : "",
+        fitness ? `Condición física: ${fitness}.` : "",
+      ].filter(Boolean).join(" ") || `El nivel ${later}.`,
+    },
+    {
+      question: "¿Necesito experiencia previa?",
+      answer: `${known(s.experience) || "Se valora con cada participante"}. Antes de cerrar la plaza revisamos la experiencia y la condición física de cada persona.`,
+    },
+    {
+      question: "¿Qué edad mínima se exige?",
+      answer: minAge
+        ? `Edad mínima: ${minAge.replace(/^\+/, "")}${/año/.test(minAge) ? "" : " años"}. En menores se requiere la autorización de la persona responsable.`
+        : `La edad mínima ${later}.`,
+    },
+    {
+      question: "¿Cuánto cuesta y cómo se paga?",
+      answer: `${s.price ? `${s.price} € por persona` : "El precio se confirma al cerrar la salida"}. La plaza se confirma con una señal del 30 %; el resto se abona antes de la actividad por Bizum, en efectivo o por el enlace de pago.`,
+    },
+    {
+      question: "¿Cuántas personas forman el grupo?",
+      answer: [group ? `Grupo: ${group}.` : `El tamaño del grupo ${later}.`, ratio && /\d/.test(ratio) ? `Ratio: ${ratio}.` : ""]
+        .filter(Boolean).join(" "),
+    },
+    {
+      question: "¿En qué época se puede hacer?",
+      answer: season ? `Temporada: ${season}. La fecha se confirma según las condiciones y permisos vigentes.` : `La temporada ${later}.`,
+    },
+    {
+      question: "¿Qué material está incluido?",
+      answer: includes.length ? `Incluye: ${joinList(includes)}.` : `El material incluido ${later}.`,
+    },
+    {
+      question: "¿Qué tengo que llevar?",
+      answer: bring.length ? `Lleva: ${joinList(bring)}.` : "Te enviamos la lista de material personal al confirmar la reserva.",
+    },
+  ];
+  if (reqs.length) {
+    faqs.push({ question: "¿Qué requisitos hay para participar?", answer: `${joinList(reqs)}.` });
+  }
+  faqs.push({
+    question: "¿Qué ocurre si cambia el tiempo?",
+    answer: [known(s.weatherPolicy) || "Si la meteorología no es segura, proponemos una nueva fecha", known(s.cancellationPolicy)]
+      .filter(Boolean).map((t) => `${t}.`).join(" "),
+  });
+  return faqs;
 }
