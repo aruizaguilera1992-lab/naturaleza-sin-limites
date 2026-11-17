@@ -74,7 +74,7 @@ function ItemEditor({ item, onDone }: { item: CatalogItem; onDone: () => Promise
     <div className="space-y-4 rounded-xl border border-border bg-card p-4">
       <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{DISC[item.discipline]}</Badge>{item.edited && <Badge className="border-primary/40 bg-primary/15 text-primary">Editada</Badge>}
         {item.reference && <Badge variant="outline">Referencia documental · pendiente de revisar</Badge>}
-        {item.sourceUrl && <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Ver fuente (RocJumper)</a>}</div>
+        {item.sourceUrl && <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Ver fuente ({item.sourceLabel ?? 'RocJumper'})</a>}</div>
       <section aria-labelledby="ph-title">
         <h3 id="ph-title" className="font-heading font-bold text-foreground">Fotografías</h3>
         <p className="text-xs text-muted-foreground">Sube fotos propias del recorrido. La primera es la portada.</p>

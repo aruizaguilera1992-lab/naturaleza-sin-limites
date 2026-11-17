@@ -5,6 +5,7 @@ import { ferratas } from '@/data/ferratas';
 import { espeleologiaPublicada } from '@/data/espeleologia';
 import { levelOffers } from '@/data/levelOffers';
 import { andaluciaCanyonsRef, refLevelFromGrade } from '@/data/andaluciaCanyonsRef';
+import { barrancos } from '@/data/barrancos';
 
 export type CatalogDiscipline = 'barranquismo' | 'ferratas' | 'espeleologia';
 
@@ -36,6 +37,7 @@ export interface CatalogItem extends CatalogItemData {
   /** Recorrido de referencia documental (RocJumper), pendiente de validación comercial. */
   reference?: boolean;
   sourceUrl?: string;
+  sourceLabel?: string;
 }
 
 const euros = (v: string | null | undefined) => { const n = parseInt(v?.match(/\d+/)?.[0] ?? '', 10); return n > 0 ? n : null; };
@@ -65,17 +67,38 @@ export function baseCatalog(): Omit<CatalogItem, 'photos' | 'edited'>[] {
     includes: [...e.incluye], requirements: [...e.caracteristicas], minAge: e.requisitos.edadMinima, fitness: e.requisitos.condicionFisica,
     experience: e.requisitos.experienciaPrevia }));
   const norm = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/^(barranco|rio|arroyo|canon)\s+/, '').replace(/^(de|del)\s+/, '').replace(/^(la|las|el|los)\s+/, '').split(/[\s(]/)[0];
-  const commercial = new Set(canyonCatalog.map((c) => norm(c.nombre)));
-  const refs = andaluciaCanyonsRef.filter((r) => !commercial.has(norm(r.nombre))).map((r) => {
+  const refs = andaluciaCanyonsRef.filter((r) => !canyonCatalog.some((c) =>
+    c.fuentes.some((f) => f.url === r.url) || (r.slug === 'buitre-inferior-cerrada-lezar-castril' && c.id === 'buitre-inferior')
+  )).map((r) => {
     const level = refLevelFromGrade(r.grado); const o = offerFor('barranquismo', level);
     return { key: `barranquismo:ref-${r.slug}`, discipline: 'barranquismo' as const, name: r.nombre, province: r.provincia, zone: r.poblacion,
       levelLabel: `${LEVEL_LABEL[level - 1]} (orientativo)`, level, grade: r.grado, duration: r.duracion, pricePerPersonEuros: null,
       summary: 'Referencia documental pendiente de revisar: no confirma acceso, permisos ni idoneidad para clientes.',
       description: r.rapelMaximo ? `Rápel más largo según la fuente: ${r.rapelMaximo}.` : '',
       includes: o ? [...o.incluye] : [], requirements: o ? [...o.caracteristicas] : [], minAge: o?.edadMinima ?? 10,
-      fitness: o?.condicionFisica ?? 'Básica', experience: level > 1, reference: true, sourceUrl: r.url };
+      fitness: o?.condicionFisica ?? 'Básica', experience: level > 1, reference: true, sourceUrl: r.url, sourceLabel: 'RocJumper' };
   });
-  return [...canyons, ...refs, ...fer, ...esp];
+  // Preserve full original routes separately from the curated lower/final sections.
+  const originals = barrancos.filter((b) =>
+    !canyonCatalog.some((c) => c.productoExistenteId === b.id || (!c.tramo && norm(c.nombre) === norm(b.nombre))) &&
+    !andaluciaCanyonsRef.some((r) => norm(r.nombre) === norm(b.nombre))
+  ).map((b) => {
+    const level = b.nivelExperiencia === 'avanzado' || b.nivelExperiencia === 'experto' ? 3 : b.nivelExperiencia === 'intermedio' ? 2 : 1;
+    return { key: `barranquismo:original-${b.id}`, discipline: 'barranquismo' as const,
+      name: b.id === 'zarzalones' ? `${b.nombre} (Integral: superior + inferior)` : b.nombre,
+      province: b.provincia, zone: b.poblacion, levelLabel: `${LEVEL_LABEL[level - 1]} (orientativo)`, level,
+      grade: b.clasificacionTecnica, duration: b.duracion, pricePerPersonEuros: null,
+      summary: 'Recorrido del catálogo original pendiente de revisión; no confirma acceso, permisos ni disponibilidad.',
+      description: `Rápel máximo según el catálogo original: ${b.rapelMaximo}. Datos técnicos pendientes de verificar con la fuente.`,
+      includes: [], requirements: [], minAge: b.requisitos.edadMinima,
+      fitness: b.requisitos.condicionFisica === 'alta' ? 'Alta' : b.requisitos.condicionFisica === 'media' ? 'Media' : 'Básica',
+      experience: level > 1, reference: true, sourceUrl: b.urlInfo, sourceLabel: 'Infobarrancos' };
+  });
+  const zarzalones = originals.find((b) => b.key === 'barranquismo:original-zarzalones');
+  const superior = zarzalones ? [{ ...zarzalones, key: 'barranquismo:original-zarzalones-superior',
+    name: 'Barranco de Zarzalones (Solo tramo superior)', grade: 'V4 A2 II (tramo superior)', duration: '',
+    description: 'Tramo superior técnico separado del inferior. Duración pendiente de verificar con la fuente.' }] : [];
+  return [...canyons, ...refs, ...originals, ...superior, ...fer, ...esp];
 }
 
 export interface CatalogOverride { key: string; data: Partial<CatalogItemData>; photos: string[] }

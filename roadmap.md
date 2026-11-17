@@ -1,5 +1,12 @@
 # Roadmap
 
+## Motivos visuales de capacidades físicas
+- [x] Añadir cuatro motivos lineales naranjas: ascenso continuo, tensión/agarre, articulación estable y progresión escalonada; escritorio y móvil comprobados, compilación OK, sin publicar.
+
+## Completar barrancos del catálogo admin (17/11/2026)
+- [x] Incorporar Mina y Raja de Alicún; conservar Magdalena completa, recorridos originales, Zarzalones integral y superior distintos de los tramos comerciales.
+- [x] Revisar grados avanzados de Aguilera/Castillejos contra el mapa; 5 pruebas y compilación OK, 44 barrancos visibles con sesión admin y editor integral comprobado sin escrituras ni publicación. Las referencias siguen pendientes de validación comercial y sin precios/fotos nuevos; no supone inventario exhaustivo de todos los barrancos de Andalucía.
+
 ## Asistente IA de fichas
 - [x] Propuestas editables en salidas privadas y abiertas, sin guardar/enviar automáticamente ni modificar datos operativos.
 - [x] Generación real y aplicación manual comprobadas con sesión admin en ambos editores; precio/plazas intactos, diálogo móvil comprobado, 141 pruebas y compilación OK. Función desplegada; sin guardar fichas, enviar correos ni publicar web. Detener implementado; cancelación durante una generación no probada.
