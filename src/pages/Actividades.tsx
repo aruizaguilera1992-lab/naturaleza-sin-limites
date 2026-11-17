@@ -236,7 +236,7 @@ const Actividades = () => {
                   <GraduationCap className="mt-1 h-6 w-6 shrink-0 text-primary" />
                   <div>
                     <h2 className="font-heading text-lg font-bold text-foreground">¿Quieres aprender escalada paso a paso?</h2>
-                    <p className="mt-1 text-sm leading-6 text-muted-foreground">Conoce la iniciación E1 y el itinerario propio NSL.</p>
+                    <p className="mt-1 text-sm leading-6 text-muted-foreground">Iniciación a la escalada en roca.</p>
                   </div>
                 </div>
                 <Button variant="outline" className="shrink-0 gap-2" asChild>
