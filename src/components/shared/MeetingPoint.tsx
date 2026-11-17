@@ -26,6 +26,17 @@ export function MeetingPointLabel({ text, target }: { text: string; target?: Map
   return <span>{base}{name ? <span className="text-muted-foreground"> — {name}</span> : null}</span>;
 }
 
+/** Paso del cronograma que es el punto de quedada: texto limpio + botones de mapas. */
+export function MeetingPointStep({ text }: { text: string }) {
+  const target = useMeetingPointTarget(text);
+  return (
+    <>
+      <p className="text-foreground"><MeetingPointLabel text={text} target={target} /></p>
+      <MeetingPointActions text={text} target={target} className="mt-2 flex flex-wrap gap-2" />
+    </>
+  );
+}
+
 /** Punto de encuentro con enlaces interactivos a Google Maps y Apple Maps. */
 export function MeetingPoint({ text }: { text: string }) {
   const target = useMeetingPointTarget(text);
