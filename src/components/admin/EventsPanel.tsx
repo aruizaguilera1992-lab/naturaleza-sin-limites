@@ -1,3 +1,4 @@
+import { useAdminCatalog, usePhotoUrls } from "@/lib/adminCatalog";
 import { openGroupKeyFor, type CatalogOutingStart } from "@/lib/catalogOuting";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronDown, Copy, List, Loader2, Pencil, Plus, RefreshCw, Users, X } from "lucide-react";
@@ -207,10 +208,25 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
     void load();
   }, [load]);
 
+  // Lista de grupo abierto sincronizada con Catálogo: nombre, precio, duración y foto editados allí.
+  const { items: catalogItems } = useAdminCatalog();
+  const activities = useMemo(() => {
+    const keys = sellableActivities.map((a) => a.key);
+    const byKey = new Map(catalogItems.map((it) => [openGroupKeyFor(it, keys), it] as const));
+    return sellableActivities.map((a) => {
+      const it = byKey.get(a.key);
+      if (!it) return { ...a, photo: null as string | null, catalogCents: null as number | null };
+      const price = it.pricePerPersonEuros != null ? `${it.pricePerPersonEuros} €` : a.price;
+      return { ...a, name: it.name, price, duration: it.duration || a.duration, photo: it.photos[0] ?? null,
+        catalogCents: it.edited && it.pricePerPersonEuros != null ? Math.round(it.pricePerPersonEuros * 100) : null,
+        label: `${a.categoryLabel} · ${it.name} (${it.zone || it.province})${it.edited ? " · editada" : ""}` };
+    });
+  }, [catalogItems]);
   const selectedActivity = useMemo(
-    () => sellableActivities.find((a) => a.key === form.activityKey),
-    [form.activityKey],
+    () => activities.find((a) => a.key === form.activityKey),
+    [activities, form.activityKey],
   );
+  const photoUrls = usePhotoUrls(selectedActivity?.photo ? [selectedActivity.photo] : []);
 
   const filtered = useMemo(
     () => events.filter((e) => statusFilter === "todos" || e.status === statusFilter),
@@ -237,7 +253,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
   const buildPayload = (startsAt: string) => {
     const activity = selectedActivity;
     if (!activity) throw new Error("Elige una actividad del catálogo vendible.");
-    const price = form.priceEuros.trim() ? Math.round(Number(form.priceEuros) * 100) : null;
+    const price = form.priceEuros.trim() ? Math.round(Number(form.priceEuros) * 100) : (selectedActivity?.catalogCents ?? null);
     return {
       category: activity.category,
       slug: activity.slug,
@@ -369,7 +385,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
   };
 
   const renderEvent = (event: EventRow) => {
-    const activity = sellableActivities.find((a) => a.key === `${event.category}|${event.slug}`);
+    const activity = activities.find((a) => a.key === `${event.category}|${event.slug}`);
     const free = Math.max(event.capacity_total - event.seats_reserved, 0);
     return (
       <div
@@ -555,7 +571,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
                 <SelectValue placeholder="Elige una actividad" />
               </SelectTrigger>
               <SelectContent className="max-h-72">
-                {sellableActivities.map((activity) => (
+                {activities.map((activity) => (
                   <SelectItem key={activity.key} value={activity.key}>
                     {activity.label}
                   </SelectItem>
@@ -565,7 +581,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
             {selectedActivity && (
               <div className="mt-2 flex items-center gap-3 rounded-lg border border-border/60 p-2">
                 <img
-                  src={selectedActivity.image}
+                  src={(selectedActivity.photo && photoUrls[selectedActivity.photo]) || selectedActivity.image}
                   alt=""
                   className="h-12 w-12 rounded-md object-cover"
                 />
