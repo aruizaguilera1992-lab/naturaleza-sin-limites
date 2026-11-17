@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   appleMapsUrl,
+  canOpenInAppleMaps,
   extractUrl,
   googleMapsUrl,
   isMeetingPointLabel,
@@ -76,5 +77,17 @@ describe('meetingPoint links', () => {
       longitude: -5.0334034,
     });
     expect(parseMapsUrl('https://maps.google.com/maps?q=Bar%20El%20Puente')).toEqual({ name: null, latitude: null, longitude: null });
+  });
+
+  it('ofrece Apple Maps solo con coordenadas o con un nombre legible', () => {
+    // Enlace de Google sin resolver: Apple no tiene nada que abrir.
+    expect(canOpenInAppleMaps('https://maps.app.goo.gl/abc')).toBe(false);
+    expect(canOpenInAppleMaps('https://maps.app.goo.gl/abc', null)).toBe(false);
+    // Resuelto: abre el punto exacto.
+    expect(canOpenInAppleMaps('https://maps.app.goo.gl/abc', { name: 'Parking benahavis', latitude: 36.5078654, longitude: -5.0334034 })).toBe(true);
+    // Texto legible junto al enlace: se puede buscar ese texto.
+    expect(canOpenInAppleMaps('Quedada en el punto de encuentro: https://maps.app.goo.gl/abc')).toBe(true);
+    // Solo texto, sin enlace.
+    expect(canOpenInAppleMaps('Bar El Puente, Lentegí')).toBe(true);
   });
 });
