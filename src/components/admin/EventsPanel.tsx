@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/select";
 import { activityProfiles, isSellable } from "@/data/activityProfiles";
 import { DeleteRecordButton } from "@/components/admin/DeleteControls";
-import { OutingAssistant } from "@/components/admin/OutingAssistant";
 
 interface EventRow {
   id: string;
@@ -560,7 +559,6 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
                 : `«${fromCatalog.name}» no tiene un producto reservable idéntico para grupo abierto. Elige la actividad manualmente o créala como grupo privado.`}
             </p>
           )}
-          <div className="sm:col-span-2"><OutingAssistant key={editingId ?? 'new'} context={{ title: selectedActivity?.name, category: selectedActivity?.categoryLabel, duration: selectedActivity?.duration, place: form.meetingPublic, notes: form.notes, rules: form.rules, steps: form.steps }} fields={['notes', 'rules', 'steps']} onApply={draft => { setForm(p => ({ ...p, ...(draft.notes != null ? { notes: draft.notes } : {}), ...(draft.rules != null ? { rules: draft.rules } : {}), ...(draft.steps != null ? { steps: draft.steps } : {}) })); setAdvanced(true); }} /></div>
           <div className="sm:col-span-2">
             <Label>Actividad del catálogo</Label>
             <Select

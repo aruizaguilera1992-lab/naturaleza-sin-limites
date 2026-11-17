@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { SheetView } from './SheetView';
-import { OutingAssistant } from '../OutingAssistant';
 import { CATALOG_BUCKET, type CatalogItem } from '@/lib/adminCatalog';
 import type { CatalogOutingStart } from '@/lib/catalogOuting';
 import {
@@ -145,12 +144,6 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
             <Button size="sm" variant="hero" className="min-h-11" onClick={() => { if (row.booking_id) onOpenBooking(row.booking_id); }}>Abrir reserva</Button>
           </div>
         )}
-        <OutingAssistant context={{ title: c.title, discipline: c.discipline, level: c.levelLabel, place: c.place, duration: c.duration, summary: c.summary, includes: incRaw, bring: bringRaw, requirements: reqRaw, notes: c.notes, rules: c.rules, steps: c.steps }} fields={['summary', 'includes', 'bring', 'requirements', 'notes', 'rules', 'steps']} onApply={draft => {
-          setC(p => ({ ...p, ...(draft.summary != null ? { summary: draft.summary } : {}), ...(draft.notes != null ? { notes: draft.notes } : {}), ...(draft.rules != null ? { rules: draft.rules } : {}), ...(draft.steps != null ? { steps: draft.steps } : {}), ...(draft.includes != null ? { includes: lines(draft.includes) } : {}), ...(draft.bring != null ? { bring: lines(draft.bring) } : {}), ...(draft.requirements != null ? { requirements: lines(draft.requirements) } : {}) }));
-          if (draft.includes != null) setIncRaw(draft.includes);
-          if (draft.bring != null) setBringRaw(draft.bring);
-          if (draft.requirements != null) setReqRaw(draft.requirements);
-        }} />
         <div><Label htmlFor="sh-base">Nivel de partida</Label>
           <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes, rules: p.rules, steps: p.steps })); setIncRaw(next.includes.join('\n')); setBringRaw(next.bring.join('\n')); setReqRaw(next.requirements.join('\n')); }}>
             <optgroup label="Niveles">{sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>
