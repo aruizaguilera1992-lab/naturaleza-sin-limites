@@ -1,8 +1,8 @@
 # Roadmap
 
 ## Completar barrancos del catálogo admin (17/11/2026)
-- [ ] Incorporar las referencias andaluzas restantes de RocJumper y conservar variantes integrales distintas de los tramos comerciales.
-- [ ] Revisar grados avanzados contra la fuente y comprobar catálogo/pruebas sin publicar ni alterar precios.
+- [x] Incorporar Mina y Raja de Alicún; conservar Magdalena completa, recorridos originales, Zarzalones integral y superior distintos de los tramos comerciales.
+- [x] Revisar grados avanzados de Aguilera/Castillejos contra el mapa; 5 pruebas y compilación OK, 44 barrancos visibles con sesión admin y editor integral comprobado sin escrituras ni publicación. Las referencias siguen pendientes de validación comercial y sin precios/fotos nuevos; no supone inventario exhaustivo de todos los barrancos de Andalucía.
 
 ## Asistente IA de fichas
 - [x] Propuestas editables en salidas privadas y abiertas, sin guardar/enviar automáticamente ni modificar datos operativos.
