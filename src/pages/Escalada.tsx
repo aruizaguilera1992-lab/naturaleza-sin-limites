@@ -37,7 +37,7 @@ export default function Escalada() {
           </div>
           <div className="container relative z-10 mx-auto px-4">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
-              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-primary">Escalada · Nivel {initiation.code}</p>
+              <p className="mb-3 text-sm font-bold uppercase tracking-wider text-primary">{"\n"}</p>
               <h1 className="font-heading text-4xl font-extrabold leading-[1.05] text-foreground sm:text-6xl">
                 {initiation.title}
               </h1>
