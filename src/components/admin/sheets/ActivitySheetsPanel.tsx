@@ -17,8 +17,8 @@ import { SheetView } from './SheetView';
 import { OutingAssistant } from '../OutingAssistant';
 import { CATALOG_BUCKET, type CatalogItem } from '@/lib/adminCatalog';
 import {
-  MAX_SHEET_PEOPLE, STORAGE_PHOTO, sheetBases, sheetFromBase, sheetFromCatalog, sheetPhotoOptions, sheetState, sheetUrl, sheetWhatsappUrl, validateSheet,
-  type SheetContent, type SheetState,
+  MAX_SHEET_PEOPLE, STORAGE_PHOTO, sheetBases, sheetFromBase, sheetFromCatalog, sheetPhotoOptions, sheetState, sheetUrl, sheetWhatsappUrl, validateSheet, sheetFromRequest,
+  type SheetContent, type SheetRequestPrefill, type SheetState,
 } from '@/lib/activitySheets';
 
 export interface SheetContact { id: string; nombre: string; email: string | null; phone: string | null }
@@ -29,21 +29,22 @@ const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 const IMG_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
-function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking }: { row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void>; onOpenBooking?: (bookingId: string) => void }) {
+function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, prefill }: { prefill?: SheetRequestPrefill | null; row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void>; onOpenBooking?: (bookingId: string) => void }) {
   const { toast } = useToast();
-  const [c, setC] = useState<SheetContent>(() => row?.content ?? sheetFromBase(sheetBases[0].id));
-  const [contactId, setContactId] = useState<string>(row?.contact_id ?? '');
+  const [c, setC] = useState<SheetContent>(() => row?.content ?? (prefill ? sheetFromRequest(prefill) : sheetFromBase(sheetBases[0].id)));
+  const init = row?.content ?? (prefill ? sheetFromRequest(prefill) : sheetFromBase(sheetBases[0].id));
+  const [contactId, setContactId] = useState<string>(() => row?.contact_id ?? (prefill ? (contacts.find((x) => (prefill.email && x.email?.toLowerCase() === prefill.email.toLowerCase()) || (prefill.phone && x.phone?.replace(/\D/g, '') === prefill.phone.replace(/\D/g, '')))?.id ?? '') : ''));
   const [expires, setExpires] = useState<string>(row?.expires_at?.slice(0, 10) ?? '');
   const contact = contacts.find((x) => x.id === contactId);
-  const [email, setEmail] = useState<string>(contact?.email ?? '');
-  const [phone, setPhone] = useState<string>(contact?.phone ?? '');
+  const [email, setEmail] = useState<string>(contact?.email ?? prefill?.email ?? '');
+  const [phone, setPhone] = useState<string>(contact?.phone ?? prefill?.phone ?? '');
   const [busy, setBusy] = useState(false);
   const [uploaded, setUploaded] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   // Texto en bruto de los listados: si se guardara ya filtrado, el salto de línea de Enter desaparecería al reescribir el campo.
-  const [incRaw, setIncRaw] = useState(() => (row?.content.includes ?? sheetFromBase(sheetBases[0].id).includes).join('\n'));
-  const [bringRaw, setBringRaw] = useState(() => (row?.content.bring ?? sheetFromBase(sheetBases[0].id).bring).join('\n'));
-  const [reqRaw, setReqRaw] = useState(() => (row?.content.requirements ?? sheetFromBase(sheetBases[0].id).requirements).join('\n'));
+  const [incRaw, setIncRaw] = useState(() => init.includes.join('\n'));
+  const [bringRaw, setBringRaw] = useState(() => init.bring.join('\n'));
+  const [reqRaw, setReqRaw] = useState(() => init.requirements.join('\n'));
   const ownPhotos = catalog.find((x) => `catalog:${x.key}` === c.base)?.photos ?? [];
   const set = <K extends keyof SheetContent>(k: K, v: SheetContent[K]) => setC((p) => ({ ...p, [k]: v }));
   const errors = validateSheet(c);
@@ -239,7 +240,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking }: {
 }
 
 /** Constructor de fichas privadas de actividad con enlace único. */
-export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBooking }: { contacts: SheetContact[]; catalog: CatalogItem[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
+export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBooking, prefill }: { prefill?: SheetRequestPrefill | null; contacts: SheetContact[]; catalog: CatalogItem[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
   const [rows, setRows] = useState<SheetRow[]>([]);
   const [selected, setSelected] = useState<string | 'new' | null>(focusSheetId ?? null);
   useEffect(() => { if (focusSheetId) setSelected(focusSheetId); }, [focusSheetId]);
@@ -251,6 +252,7 @@ export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBoo
   const current = useMemo(() => rows.find((r) => r.id === selected) ?? null, [rows, selected]);
   const name = (id: string | null) => contacts.find((c) => c.id === id)?.nombre;
   const [newKey, setNewKey] = useState(0);
+  useEffect(() => { if (prefill) { setSelected('new'); setNewKey((k) => k + 1); } }, [prefill]);
 
   return (
     <div className="space-y-4">
@@ -271,7 +273,7 @@ export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBoo
           ))}
         </ul>
       )}
-      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} onDeleted={async () => { await load(); setSelected(null); }} />}
+      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} prefill={prefill} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} onDeleted={async () => { await load(); setSelected(null); }} />}
       {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onOpenBooking={onOpenBooking} onSaved={async () => { await load(); }} onDeleted={async () => { await load(); setSelected(null); }} />}
       {!selected && rows.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Aún no hay fichas. Crea una y envía el enlace al cliente.</p>}
     </div>
