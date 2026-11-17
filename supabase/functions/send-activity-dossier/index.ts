@@ -30,7 +30,10 @@ Deno.serve(async (req) => {
     const target = url && isShortMapLink(url) ? await resolveMapsLink(url) : null;
     const base = textWithoutUrl(label).replace(/\s*[:;,]\s*$/, '') || 'Punto de quedada';
     const name = target?.name && !base.toLowerCase().includes(target.name.toLowerCase()) ? target.name : null;
-    const btns = url ? `<div><a href="${esc(googleMapsUrl(label))}" style="${mapBtn};background:#FF6B35;color:#ffffff">Abrir en Google Maps</a><a href="${esc(appleMapsUrl(label, target))}" style="${mapBtn};background:#1A1A1A;color:#ffffff">Abrir en Apple Maps</a></div>` : '';
+    // Apple Maps solo sirve con coordenadas o con un nombre legible; con un
+    // enlace de Google sin resolver no se puede abrir nada ahí.
+    const appleHref = target ? appleMapsUrl(label, target) : (textWithoutUrl(label) ? appleMapsUrl(label, null) : null);
+    const btns = url ? `<div><a href="${esc(googleMapsUrl(label))}" style="${mapBtn};background:#FF6B35;color:#ffffff">Abrir en Google Maps</a>${appleHref ? `<a href="${esc(appleHref)}" style="${mapBtn};background:#1A1A1A;color:#ffffff">Abrir en Apple Maps</a>` : ''}</div>` : '';
     return `<tr><td style="padding:6px 12px 6px 0;color:#FF6B35;font-weight:bold;white-space:nowrap">${esc(s.time)}</td><td style="padding:6px 0">${esc(name ? `${base} — ${name}` : base)}${btns}</td></tr>`;
   }))).join('');
   const html = `<div style="background:#ffffff;font-family:Arial,sans-serif;color:#1A1A1A"><div style="max-width:600px;margin:0 auto"><div style="background:#1A1A1A;color:#fff;padding:20px 24px;border-bottom:4px solid #FF6B35"><strong>Naturaleza Sin Límites</strong></div><div style="padding:24px">

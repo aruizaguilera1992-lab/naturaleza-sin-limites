@@ -9,7 +9,7 @@ const BTN_A = 'inline-flex min-h-11 items-center gap-1.5 rounded-md border borde
 export function MeetingPointActions({ text, target, className = 'mt-3 flex flex-wrap gap-2' }: { text: string; target?: MapsTarget | null; className?: string }) {
   // Apple Maps solo sirve con coordenadas o con un nombre legible: si el texto
   // es solo un enlace de Google y no se ha podido resolver, ese botón no aporta nada.
-  const showApple = !!target || !extractUrl(text);
+  const showApple = !!target || !!textWithoutUrl(text);
   return (
     <div className={className}>
       <a href={googleMapsUrl(text)} target="_blank" rel="noopener noreferrer" className={BTN_G}>
