@@ -23,7 +23,16 @@ Deno.serve(async (req) => {
   const b = (d as any).bookings ?? {}; const c = (d.content ?? {}) as any;
   const origin = new URL(p.origin).origin; const link = `${origin}/dossier/${d.token}`;
   const li = (arr: unknown) => (Array.isArray(arr) ? arr : []).map((x) => `<li style="margin:0 0 6px">${esc(x)}</li>`).join('');
-  const sched = (Array.isArray(c.schedule) ? c.schedule : []).map((s: any) => `<tr><td style="padding:6px 12px 6px 0;color:#FF6B35;font-weight:bold;white-space:nowrap">${esc(s.time)}</td><td style="padding:6px 0">${esc(s.label)}</td></tr>`).join('');
+  const mapBtn = 'display:inline-block;margin:6px 8px 0 0;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:bold;text-decoration:none';
+  const sched = (await Promise.all((Array.isArray(c.schedule) ? c.schedule : []).map(async (s: any) => {
+    const label = String(s.label ?? '');
+    const url = extractUrl(label);
+    const target = url && isShortMapLink(url) ? await resolveMapsLink(url) : null;
+    const base = textWithoutUrl(label).replace(/\s*[:;,]\s*$/, '') || 'Punto de quedada';
+    const name = target?.name && !base.toLowerCase().includes(target.name.toLowerCase()) ? target.name : null;
+    const btns = url ? `<div><a href="${esc(googleMapsUrl(label))}" style="${mapBtn};background:#FF6B35;color:#ffffff">Abrir en Google Maps</a><a href="${esc(appleMapsUrl(label, target))}" style="${mapBtn};background:#1A1A1A;color:#ffffff">Abrir en Apple Maps</a></div>` : '';
+    return `<tr><td style="padding:6px 12px 6px 0;color:#FF6B35;font-weight:bold;white-space:nowrap">${esc(s.time)}</td><td style="padding:6px 0">${esc(name ? `${base} — ${name}` : base)}${btns}</td></tr>`;
+  }))).join('');
   const html = `<div style="background:#ffffff;font-family:Arial,sans-serif;color:#1A1A1A"><div style="max-width:600px;margin:0 auto"><div style="background:#1A1A1A;color:#fff;padding:20px 24px;border-bottom:4px solid #FF6B35"><strong>Naturaleza Sin Límites</strong></div><div style="padding:24px">
 <h1 style="font-size:22px;margin:0 0 6px">Pasos a seguir</h1><p style="margin:0 0 18px;color:#555">${esc(b.activity)}${b.preferred_date ? ` · ${esc(b.preferred_date)}` : ''}</p>
 <h2 style="font-size:16px">Cronograma</h2><table style="border-collapse:collapse">${sched}</table>
