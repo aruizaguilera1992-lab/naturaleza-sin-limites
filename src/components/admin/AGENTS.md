@@ -1,0 +1,1 @@
+- OutingAssistant only proposes allowlisted editorial text in the current editor; it never persists, sends, or alters prices, dates, seats, photos or payment data. Why: admin review must precede all existing save/send actions.

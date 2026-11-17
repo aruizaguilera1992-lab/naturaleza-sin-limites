@@ -1,5 +1,9 @@
 # Roadmap
 
+## Asistente IA de fichas
+- [x] Propuestas editables en salidas privadas y abiertas, sin guardar/enviar automáticamente ni modificar datos operativos.
+- [x] Generación real y aplicación manual comprobadas con sesión admin en ambos editores; precio/plazas intactos, diálogo móvil comprobado, 141 pruebas y compilación OK. Función desplegada; sin guardar fichas, enviar correos ni publicar web. Detener implementado; cancelación durante una generación no probada.
+
 ## Recibo final de pagos (17/11/2026)
 - [x] Corregir confirmación de fecha en reservas privadas pagadas, mantener incidencias reales de plazas.
 - [x] Mostrar total acordado, pagado acumulado y saldo en recibo y página de pago; felicitación y próximos pasos.
