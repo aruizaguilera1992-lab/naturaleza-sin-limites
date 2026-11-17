@@ -1,8 +1,8 @@
 # Roadmap
 
-## Assistant IA de fiches
-- [ ] Ajouter propositions éditables dans les sorties privées et ouvertes, sans écriture/envoi automatique ni modification des données opérationnelles.
-- [ ] Vérifier accès admin, génération réelle, application manuelle et annulation; sans publication web.
+## Asistente IA de fichas
+- [x] Propuestas editables en salidas privadas y abiertas, sin guardar/enviar automáticamente ni modificar datos operativos.
+- [x] Generación real y aplicación manual comprobadas con sesión admin en ambos editores; precio/plazas intactos, diálogo móvil comprobado, 141 pruebas y compilación OK. Función desplegada; sin guardar fichas, enviar correos ni publicar web. Detener implementado; cancelación durante una generación no probada.
 
 ## Recibo final de pagos (17/11/2026)
 - [x] Corregir confirmación de fecha en reservas privadas pagadas, mantener incidencias reales de plazas.
