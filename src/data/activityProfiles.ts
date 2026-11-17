@@ -386,7 +386,7 @@ function fromCrag(item: Crag): ActivityProfile {
     ],
     previousExperience: item.requisitos.experienciaPrevia
       ? "Sí; nivel concreto sujeto a valoración"
-      : "No; sujeto a valoración previa",
+      : "No exige experiencia previa ",
     included: item.incluye.length ? item.incluye : [PENDING],
     bring: [PENDING],
     meetingPoint: PENDING,
@@ -438,7 +438,7 @@ function fromFerrata(item: Ferrata): ActivityProfile {
     ],
     previousExperience: item.requisitos.experienciaPrevia
       ? "Sí; nivel concreto sujeto a valoración"
-      : "No; sujeto a valoración previa",
+      : "No exige experiencia previa ",
     included: item.incluye.length ? item.incluye : [PENDING],
     bring: [PENDING],
     meetingPoint: PENDING,
@@ -486,7 +486,7 @@ function fromCave(item: ActividadEspeleologia): ActivityProfile {
     technicalElements: item.caracteristicas,
     previousExperience: item.requisitos.experienciaPrevia
       ? "Sí; condiciones concretas sujetas a valoración"
-      : "No; sujeto a valoración previa",
+      : "No exige experiencia previa ",
     included: item.incluye,
     bring: [PENDING],
     meetingPoint: PENDING,
