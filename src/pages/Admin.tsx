@@ -1,3 +1,4 @@
+import { DossierPanel } from "@/components/admin/dossier/DossierPanel";
 import React, { useEffect, useState, useCallback } from "react";
 import { SalidasPanel } from "@/components/admin/SalidasPanel";
 import { CatalogPanel } from "@/components/admin/catalog/CatalogPanel";
@@ -1030,6 +1031,8 @@ export default function Admin() {
             </div>
           )}
         </section>
+
+        <DossierPanel key={`dossier-${b.id}`} booking={b} defaultRules={(ev as { rules?: string | null } | undefined)?.rules ?? null} />
 
         <section aria-labelledby="fin-title" className="mt-4 rounded-xl border border-border bg-background/60 p-4">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">

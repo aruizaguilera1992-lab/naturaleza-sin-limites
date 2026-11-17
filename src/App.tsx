@@ -19,6 +19,7 @@ import ViasFerratas from "./pages/ViasFerratas";
 import Espeleologia from "./pages/Espeleologia";
 import LevelOfferPage from "./pages/LevelOfferPage";
 import FichaPrivada from "./pages/FichaPrivada";
+import DossierActividad from "./pages/DossierActividad";
 import VertigoSapiensPage from "./pages/VertigoSapiensPage";
 import QuienesSomos from "./pages/QuienesSomos";
 import Contacto from "./pages/Contacto";
@@ -76,6 +77,7 @@ const App = () => (
             <Route path="/escalada" element={<Escalada />} />
             <Route path="/vias-ferratas" element={<ViasFerratas />} />
             <Route path="/ficha/:token" element={<FichaPrivada />} />
+            <Route path="/dossier/:token" element={<DossierActividad />} />
             <Route path="/niveles/:id" element={<LevelOfferPage />} />
             <Route path="/espeleologia" element={<Espeleologia />} />
             <Route path="/vertigo-sapiens" element={<VertigoSapiensPage />} />
