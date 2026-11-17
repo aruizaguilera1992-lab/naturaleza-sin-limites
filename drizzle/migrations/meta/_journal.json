@@ -225,6 +225,13 @@
       "when": 1794910767318,
       "tag": "0031_activity_dossiers",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1794914668954,
+      "tag": "0032_accept_sheet_reuses_request_booking",
+      "breakpoints": true
     }
   ]
 }
