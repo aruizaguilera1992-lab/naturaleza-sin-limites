@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
     const name = target?.name && !base.toLowerCase().includes(target.name.toLowerCase()) ? target.name : null;
     // Apple Maps solo sirve con coordenadas o con un nombre legible; con un
     // enlace de Google sin resolver no se puede abrir nada ahí.
-    const appleHref = target ? appleMapsUrl(label, target) : (textWithoutUrl(label) ? appleMapsUrl(label, null) : null);
+    const appleHref = canOpenInAppleMaps(label, target) ? appleMapsUrl(label, target) : null;
     const btns = url ? `<div><a href="${esc(googleMapsUrl(label))}" style="${mapBtn};background:#FF6B35;color:#ffffff">Abrir en Google Maps</a>${appleHref ? `<a href="${esc(appleHref)}" style="${mapBtn};background:#1A1A1A;color:#ffffff">Abrir en Apple Maps</a>` : ''}</div>` : '';
     return `<tr><td style="padding:6px 12px 6px 0;color:#FF6B35;font-weight:bold;white-space:nowrap">${esc(s.time)}</td><td style="padding:6px 0">${esc(name ? `${base} — ${name}` : base)}${btns}</td></tr>`;
   }))).join('');

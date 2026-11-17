@@ -1,5 +1,5 @@
 import { MapPin } from 'lucide-react';
-import { appleMapsUrl, googleMapsUrl, textWithoutUrl, type MapsTarget } from '@/lib/meetingPoint';
+import { appleMapsUrl, canOpenInAppleMaps, googleMapsUrl, textWithoutUrl, type MapsTarget } from '@/lib/meetingPoint';
 import { useMeetingPointTarget } from '@/hooks/useMeetingPointTarget';
 
 const BTN_G = 'inline-flex min-h-11 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground transition-all duration-300 active:scale-95';
@@ -9,7 +9,7 @@ const BTN_A = 'inline-flex min-h-11 items-center gap-1.5 rounded-md border borde
 export function MeetingPointActions({ text, target, className = 'mt-3 flex flex-wrap gap-2' }: { text: string; target?: MapsTarget | null; className?: string }) {
   // Apple Maps solo sirve con coordenadas o con un nombre legible: si el texto
   // es solo un enlace de Google y no se ha podido resolver, ese botón no aporta nada.
-  const showApple = !!target || !!textWithoutUrl(text);
+  const showApple = canOpenInAppleMaps(text, target);
   return (
     <div className={className}>
       <a href={googleMapsUrl(text)} target="_blank" rel="noopener noreferrer" className={BTN_G}>
