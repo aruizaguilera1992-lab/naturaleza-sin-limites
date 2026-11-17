@@ -38,6 +38,14 @@ export function appleMapsUrl(text: string, target?: MapsTarget | null): string {
   return `https://maps.apple.com/?q=${encodeURIComponent(query)}`;
 }
 
+/**
+ * ¿Se puede abrir el punto en Apple Maps? Hace falta coordenadas o un nombre
+ * legible; con un enlace de Google sin resolver no hay nada que buscar ahí.
+ */
+export function canOpenInAppleMaps(text: string, target?: MapsTarget | null): boolean {
+  return !!target || !!textWithoutUrl(text);
+}
+
 /** Nombres que indican que un paso del cronograma es el punto de quedada. */
 const MEETING_RE = /quedada|punto de (?:quedada|encuentro|reuni[oó]n)|lugar de encuentro|meeting point/i;
 const MAPS_HOST_RE = /(?:^|\/\/|\.)(?:maps\.google\.com|google\.[a-z]{2,3}\/maps|maps\.app\.goo\.gl|goo\.gl)/i;

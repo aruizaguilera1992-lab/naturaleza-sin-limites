@@ -42,6 +42,9 @@ export const textWithoutUrl = (text: string): string => text.replace(URL_RE, '')
 /** ¿Es un enlace corto de Google que conviene resolver? */
 export const isShortMapLink = (url: string | null): boolean => (url ? isAllowedShortLink(url) : false);
 
+/** ¿Se puede abrir el punto en Apple Maps? Falta coordenadas o un nombre legible. */
+export const canOpenInAppleMaps = (text: string, target?: MapsTarget | null): boolean => !!target || !!textWithoutUrl(text);
+
 /** Enlace a Google Maps: respeta la URL pegada; si no, busca el texto. */
 export const googleMapsUrl = (text: string): string =>
   extractUrl(text) ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(text.trim())}`;
