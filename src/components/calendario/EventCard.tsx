@@ -3,6 +3,7 @@ import { Clock, MapPin, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
+import { EventTechSheet } from './EventTechSheet';
 import { OutingInstructions } from '@/components/shared/OutingInstructions';
 
 const euros = (value: number) =>
@@ -71,9 +72,7 @@ export function EventCard({ event, showDate = true }: EventCardProps) {
             Completa
           </Button>
         ) : (
-          <Button asChild size="sm" className="transition-all duration-300 active:scale-95">
-            <Link to={bookingUrl}>Reservar plaza</Link>
-          </Button>
+          <EventTechSheet event={event} bookingUrl={bookingUrl} />
         )}
       </div>
     </article>
