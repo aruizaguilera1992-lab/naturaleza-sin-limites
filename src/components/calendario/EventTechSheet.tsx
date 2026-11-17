@@ -55,8 +55,8 @@ const LEVEL_NAME = ["Iniciación", "Intermedio", "Avanzado"];
 /** Cuántas preguntas caben por diapositiva en cada formato. */
 const FAQ_PER_SLIDE = { wide: 6, compact: 4 };
 
-/** Etiquetas de los bloques de la descripción en portada. */
-const DESC_LABELS = ["La salida", "Para quién", "A tener en cuenta"];
+/** Etiqueta del párrafo de apertura de la descripción. */
+const DESC_LABELS = ["La salida"];
 
 /** true en pantallas de escritorio: diapositivas con más bloques cada una. */
 function useIsWide() {
@@ -75,9 +75,15 @@ function useIsWide() {
 /** Una diapositiva de la ficha: cabecera propia y uno o varios bloques. */
 type Slide = { key: string; eyebrow: string; title: string; blocks: string[] };
 
-const chunk = <T,>(items: T[], size: number): T[][] => {
+const chunkEven = <T,>(items: T[], maxPer: number): T[][] => {
+  const groups = Math.max(1, Math.ceil(items.length / maxPer));
   const out: T[][] = [];
-  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  let at = 0;
+  for (let g = 0; g < groups; g++) {
+    const size = Math.ceil((items.length - at) / (groups - g));
+    out.push(items.slice(at, at + size));
+    at += size;
+  }
   return out;
 };
 
@@ -111,7 +117,7 @@ function Stat({
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-col items-center gap-0.5 rounded-2xl border border-border/60 bg-secondary/40 px-2 py-2 text-center",
+        "flex min-w-0 flex-col items-center gap-0.5 rounded-2xl border border-border/60 bg-secondary/40 px-2 py-0.5 text-center sm:py-1",
         className,
       )}
     >
@@ -119,7 +125,7 @@ function Stat({
       <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </span>
-      <span className="font-heading text-sm font-extrabold leading-tight text-foreground sm:text-xl">
+      <span className="font-heading text-[12px] font-extrabold leading-tight text-foreground sm:text-xl">
         {value}
       </span>
       {hint ? <span className="text-[10px] leading-tight text-muted-foreground">{hint}</span> : null}
@@ -141,23 +147,23 @@ function Checklist({
 }) {
   if (!items || items.length === 0) return null;
   return (
-    <section className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2.5 sm:p-3">
-      <h4 className="mb-1.5 flex items-center gap-2 font-heading text-[13px] font-bold text-foreground">
-        <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+    <section className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2 sm:p-2.5">
+      <h4 className="mb-1 flex items-center gap-2 font-heading text-[12px] font-bold text-foreground">
+        <Icon className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
         {title}
       </h4>
-      <ol className="space-y-1">
+      <ol className="space-y-0.5">
         {items.map((item, i) => (
           <li
             key={`${item}-${i}`}
-            className="flex items-start gap-2 text-[12px] leading-snug text-muted-foreground"
+            className="flex items-start gap-1.5 text-[11px] leading-snug text-muted-foreground"
           >
             {numbered ? (
-              <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-extrabold text-primary">
+              <span className="mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[9px] font-extrabold text-primary">
                 {i + 1}
               </span>
             ) : (
-              <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+              <Check className="mt-0.5 h-3 w-3 shrink-0 text-primary" aria-hidden="true" />
             )}
             <span className="break-words">{item}</span>
           </li>
@@ -171,18 +177,24 @@ function Checklist({
 function Note({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text: string }) {
   if (!text) return null;
   return (
-    <section className="min-w-0 rounded-2xl border border-border/60 bg-secondary/30 p-2.5 sm:p-3">
-      <h4 className="mb-1 flex items-center gap-2 font-heading text-[13px] font-bold text-foreground">
-        <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+    <section className="min-w-0 rounded-2xl border border-border/60 bg-secondary/30 p-2 sm:p-2.5">
+      <h4 className="mb-0.5 flex items-center gap-2 font-heading text-[12px] font-bold text-foreground">
+        <Icon className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
         {title}
       </h4>
-      <p className="text-[12px] leading-snug text-muted-foreground">{text}</p>
+      <p className="text-[11px] leading-snug text-muted-foreground">{text}</p>
     </section>
   );
 }
 
 /** Preguntas y respuestas de la actividad. */
-function Faqs({ items }: { items: { question: string; answer: string }[] }) {
+function Faqs({
+  items,
+  columns,
+}: {
+  items: { question: string; answer: string }[];
+  columns?: boolean;
+}) {
   return (
     <div
       className={cn(
@@ -205,53 +217,114 @@ function Faqs({ items }: { items: { question: string; answer: string }[] }) {
   );
 }
 
-/** Parte la descripción en bloques de lectura de un tamaño parecido. */
-function packGroups(text: string, maxChars: number): string[][] {
+/** Párrafos de lectura de un tamaño parecido. */
+function packParagraphs(text: string, maxChars: number): string[] {
   const sentences = text
     .split(/(?<=\.)\s+/)
     .map((s) => s.trim())
     .filter(Boolean);
-  const groups: string[][] = [];
-  let current: string[] = [];
-  let size = 0;
+  const out: string[] = [];
+  let current = "";
   for (const s of sentences) {
-    if (current.length && size + s.length > maxChars) {
-      groups.push(current);
-      current = [];
-      size = 0;
+    if (current && current.length + s.length > maxChars) {
+      out.push(current);
+      current = "";
     }
-    current.push(s);
-    size += s.length + 1;
+    current = current ? `${current} ${s}` : s;
   }
-  if (current.length) groups.push(current);
-  return groups;
+  if (current) out.push(current);
+  return out;
+}
+
+type ListBlock = { kind: "list"; label?: string; items: { title: string; body: string }[] };
+type DescBlock = { kind: "text"; text: string } | ListBlock;
+
+/** Separa la descripción en párrafos cortos y una lista de características. */
+function readDescription(
+  text: string,
+  maxChars: number,
+): { paragraphs: string[]; list?: ListBlock } {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return { paragraphs: [] };
+
+  const chunks = clean.split("•").map((c) => c.trim()).filter(Boolean);
+  const hasBullets = chunks.length > 1;
+  let lead = hasBullets ? chunks[0] : clean;
+  let listLabel: string | undefined;
+
+  if (hasBullets) {
+    const m = lead.match(/\s*([^.•:]{2,40}):\s*$/);
+    if (m) {
+      listLabel = m[1].trim();
+      lead = lead.slice(0, m.index).trim();
+    }
+  }
+
+  const paragraphs = packParagraphs(lead, maxChars);
+
+  const list: ListBlock | undefined = hasBullets
+    ? {
+        kind: "list",
+        label: listLabel,
+        items: chunks.slice(1).map((raw) => {
+          const t = raw.trim();
+          const dot = t.search(/\.\s/);
+          const title = dot > 0 && dot <= 45 ? t.slice(0, dot).trim() : "";
+          return { title, body: title ? t.slice(dot + 1).trim() : t };
+        }),
+      }
+    : undefined;
+
+  return { paragraphs, list };
 }
 
 /** Descripción de la ficha, maquetada en bloques cortos y etiquetados. */
-function Description({ groups, labels = [] }: { groups: string[][]; labels?: string[] }) {
-  if (groups.length === 0) return null;
+function Description({ blocks, labels = [] }: { blocks: DescBlock[]; labels?: string[] }) {
+  if (blocks.length === 0) return null;
   return (
     <div className="space-y-1.5">
-      {groups.map((group, i) => (
-        <section
-          key={`${group[0]}-${i}`}
-          className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2.5 sm:p-3"
-        >
-          {labels[i] ? (
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
-              {labels[i]}
-            </p>
-          ) : null}
-          <p
-            className={cn(
-              "mt-0.5 text-[12px] leading-snug text-muted-foreground sm:text-[13px]",
-              i === 0 && "text-foreground",
-            )}
+      {blocks.map((b, i) => {
+        const label = labels[i] ?? (b.kind === "list" ? b.label : undefined);
+        return (
+          <section
+            key={`${b.kind}-${i}`}
+            className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2 sm:p-3"
           >
-            {group.join(" ")}
-          </p>
-        </section>
-      ))}
+            {label ? (
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+                {label}
+              </p>
+            ) : null}
+            {b.kind === "text" ? (
+              <p
+                className={cn(
+                  "mt-0.5 max-w-[80ch] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]",
+                  i === 0 && "text-foreground",
+                )}
+              >
+                {b.text}
+              </p>
+            ) : (
+              <ul className="mt-1 space-y-1">
+                {b.items.map((it, j) => (
+                  <li
+                    key={`${it.title}-${j}`}
+                    className="flex gap-1.5 text-[12px] leading-snug text-muted-foreground sm:text-[13px]"
+                  >
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
+                    <span className="max-w-[80ch]">
+                      {it.title ? (
+                        <b className="font-semibold text-foreground">{it.title}. </b>
+                      ) : null}
+                      {it.body}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        );
+      })}
     </div>
   );
 }
@@ -289,21 +362,35 @@ export function EventTechSheet({
   });
 
   /* ---- Descripción: tres bloques en portada y el resto en «Con detalle» ---- */
-  const descGroups = packGroups(sheet.description, wide ? 460 : 380);
-  const descShown = descGroups.slice(0, 3);
-  const descRest = descGroups.slice(3).flat().join(" ");
+  const desc = readDescription(sheet.description, wide ? 280 : 240);
+  const listMax = wide ? 4 : 2;
+  const listShown = desc.list
+    ? { ...desc.list, items: desc.list.items.slice(0, listMax) }
+    : undefined;
+  const listRest =
+    desc.list && desc.list.items.length > listMax
+      ? { ...desc.list, items: desc.list.items.slice(listMax) }
+      : undefined;
+  const descShown: DescBlock[] = [
+    ...(desc.paragraphs[0] ? [{ kind: "text", text: desc.paragraphs[0] } as DescBlock] : []),
+    ...(listShown ? [listShown] : []),
+  ];
+  const descRest: DescBlock[] = [
+    ...desc.paragraphs.slice(1).map((t) => ({ kind: "text", text: t }) as DescBlock),
+    ...(listRest ? [listRest] : []),
+  ];
 
   /* ---- Diapositivas: se arman según la pantalla y los datos que existen ---- */
-  const faqGroups = chunk(sheet.faqs, wide ? FAQ_PER_SLIDE.wide : FAQ_PER_SLIDE.compact);
+  const faqGroups = chunkEven(sheet.faqs, wide ? FAQ_PER_SLIDE.wide : FAQ_PER_SLIDE.compact);
 
   const slides: Slide[] = [
     {
       key: "portada",
       eyebrow: "Salida programada",
       title: "Ficha de la actividad",
-      blocks: wide ? ["stats", "descripcion", "highlights"] : ["stats", "descripcion"],
+      blocks: ["stats", "descripcion"],
     },
-    ...(descRest
+    ...(descRest.length > 0
       ? [
           {
             key: "detalle",
@@ -317,7 +404,7 @@ export function EventTechSheet({
       key: "nivel",
       eyebrow: "Dificultad",
       title: "Nivel y condiciones",
-      blocks: wide ? ["nivelBig", "experience"] : ["nivelBig", "experience", "highlights"],
+      blocks: ["nivelBig", "experience", "highlights"],
     },
     { key: "salida", eyebrow: "Logística", title: "La salida", blocks: ["salidaTiles"] },
     {
@@ -361,24 +448,28 @@ export function EventTechSheet({
           icon={Users}
           label="Plazas libres"
           value={event.isFull ? "Sin plazas" : event.freeSeats}
-          hint={event.isFull ? undefined : `grupo: ${sheet.group || "consultar"}`}
+          hint={
+            event.isFull || !wide
+              ? undefined
+              : `grupo: ${sheet.group || "consultar"}`
+          }
         />
       </div>
     ),
 
-    descripcion: <Description groups={descShown} labels={DESC_LABELS} />,
+    descripcion: <Description blocks={descShown} labels={DESC_LABELS} />,
 
-    detalle: <Description groups={packGroups(descRest, wide ? 1500 : 1000)} />,
+    detalle: <Description blocks={descRest} />,
 
     highlights:
       sheet.highlights.length > 0 ? (
-        <ul className="flex flex-wrap gap-2">
+        <ul className="flex flex-wrap gap-1.5">
           {sheet.highlights.map((h, i) => (
             <li
               key={`${h}-${i}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-foreground"
+              className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-foreground sm:px-3 sm:py-1.5 sm:text-xs"
             >
-              <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+              <Sparkles className="h-3 w-3 text-primary sm:h-3.5 sm:w-3.5" aria-hidden="true" />
               {h}
             </li>
           ))}
@@ -413,7 +504,7 @@ export function EventTechSheet({
     ),
 
     experience: sheet.experience && (
-      <p className="flex items-center justify-center gap-2 rounded-2xl border border-border/60 bg-secondary/30 px-3 py-3 text-center text-sm font-semibold text-foreground">
+      <p className="flex items-center justify-center gap-2 rounded-2xl border border-border/60 bg-secondary/30 px-3 py-2 text-center text-[12px] font-semibold text-foreground sm:py-3 sm:text-sm">
         <Award className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
         {sheet.experience}
       </p>
@@ -424,22 +515,22 @@ export function EventTechSheet({
         <Stat
           icon={MapPin}
           label="Punto de encuentro"
-          value={<span className="text-base sm:text-lg">{sheet.meetingPoint || "—"}</span>}
+          value={<span className="text-[13px] sm:text-lg">{sheet.meetingPoint || "—"}</span>}
           className="col-span-2"
         />
         <Stat icon={Clock} label="Duración total" value={sheet.duration || "—"} />
         <Stat icon={Timer} label="Actividad efectiva" value={sheet.effectiveDuration || "—"} />
         <Stat icon={CalendarRange} label="Temporada" value={sheet.season || "—"} className="col-span-2" />
-        <Stat icon={Users} label="Grupo" value={<span className="text-base">{sheet.group || "—"}</span>} />
+        <Stat icon={Users} label="Grupo" value={<span className="text-[13px]">{sheet.group || "—"}</span>} />
         <Stat
           icon={UserCheck}
           label="Ratio guía"
-          value={<span className="text-base">{sheet.guideRatio || "—"}</span>}
+          value={<span className="text-[13px]">{sheet.guideRatio || "—"}</span>}
         />
         <Stat
           icon={Compass}
           label="Aproximación"
-          value={<span className="text-base">{sheet.approachReturn || "—"}</span>}
+          value={<span className="text-[13px]">{sheet.approachReturn || "—"}</span>}
         />
       </div>
     ),
@@ -447,16 +538,16 @@ export function EventTechSheet({
     steps: <Checklist icon={Compass} title="Pasos del recorrido" items={sheet.itinerary} numbered />,
 
     elements: (
-      <section className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-3 sm:p-4">
-        <h4 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-foreground">
+      <section className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2.5 sm:p-3">
+        <h4 className="mb-1.5 flex items-center gap-2 font-heading text-[13px] font-bold text-foreground">
           <Cable className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
           Elementos técnicos
         </h4>
-        <ul className="flex flex-wrap gap-2">
+        <ul className="flex flex-wrap gap-1.5">
           {sheet.technicalElements.map((e, i) => (
             <li
               key={`${e}-${i}`}
-              className="rounded-full border border-border/60 bg-secondary/40 px-3 py-1.5 text-xs font-semibold text-foreground"
+              className="rounded-full border border-border/60 bg-secondary/40 px-2 py-0.5 text-[10px] font-semibold text-foreground sm:px-3 sm:py-1.5 sm:text-xs"
             >
               {e}
             </li>
@@ -482,14 +573,14 @@ export function EventTechSheet({
     ),
 
     securityPanels: (
-      <div className="space-y-3">
+      <div className="space-y-1.5">
         <Checklist icon={ShieldCheck} title="Requisitos de seguridad" items={sheet.requirements} />
         <Checklist icon={FileCheck2} title="Seguros y permisos" items={sheet.insurancePermits} />
       </div>
     ),
 
     policies: (
-      <div className="space-y-3">
+      <div className="space-y-1.5">
         <Note icon={CloudRain} title="Meteorología" text={sheet.weatherPolicy} />
         <Note icon={CalendarDays} title="Cancelación" text={sheet.cancellationPolicy} />
       </div>
@@ -498,7 +589,7 @@ export function EventTechSheet({
     rules: <OutingInstructions rules={event.rules} steps={event.steps} />,
 
     ...Object.fromEntries(
-      faqGroups.map((group, i) => [`dudas-${i}`, <Faqs items={group} />]),
+      faqGroups.map((group, i) => [`dudas-${i}`, <Faqs items={group} columns={wide} />]),
     ),
   };
 
@@ -512,7 +603,7 @@ export function EventTechSheet({
         )}
       </DialogTrigger>
       <DialogContent className="w-[min(96vw,920px)] max-w-none gap-0 overflow-hidden rounded-none p-0 sm:rounded-2xl">
-        <div className="flex max-h-[92vh] flex-col">
+        <div className="flex max-h-[96vh] flex-col">
           {/* Portada fija: foto, disciplina y título */}
           <div className="relative shrink-0 overflow-hidden border-b border-border">
             <div className="absolute inset-0 bg-gradient-to-br from-secondary via-background to-secondary/60" />
@@ -552,14 +643,14 @@ export function EventTechSheet({
           <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div
               key={current.key}
-              className="animate-in fade-in-0 slide-in-from-right-2 space-y-2 px-4 py-3 duration-300 sm:px-6 sm:py-4"
+              className="animate-in fade-in-0 slide-in-from-right-2 space-y-1.5 px-4 py-2 duration-300 sm:space-y-2 sm:px-6 sm:py-4"
             >
               <div className="flex items-end justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary sm:text-[10px]">
                     {current.eyebrow}
                   </p>
-                  <h3 className="mt-0.5 font-heading text-lg font-extrabold leading-tight text-foreground sm:text-xl">
+                  <h3 className="mt-0.5 font-heading text-base font-extrabold leading-tight text-foreground sm:text-xl">
                     {current.title}
                   </h3>
                 </div>

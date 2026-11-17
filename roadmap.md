@@ -263,3 +263,4 @@
 - [ ] Reserva disponible desde todas las diapositivas de la ficha técnica
 - [ ] Actualizar las preguntas frecuentes de cada actividad según los detalles de su ficha del catálogo
 - [ ] Descripción maquetada en la primera diapositiva y mínimo de diapositivas en la ficha
+- [ ] Maquetar la información de la ficha para lectura fácil (párrafos y listas) — en curso
