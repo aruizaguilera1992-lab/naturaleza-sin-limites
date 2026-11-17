@@ -349,18 +349,24 @@ function MeetingSpot({ text }: { text: string }) {
   if (!text.trim()) return null;
   return (
     <section className="min-w-0 rounded-2xl border border-primary/25 bg-primary/5 p-2 sm:p-2.5">
-      <p className="flex items-start gap-1.5">
-        <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-        <span className="min-w-0">
-          <span className="block text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
-            Punto de encuentro
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
+        <p className="flex min-w-0 flex-1 items-start gap-1.5">
+          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+          <span className="min-w-0">
+            <span className="block text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+              Punto de encuentro
+            </span>
+            <span className="mt-0.5 block text-[12px] font-semibold leading-snug text-foreground sm:text-[13px]">
+              <MeetingPointLabel text={text} target={target} />
+            </span>
           </span>
-          <span className="mt-0.5 block text-[12px] font-semibold leading-snug text-foreground sm:text-[13px]">
-            <MeetingPointLabel text={text} target={target} />
-          </span>
-        </span>
-      </p>
-      <MeetingPointActions text={text} target={target} className="mt-1.5 flex flex-wrap gap-1.5 pl-5" />
+        </p>
+        <MeetingPointActions
+          text={text}
+          target={target}
+          className="flex min-w-0 flex-wrap justify-end gap-1.5 sm:w-auto sm:shrink-0"
+        />
+      </div>
     </section>
   );
 }
