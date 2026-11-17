@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -15,7 +15,16 @@ const List = ({ title, items }: { title: string; items?: string[] }) =>
     </section>
   ) : null;
 
-export function EventTechSheet({ event, bookingUrl }: { event: ActivityEvent; bookingUrl: string }) {
+export function EventTechSheet({
+  event,
+  bookingUrl,
+  trigger,
+}: {
+  event: ActivityEvent;
+  bookingUrl: string;
+  /** Elemento que abre la ficha. Por defecto, un botón «Ver ficha y reservar». */
+  trigger?: ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const p = event.profile;
   const rows: [string, string | undefined][] = p
@@ -41,7 +50,11 @@ export function EventTechSheet({ event, bookingUrl }: { event: ActivityEvent; bo
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="transition-all duration-300 active:scale-95">Ver ficha y reservar</Button>
+        {trigger ?? (
+          <Button size="sm" className="transition-all duration-300 active:scale-95">
+            Ver ficha y reservar
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
@@ -71,9 +84,15 @@ export function EventTechSheet({ event, bookingUrl }: { event: ActivityEvent; bo
         ) : null}
         <div className="sticky bottom-0 flex justify-end gap-2 border-t border-border bg-background pt-3">
           <Button variant="outline" size="sm" onClick={() => setOpen(false)}>Cerrar</Button>
-          <Button asChild size="sm" className="transition-all duration-300 active:scale-95">
-            <Link to={bookingUrl}>Reservar plaza</Link>
-          </Button>
+          {event.isFull ? (
+            <Button size="sm" disabled>
+              Sin plazas
+            </Button>
+          ) : (
+            <Button asChild size="sm" className="transition-all duration-300 active:scale-95">
+              <Link to={bookingUrl}>Reservar plaza</Link>
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

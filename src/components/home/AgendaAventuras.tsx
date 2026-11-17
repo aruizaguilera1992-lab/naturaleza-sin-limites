@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useActivityEvents, type ActivityEvent } from "@/hooks/useActivityEvents";
 import { getActivityCatalogImage } from "@/data/activityProfiles";
+import { EventTechSheet } from "@/components/calendario/EventTechSheet";
 
 const MONTHS = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -47,6 +48,7 @@ function AgendaCard({ event }: { event: ActivityEvent }) {
   const month = MONTHS[event.startDate.getMonth()];
   const day = event.startDate.getDate();
   const price = event.pricePerPerson;
+  const bookingUrl = `/reservar/${event.category}/${event.slug}?evento=${event.id}`;
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-2xl">
@@ -129,19 +131,31 @@ function AgendaCard({ event }: { event: ActivityEvent }) {
             <span className="ml-1 text-xs font-normal text-muted-foreground">/ persona</span>
           </p>
           {event.isFull ? (
-            <span className="rounded-lg border border-border px-3 py-2 text-sm font-semibold text-muted-foreground">
+            <span className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground">
               Sin plazas
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </span>
           ) : (
-            <Link
-              to={`/reservar/${event.category}/${event.slug}?evento=${event.id}`}
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all duration-300 hover:brightness-110 active:scale-95"
-            >
-              Reservar plaza
-            </Link>
+            <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+              Ver ficha técnica
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            </span>
           )}
         </div>
       </div>
+
+      {/* La tarjeta entera abre la ficha técnica; «Reservar plaza» solo aparece dentro de la ficha */}
+      <EventTechSheet
+        event={event}
+        bookingUrl={bookingUrl}
+        trigger={
+          <button
+            type="button"
+            aria-label={`Ver ficha técnica de ${event.title}`}
+            className="absolute inset-0 z-10 cursor-pointer rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          />
+        }
+      />
     </article>
   );
 }
