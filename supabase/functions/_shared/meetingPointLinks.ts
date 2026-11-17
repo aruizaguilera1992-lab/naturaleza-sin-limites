@@ -33,6 +33,30 @@ const num = (s: string | undefined) => {
   return Number.isFinite(n) && Math.abs(n) <= 180 ? n : null;
 };
 
+const URL_RE = /https?:\/\/[^\s]+/i;
+
+/** Primera URL http(s) del texto, o null. */
+export const extractUrl = (text: string): string | null => text.match(URL_RE)?.[0] ?? null;
+
+/** Texto descriptivo sin la URL pegada. */
+export const textWithoutUrl = (text: string): string => text.replace(URL_RE, '').replace(/\s{2,}/g, ' ').trim();
+
+/** ¿Es un enlace corto de Google que conviene resolver? */
+export const isShortMapLink = (url: string | null): boolean => (url ? isAllowedShortLink(url) : false);
+
+/** Enlace a Google Maps: respeta la URL pegada; si no, busca el texto. */
+export const googleMapsUrl = (text: string): string =>
+  extractUrl(text) ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(text.trim())}`;
+
+/** Enlace a Apple Maps: punto exacto si hay coordenadas; si no, búsqueda por texto. */
+export const appleMapsUrl = (text: string, target?: MapsTarget | null): string => {
+  if (target && target.latitude !== null && target.longitude !== null) {
+    const q = target.name ? `&q=${encodeURIComponent(target.name)}` : '';
+    return `https://maps.apple.com/?ll=${target.latitude},${target.longitude}${q}`;
+  }
+  return `https://maps.apple.com/?q=${encodeURIComponent(textWithoutUrl(text) || text.trim())}`;
+};
+
 /** Nombre y coordenadas de un enlace de Google Maps ya resuelto. */
 export function parseMapsUrl(url: string): MapsTarget {
   let name: string | null = null;
