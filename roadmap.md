@@ -242,4 +242,4 @@
 - [x] Subir fotos desde el PC en el editor de fichas (botón junto al selector de foto)
 - [x] Retrato de Contacto recolocado en tablet para que no tape la cara (márgenes negativos + título text-6xl en md-lg)
 - [x] Borrar salidas de grupo abierto desde Salidas (RPC admin_delete_activity_event; rechaza si hay reservas activas)
-- [ ] Cambiar imágenes de tarjetas en Contacto (ContactPathsSection)
+- [x] Cambiar imágenes de tarjetas en Contacto (ContactPathsSection)
