@@ -1392,6 +1392,10 @@ export type Database = {
       }
       get_activity_dossier: { Args: { _token: string }; Returns: Json }
       get_activity_sheet: { Args: { _token: string }; Returns: Json }
+      get_catalog_for_outing: {
+        Args: { p_category: string; p_slug: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

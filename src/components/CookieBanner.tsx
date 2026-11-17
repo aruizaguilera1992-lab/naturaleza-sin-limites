@@ -9,7 +9,7 @@ export function CookieBanner() {
   if (hasChoice) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[60] p-4 md:p-6">
+    <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6">
       <div className="mx-auto max-w-3xl rounded-xl border border-border bg-background/95 backdrop-blur-sm shadow-2xl p-5 md:p-6">
         <div className="flex items-start gap-3 mb-4">
           <Cookie className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />

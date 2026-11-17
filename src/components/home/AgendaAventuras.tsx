@@ -137,7 +137,7 @@ function AgendaCard({ event }: { event: ActivityEvent }) {
             </span>
           ) : (
             <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
-              Ver ficha técnica
+              Me apunto
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </span>
           )}
@@ -151,7 +151,7 @@ function AgendaCard({ event }: { event: ActivityEvent }) {
         trigger={
           <button
             type="button"
-            aria-label={`Ver ficha técnica de ${event.title}`}
+            aria-label={`Me apunto a ${event.title}`}
             className="absolute inset-0 z-10 cursor-pointer rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
         }

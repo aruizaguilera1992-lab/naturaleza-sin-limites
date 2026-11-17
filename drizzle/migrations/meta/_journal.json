@@ -232,6 +232,13 @@
       "when": 1794914668954,
       "tag": "0032_accept_sheet_reuses_request_booking",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1794925719539,
+      "tag": "0033_public_catalog_override_for_outing",
+      "breakpoints": true
     }
   ]
 }
