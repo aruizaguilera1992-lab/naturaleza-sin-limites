@@ -87,21 +87,16 @@ export async function resolveMapsLink(raw: string, fetchImpl: typeof fetch = fet
   const hit = cache.get(raw);
   if (hit && Date.now() - hit.at < TTL_MS) return hit.target;
 
-  let current = raw;
-  for (let hop = 0; hop < MAX_HOPS; hop++) {
-    let res: Response;
-    try {
-      res = await fetchImpl(current, { redirect: "manual", headers: { "user-agent": UA }, signal: AbortSignal.timeout(8000) });
-    } catch {
-      return null;
-    }
-    const next = res.headers.get("location");
-    if (!next) break;
-    current = new URL(next, current).toString();
-    // Enlace ya resuelto: Google Maps devuelve el sitio con nombre y coordenadas.
-    if (/google\.[a-z]{2,3}\/maps/i.test(current)) break;
+  let finalUrl = raw;
+  try {
+    // redirect: "follow" deja en res.url el destino final; con "manual" la
+    // cabecera Location no es legible desde fetch y no serviría.
+    const res = await fetchImpl(raw, { redirect: "follow", headers: { "user-agent": UA }, signal: AbortSignal.timeout(10000) });
+    if (res.url) finalUrl = res.url;
+  } catch {
+    return null;
   }
-  const target = parseMapsUrl(current);
+  const target = parseMapsUrl(finalUrl);
   if (target.latitude === null && target.longitude === null && !target.name) return null;
   cache.set(raw, { at: Date.now(), target });
   return target;
