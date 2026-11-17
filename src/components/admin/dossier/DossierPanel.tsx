@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { defaultDossier, lines, whatsappDossierText, type DossierContent, type DossierParticipant } from '@/lib/activityDossier';
 
-interface Props { booking: { id: string; activity: string; name: string | null; email: string | null; phone: string | null; contact: string; status: string; paid_amount_cents: number | null }; defaultRules?: string | null }
+interface Props { booking: { id: string; activity: string; name?: string | null; email?: string | null; phone?: string | null; contact: string; status: string; paid_amount_cents?: number | null }; defaultRules?: string | null }
 type Row = { id: string; token: string; status: string; content: DossierContent; participants: DossierParticipant[]; sent_at: string | null; completed_at: string | null };
 
 export function DossierPanel({ booking, defaultRules }: Props) {
@@ -50,7 +50,7 @@ export function DossierPanel({ booking, defaultRules }: Props) {
     if (r.status === 'borrador') { await supabase.from('activity_dossiers').update({ status: 'enviado', sent_at: new Date().toISOString() }).eq('id', r.id); setRow({ ...r, status: 'enviado' }); }
     const phone = (booking.phone ?? '').replace(/\D/g, '');
     const to = phone.length === 9 ? `34${phone}` : phone;
-    window.open(`https://wa.me/${to}?text=${encodeURIComponent(whatsappDossierText(booking.name, booking.activity, link(r)))}`, '_blank', 'noopener,noreferrer');
+    window.open(`https://wa.me/${to}?text=${encodeURIComponent(whatsappDossierText(booking.name ?? null, booking.activity, link(r)))}`, '_blank', 'noopener,noreferrer');
   };
   const setItem = (i: number, k: 'time' | 'label', v: string) => setC({ ...c, schedule: c.schedule.map((s, j) => (j === i ? { ...s, [k]: v } : s)) });
   const statusLabel = row?.status === 'completado' ? 'Completado por el cliente' : row?.status === 'enviado' ? 'Enviado' : row ? 'Borrador' : 'Sin crear';
