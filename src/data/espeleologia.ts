@@ -71,7 +71,7 @@ export const actividadesEspeleologia: ActividadEspeleologia[] = [
     descripcionLarga:
       'Una salida guiada pensada para quien nunca ha entrado en una cavidad. Trabajamos la orientación bajo tierra, el desplazamiento seguro por galerías y gateras amplias, el uso correcto del casco y la iluminación, y los hábitos de mínimo impacto dentro de la cueva. El recorrido se elige el mismo día en función del grupo, el nivel y el estado de la cavidad.',
     caracteristicas: ['Apta para principiantes', 'Sin material propio', 'Grupo reducido', 'Ritmo adaptado'],
-    mejorEpoca: 'Todo el año (la cueva mantiene temperatura estable)',
+    mejorEpoca: 'Todo el año ',
     grupoMinimo: 2,
     materialIncluido: true,
     acceso: PENDIENTE,
