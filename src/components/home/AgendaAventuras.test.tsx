@@ -126,7 +126,7 @@ it("opens the full technical sheet and offers booking from every slide", async (
     "Duración total",
     "Temporada",
     "Grupo",
-    "Aproximación",
+    "APROXIMACIÓN EN COCHE",
     "Pasos del recorrido",
     "Incluye",
     "Qué llevar",
