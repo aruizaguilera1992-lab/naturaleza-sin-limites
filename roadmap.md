@@ -279,3 +279,4 @@
 - [x] Maquetar «En detalle» con lo esencial resaltado
 - [x] Eliminar el dato «Actividad efectiva» de la ficha del calendario
 - [x] Quitar el recuadro anidado de cada característica en «En detalle»
+- [x] Duración de la ficha del calendario: mostrar la de la ficha técnica del catálogo

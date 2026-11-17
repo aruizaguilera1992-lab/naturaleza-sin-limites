@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activityProfiles, type ActivityProfile } from "./activityProfiles";
+import { activityProfiles, BRING_BY_CATEGORY, PENDING, type ActivityProfile } from "./activityProfiles";
 
 /** Preguntas que la ficha técnica debe poder responder siempre. */
 const KEY_QUESTIONS = [
@@ -78,8 +78,7 @@ describe("preguntas frecuentes de la ficha", () => {
   it("repite el dato de duración de la ficha sin inventarlo", () => {
     const iniciacion = find("espeleologia", "Espeleología de iniciación");
     const text = answer(iniciacion, "¿Cuánto dura la actividad?");
-    expect(text).toContain("Duración total: Consultar disponibilidad");
-    expect(text).not.toMatch(/\d+\s*(h\b|horas)/);
+    expect(text).toContain("Duración total: 1 a 3 horas");
   });
 
   it("refleja la duración real cuando la ficha la tiene", () => {
@@ -108,5 +107,27 @@ describe("preguntas frecuentes de la ficha", () => {
       "ratio de guía se confirma",
     );
     expect(answer(iniciacion, "¿En qué época se puede hacer?")).toContain("Todo el año");
+  });
+});
+
+describe("material que debe traer el cliente", () => {
+  it("cada actividad usa la lista oficial de su disciplina, sin pendientes", () => {
+    for (const profile of activityProfiles) {
+      expect(profile.bring, profile.name).toEqual(BRING_BY_CATEGORY[profile.category]);
+      expect(profile.bring.join(" ")).not.toContain(PENDING);
+    }
+  });
+
+  it("la respuesta «¿Qué tengo que llevar?» enumera el material de la disciplina", () => {
+    const iniciacion = find("espeleologia", "Espeleología de iniciación");
+    const text = answer(iniciacion, "¿Qué tengo que llevar?");
+    expect(text).toContain("Ropa deportiva vieja que pueda ensuciarse");
+    expect(text).toContain("Ropa y calzado de recambio");
+
+    const barranco = activityProfiles.find((p) => p.category === "barranquismo")!;
+    expect(answer(barranco, "¿Qué tengo que llevar?")).toContain("Bañador puesto desde casa");
+
+    const ferrata = activityProfiles.find((p) => p.category === "vias-ferratas")!;
+    expect(answer(ferrata, "¿Qué tengo que llevar?")).toContain("Guantes de ferrata");
   });
 });

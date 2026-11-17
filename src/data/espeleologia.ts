@@ -62,8 +62,8 @@ export const actividadesEspeleologia: ActividadEspeleologia[] = [
     nivel: 'Iniciación',
     nivelLabel: 'Principiante',
     nivelOrden: 1,
-    duracion: PENDIENTE,
-    duracionHoras: 0,
+    duracion: '1 a 3 horas',
+    duracionHoras: 3,
     precio: 'Desde 55 €',
     precioDesde: 55,
     descripcionCorta:

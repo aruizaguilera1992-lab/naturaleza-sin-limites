@@ -7,6 +7,49 @@ import { getActivityMedia } from "@/data/activityMedia";
 
 export const PENDING = "[PENDIENTE DE CONFIRMAR]";
 
+/** Material personal que debe traer cada cliente, según la lista oficial por actividad. */
+export const BRING_BY_CATEGORY: Record<PublicActivityCategory, string[]> = {
+  espeleologia: [
+    "Ropa deportiva vieja que pueda ensuciarse",
+    "Pantalón largo cómodo",
+    "Camiseta transpirable",
+    "Calzado deportivo de montaña o botas con buena suela y agarre",
+    "Calcetines",
+    "Agua",
+    "Algo de comida para después de la actividad",
+    "Ropa y calzado de recambio",
+  ],
+  barranquismo: [
+    "Bañador puesto desde casa",
+    "Calzado deportivo cerrado que pueda mojarse",
+    "Toalla",
+    "Ropa interior y ropa seca de recambio",
+    "Calzado seco para después de la actividad",
+    "Agua",
+    "Algo de comida o snack",
+    "Goma para el pelo, si es necesario",
+  ],
+  "vias-ferratas": [
+    "Ropa deportiva cómoda",
+    "Pantalón corto o largo según climatología",
+    "Calzado de montaña con buena suela y agarre",
+    "Agua suficiente",
+    "Algo de comida o snack energético",
+    "Protección solar",
+    "Mochila pequeña",
+    "Guantes de ferrata (opcionales, si dispone de ellos)",
+  ],
+  escalada: [
+    "Ropa deportiva cómoda y flexible",
+    "Calzado deportivo para la aproximación",
+    "Pies de gato, si dispone de ellos",
+    "Agua",
+    "Algo de comida",
+    "Protección solar",
+    "Mochila pequeña",
+  ],
+};
+
 export type PublicActivityCategory = "barranquismo" | "escalada" | "vias-ferratas" | "espeleologia";
 
 export interface ActivityProfile {
@@ -334,7 +377,7 @@ function fromBarranco(item: Barranco): ActivityProfile {
         ? "No exige experiencia previa "
         : `Sí o experiencia equivalente; nivel ${item.nivelExperiencia}`,
     included,
-    bring: [PENDING],
+    bring: BRING_BY_CATEGORY.barranquismo,
     meetingPoint: PENDING,
     insurancePermits: [
       `Seguro y acreditación profesional: ${included.some((v) => /seguro/i.test(v)) ? "incluido según catálogo; documentación concreta " + PENDING : PENDING}`,
@@ -388,7 +431,7 @@ function fromCrag(item: Crag): ActivityProfile {
       ? "Sí; nivel concreto sujeto a valoración"
       : "No exige experiencia previa ",
     included: item.incluye.length ? item.incluye : [PENDING],
-    bring: [PENDING],
+    bring: BRING_BY_CATEGORY.escalada,
     meetingPoint: PENDING,
     insurancePermits: [`Seguro, permisos y acreditaciones: ${PENDING}`],
     weatherPolicy: PENDING,
@@ -440,7 +483,7 @@ function fromFerrata(item: Ferrata): ActivityProfile {
       ? "Sí; nivel concreto sujeto a valoración"
       : "No exige experiencia previa ",
     included: item.incluye.length ? item.incluye : [PENDING],
-    bring: [PENDING],
+    bring: BRING_BY_CATEGORY["vias-ferratas"],
     meetingPoint: PENDING,
     insurancePermits: [
       `Reserva o permiso: ${item.reservaObligatoria ? "obligatorio; trámite concreto " + PENDING : PENDING}`,
@@ -488,7 +531,7 @@ function fromCave(item: ActividadEspeleologia): ActivityProfile {
       ? "Sí; condiciones concretas sujetas a valoración"
       : "No exige experiencia previa ",
     included: item.incluye,
-    bring: [PENDING],
+    bring: BRING_BY_CATEGORY.espeleologia,
     meetingPoint: PENDING,
     insurancePermits: [`Seguro, permisos y acreditaciones: ${PENDING}`],
     weatherPolicy: PENDING,
