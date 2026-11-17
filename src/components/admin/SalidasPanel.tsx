@@ -3,6 +3,7 @@ import { Lock, Users } from 'lucide-react';
 import { EventsPanel } from '@/components/admin/EventsPanel';
 import { ActivitySheetsPanel, type SheetContact } from '@/components/admin/sheets/ActivitySheetsPanel';
 import { useAdminCatalog } from '@/lib/adminCatalog';
+import type { SheetRequestPrefill } from '@/lib/activitySheets';
 
 type Mode = 'abierto' | 'privado';
 const MODES: { id: Mode; label: string; hint: string; icon: typeof Users }[] = [
@@ -11,10 +12,11 @@ const MODES: { id: Mode; label: string; hint: string; icon: typeof Users }[] = [
 ];
 
 /** Salidas unificadas: grupo abierto (calendario) y grupo privado (ficha con enlace). Ambos se mantienen montados. */
-export function SalidasPanel({ contacts, focusSheetId, onOpenBooking }: { contacts: SheetContact[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
+export function SalidasPanel({ contacts, focusSheetId, onOpenBooking, prefill }: { prefill?: SheetRequestPrefill | null; contacts: SheetContact[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
   const { items: catalog } = useAdminCatalog();
-  const [mode, setMode] = useState<Mode>(focusSheetId ? 'privado' : 'abierto');
+  const [mode, setMode] = useState<Mode>(focusSheetId || prefill ? 'privado' : 'abierto');
   useEffect(() => { if (focusSheetId) setMode('privado'); }, [focusSheetId]);
+  useEffect(() => { if (prefill) setMode('privado'); }, [prefill]);
   return (
     <div className="space-y-5">
       <div role="radiogroup" aria-label="Tipo de salida" className="grid gap-3 sm:grid-cols-2">
@@ -27,7 +29,7 @@ export function SalidasPanel({ contacts, focusSheetId, onOpenBooking }: { contac
         ))}
       </div>
       <div className={mode === 'abierto' ? '' : 'hidden'}><EventsPanel /></div>
-      <div className={mode === 'privado' ? '' : 'hidden'}><ActivitySheetsPanel contacts={contacts} catalog={catalog} focusSheetId={focusSheetId} onOpenBooking={onOpenBooking} /></div>
+      <div className={mode === 'privado' ? '' : 'hidden'}><ActivitySheetsPanel contacts={contacts} catalog={catalog} focusSheetId={focusSheetId} prefill={prefill} onOpenBooking={onOpenBooking} /></div>
     </div>
   );
 }
