@@ -266,3 +266,6 @@
 - [x] Maquetar la información de la ficha para lectura fácil (párrafos y listas)
 - [x] Añadir la fotografía y el punto de encuentro a la ficha del calendario
 - [x] Colocar los botones Anterior/Siguiente en los laterales de la ficha
+- [x] Maquetar «En detalle» con lo esencial resaltado
+- [x] Eliminar el dato «Actividad efectiva» de la ficha del calendario
+- [x] Quitar el recuadro anidado de cada característica en «En detalle»

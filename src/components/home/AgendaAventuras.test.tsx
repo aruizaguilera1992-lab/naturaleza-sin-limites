@@ -124,7 +124,6 @@ it("opens the full technical sheet and offers booking from every slide", async (
     "Condición física",
     "Punto de encuentro",
     "Duración total",
-    "Actividad efectiva",
     "Temporada",
     "Grupo",
     "Ratio guía",

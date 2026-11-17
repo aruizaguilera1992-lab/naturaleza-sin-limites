@@ -19,7 +19,6 @@ import {
   PackageCheck,
   ShieldCheck,
   Sparkles,
-  Timer,
   UserCheck,
   Users,
   Waves,
@@ -343,6 +342,78 @@ function Description({ blocks, labels = [] }: { blocks: DescBlock[]; labels?: st
   );
 }
 
+/**
+ * Diapositiva «En detalle»: el párrafo principal va resaltado y las
+ * características se maquetan en rejilla con sus títulos en negrita.
+ */
+function Detalle({ blocks }: { blocks: DescBlock[] }) {
+  if (blocks.length === 0) return null;
+  let featuredUsed = false;
+  return (
+    <div className="space-y-1.5">
+      {blocks.map((b, i) => {
+        if (b.kind === "text") {
+          const featured = !featuredUsed;
+          featuredUsed = true;
+          return featured ? (
+            <section
+              key={`text-${i}`}
+              className="min-w-0 rounded-2xl border border-primary/25 border-l-2 border-l-primary bg-primary/5 p-2.5 sm:p-3"
+            >
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+                Lo esencial
+              </p>
+              <p className="mt-1 max-w-[80ch] text-[13px] font-medium leading-relaxed text-foreground sm:text-sm">
+                {b.text}
+              </p>
+            </section>
+          ) : (
+            <section
+              key={`text-${i}`}
+              className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2 sm:p-2.5"
+            >
+              <p className="max-w-[80ch] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
+                {b.text}
+              </p>
+            </section>
+          );
+        }
+        return (
+          <section
+            key={`list-${i}`}
+            className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2 sm:p-3"
+          >
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+              {b.label ?? "Características"}
+            </p>
+            {b.intro ? (
+              <p className="mt-0.5 max-w-[80ch] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
+                {b.intro}
+              </p>
+            ) : null}
+            <ul className="mt-1.5 grid gap-1.5 sm:grid-cols-2">
+              {b.items.map((it, j) => (
+                <li
+                  key={`${it.title}-${j}`}
+                  className="flex gap-1.5 text-[12px] leading-snug text-muted-foreground sm:text-[13px]"
+                >
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
+                  <span className="min-w-0">
+                    {it.title ? (
+                      <b className="font-semibold text-foreground">{it.title}. </b>
+                    ) : null}
+                    {it.body}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Punto de encuentro visible, con acceso directo a Google Maps y Apple Maps. */
 function MeetingSpot({ text }: { text: string }) {
   const target = useMeetingPointTarget(text);
@@ -418,12 +489,11 @@ export function EventTechSheet({
     ...(listShown ? [listShown] : []),
   ];
   const extraParas = desc.paragraphs.slice(1);
-  const descRest: DescBlock[] = listRest
-    ? [
-        { ...listRest, intro: extraParas[0] },
-        ...extraParas.slice(1).map((t) => ({ kind: "text", text: t }) as DescBlock),
-      ]
-    : extraParas.map((t) => ({ kind: "text", text: t }) as DescBlock);
+  // Primero los párrafos (el principal va resaltado) y al final las características.
+  const descRest: DescBlock[] = [
+    ...extraParas.map((t) => ({ kind: "text", text: t }) as DescBlock),
+    ...(listRest ? [listRest] : []),
+  ];
 
   /* ---- Diapositivas: se arman según la pantalla y los datos que existen ---- */
   const faqGroups = chunkEven(sheet.faqs, wide ? FAQ_PER_SLIDE.wide : FAQ_PER_SLIDE.compact);
@@ -506,7 +576,7 @@ export function EventTechSheet({
 
     meeting: <MeetingSpot text={sheet.meetingPoint} />,
 
-    detalle: <Description blocks={descRest} />,
+    detalle: <Detalle blocks={descRest} />,
 
     highlights:
       sheet.highlights.length > 0 ? (
@@ -560,8 +630,7 @@ export function EventTechSheet({
     salidaTiles: (
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         <Stat icon={Clock} label="Duración total" value={sheet.duration || "—"} />
-        <Stat icon={Timer} label="Actividad efectiva" value={sheet.effectiveDuration || "—"} />
-        <Stat icon={CalendarRange} label="Temporada" value={sheet.season || "—"} className="col-span-2" />
+        <Stat icon={CalendarRange} label="Temporada" value={sheet.season || "—"} />
         <Stat icon={Users} label="Grupo" value={<span className="text-[13px]">{sheet.group || "—"}</span>} />
         <Stat
           icon={UserCheck}
