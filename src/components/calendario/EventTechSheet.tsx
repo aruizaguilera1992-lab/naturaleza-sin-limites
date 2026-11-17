@@ -650,7 +650,7 @@ export function EventTechSheet({
           />
           <Stat
             icon={Compass}
-            label="Aproximación"
+            label="APROXIMACIÓN EN COCHE"
             value={<span className="text-[13px]">{sheet.approachReturn || "—"}</span>}
           />
         </div>
