@@ -124,7 +124,7 @@ function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: 
         <Button variant="hero" disabled={busy} onClick={save}><Save className="mr-1 h-4 w-4" />Guardar</Button>
         {onConfigure && <>
           <Button variant="outline" disabled={busy} onClick={() => onConfigure({ ...item, ...d, photos }, 'privado')}><Lock className="mr-1 h-4 w-4" />Crear salida privada</Button>
-          {item.discipline !== 'espeleologia' && !item.reference && <Button variant="outline" disabled={busy} onClick={() => onConfigure({ ...item, ...d, photos }, 'abierto')}><Users className="mr-1 h-4 w-4" />Crear salida en grupo abierto</Button>}
+          {!item.reference && <Button variant="outline" disabled={busy} onClick={() => onConfigure({ ...item, ...d, photos }, 'abierto')}><Users className="mr-1 h-4 w-4" />Crear salida en grupo abierto</Button>}
         </>}
         {item.edited && <Button variant="ghost" disabled={busy} onClick={restore}><RotateCcw className="mr-1 h-4 w-4" />Restaurar original</Button>}
       </div>

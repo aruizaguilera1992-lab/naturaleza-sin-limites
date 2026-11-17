@@ -81,7 +81,7 @@ const ATTENDEE_STATE: Record<string, string> = {
 const DEFAULT_GUIDE = "Antonio Ruiz Aguilera";
 
 const sellableActivities = activityProfiles
-  .filter((profile) => isSellable(profile) && profile.category !== "espeleologia")
+  .filter((profile) => isSellable(profile))
   .map((profile) => ({
     key: `${profile.category}|${profile.slug}`,
     label: `${profile.categoryLabel} · ${profile.name} (${profile.zone})`,

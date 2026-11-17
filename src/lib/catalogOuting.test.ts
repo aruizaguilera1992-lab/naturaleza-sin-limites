@@ -8,3 +8,6 @@ describe('openGroupKeyFor', () => {
   it('does not map a partial canyon section', () => expect(openGroupKeyFor({ key: 'barranquismo:zarzalones-inferior', discipline: 'barranquismo' }, keys)).toBeNull());
   it('never maps documentary references', () => expect(openGroupKeyFor({ key: 'barranquismo:guadalmina', discipline: 'barranquismo', reference: true }, keys)).toBeNull());
 });
+describe('espeleología open groups', () => {
+  it('maps a cave level to its espeleologia product', () => expect(openGroupKeyFor({ key: 'espeleologia:iniciacion', discipline: 'espeleologia' }, ['espeleologia|iniciacion'])).toBe('espeleologia|iniciacion'));
+});

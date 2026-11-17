@@ -10,6 +10,9 @@ export interface ActivityPriceEntry {
 export const DEPOSIT_RATE = 0.3;
 
 export const ACTIVITY_PRICES: Record<string, ActivityPriceEntry> = {
+  "espeleologia/iniciacion": { name: "Espeleología de iniciación", category: "Espeleología", pricePerPerson: 55 },
+  "espeleologia/progresion-vertical": { name: "Progresión vertical en cavidad", category: "Espeleología", pricePerPerson: 55 },
+  "espeleologia/exploracion": { name: "Salida de exploración", category: "Espeleología", pricePerPerson: 55 },
   "barranquismo/guadalmina": { name: "Río Guadalmina", category: "Barranquismo", pricePerPerson: 35 },
   "barranquismo/sima-diablo": { name: "Sima del Diablo", category: "Barranquismo", pricePerPerson: 40 },
   "barranquismo/barranco-blanco": { name: "Barranco Blanco", category: "Barranquismo", pricePerPerson: 30 },

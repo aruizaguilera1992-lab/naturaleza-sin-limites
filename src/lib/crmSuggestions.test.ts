@@ -23,7 +23,7 @@ describe("crmSuggestions", () => {
   });
 
   it("sin precio muestra Precio a consultar", () => {
-    const cave = activityProfiles.filter((p) => p.category === "espeleologia" && !p.priceValue);
+    const cave = activityProfiles.filter((p) => p.category === "espeleologia").map((p) => ({ ...p, priceValue: undefined, price: NO_PRICE }));
     expect(buildProposal("Ana", cave)).toContain(NO_PRICE);
   });
 });

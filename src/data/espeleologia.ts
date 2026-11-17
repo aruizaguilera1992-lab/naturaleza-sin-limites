@@ -64,8 +64,8 @@ export const actividadesEspeleologia: ActividadEspeleologia[] = [
     nivelOrden: 1,
     duracion: PENDIENTE,
     duracionHoras: 0,
-    precio: PENDIENTE,
-    precioDesde: 0,
+    precio: 'Desde 55 €',
+    precioDesde: 55,
     descripcionCorta:
       'Primera toma de contacto con el mundo subterráneo: desplazamiento por galerías, uso del frontal y técnica básica de progresión.',
     descripcionLarga:
@@ -104,8 +104,8 @@ export const actividadesEspeleologia: ActividadEspeleologia[] = [
     nivelOrden: 3,
     duracion: PENDIENTE,
     duracionHoras: 0,
-    precio: PENDIENTE,
-    precioDesde: 0,
+    precio: 'Desde 55 €',
+    precioDesde: 55,
     descripcionCorta:
       'Técnica de cuerda bajo tierra: descenso, ascenso, cambios de aparato y paso de fraccionamientos con acompañamiento técnico.',
     descripcionLarga:
@@ -144,8 +144,8 @@ export const actividadesEspeleologia: ActividadEspeleologia[] = [
     nivelOrden: 4,
     duracion: PENDIENTE,
     duracionHoras: 0,
-    precio: PENDIENTE,
-    precioDesde: 0,
+    precio: 'Desde 55 €',
+    precioDesde: 55,
     descripcionCorta:
       'Jornada larga de recorrido subterráneo para grupos con experiencia, con autonomía técnica y trabajo de equipo.',
     descripcionLarga:
