@@ -59,7 +59,7 @@ export const categoryColors: Record<BlogCategory, string> = {
 
 const defaultAuthor: BlogAuthor = {
   name: "Antonio Ruiz Aguilera",
-  avatar: "/placeholder.svg",
+  avatar: "/images/avatar-antonio.webp",
   bio: "Fundador de Naturaleza Sin Límites y Técnico Deportivo TD2 en Espeleología. Comparte experiencias de aventura y formación con un enfoque cercano y responsable.",
   socialLinks: {
     instagram: "https://instagram.com/naturaleza.sinlimites",
