@@ -536,7 +536,7 @@ export function EventTechSheet({
       key: "salida",
       eyebrow: "Logística e itinerario",
       title: "La salida",
-      blocks: ["salidaTiles", "steps"],
+      blocks: ["salidaSplit"],
     },
     { key: "material", eyebrow: "Material", title: "Incluye y qué llevar", blocks: ["prepGrid"] },
     {
@@ -637,25 +637,26 @@ export function EventTechSheet({
       </p>
     ),
 
-    salidaTiles: (
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        <Stat icon={Clock} label="Duración total" value={sheet.duration || "—"} />
-        <Stat icon={CalendarRange} label="Temporada" value={sheet.season || "—"} />
-        <Stat
-          icon={Users}
-          label="Grupo"
-          value={<span className="text-[13px]">{sheet.group || "—"}</span>}
-          hint={guideHint(sheet.group, sheet.guideRatio)}
-        />
-        <Stat
-          icon={Compass}
-          label="Aproximación"
-          value={<span className="text-[13px]">{sheet.approachReturn || "—"}</span>}
-        />
+    salidaSplit: (
+      <div className="grid min-w-0 gap-2 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        <div className="grid min-w-0 grid-cols-2 content-start gap-2">
+          <Stat icon={Clock} label="Duración total" value={sheet.duration || "—"} />
+          <Stat icon={CalendarRange} label="Temporada" value={sheet.season || "—"} />
+          <Stat
+            icon={Users}
+            label="Grupo"
+            value={<span className="text-[13px]">{sheet.group || "—"}</span>}
+            hint={guideHint(sheet.group, sheet.guideRatio)}
+          />
+          <Stat
+            icon={Compass}
+            label="Aproximación"
+            value={<span className="text-[13px]">{sheet.approachReturn || "—"}</span>}
+          />
+        </div>
+        <Checklist icon={Compass} title="Pasos del recorrido" items={sheet.itinerary} numbered />
       </div>
     ),
-
-    steps: <Checklist icon={Compass} title="Pasos del recorrido" items={sheet.itinerary} numbered />,
 
     prepGrid: (
       <div className="grid gap-3 sm:grid-cols-2">

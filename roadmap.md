@@ -8,6 +8,7 @@
 - [x] Unificar los datos duplicados «Grupo» y «Ratio guía» en un solo dato de la ficha.
 - [x] Eliminar la sección «Elementos técnicos» de la diapositiva, porque repite lo de la portada.
 - [x] En los grupos abiertos, permitir reservar para 1 persona.
+- [ ] En «La salida», poner las 4 casillas a la izquierda y los pasos del recorrido a la derecha.
 
 ## Ficha técnica de salidas (17/11/2026)
 - [x] «Me apunto» en la tarjeta de la agenda; la ficha técnica se abre al pulsar y muestra el botón de reserva.
