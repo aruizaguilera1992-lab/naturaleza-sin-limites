@@ -18,7 +18,7 @@ const pathways = [
     id: 'adventure',
     eyebrow: 'Experiencias',
     title: 'Quiero vivir una experiencia de aventura',
-    image: media.canyoning,
+    image: media.espeleologiaHero,
     benefits: [
       { icon: Award, label: 'Guía titulado', detail: 'Formación TD2 y criterio en terreno' },
       { icon: ShieldCheck, label: 'Material y seguros', detail: 'Equipo técnico, accidentes y RC' },
@@ -33,7 +33,7 @@ const pathways = [
     id: 'training',
     eyebrow: 'Rendimiento',
     title: 'Quiero mejorar mi rendimiento en montaña',
-    image: media.functionalTraining,
+    image: media.ropeDetail,
     benefits: [
       { icon: SlidersHorizontal, label: 'Plan a tu medida', detail: 'Según disciplina, nivel y tiempo' },
       { icon: Dumbbell, label: 'Fuerza y resistencia', detail: 'En gimnasio, casa o parque' },

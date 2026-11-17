@@ -9,7 +9,6 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { BlogHero } from '@/components/blog/BlogHero';
 import { BlogCard } from '@/components/blog/BlogCard';
 import { BlogFilters } from '@/components/blog/BlogFilters';
-import { BlogSidebar } from '@/components/blog/BlogSidebar';
 import { YoutubeVideosSection } from '@/components/blog/YoutubeVideosSection';
 import { Button } from '@/components/ui/button';
 import { BlogCategory } from '@/data/blogPosts';
@@ -90,9 +89,7 @@ export default function Blog() {
                 onCategoryChange={handleCategoryChange}
               />
 
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
-                {/* Main Content */}
-                <div className="lg:col-span-3">
+              <div>
                   {isError && <p role="alert" className="mb-4 text-muted-foreground">No se han podido cargar los artículos nuevos. <Button variant="link" onClick={() => refetch()}>Reintentar</Button></p>}
                   {searchQuery && (
                     <div className="mb-6">
@@ -104,7 +101,7 @@ export default function Blog() {
                   )}
 
                   {filteredPosts.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-start gap-6 sm:gap-8">
                       {filteredPosts.map((post, index) => (
                         <BlogCard key={post.id} post={post} index={index} />
                       ))}
@@ -126,18 +123,6 @@ export default function Blog() {
                       </Button>
                     </div>
                   )}
-                </div>
-
-                {/* Sidebar */}
-                <div className="lg:col-span-1">
-                  <div className="sticky top-24">
-                    <BlogSidebar
-                      posts={blogPosts}
-                      onSearch={handleSearch}
-                      onCategoryClick={handleCategoryChange}
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </section>
