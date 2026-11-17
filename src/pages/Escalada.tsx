@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, Clock, MessageCircle, UserCheck } from "lucide-react";
+import { CheckCircle2, MessageCircle, UserCheck } from "lucide-react";
 import { Seo } from "@/components/Seo";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -42,7 +42,6 @@ export default function Escalada() {
                 {initiation.title}
               </h1>
               <div className="mt-6 flex flex-wrap gap-3 text-foreground/85">
-                <span className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm"><Clock className="h-4 w-4 text-primary" />{initiation.duration}</span>
                 <span className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm"><UserCheck className="h-4 w-4 text-primary" />{initiation.access}</span>
               </div>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
