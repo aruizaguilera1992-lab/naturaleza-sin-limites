@@ -145,7 +145,7 @@ function buildEditorial(
     `Aproximación al inicio del recorrido: ${profile.approachReturn}`,
     `Desarrollo de la actividad con progresión adaptada al grupo.`,
     `Finalización del recorrido, retorno y recogida del material.`,
-    `Cierre de la actividad y recomendaciones posteriores del guía.`,
+    `Cierre de la actividad y puesta en común.`,
   ];
 
   /** Campo sin dato verificado: formulación honesta en vez del placeholder interno. */
