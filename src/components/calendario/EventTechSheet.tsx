@@ -37,6 +37,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getActivityCatalogImage } from "@/data/activityProfiles";
+import { MeetingPointActions, MeetingPointLabel } from "@/components/shared/MeetingPoint";
+import { useMeetingPointTarget } from "@/hooks/useMeetingPointTarget";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
 import { useCatalogForOuting } from "@/hooks/useCatalogForOuting";
 import { mergeOutingSheet } from "@/lib/catalogSync";
@@ -341,6 +343,28 @@ function Description({ blocks, labels = [] }: { blocks: DescBlock[]; labels?: st
   );
 }
 
+/** Punto de encuentro visible, con acceso directo a Google Maps y Apple Maps. */
+function MeetingSpot({ text }: { text: string }) {
+  const target = useMeetingPointTarget(text);
+  if (!text.trim()) return null;
+  return (
+    <section className="min-w-0 rounded-2xl border border-primary/25 bg-primary/5 p-2 sm:p-2.5">
+      <p className="flex items-start gap-1.5">
+        <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+        <span className="min-w-0">
+          <span className="block text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+            Punto de encuentro
+          </span>
+          <span className="mt-0.5 block text-[12px] font-semibold leading-snug text-foreground sm:text-[13px]">
+            <MeetingPointLabel text={text} target={target} />
+          </span>
+        </span>
+      </p>
+      <MeetingPointActions text={text} target={target} className="mt-1.5 flex flex-wrap gap-1.5 pl-5" />
+    </section>
+  );
+}
+
 export function EventTechSheet({
   event,
   bookingUrl,
@@ -374,8 +398,8 @@ export function EventTechSheet({
   });
 
   /* ---- Descripción: tres bloques en portada y el resto en «Con detalle» ---- */
-  const desc = readDescription(sheet.description, wide ? 280 : 240);
-  const listMax = wide ? 4 : 2;
+  const desc = readDescription(sheet.description, wide ? 200 : 200);
+  const listMax = wide ? 2 : 2;
   const listShown = desc.list
     ? { ...desc.list, items: desc.list.items.slice(0, listMax) }
     : undefined;
@@ -403,7 +427,7 @@ export function EventTechSheet({
       key: "portada",
       eyebrow: "Salida programada",
       title: "Ficha de la actividad",
-      blocks: ["stats", "descripcion"],
+      blocks: ["stats", "meeting", "descripcion"],
     },
     ...(descRest.length > 0
       ? [
@@ -421,7 +445,7 @@ export function EventTechSheet({
       title: "Nivel y condiciones",
       blocks: ["nivelBig", "experience", "highlights"],
     },
-    { key: "salida", eyebrow: "Logística", title: "La salida", blocks: ["salidaTiles"] },
+    { key: "salida", eyebrow: "Logística", title: "La salida", blocks: ["meeting", "salidaTiles"] },
     {
       key: "recorrido",
       eyebrow: "Itinerario",
@@ -473,6 +497,8 @@ export function EventTechSheet({
     ),
 
     descripcion: <Description blocks={descShown} labels={DESC_LABELS} />,
+
+    meeting: <MeetingSpot text={sheet.meetingPoint} />,
 
     detalle: <Description blocks={descRest} />,
 
@@ -527,12 +553,6 @@ export function EventTechSheet({
 
     salidaTiles: (
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        <Stat
-          icon={MapPin}
-          label="Punto de encuentro"
-          value={<span className="text-[13px] sm:text-lg">{sheet.meetingPoint || "—"}</span>}
-          className="col-span-2"
-        />
         <Stat icon={Clock} label="Duración total" value={sheet.duration || "—"} />
         <Stat icon={Timer} label="Actividad efectiva" value={sheet.effectiveDuration || "—"} />
         <Stat icon={CalendarRange} label="Temporada" value={sheet.season || "—"} className="col-span-2" />
@@ -618,19 +638,19 @@ export function EventTechSheet({
         )}
       </DialogTrigger>
       <DialogContent className="w-[min(96vw,920px)] max-w-none gap-0 overflow-hidden rounded-none p-0 sm:rounded-2xl">
-        <div className="flex max-h-[96vh] flex-col">
+        <div className="relative flex max-h-[96vh] flex-col">
           {/* Portada fija: foto, disciplina y título */}
-          <div className="relative shrink-0 overflow-hidden border-b border-border">
+          <div className="relative flex min-h-[124px] shrink-0 items-end overflow-hidden border-b border-border sm:min-h-[150px]">
             <div className="absolute inset-0 bg-gradient-to-br from-secondary via-background to-secondary/60" />
             {image ? (
               <img
                 src={image}
                 alt={p?.imageAlt ?? sheet.title}
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover object-center"
               />
             ) : null}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/45" />
-            <div className="relative px-4 pb-2 pt-6 sm:px-6 sm:pb-3 sm:pt-7">
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
+            <div className="relative w-full px-4 pb-2 pt-6 sm:px-6 sm:pb-3 sm:pt-7">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary sm:px-2.5 sm:text-[10px]">
                 <Icon className="h-3 w-3" aria-hidden="true" />
                 {p?.categoryLabel ?? event.category}
@@ -658,7 +678,7 @@ export function EventTechSheet({
           <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div
               key={current.key}
-              className="animate-in fade-in-0 slide-in-from-right-2 space-y-1.5 px-4 py-2 duration-300 sm:space-y-2 sm:px-6 sm:py-4"
+              className="animate-in fade-in-0 slide-in-from-right-2 space-y-1.5 px-10 py-2 duration-300 sm:space-y-1.5 sm:px-11 sm:py-2.5"
             >
               <div className="flex items-end justify-between gap-3">
                 <div className="min-w-0">
@@ -678,6 +698,28 @@ export function EventTechSheet({
               ))}
             </div>
           </div>
+
+          {/* Avance y retroceso en los laterales de la ficha */}
+          {page > 0 && (
+            <button
+              type="button"
+              onClick={() => setPage((v) => Math.max(0, v - 1))}
+              aria-label="Diapositiva anterior"
+              className="absolute left-1 top-1/2 z-20 -translate-y-1/2 rounded-full border border-border/60 bg-card/85 p-1.5 text-foreground shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-primary/60 active:scale-95 sm:left-2"
+            >
+              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+            </button>
+          )}
+          {page < last && (
+            <button
+              type="button"
+              onClick={() => setPage((v) => Math.min(last, v + 1))}
+              aria-label="Diapositiva siguiente"
+              className="absolute right-1 top-1/2 z-20 -translate-y-1/2 rounded-full border border-border/60 bg-card/85 p-1.5 text-foreground shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-primary/60 active:scale-95 sm:right-2"
+            >
+              <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+            </button>
+          )}
 
           {/* Pie: datos de decisión + navegación entre diapositivas */}
           <div className="flex shrink-0 flex-col gap-1.5 border-t border-border bg-background px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
@@ -707,28 +749,6 @@ export function EventTechSheet({
                 ))}
               </div>
               <div className="flex flex-wrap items-center justify-end gap-2">
-                {page > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setPage((v) => Math.max(0, v - 1))}
-                    className="transition-all duration-300 active:scale-95"
-                  >
-                    <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-                    Anterior
-                  </Button>
-                )}
-                {page < last && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage((v) => Math.min(last, v + 1))}
-                    className="transition-all duration-300 active:scale-95"
-                  >
-                    Siguiente
-                    <ChevronRight className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                )}
                 {/* La reserva está disponible desde cualquier diapositiva. */}
                 {event.isFull ? (
                   <Button size="sm" disabled>

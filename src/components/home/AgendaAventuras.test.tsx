@@ -107,7 +107,7 @@ it("opens the full technical sheet and offers booking from every slide", async (
   for (let i = 0; i < 25; i++) {
     seen.push(sheet.textContent ?? "");
     bookingHrefs.push(within(sheet).queryByRole("link", { name: /Reservar plaza/ })?.getAttribute("href") ?? null);
-    const next = within(sheet).queryByRole("button", { name: /Siguiente/ });
+    const next = within(sheet).queryByRole("button", { name: /Diapositiva siguiente/ });
     if (!next) break;
     fireEvent.click(next);
   }
@@ -149,4 +149,28 @@ it("opens the full technical sheet and offers booking from every slide", async (
   expect(bookingHrefs.length).toBeGreaterThan(1);
   expect(bookingHrefs.every((href) => href === BOOKING_HREF)).toBe(true);
   expect(within(sheet).getByText("Dudas frecuentes")).toBeInTheDocument();
+});
+
+it("shows the meeting point with map links and side navigation arrows", async () => {
+  renderAgenda();
+  fireEvent.click(
+    screen.getByRole("button", {
+      name: "Me apunto a Espeleología de iniciación: Travesía Cueva de la Higuera",
+    }),
+  );
+  const sheet = await screen.findByRole("dialog");
+
+  // El punto de encuentro se ve en la portada y abre en los dos mapas.
+  expect(within(sheet).getByText("Punto de encuentro")).toBeInTheDocument();
+  expect(within(sheet).getByText("Archidona, Málaga")).toBeInTheDocument();
+  const g = within(sheet).getByRole("link", { name: /Abrir en Google Maps/ });
+  expect(g).toHaveAttribute("href", expect.stringContaining("google.com/maps"));
+  const a = within(sheet).getByRole("link", { name: /Abrir en Apple Maps/ });
+  expect(a).toHaveAttribute("href", expect.stringContaining("maps.apple.com"));
+
+  // Avanzar y retroceder están en los laterales de la ficha.
+  expect(within(sheet).getByRole("button", { name: "Diapositiva siguiente" })).toBeInTheDocument();
+  expect(within(sheet).queryByRole("button", { name: "Diapositiva anterior" })).toBeNull();
+  fireEvent.click(within(sheet).getByRole("button", { name: "Diapositiva siguiente" }));
+  expect(within(sheet).getByRole("button", { name: "Diapositiva anterior" })).toBeInTheDocument();
 });
