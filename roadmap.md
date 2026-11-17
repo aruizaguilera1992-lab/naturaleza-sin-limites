@@ -259,3 +259,7 @@
 - [x] Retrato de Contacto recolocado en tablet para que no tape la cara (márgenes negativos + título text-6xl en md-lg)
 - [x] Borrar salidas de grupo abierto desde Salidas (RPC admin_delete_activity_event; rechaza si hay reservas activas)
 - [x] Cambiar imágenes de tarjetas en Contacto (ContactPathsSection)
+
+- [ ] Reserva disponible desde todas las diapositivas de la ficha técnica
+- [ ] Actualizar las preguntas frecuentes de cada actividad según los detalles de su ficha del catálogo
+- [ ] Descripción maquetada en la primera diapositiva y mínimo de diapositivas en la ficha

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, expect, it, vi } from "vitest";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
@@ -84,7 +84,7 @@ it("does not offer booking directly on the agenda card", () => {
   expect(screen.getByText("55 €")).toBeInTheDocument();
 });
 
-it("opens the full technical sheet on click and only then offers booking", async () => {
+it("opens the full technical sheet and offers booking from every slide", async () => {
   renderAgenda();
   fireEvent.click(
     screen.getByRole("button", {
@@ -93,12 +93,20 @@ it("opens the full technical sheet on click and only then offers booking", async
   );
   const sheet = await screen.findByRole("dialog");
   expect(sheet).toBeInTheDocument();
-  expect(within(sheet).queryByRole("link", { name: /Reservar plaza/ })).toBeNull();
+
+  // La reserva ya se ofrece en la primera diapositiva.
+  const BOOKING_HREF = "/reservar/espeleologia/cueva-de-la-higuera?evento=evt-1";
+  expect(within(sheet).getByRole("link", { name: /Reservar plaza/ })).toHaveAttribute(
+    "href",
+    BOOKING_HREF,
+  );
 
   // Se recorre la ficha diapositiva a diapositiva y se anota lo que muestra cada una.
   const seen: string[] = [];
+  const bookingHrefs: (string | null)[] = [];
   for (let i = 0; i < 25; i++) {
     seen.push(sheet.textContent ?? "");
+    bookingHrefs.push(within(sheet).queryByRole("link", { name: /Reservar plaza/ })?.getAttribute("href") ?? null);
     const next = within(sheet).queryByRole("button", { name: /Siguiente/ });
     if (!next) break;
     fireEvent.click(next);
@@ -137,11 +145,8 @@ it("opens the full technical sheet on click and only then offers booking", async
     expect(all).toContain(dato);
   }
 
-  // La reserva solo se ofrece al final del recorrido.
+  // La reserva se ofrece en todas las diapositivas, siempre con el mismo destino.
+  expect(bookingHrefs.length).toBeGreaterThan(1);
+  expect(bookingHrefs.every((href) => href === BOOKING_HREF)).toBe(true);
   expect(within(sheet).getByText("Dudas frecuentes")).toBeInTheDocument();
-  await waitFor(() =>
-    expect(
-      within(sheet).getByRole("link", { name: /Reservar plaza/ }),
-    ).toHaveAttribute("href", "/reservar/espeleologia/cueva-de-la-higuera?evento=evt-1"),
-  );
 });

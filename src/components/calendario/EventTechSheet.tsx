@@ -52,8 +52,11 @@ const CATEGORY_ICON: Record<string, LucideIcon> = {
 
 const FITNESS: Record<string, number> = { básica: 1, basica: 1, media: 2, alta: 3 };
 const LEVEL_NAME = ["Iniciación", "Intermedio", "Avanzado"];
-/** Preguntas por diapositiva: caben enteras sin desplazar. */
-const FAQ_PER_SLIDE = { wide: 4, compact: 2 };
+/** Cuántas preguntas caben por diapositiva en cada formato. */
+const FAQ_PER_SLIDE = { wide: 6, compact: 4 };
+
+/** Etiquetas de los bloques de la descripción en portada. */
+const DESC_LABELS = ["La salida", "Para quién", "A tener en cuenta"];
 
 /** true en pantallas de escritorio: diapositivas con más bloques cada una. */
 function useIsWide() {
@@ -108,18 +111,18 @@ function Stat({
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-col items-center gap-1 rounded-2xl border border-border/60 bg-secondary/40 px-3 py-3 text-center",
+        "flex min-w-0 flex-col items-center gap-0.5 rounded-2xl border border-border/60 bg-secondary/40 px-2 py-2 text-center",
         className,
       )}
     >
-      <Icon className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+      <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </span>
-      <span className="font-heading text-lg font-extrabold leading-tight text-foreground sm:text-2xl">
+      <span className="font-heading text-sm font-extrabold leading-tight text-foreground sm:text-xl">
         {value}
       </span>
-      {hint ? <span className="text-xs text-muted-foreground">{hint}</span> : null}
+      {hint ? <span className="text-[10px] leading-tight text-muted-foreground">{hint}</span> : null}
     </div>
   );
 }
@@ -138,20 +141,23 @@ function Checklist({
 }) {
   if (!items || items.length === 0) return null;
   return (
-    <section className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-3 sm:p-4">
-      <h4 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-foreground">
+    <section className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2.5 sm:p-3">
+      <h4 className="mb-1.5 flex items-center gap-2 font-heading text-[13px] font-bold text-foreground">
         <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
         {title}
       </h4>
-      <ol className="space-y-1.5">
+      <ol className="space-y-1">
         {items.map((item, i) => (
-          <li key={`${item}-${i}`} className="flex items-start gap-2 text-sm text-muted-foreground">
+          <li
+            key={`${item}-${i}`}
+            className="flex items-start gap-2 text-[12px] leading-snug text-muted-foreground"
+          >
             {numbered ? (
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[11px] font-extrabold text-primary">
+              <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-extrabold text-primary">
                 {i + 1}
               </span>
             ) : (
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+              <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
             )}
             <span className="break-words">{item}</span>
           </li>
@@ -165,12 +171,12 @@ function Checklist({
 function Note({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text: string }) {
   if (!text) return null;
   return (
-    <section className="min-w-0 rounded-2xl border border-border/60 bg-secondary/30 p-3 sm:p-4">
-      <h4 className="mb-1 flex items-center gap-2 font-heading text-sm font-bold text-foreground">
+    <section className="min-w-0 rounded-2xl border border-border/60 bg-secondary/30 p-2.5 sm:p-3">
+      <h4 className="mb-1 flex items-center gap-2 font-heading text-[13px] font-bold text-foreground">
         <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
         {title}
       </h4>
-      <p className="text-sm text-muted-foreground">{text}</p>
+      <p className="text-[12px] leading-snug text-muted-foreground">{text}</p>
     </section>
   );
 }
@@ -178,17 +184,73 @@ function Note({ icon: Icon, title, text }: { icon: LucideIcon; title: string; te
 /** Preguntas y respuestas de la actividad. */
 function Faqs({ items }: { items: { question: string; answer: string }[] }) {
   return (
-    <div className="space-y-2">
+    <div
+      className={cn(
+        "space-y-1.5",
+        columns && "grid grid-cols-1 gap-1.5 space-y-0 sm:grid-cols-2",
+      )}
+    >
       {items.map((f, i) => (
-        <div key={`${f.question}-${i}`} className="rounded-xl border border-border/60 bg-card/60 p-2.5">
-          <p className="flex items-start gap-2 font-heading text-[13px] font-bold leading-snug text-foreground">
-            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-extrabold text-primary">
+        <div key={`${f.question}-${i}`} className="rounded-xl border border-border/60 bg-card/60 p-2">
+          <p className="flex items-start gap-1.5 font-heading text-[11px] font-bold leading-snug text-foreground">
+            <span className="mt-0.5 flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[8px] font-extrabold text-primary">
               ?
             </span>
             {f.question}
           </p>
-          <p className="mt-1 pl-6 text-[13px] leading-snug text-muted-foreground">{f.answer}</p>
+          <p className="mt-0.5 pl-4 text-[11px] leading-snug text-muted-foreground">{f.answer}</p>
         </div>
+      ))}
+    </div>
+  );
+}
+
+/** Parte la descripción en bloques de lectura de un tamaño parecido. */
+function packGroups(text: string, maxChars: number): string[][] {
+  const sentences = text
+    .split(/(?<=\.)\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const groups: string[][] = [];
+  let current: string[] = [];
+  let size = 0;
+  for (const s of sentences) {
+    if (current.length && size + s.length > maxChars) {
+      groups.push(current);
+      current = [];
+      size = 0;
+    }
+    current.push(s);
+    size += s.length + 1;
+  }
+  if (current.length) groups.push(current);
+  return groups;
+}
+
+/** Descripción de la ficha, maquetada en bloques cortos y etiquetados. */
+function Description({ groups, labels = [] }: { groups: string[][]; labels?: string[] }) {
+  if (groups.length === 0) return null;
+  return (
+    <div className="space-y-1.5">
+      {groups.map((group, i) => (
+        <section
+          key={`${group[0]}-${i}`}
+          className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2.5 sm:p-3"
+        >
+          {labels[i] ? (
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+              {labels[i]}
+            </p>
+          ) : null}
+          <p
+            className={cn(
+              "mt-0.5 text-[12px] leading-snug text-muted-foreground sm:text-[13px]",
+              i === 0 && "text-foreground",
+            )}
+          >
+            {group.join(" ")}
+          </p>
+        </section>
       ))}
     </div>
   );
@@ -220,101 +282,67 @@ export function EventTechSheet({
     year: "numeric",
   });
   const priceLabel = sheet.price ? `${sheet.price} €` : "Consultar";
+  const dateShort = event.startDate.toLocaleDateString("es-ES", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+
+  /* ---- Descripción: tres bloques en portada y el resto en «Con detalle» ---- */
+  const descGroups = packGroups(sheet.description, wide ? 460 : 380);
+  const descShown = descGroups.slice(0, 3);
+  const descRest = descGroups.slice(3).flat().join(" ");
 
   /* ---- Diapositivas: se arman según la pantalla y los datos que existen ---- */
+  const faqGroups = chunk(sheet.faqs, wide ? FAQ_PER_SLIDE.wide : FAQ_PER_SLIDE.compact);
+
   const slides: Slide[] = [
     {
       key: "portada",
       eyebrow: "Salida programada",
       title: "Ficha de la actividad",
-      blocks: wide ? ["stats", "highlights"] : ["stats"],
+      blocks: wide ? ["stats", "descripcion", "highlights"] : ["stats", "descripcion"],
     },
-  ];
-  if (!wide && sheet.summary)
-    slides.push({
-      key: "resumen",
-      eyebrow: "La salida",
-      title: "En qué consiste",
-      blocks: ["resumen", "highlights"],
-    });
-  slides.push({
-    key: "nivel",
-    eyebrow: "Dificultad",
-    title: "Nivel y condiciones",
-    blocks: ["nivelBig", "experience"],
-  });
-  if (wide) {
-    slides.push({ key: "salida", eyebrow: "Logística", title: "La salida", blocks: ["salidaTiles"] });
-  } else {
-    slides.push({
-      key: "salida-a",
-      eyebrow: "Logística",
-      title: "Dónde y cuándo",
-      blocks: ["salidaA"],
-    });
-    slides.push({
-      key: "salida-b",
-      eyebrow: "Logística",
-      title: "Grupo y acceso",
-      blocks: ["salidaB"],
-    });
-  }
-  slides.push({ key: "recorrido", eyebrow: "Itinerario", title: "Recorrido", blocks: ["steps"] });
-  if (sheet.technicalElements.length > 0)
-    slides.push({
-      key: "elementos",
-      eyebrow: "Técnica",
-      title: "Elementos de la actividad",
-      blocks: ["elements"],
-    });
-  if (wide) {
-    slides.push({
-      key: "material",
-      eyebrow: "Material",
-      title: "Incluye y qué llevar",
-      blocks: ["prepGrid"],
-    });
-  } else {
-    slides.push({ key: "incluye", eyebrow: "Material", title: "Qué incluye", blocks: ["includesOnly"] });
-    slides.push({ key: "llevar", eyebrow: "Material", title: "Qué llevar", blocks: ["bringOnly"] });
-  }
-  if (wide) {
-    slides.push({
+    ...(descRest
+      ? [
+          {
+            key: "detalle",
+            eyebrow: "La actividad",
+            title: "Con detalle",
+            blocks: ["detalle"],
+          },
+        ]
+      : []),
+    {
+      key: "nivel",
+      eyebrow: "Dificultad",
+      title: "Nivel y condiciones",
+      blocks: wide ? ["nivelBig", "experience"] : ["nivelBig", "experience", "highlights"],
+    },
+    { key: "salida", eyebrow: "Logística", title: "La salida", blocks: ["salidaTiles"] },
+    {
+      key: "recorrido",
+      eyebrow: "Itinerario",
+      title: "Recorrido",
+      blocks: sheet.technicalElements.length > 0 ? ["steps", "elements"] : ["steps"],
+    },
+    { key: "material", eyebrow: "Material", title: "Incluye y qué llevar", blocks: ["prepGrid"] },
+    {
       key: "seguridad",
       eyebrow: "Seguridad",
-      title: "Requisitos y seguros",
-      blocks: ["securityGrid"],
-    });
-  } else {
-    slides.push({
-      key: "seguridad",
-      eyebrow: "Seguridad",
-      title: "Requisitos y seguros",
-      blocks: ["securityPanels"],
-    });
-    slides.push({
-      key: "politicas",
-      eyebrow: "Seguridad",
-      title: "Tiempo y cancelación",
-      blocks: ["policies"],
-    });
-  }
-  if (event.rules || event.steps)
-    slides.push({
-      key: "normas",
-      eyebrow: "Participación",
-      title: "Normas y pasos",
-      blocks: ["rules"],
-    });
-  const faqGroups = chunk(sheet.faqs, wide ? FAQ_PER_SLIDE.wide : FAQ_PER_SLIDE.compact);
-  faqGroups.forEach((group, i) =>
-    slides.push({
+      title: "Requisitos, seguros y normas",
+      blocks: wide ? ["securityGrid", "rules"] : ["securityPanels", "policies", "rules"],
+    },
+    ...faqGroups.map((_, i) => ({
       key: `dudas-${i}`,
       eyebrow: "Preguntas",
-      title: faqGroups.length > 1 ? `Dudas frecuentes ${i + 1} de ${faqGroups.length}` : "Dudas frecuentes",
+      title:
+        faqGroups.length > 1
+          ? `Dudas frecuentes ${i + 1} de ${faqGroups.length}`
+          : "Dudas frecuentes",
       blocks: [`dudas-${i}`],
-    }),
-  );
+    })),
+  ];
 
   const last = slides.length - 1;
   const current = slides[Math.min(page, last)];
@@ -326,8 +354,8 @@ export function EventTechSheet({
 
   const BLOCKS: Record<string, ReactNode> = {
     stats: (
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-        <Stat icon={CalendarDays} label="Fecha" value={<span className="capitalize">{dateLabel}</span>} />
+      <div className="grid grid-cols-3 gap-2">
+        <Stat icon={CalendarDays} label="Fecha" value={<span className="capitalize">{dateShort}</span>} />
         <Stat icon={Waves} label="Precio" value={priceLabel} hint="por persona · señal del 30 %" />
         <Stat
           icon={Users}
@@ -338,11 +366,9 @@ export function EventTechSheet({
       </div>
     ),
 
-    resumen: sheet.summary && (
-      <p className="rounded-2xl border border-border/60 bg-card/60 p-3 text-sm leading-relaxed text-muted-foreground sm:p-4">
-        {sheet.summary}
-      </p>
-    ),
+    descripcion: <Description groups={descShown} labels={DESC_LABELS} />,
+
+    detalle: <Description groups={packGroups(descRest, wide ? 1500 : 1000)} />,
 
     highlights:
       sheet.highlights.length > 0 ? (
@@ -418,37 +444,6 @@ export function EventTechSheet({
       </div>
     ),
 
-    salidaA: (
-      <div className="grid grid-cols-2 gap-2">
-        <Stat
-          icon={MapPin}
-          label="Punto de encuentro"
-          value={<span className="text-base">{sheet.meetingPoint || "—"}</span>}
-          className="col-span-2"
-        />
-        <Stat icon={Clock} label="Duración total" value={sheet.duration || "—"} />
-        <Stat icon={Timer} label="Actividad efectiva" value={sheet.effectiveDuration || "—"} />
-      </div>
-    ),
-
-    salidaB: (
-      <div className="grid grid-cols-2 gap-2">
-        <Stat icon={CalendarRange} label="Temporada" value={sheet.season || "—"} className="col-span-2" />
-        <Stat icon={Users} label="Grupo" value={<span className="text-base">{sheet.group || "—"}</span>} />
-        <Stat
-          icon={UserCheck}
-          label="Ratio guía"
-          value={<span className="text-base">{sheet.guideRatio || "—"}</span>}
-        />
-        <Stat
-          icon={Compass}
-          label="Aproximación"
-          value={<span className="text-base">{sheet.approachReturn || "—"}</span>}
-          className="col-span-2"
-        />
-      </div>
-    ),
-
     steps: <Checklist icon={Compass} title="Pasos del recorrido" items={sheet.itinerary} numbered />,
 
     elements: (
@@ -469,9 +464,6 @@ export function EventTechSheet({
         </ul>
       </section>
     ),
-
-    includesOnly: <Checklist icon={PackageCheck} title="Incluye" items={sheet.includes} />,
-    bringOnly: <Checklist icon={Backpack} title="Qué llevar" items={sheet.bring} />,
 
     prepGrid: (
       <div className="grid gap-3 sm:grid-cols-2">
@@ -532,16 +524,16 @@ export function EventTechSheet({
               />
             ) : null}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/45" />
-            <div className="relative px-4 pb-3 pt-8 sm:px-6 sm:pb-4 sm:pt-10">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary sm:px-3 sm:py-1 sm:text-[11px]">
-                <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+            <div className="relative px-4 pb-2 pt-6 sm:px-6 sm:pb-3 sm:pt-7">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary sm:px-2.5 sm:text-[10px]">
+                <Icon className="h-3 w-3" aria-hidden="true" />
                 {p?.categoryLabel ?? event.category}
               </span>
-              <DialogTitle className="mt-1.5 font-heading text-lg font-extrabold leading-tight text-foreground sm:text-2xl">
+              <DialogTitle className="mt-1 font-heading text-base font-extrabold leading-tight text-foreground sm:text-xl">
                 {sheet.title}
               </DialogTitle>
               {sheet.summary && (
-                <DialogDescription className="mt-1 hidden text-sm text-muted-foreground sm:block">
+                <DialogDescription className="mt-0.5 line-clamp-2 hidden text-[12px] text-muted-foreground sm:block">
                   {sheet.summary}
                 </DialogDescription>
               )}
@@ -560,14 +552,14 @@ export function EventTechSheet({
           <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div
               key={current.key}
-              className="animate-in fade-in-0 slide-in-from-right-2 space-y-3 px-4 py-4 duration-300 sm:px-6 sm:py-5"
+              className="animate-in fade-in-0 slide-in-from-right-2 space-y-2 px-4 py-3 duration-300 sm:px-6 sm:py-4"
             >
               <div className="flex items-end justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary sm:text-[11px]">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary sm:text-[10px]">
                     {current.eyebrow}
                   </p>
-                  <h3 className="mt-0.5 font-heading text-xl font-extrabold leading-tight text-foreground sm:text-2xl">
+                  <h3 className="mt-0.5 font-heading text-lg font-extrabold leading-tight text-foreground sm:text-xl">
                     {current.title}
                   </h3>
                 </div>
@@ -582,7 +574,7 @@ export function EventTechSheet({
           </div>
 
           {/* Pie: datos de decisión + navegación entre diapositivas */}
-          <div className="flex shrink-0 flex-col gap-2 border-t border-border bg-background px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div className="flex shrink-0 flex-col gap-1.5 border-t border-border bg-background px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p className="text-xs text-muted-foreground sm:text-sm">
               <span className="capitalize">{dateLabel}</span>
               <span className="mx-1.5 text-muted-foreground/40">·</span>
@@ -607,7 +599,7 @@ export function EventTechSheet({
                   />
                 ))}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center justify-end gap-2">
                 {page > 0 && (
                   <Button
                     variant="ghost"
@@ -619,8 +611,9 @@ export function EventTechSheet({
                     Anterior
                   </Button>
                 )}
-                {page < last ? (
+                {page < last && (
                   <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => setPage((v) => Math.min(last, v + 1))}
                     className="transition-all duration-300 active:scale-95"
@@ -628,25 +621,20 @@ export function EventTechSheet({
                     Siguiente
                     <ChevronRight className="h-4 w-4" aria-hidden="true" />
                   </Button>
+                )}
+                {/* La reserva está disponible desde cualquier diapositiva. */}
+                {event.isFull ? (
+                  <Button size="sm" disabled>
+                    Sin plazas
+                  </Button>
                 ) : (
-                  <>
-                    <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
-                      Cerrar
-                    </Button>
-                    {event.isFull ? (
-                      <Button size="sm" disabled>
-                        Sin plazas
-                      </Button>
-                    ) : (
-                      <Button
-                        asChild
-                        size="sm"
-                        className="transition-all duration-300 active:scale-95"
-                      >
-                        <Link to={bookingUrl}>Reservar plaza</Link>
-                      </Button>
-                    )}
-                  </>
+                  <Button
+                    asChild
+                    size="sm"
+                    className="transition-all duration-300 active:scale-95"
+                  >
+                    <Link to={bookingUrl}>Reservar plaza</Link>
+                  </Button>
                 )}
               </div>
             </div>

@@ -105,36 +105,73 @@ function buildEditorial(
     `Cierre de la actividad y recomendaciones posteriores del guía.`,
   ];
 
+  /** Campo sin dato verificado: formulación honesta en vez del placeholder interno. */
+  const orPending = (value: string | undefined, fallback: string) => {
+    const v = value?.trim();
+    return v && !v.includes(PENDING) ? v : fallback;
+  };
+
+  const priceText =
+    profile.priceValue && profile.priceValue > 0 ? `${profile.price} por persona` : "se confirma al cerrar la salida";
+  const includedText = profile.included.filter((item) => !item.includes(PENDING));
+  const bringText = profile.bring.filter((item) => !item.includes(PENDING));
+
   const faqs = [
     {
       question: `¿Dónde se realiza ${profile.name}?`,
-      answer: `La actividad se desarrolla en ${profile.zone}, ${profile.province}. El punto exacto de encuentro se facilita tras confirmar la reserva: ${profile.meetingPoint}.`,
+      answer: `La actividad se desarrolla en ${profile.zone}, ${profile.province}. Punto de encuentro: ${orPending(profile.meetingPoint, "se confirma al cerrar la salida")}. ${orPending(profile.approachReturn, "La aproximación y el retorno se concretan junto con el punto de encuentro.")}`,
     },
     {
       question: "¿Cuánto dura la actividad?",
-      answer: `La duración total estimada es ${profile.totalDuration}. La duración efectiva del recorrido figura como ${profile.effectiveDuration}; puede variar por el ritmo del grupo y las condiciones.`,
+      answer: `Duración total: ${orPending(profile.totalDuration, "se confirma al cerrar la salida")}. Parte efectiva del recorrido: ${orPending(profile.effectiveDuration, "se ajusta al ritmo del grupo y se confirma con la salida")}. Los tiempos pueden variar por el número de participantes y las condiciones del día.`,
+    },
+    {
+      question: "¿Qué nivel tiene la actividad?",
+      answer: `Nivel: ${orPending(profile.experienceLevel, orPending(profile.technicalLevel, "se valora con el grupo"))}. Grado técnico: ${orPending(profile.technicalLevel, "se confirma al cerrar la salida")}. Condición física: ${orPending(profile.physicalLevel, "se valora con el grupo")}.`,
     },
     {
       question: "¿Necesito experiencia previa?",
-      answer: `${profile.previousExperience}. Antes de confirmar, se revisará la experiencia y condición física de cada participante.`,
+      answer: `La ficha lo resume así: ${orPending(profile.previousExperience, "se valora antes de confirmar")}. Antes de cerrar la plaza revisamos la experiencia y la condición física de cada participante.`,
     },
     {
       question: "¿Qué edad mínima se exige?",
-      answer: `La edad mínima indicada es ${profile.minimumAge}. La participación de menores también depende de talla, autonomía, condiciones del recorrido y autorización responsable.`,
+      answer: `La edad mínima que figura en la ficha es ${orPending(profile.minimumAge, "se confirma al cerrar la salida")}. En menores también cuentan la autonomía, la talla del equipo y la autorización de la persona responsable.`,
+    },
+    {
+      question: "¿Cuánto cuesta y cómo se paga?",
+      answer: `Precio: ${priceText}. En una salida programada del calendario, la plaza se confirma con una señal del 30 % del total; el resto se abona antes de la actividad por Bizum, en efectivo o por el enlace de pago. Si pides una fecha a medida, primero confirmamos disponibilidad y después te llega el enlace de pago.`,
+    },
+    {
+      question: "¿Cuántas personas forman el grupo?",
+      answer: `Grupo: ${orPending(profile.group, "se confirma al cerrar la salida")}. ${orPending(profile.guideRatio, "El ratio de guía se confirma al cerrar la salida")}. Se trabaja con grupos reducidos para poder adaptar el ritmo al nivel real del grupo.`,
+    },
+    {
+      question: "¿En qué época se puede hacer?",
+      answer: `Temporada indicada: ${orPending(profile.season, "se confirma al cerrar la salida")}. El recorrido concreto se confirma cerca de la fecha según agua, temperatura y permisos vigentes.`,
     },
     {
       question: "¿Cómo se reserva?",
-      answer: "Si eliges una salida programada, comprobamos y bloqueamos tu plaza, pagas la señal y la reserva queda confirmada con el pago. Si prefieres otra fecha o una salida privada, envías una solicitud sin pago; validamos la disponibilidad y, si es posible, te enviamos un enlace de pago. Siempre sujeto a la meteorología y a las condiciones publicadas.",
+      answer: "Si eliges una salida programada del calendario, comprobamos y bloqueamos tu plaza, pagas la señal del 30 % y la reserva queda confirmada con el pago. Si prefieres otra fecha o una salida privada, envías una solicitud sin pago; validamos la disponibilidad y, si es posible, te enviamos un enlace de pago. Siempre sujeto a la meteorología y a las condiciones publicadas.",
     },
     {
       question: "¿Qué material está incluido?",
-      answer: profile.included.length ? profile.included.join(". ") : PENDING,
+      answer: includedText.length
+        ? `Está incluido: ${includedText.join(", ")}.`
+        : "El material incluido se confirma al cerrar la salida.",
     },
-    { question: "¿Qué tengo que llevar?", answer: profile.bring.join(". ") },
-    { question: "¿Qué ocurre si cambia el tiempo?", answer: profile.weatherPolicy.includes(PENDING) ? FALLBACK_WEATHER_POLICY : profile.weatherPolicy },
+    {
+      question: "¿Qué tengo que llevar?",
+      answer: bringText.length
+        ? `Hay que llevar: ${bringText.join(", ")}.`
+        : "Te enviamos la lista de material personal al confirmar la reserva.",
+    },
+    {
+      question: "¿Qué ocurre si cambia el tiempo?",
+      answer: `${orPending(profile.weatherPolicy, FALLBACK_WEATHER_POLICY)} ${orPending(profile.cancellationPolicy, "Las condiciones de cancelación se facilitan por escrito antes de confirmar la reserva.")}`,
+    },
     {
       question: "¿Puedo reservar una salida privada?",
-      answer: `Sí, puedes solicitar una salida privada. Precio, ratio, disponibilidad y condiciones finales: ${PENDING}.`,
+      answer: `Sí. Para familia, amistades, clubes o equipos preparamos una salida a medida. Grupo de referencia en la ficha: ${orPending(profile.group, "se confirma al cerrar la salida")}; precio, ratio y fecha se confirman por escrito antes de cualquier pago.`,
     },
   ];
 
