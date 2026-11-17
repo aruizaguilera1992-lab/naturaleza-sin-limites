@@ -7,6 +7,7 @@ import { levelOfferPhotos } from '@/data/levelOffers';
 import { STORAGE_PHOTO, sheetTotalEuros, type SheetContent } from '@/lib/activitySheets';
 import { usePhotoUrls } from '@/lib/adminCatalog';
 import { OutingInstructions } from '@/components/shared/OutingInstructions';
+import { MeetingPoint } from '@/components/shared/MeetingPoint';
 
 const DISC: Record<SheetContent['discipline'], string> = { barranquismo: 'Barranquismo', ferratas: 'Vía ferrata', espeleologia: 'Espeleología' };
 const fmtDate = (d: string) => { try { return new Date(`${d}T12:00:00`).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch { return d; } };
@@ -51,7 +52,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
           {!ownPath && <figcaption className="px-3 py-2 text-xs text-muted-foreground">Foto ilustrativa: <a href={photo.fuente} target="_blank" rel="noopener noreferrer" className="underline">{photo.autor}</a>, {photo.licencia}</figcaption>}
         </figure>
       )}
-      {c.meetingPoint && <p className="mt-6 flex gap-2 rounded-lg border border-border bg-card p-4"><MapPin className="h-5 w-5 shrink-0 text-primary" /><span><span className="font-semibold">Punto de encuentro: </span>{c.meetingPoint}</span></p>}
+      {c.meetingPoint && <MeetingPoint text={c.meetingPoint} />}
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <List title="Incluye" icon={Check} items={c.includes} />
         <List title="Qué llevar" icon={Backpack} items={c.bring} />
