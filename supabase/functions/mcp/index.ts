@@ -3790,9 +3790,9 @@ En nuestro cat\xE1logo trabajamos rutas de K2 a K5, repartidas por M\xE1laga y e
 
 | Nivel | Grados | Para qui\xE9n |
 |-------|--------|------------|
-| [Iniciaci\xF3n](/niveles/ferratas-iniciacion) | K1\u2013K2 | Sin experiencia previa; ni\xF1os desde 10 a\xF1os |
-| [Intermedio](/niveles/ferratas-intermedio) | K3\u2013K4 | Quien ya ha hecho una ferrata de iniciaci\xF3n |
-| [Avanzado](/niveles/ferratas-avanzado) | K5\u2013K6 | Con experiencia previa y buena condici\xF3n f\xEDsica |
+| Iniciaci\xF3n | K1\u2013K2 | Sin experiencia previa; ni\xF1os desde 10 a\xF1os |
+| Intermedio | K3\u2013K4 | Quien ya ha hecho una ferrata de iniciaci\xF3n |
+| Avanzado | K5\u2013K6 | Con experiencia previa y buena condici\xF3n f\xEDsica |
 
 ## Qu\xE9 necesitas y qui\xE9n puede hacerla
 

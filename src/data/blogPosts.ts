@@ -189,9 +189,9 @@ En nuestro catálogo trabajamos rutas de K2 a K5, repartidas por Málaga y el re
 
 | Nivel | Grados | Para quién |
 |-------|--------|------------|
-| [Iniciación](/niveles/ferratas-iniciacion) | K1–K2 | Sin experiencia previa; niños desde 10 años |
-| [Intermedio](/niveles/ferratas-intermedio) | K3–K4 | Quien ya ha hecho una ferrata de iniciación |
-| [Avanzado](/niveles/ferratas-avanzado) | K5–K6 | Con experiencia previa y buena condición física |
+| Iniciación | K1–K2 | Sin experiencia previa; niños desde 10 años |
+| Intermedio | K3–K4 | Quien ya ha hecho una ferrata de iniciación |
+| Avanzado | K5–K6 | Con experiencia previa y buena condición física |
 
 ## Qué necesitas y quién puede hacerla
 
