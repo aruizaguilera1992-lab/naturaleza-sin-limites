@@ -64,12 +64,14 @@ export function parseMapsUrl(url: string): MapsTarget {
   if (place?.[1]) {
     try { name = decodeURIComponent(place[1]).replace(/\+/g, " ").trim() || null; } catch { name = null; }
   }
-  const data = url.match(DATA_COORDS_RE);
+  // Las coordenadas suelen venir con la coma escapada (%2C): se normaliza antes de buscarlas.
+  const flat = (() => { try { return decodeURIComponent(url); } catch { return url; } })();
+  const data = flat.match(DATA_COORDS_RE);
   const coords =
     (data?.[1] ? [data[1], data[2]] : data?.[3] ? [data[3], data[4]] : null) ??
-    url.match(AT_COORDS_RE)?.slice(1, 3) ??
-    url.match(QUERY_COORDS_RE)?.slice(1, 3) ??
-    url.match(LL_COORDS_RE)?.slice(1, 3) ??
+    flat.match(AT_COORDS_RE)?.slice(1, 3) ??
+    flat.match(QUERY_COORDS_RE)?.slice(1, 3) ??
+    flat.match(LL_COORDS_RE)?.slice(1, 3) ??
     null;
   const latitude = coords ? num(coords[0]) : null;
   const longitude = coords ? num(coords[1]) : null;
