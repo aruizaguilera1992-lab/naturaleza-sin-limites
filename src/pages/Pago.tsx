@@ -285,7 +285,7 @@ export default function Pago() {
         <div className="flex justify-between gap-4"><dt>Importe pagado</dt><dd>{formatAmount(paid, payment.currency)}</dd></div>
         <div className="flex justify-between gap-4 font-bold text-primary"><dt>Importe por pagar</dt><dd>{payment.totalCents != null ? formatAmount(Math.max(0, payment.totalCents - paid), payment.currency) : "No disponible"}</dd></div>
       </dl>
-      {confirmed && <><p className="text-foreground">¡Felicidades por contratar Naturaleza Sin Límites! Tu próxima aventura ya tiene fecha.</p><Button asChild className="w-full"><a href={`https://wa.me/34685609542?text=${encodeURIComponent(`Hola, quiero preparar mi actividad contratada: ${payment.activity}.`)}`} target="_blank" rel="noopener noreferrer">Preparar mi actividad</a></Button></>}
+      {confirmed && <><p className="text-foreground">¡Felicidades por contratar Naturaleza Sin Límites! Tu próxima aventura ya tiene fecha.</p><div className="rounded-lg border border-primary/50 bg-primary/10 p-4"><p className="font-heading text-sm font-bold uppercase tracking-wide text-primary">Pasos a seguir</p><p className="mt-1 text-sm text-foreground">Te enviaremos por email o WhatsApp tu dossier: horario, qué necesitas, normas y el registro para el seguro.</p></div></>}
       <Button asChild variant="outline" className="w-full"><Link to="/newsletter">Suscribirme a la newsletter</Link></Button>
       <p className="text-sm text-muted-foreground">Suscripción opcional, con consentimiento separado y confirmación por correo.</p>
     </div>);

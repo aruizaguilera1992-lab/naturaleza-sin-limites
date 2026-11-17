@@ -218,6 +218,13 @@
       "when": 1794871883091,
       "tag": "0030_outing_rules_steps",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1794910767318,
+      "tag": "0031_activity_dossiers",
+      "breakpoints": true
     }
   ]
 }

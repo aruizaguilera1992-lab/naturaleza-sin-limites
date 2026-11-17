@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_dossiers: {
+        Row: {
+          booking_id: string
+          completed_at: string | null
+          content: Json
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          participants: Json
+          rgpd_accepted_at: string | null
+          sent_at: string | null
+          status: string
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          completed_at?: string | null
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          participants?: Json
+          rgpd_accepted_at?: string | null
+          sent_at?: string | null
+          status?: string
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          completed_at?: string | null
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          participants?: Json
+          rgpd_accepted_at?: string | null
+          sent_at?: string | null
+          status?: string
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_dossiers_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       activity_event_bookings: {
         Row: {
           booking_id: string
@@ -1334,6 +1390,7 @@ export type Database = {
         }
         Returns: Json
       }
+      get_activity_dossier: { Args: { _token: string }; Returns: Json }
       get_activity_sheet: { Args: { _token: string }; Returns: Json }
       has_role: {
         Args: {
@@ -1382,6 +1439,10 @@ export type Database = {
       save_editorial_piece: {
         Args: { _expected_updated_at?: string; _piece: Json; _status: string }
         Returns: string
+      }
+      submit_activity_dossier: {
+        Args: { _participants: Json; _rgpd: boolean; _token: string }
+        Returns: Json
       }
     }
     Enums: {
