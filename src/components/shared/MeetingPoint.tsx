@@ -1,5 +1,5 @@
 import { MapPin } from 'lucide-react';
-import { appleMapsUrl, extractUrl, googleMapsUrl, textWithoutUrl, type MapsTarget } from '@/lib/meetingPoint';
+import { appleMapsUrl, googleMapsUrl, textWithoutUrl, type MapsTarget } from '@/lib/meetingPoint';
 import { useMeetingPointTarget } from '@/hooks/useMeetingPointTarget';
 
 const BTN_G = 'inline-flex min-h-11 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground transition-all duration-300 active:scale-95';
