@@ -1,5 +1,5 @@
 import { MapPin } from 'lucide-react';
-import { appleMapsUrl, googleMapsUrl, textWithoutUrl, type MapsTarget } from '@/lib/meetingPoint';
+import { appleMapsUrl, extractUrl, googleMapsUrl, textWithoutUrl, type MapsTarget } from '@/lib/meetingPoint';
 import { useMeetingPointTarget } from '@/hooks/useMeetingPointTarget';
 
 const BTN_G = 'inline-flex min-h-11 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground transition-all duration-300 active:scale-95';
@@ -7,14 +7,19 @@ const BTN_A = 'inline-flex min-h-11 items-center gap-1.5 rounded-md border borde
 
 /** Botones para abrir el punto de quedada en Google Maps o en Apple Maps. */
 export function MeetingPointActions({ text, target, className = 'mt-3 flex flex-wrap gap-2' }: { text: string; target?: MapsTarget | null; className?: string }) {
+  // Apple Maps solo sirve con coordenadas o con un nombre legible: si el texto
+  // es solo un enlace de Google y no se ha podido resolver, ese botón no aporta nada.
+  const showApple = !!target || !extractUrl(text);
   return (
     <div className={className}>
       <a href={googleMapsUrl(text)} target="_blank" rel="noopener noreferrer" className={BTN_G}>
         <MapPin className="h-4 w-4" />Abrir en Google Maps
       </a>
-      <a href={appleMapsUrl(text, target)} target="_blank" rel="noopener noreferrer" className={BTN_A}>
-        <MapPin className="h-4 w-4" />Abrir en Apple Maps
-      </a>
+      {showApple ? (
+        <a href={appleMapsUrl(text, target)} target="_blank" rel="noopener noreferrer" className={BTN_A}>
+          <MapPin className="h-4 w-4" />Abrir en Apple Maps
+        </a>
+      ) : null}
     </div>
   );
 }
