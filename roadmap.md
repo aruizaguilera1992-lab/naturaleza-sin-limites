@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Motivos visuales de capacidades físicas
-- [ ] Añadir un motivo de marca distinto a cada capacidad en Vértigo Sapiens y comprobar su presentación.
+- [x] Añadir cuatro motivos lineales naranjas: ascenso continuo, tensión/agarre, articulación estable y progresión escalonada; escritorio y móvil comprobados, compilación OK, sin publicar.
 
 ## Completar barrancos del catálogo admin (17/11/2026)
 - [x] Incorporar Mina y Raja de Alicún; conservar Magdalena completa, recorridos originales, Zarzalones integral y superior distintos de los tramos comerciales.
