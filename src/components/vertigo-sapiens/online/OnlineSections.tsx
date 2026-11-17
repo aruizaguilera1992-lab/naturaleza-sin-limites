@@ -81,6 +81,29 @@ const benefits = [
   { icon: LineChart, title: 'Progreso con criterio', text: 'Cada sesión queda registrada para ver tu evolución y ajustar el plan semana a semana.', img: null },
 ];
 
+const capacityPaths = [
+  // Endurance: continuous ascent with successive contour lines.
+  ['M12 100 52 74 78 84 122 35 155 55 205 12', 'M12 118 52 92 78 102 122 53 155 73 205 30', 'M12 136 52 110 78 120 122 71 155 91 205 48'],
+  // Functional strength: tension through a central grip and two anchors.
+  ['M24 18 88 60 M152 18 88 60 M88 60 88 132', 'M64 68 64 94 78 108 100 108 114 94 114 68', 'M24 8v20 M14 18h20 M152 8v20 M142 18h20'],
+  // Mobility: articulated movement around a stable triangular base.
+  ['M100 18 78 58 110 88 140 126 M78 58 48 90 28 126', 'M28 126h112 M64 126 110 88', 'M124 24a52 52 0 0 1 42 54 M28 48a60 60 0 0 0-10 52'],
+  // Progress: a measured staircase with an ascending trajectory.
+  ['M18 130h36v-28h38V74h38V46h38V18h32', 'M18 82 54 64 92 48 130 28 168 10', 'M18 144h182'],
+];
+
+function CapacityMotif({ index }: { index: number }) {
+  return (
+    <div aria-hidden="true" className="relative mb-6 flex h-36 items-center justify-center border-b border-primary/25 pb-4">
+      <svg viewBox="0 0 220 160" fill="none" className="h-full w-full max-w-56 text-primary transition-transform duration-700 motion-safe:group-hover:-translate-y-1">
+        <path d="M8 8h18M8 8v18M212 152h-18M212 152v-18" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+        {capacityPaths[index]?.map((d, n) => <path key={d} d={d} stroke="currentColor" strokeWidth={n === 0 ? 3 : 1.5} strokeLinecap="round" strokeLinejoin="round" opacity={n === 0 ? 1 : 0.5} />)}
+      </svg>
+      <span className="absolute bottom-3 right-0 font-heading text-xs font-bold text-primary/70">0{index + 1}</span>
+    </div>
+  );
+}
+
 export function OnlineBenefits() {
   return (
     <section className="py-20 sm:py-28">
@@ -88,8 +111,8 @@ export function OnlineBenefits() {
         <Eyebrow>Qué entrenamos</Eyebrow>
         <h2 className="max-w-2xl text-3xl font-extrabold leading-tight sm:text-5xl">Lo que la montaña te pide.</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {benefits.map(({ icon: Icon, title, text, img }) => (
-            <article key={title} className="group relative flex min-h-64 flex-col justify-end overflow-hidden border border-border bg-card p-6">
+          {benefits.map(({ icon: Icon, title, text, img }, index) => (
+            <article key={title} className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card p-6">
               {img && (
                 <>
                   <img src={img} alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-40 transition-transform duration-700 motion-safe:group-hover:scale-105" />
@@ -97,6 +120,7 @@ export function OnlineBenefits() {
                 </>
               )}
               <div className="relative">
+                <CapacityMotif index={index} />
                 <Icon className="h-9 w-9 text-primary" aria-hidden />
                 <h3 className="mt-5 text-xl font-extrabold">{title}</h3>
                 <p className="mt-2 text-sm leading-6 text-foreground/80">{text}</p>
