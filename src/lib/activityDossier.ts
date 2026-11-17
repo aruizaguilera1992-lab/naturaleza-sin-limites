@@ -23,7 +23,7 @@ export function suggestBootie(foot: number | null | undefined, table: BootieRow[
   return table.find((t) => foot >= t.footMin && foot <= t.footMax)?.size ?? null;
 }
 
-export const isCanyoning = (activity: string) => /barranc|cañon|canyon/i.test(activity);
+export const isCanyoning = (activity: string) => /barran|cañon|canyon/i.test(activity);
 export const lines = (s: string | null | undefined) => (s ?? '').split('\n').map((l) => l.trim()).filter(Boolean);
 
 export function defaultDossier(activity: string, rules?: string | null): DossierContent {
