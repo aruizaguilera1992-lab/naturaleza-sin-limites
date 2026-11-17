@@ -157,98 +157,70 @@ En Naturaleza Sin Límites te acompañamos en cada paso, garantizando una experi
   },
   {
     id: "2",
-    title: "3 Vías Ferratas Espectaculares de Andalucía (y por qué el Caminito del Rey no es una)",
+    title: "¿Qué es una vía ferrata? Guía sencilla para entenderla",
     slug: "5-vias-ferratas-mas-espectaculares-andalucia",
     excerpt:
-      "Tres vías ferratas del sur de España, con datos de fuentes oficiales, y por qué el Caminito del Rey es un sendero de pasarelas y no una ferrata.",
+      "Una vía ferrata es un itinerario equipado en la roca: te contamos qué lleva, cómo te aseguras al cable de vida, qué significa el grado K y qué nivel te corresponde.",
     content: `
-## El Auge de las Vías Ferratas en Andalucía
+## Qué es una vía ferrata
 
-Las vías ferratas han experimentado un boom en los últimos años, y Andalucía se ha convertido en uno de los destinos más atractivos de España para practicar esta actividad. La combinación de paisajes espectaculares, buen clima durante casi todo el año y una creciente oferta de rutas equipadas hace de nuestra región un paraíso para los amantes de la aventura vertical.
+Una vía ferrata es un itinerario que discurre por la roca y que ya está equipado para poder progresar sin tener que escalar de cero: la pared lleva fijados peldaños o grapas metálicas, y a lo largo de todo el recorrido corre un cable de vida de acero. Avanzas trepando y apoyándote en esos peldaños, sujeto al cable con tu arnés y un disipador de energía, de modo que un resbalón queda retenido por la línea de vida.
 
-## ¿Qué es una Vía Ferrata?
+Es un punto intermedio entre un sendero y la escalada: no necesitas saber escalar ni tener experiencia previa, pero sí moverte por la vertical con calma y seguir las indicaciones del guía.
 
-Para los no iniciados, una vía ferrata es un itinerario vertical u horizontal equipado con:
+## Qué lleva equipado el recorrido
 
-- **Peldaños y grapas**: Clavados en la roca para facilitar la progresión
-- **Cable de vida**: Una línea de acero continua para asegurarte
-- **Puentes colgantes**: En algunas rutas, añaden emoción extra
+- **Grapas y peldaños**: piezas metálicas clavadas en la roca para apoyar pies y manos
+- **Cable de vida**: una línea de acero continua que recorre toda la vía
+- **Mosquetones y disipador**: las piezas con las que te enganchas al cable
+- **Elementos añadidos**: según la ruta, puentes, pasamanos o tirolinas
 
-> "Las vías ferratas democratizan la montaña, permitiendo a personas sin experiencia en escalada disfrutar de la verticalidad."
+## Cómo te aseguras
 
-## Primero, una aclaración: el Caminito del Rey no es una vía ferrata
+Antes de empezar, el guía repasa el equipo y su uso: casco, arnés y disipador de energía con dos mosquetones. La regla es sencilla: siempre hay un mosquetón enganchado al cable, y se cambian de anclaje de uno en uno. Así, en ningún momento quedas suelto.
 
-El Caminito del Rey es un **sendero de pasarelas** con entrada y horarios propios ([información oficial](https://www.caminitodelrey.info/es/tu-visita/acceso-recorrido)). No se recorre con disipador ni cable de vida y no tiene clasificación K de ferrata, por eso no lo incluimos en esta comparativa. La Vía Ferrata El Chorro es otra actividad distinta y **no incluye la entrada al Caminito del Rey**.
+## La escala K: qué significa el número
 
-## 3 ferratas imprescindibles
+Las vías ferratas se clasifican con la escala Hüsler, de **K1 a K6**. El número indica la dificultad del recorrido. K1 y K2 son itinerarios sencillos, con poca pendiente y exposición reducida. K3 y K4 suman tramos verticales seguidos, puentes y más altura sobre el vacío. K5 y K6 requieren experiencia, brazos fuertes y tolerar bien la altura.
 
-### 1. Vía Ferrata El Chorro (Málaga)
+En nuestro catálogo trabajamos rutas de K2 a K5, repartidas por Málaga y el resto de Andalucía.
 
-Muy aérea y no apta para personas con vértigo. Combina subidas de peldaños, puente tibetano, puente nepalí y una tirolina de unos 35 m.
+## Los tres niveles que ofrecemos
 
-**Datos clave** (guía técnica del Ayuntamiento de Málaga y Visit Costa del Sol):
-- Dificultad: K3
-- Recorrido equipado: unos 650 m
-- Desnivel positivo: unos 250 m
-- Recorrido: unas 3 h (ida y vuelta). La jornada guiada completa, con briefing y equipación, es más larga.
+| Nivel | Grados | Para quién |
+|-------|--------|------------|
+| Iniciación | K1–K2 | Sin experiencia previa; niños desde 10 años |
+| Intermedio | K3–K4 | Quien ya ha hecho una ferrata de iniciación |
+| Avanzado | K5–K6 | Con experiencia previa y buena condición física |
 
-[Ver ficha de la Vía Ferrata El Chorro](/actividades/vias-ferratas/ferrata-el-chorro)
+## Qué necesitas y quién puede hacerla
 
-### 2. Vías ferratas del Tajo de Ronda
+- **Sin experiencia**: el nivel de iniciación está pensado para empezar desde cero
+- **Edad mínima**: desde 10 años en iniciación
+- **Condición física**: básica en iniciación; media o alta según el nivel
+- **Altura**: si te cuesta el vacío, empieza por una ruta de baja exposición
 
-Ronda vista desde una perspectiva completamente diferente. En el Tajo hay más de una variante, con dificultades distintas, así que no damos una cifra única: consulta la ficha de la variante que ofrecemos.
+## Diferencia con un sendero de pasarelas
 
-[Ver ficha de la Vía Ferrata Tajo de Ronda I (La Sevillana)](/actividades/vias-ferratas/ferrata-tajo-ronda-sevillana)
+No todo camino colgado de un risco es una vía ferrata. Un sendero de pasarelas, como el Caminito del Rey, se recorre andando por un camino con barandilla, sin arnés ni cable de vida y sin clasificación K. En una ferrata sí te aseguras al cable y trepas por la roca.
 
-### 3. Vía Ferrata de Atajate
+## Antes de reservar
 
-Una joya escondida en la Serranía de Ronda, con vistas al valle del Genal. Los datos técnicos y la clasificación están en su ficha del catálogo.
+Revisa la clasificación y los requisitos de la ruta que te interesa: no todas son para el mismo nivel. Si es tu primera vez, lo más cómodo es contratar la jornada guiada, que incluye el equipo, el repaso previo y el acompañamiento durante todo el recorrido.
 
-[Ver ficha de la Vía Ferrata de Atajate](/actividades/vias-ferratas/ferrata-atajate)
-
-## Comparativa rápida
-
-| Vía ferrata | Dificultad | Ficha |
-|-------------|------------|-------|
-| El Chorro | K3 | [Ver ficha](/actividades/vias-ferratas/ferrata-el-chorro) |
-| Tajo de Ronda | Según variante | [Ver ficha](/actividades/vias-ferratas/ferrata-tajo-ronda-sevillana) |
-| Atajate | Ver ficha | [Ver ficha](/actividades/vias-ferratas/ferrata-atajate) |
-
-## Preparación y Seguridad
-
-Antes de lanzarte a conquistar estas vías, ten en cuenta:
-
-1. **Formación previa**: Si es tu primera vez, contrata un guía
-2. **Equipo adecuado**: Arnés, casco, disipador de energía y mosquetones específicos
-3. **Condiciones meteorológicas**: Nunca hagas una ferrata con lluvia o riesgo de tormenta
-4. **Condición física**: Aunque no requieren ser atleta, sí demandan resistencia
-
-## La Experiencia con Guía
-
-Realizar estas vías con un guía profesional te permite:
-
-- Aprender las técnicas correctas desde el principio
-- Conocer la historia y curiosidades de cada ruta
-- Tener apoyo en los tramos más exigentes
-- Disfrutar sin preocuparte por la logística
-
-## Conclusión
-
-Andalucía ofrece un abanico de posibilidades para disfrutar de las vías ferratas. Antes de elegir, revisa la clasificación y los requisitos de cada ficha: no todas son para el mismo nivel.
-
-¿Cuál será tu próxima aventura vertical?
+Puedes ver todas las opciones en [vías ferratas](/vias-ferratas) o escribirnos por WhatsApp y te decimos qué nivel encaja contigo.
     `,
     featuredImage: media.ferrata.src,
-    category: "rutas-recomendadas",
-    tags: ["vías ferratas", "andalucía", "rutas", "aventura"],
+    category: "formacion",
+    tags: ["vías ferratas", "iniciación", "montaña", "seguridad"],
     author: defaultAuthor,
     publishedAt: "2024-01-08",
-    readTime: 10,
+    readTime: 3,
     views: 2340,
     seo: {
-      metaTitle: "3 Vías Ferratas Espectaculares de Andalucía | Naturaleza Sin Límites",
+      metaTitle: "¿Qué es una vía ferrata? Definición sencilla | Naturaleza Sin Límites",
       metaDescription:
-        "Vía Ferrata El Chorro (K3), Tajo de Ronda y Atajate, con datos oficiales. Y por qué el Caminito del Rey es un sendero de pasarelas, no una ferrata.",
+        "Qué es una vía ferrata, qué equipo lleva el recorrido, cómo te aseguras al cable de vida, qué significa la escala K de dificultad y qué nivel te corresponde.",
       ogImage: media.ferrata.src,
     },
   },

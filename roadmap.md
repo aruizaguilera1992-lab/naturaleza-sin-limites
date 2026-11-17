@@ -1,5 +1,11 @@
 # Roadmap
 
+## Carrusel lateral de vídeos en el blog
+- [x] Convertir la sección «Vídeos de Naturaleza Sin Límites» en un carrusel lateral con flechas y enlace al canal; 1 tarjeta en móvil, 3 en escritorio, comprobado con sesión sin aviso de cookies, sin publicar.
+
+## Artículo de vías ferratas (17/11/2026)
+- [x] Sustituir «3 Vías Ferratas Espectaculares de Andalucía» por un post sencillo que define qué es una vía ferrata, misma dirección web, sin publicar.
+
 ## Imágenes de tarjetas de capacidades (17/11/2026)
 - [x] Añadir fotografía de fondo a las tarjetas 03 «Movilidad y estabilidad» y 04 «Progreso con criterio» de «Lo que la montaña te pide» en /vertigo-sapiens, con fotos ya licenciadas del proyecto; comprobado en escritorio y móvil sin publicar.
 
