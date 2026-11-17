@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Carrusel lateral de vídeos en el blog
-- [ ] Convertir la sección «Vídeos de Naturaleza Sin Límites» en un carrusel lateral para ocupar menos alto; conservar el enlace al canal y los vídeos existentes.
+- [x] Convertir la sección «Vídeos de Naturaleza Sin Límites» en un carrusel lateral con flechas y enlace al canal; 1 tarjeta en móvil, 3 en escritorio, comprobado con sesión sin aviso de cookies, sin publicar.
 
 ## Artículo de vías ferratas (17/11/2026)
 - [x] Sustituir «3 Vías Ferratas Espectaculares de Andalucía» por un post sencillo que define qué es una vía ferrata, misma dirección web, sin publicar.
