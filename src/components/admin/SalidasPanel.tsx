@@ -5,18 +5,20 @@ import { ActivitySheetsPanel, type SheetContact } from '@/components/admin/sheet
 import { useAdminCatalog } from '@/lib/adminCatalog';
 import type { SheetRequestPrefill } from '@/lib/activitySheets';
 
-type Mode = 'abierto' | 'privado';
+import type { CatalogOutingStart, OutingMode } from '@/lib/catalogOuting';
+type Mode = OutingMode;
 const MODES: { id: Mode; label: string; hint: string; icon: typeof Users }[] = [
   { id: 'abierto', label: 'Grupo abierto', hint: 'Sale en el calendario público y se reserva con señal del 30 %.', icon: Users },
   { id: 'privado', label: 'Grupo privado', hint: 'Ficha exclusiva para un cliente, enviada por enlace único.', icon: Lock },
 ];
 
 /** Salidas unificadas: grupo abierto (calendario) y grupo privado (ficha con enlace). Ambos se mantienen montados. */
-export function SalidasPanel({ contacts, focusSheetId, onOpenBooking, prefill }: { prefill?: SheetRequestPrefill | null; contacts: SheetContact[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
+export function SalidasPanel({ contacts, focusSheetId, onOpenBooking, prefill, catalogStart }: { catalogStart?: CatalogOutingStart | null; prefill?: SheetRequestPrefill | null; contacts: SheetContact[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
   const { items: catalog } = useAdminCatalog();
   const [mode, setMode] = useState<Mode>(focusSheetId || prefill ? 'privado' : 'abierto');
   useEffect(() => { if (focusSheetId) setMode('privado'); }, [focusSheetId]);
   useEffect(() => { if (prefill) setMode('privado'); }, [prefill]);
+  useEffect(() => { if (catalogStart) setMode(catalogStart.mode); }, [catalogStart]);
   return (
     <div className="space-y-5">
       <div role="radiogroup" aria-label="Tipo de salida" className="grid gap-3 sm:grid-cols-2">
@@ -28,8 +30,8 @@ export function SalidasPanel({ contacts, focusSheetId, onOpenBooking, prefill }:
           </button>
         ))}
       </div>
-      <div className={mode === 'abierto' ? '' : 'hidden'}><EventsPanel /></div>
-      <div className={mode === 'privado' ? '' : 'hidden'}><ActivitySheetsPanel contacts={contacts} catalog={catalog} focusSheetId={focusSheetId} prefill={prefill} onOpenBooking={onOpenBooking} /></div>
+      <div className={mode === 'abierto' ? '' : 'hidden'}><EventsPanel catalogStart={catalogStart} /></div>
+      <div className={mode === 'privado' ? '' : 'hidden'}><ActivitySheetsPanel contacts={contacts} catalog={catalog} focusSheetId={focusSheetId} prefill={prefill} catalogStart={catalogStart} onOpenBooking={onOpenBooking} /></div>
     </div>
   );
 }

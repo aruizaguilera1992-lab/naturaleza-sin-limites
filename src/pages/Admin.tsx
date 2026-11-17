@@ -2,6 +2,7 @@ import { DossierPanel } from "@/components/admin/dossier/DossierPanel";
 import React, { useEffect, useState, useCallback } from "react";
 import { SalidasPanel } from "@/components/admin/SalidasPanel";
 import { CatalogPanel } from "@/components/admin/catalog/CatalogPanel";
+import type { CatalogOutingStart } from "@/lib/catalogOuting";
 import { ClipboardList } from "lucide-react";
 import { depositConfirmationOption, paymentLinkBody, type DepositConfirmationOption } from "@/lib/depositConfirmation";
 import { Helmet } from "react-helmet-async";
@@ -564,6 +565,7 @@ export default function Admin() {
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [retrying, setRetrying] = useState<string | null>(null);
   const [tab, setTab] = useState<AdminTab>("overview");
+  const [catalogStart, setCatalogStart] = useState<CatalogOutingStart | null>(null);
   const [focusSheet, setFocusSheet] = useState<string | null>(null);
   const [sheetPrefill, setSheetPrefill] = useState<import("@/lib/activitySheets").SheetRequestPrefill | null>(null);
   const [sheetByBooking, setSheetByBooking] = useState<Record<string, string>>({});
@@ -1313,8 +1315,8 @@ export default function Admin() {
             </>
           )}
           {tab === "settings" && <BusinessSettingsPanel />}
-          {tab === "events" && <SalidasPanel focusSheetId={focusSheet} prefill={sheetPrefill} onOpenBooking={(id) => { setTab("bookings"); setSearch(""); setStatusFilter("all"); setSelectedId(id); void loadData(); }} contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />}
-          {tab === "catalog" && <CatalogPanel />}
+          {tab === "events" && <SalidasPanel catalogStart={catalogStart} focusSheetId={focusSheet} prefill={sheetPrefill} onOpenBooking={(id) => { setTab("bookings"); setSearch(""); setStatusFilter("all"); setSelectedId(id); void loadData(); }} contacts={contacts.map((c) => ({ id: c.id, nombre: c.nombre, email: c.email ?? null, phone: c.phone ?? null }))} />}
+          {tab === "catalog" && <CatalogPanel onConfigure={(item, mode) => { setFocusSheet(null); setSheetPrefill(null); setCatalogStart({ item, mode, nonce: Date.now() }); setTab("events"); }} />}
           {tab === "plans" && <PlanOrdersPanel />}
           {editorialOpened && <div className={tab === "editorial" ? "" : "hidden"}><EditorialPanel /></div>}
 

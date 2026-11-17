@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { SheetView } from './SheetView';
 import { OutingAssistant } from '../OutingAssistant';
 import { CATALOG_BUCKET, type CatalogItem } from '@/lib/adminCatalog';
+import type { CatalogOutingStart } from '@/lib/catalogOuting';
 import {
   MAX_SHEET_PEOPLE, STORAGE_PHOTO, sheetBases, sheetFromBase, sheetFromCatalog, sheetPhotoOptions, sheetState, sheetUrl, sheetWhatsappUrl, validateSheet, sheetFromRequest,
   type SheetContent, type SheetRequestPrefill, type SheetState,
@@ -29,10 +30,10 @@ const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 const IMG_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
-function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, prefill }: { prefill?: SheetRequestPrefill | null; row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void>; onOpenBooking?: (bookingId: string) => void }) {
+function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, prefill, fromItem }: { fromItem?: CatalogItem | null; prefill?: SheetRequestPrefill | null; row: SheetRow | null; contacts: SheetContact[]; catalog: CatalogItem[]; onSaved: (id: string) => Promise<void>; onDeleted: () => Promise<void>; onOpenBooking?: (bookingId: string) => void }) {
   const { toast } = useToast();
-  const [c, setC] = useState<SheetContent>(() => row?.content ?? (prefill ? sheetFromRequest(prefill) : sheetFromBase(sheetBases[0].id)));
-  const init = row?.content ?? (prefill ? sheetFromRequest(prefill) : sheetFromBase(sheetBases[0].id));
+  const [c, setC] = useState<SheetContent>(() => row?.content ?? (fromItem ? sheetFromCatalog(fromItem) : prefill ? sheetFromRequest(prefill) : sheetFromBase(sheetBases[0].id)));
+  const init = row?.content ?? (fromItem ? sheetFromCatalog(fromItem) : prefill ? sheetFromRequest(prefill) : sheetFromBase(sheetBases[0].id));
   const [contactId, setContactId] = useState<string>(() => row?.contact_id ?? (prefill ? (contacts.find((x) => (prefill.email && x.email?.toLowerCase() === prefill.email.toLowerCase()) || (prefill.phone && x.phone?.replace(/\D/g, '') === prefill.phone.replace(/\D/g, '')))?.id ?? '') : ''));
   const [expires, setExpires] = useState<string>(row?.expires_at?.slice(0, 10) ?? '');
   const contact = contacts.find((x) => x.id === contactId);
@@ -240,7 +241,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
 }
 
 /** Constructor de fichas privadas de actividad con enlace único. */
-export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBooking, prefill }: { prefill?: SheetRequestPrefill | null; contacts: SheetContact[]; catalog: CatalogItem[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
+export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBooking, prefill, catalogStart }: { catalogStart?: CatalogOutingStart | null; prefill?: SheetRequestPrefill | null; contacts: SheetContact[]; catalog: CatalogItem[]; focusSheetId?: string | null; onOpenBooking?: (bookingId: string) => void }) {
   const [rows, setRows] = useState<SheetRow[]>([]);
   const [selected, setSelected] = useState<string | 'new' | null>(focusSheetId ?? null);
   useEffect(() => { if (focusSheetId) setSelected(focusSheetId); }, [focusSheetId]);
@@ -252,12 +253,14 @@ export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBoo
   const current = useMemo(() => rows.find((r) => r.id === selected) ?? null, [rows, selected]);
   const name = (id: string | null) => contacts.find((c) => c.id === id)?.nombre;
   const [newKey, setNewKey] = useState(0);
-  useEffect(() => { if (prefill) { setSelected('new'); setNewKey((k) => k + 1); } }, [prefill]);
+  useEffect(() => { if (prefill) { setFromItem(null); setSelected('new'); setNewKey((k) => k + 1); } }, [prefill]);
+  const [fromItem, setFromItem] = useState<CatalogItem | null>(null);
+  useEffect(() => { if (catalogStart?.mode === 'privado') { setFromItem(catalogStart.item); setSelected('new'); setNewKey((k) => k + 1); } }, [catalogStart]);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <Button variant="hero" onClick={() => { setSelected('new'); setNewKey((k) => k + 1); }}><Plus className="mr-1 h-4 w-4" />Nueva ficha</Button>
+        <Button variant="hero" onClick={() => { setFromItem(null); setSelected('new'); setNewKey((k) => k + 1); }}><Plus className="mr-1 h-4 w-4" />Nueva ficha</Button>
         <p className="text-sm text-muted-foreground">{rows.length} {rows.length === 1 ? 'ficha' : 'fichas'}</p>
       </div>
       {rows.length > 0 && (
@@ -273,7 +276,7 @@ export function ActivitySheetsPanel({ contacts, catalog, focusSheetId, onOpenBoo
           ))}
         </ul>
       )}
-      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} prefill={prefill} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} onDeleted={async () => { await load(); setSelected(null); }} />}
+      {selected === 'new' && <Editor key={`new-${newKey}`} row={null} fromItem={fromItem} prefill={fromItem ? null : prefill} contacts={contacts} catalog={catalog} onSaved={async (id) => { await load(); setSelected(id); }} onDeleted={async () => { await load(); setSelected(null); }} />}
       {current && <Editor key={current.id} row={current} contacts={contacts} catalog={catalog} onOpenBooking={onOpenBooking} onSaved={async () => { await load(); }} onDeleted={async () => { await load(); setSelected(null); }} />}
       {!selected && rows.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Aún no hay fichas. Crea una y envía el enlace al cliente.</p>}
     </div>

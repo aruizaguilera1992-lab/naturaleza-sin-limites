@@ -1,3 +1,4 @@
+import { openGroupKeyFor, type CatalogOutingStart } from "@/lib/catalogOuting";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronDown, Copy, List, Loader2, Pencil, Plus, RefreshCw, Users, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -121,7 +122,7 @@ const toLocalInput = (iso: string | null) => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-export function EventsPanel() {
+export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStart | null } = {}) {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -134,6 +135,26 @@ export function EventsPanel() {
   const [advanced, setAdvanced] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [attendees, setAttendees] = useState<Record<string, Attendee[]>>({});
+  const [fromCatalog, setFromCatalog] = useState<{ name: string; matched: boolean } | null>(null);
+
+  // Salida configurada desde Catálogo: se rellena con lo ya documentado; el admin revisa antes de guardar.
+  useEffect(() => {
+    if (!catalogStart || catalogStart.mode !== "abierto") return;
+    const { item } = catalogStart;
+    const key = openGroupKeyFor(item, sellableActivities.map((a) => a.key));
+    setEditingId(null);
+    setForm({
+      ...emptyForm,
+      activityKey: key ?? "",
+      priceEuros: item.pricePerPersonEuros != null ? String(item.pricePerPersonEuros) : "",
+      meetingPublic: [item.zone, item.province].filter(Boolean).join(", "),
+      rules: item.requirements.map((r) => `• ${r}`).join("\n"),
+      notes: [`Desde catálogo: ${item.name}`, item.summary].filter(Boolean).join("\n"),
+    });
+    setFromCatalog({ name: item.name, matched: !!key });
+    setAdvanced(true);
+    setShowForm(true);
+  }, [catalogStart]);
 
   const toggleAttendees = async (eventId: string) => {
     if (openId === eventId) {
@@ -207,6 +228,7 @@ export function EventsPanel() {
   }, [filtered]);
 
   const resetForm = () => {
+    setFromCatalog(null);
     setForm(emptyForm);
     setEditingId(null);
     setShowForm(false);
@@ -515,6 +537,13 @@ export function EventsPanel() {
 
       {showForm && (
         <div className="grid gap-4 rounded-xl border border-border bg-card p-4 sm:grid-cols-2">
+          {fromCatalog && (
+            <p role="status" className={`sm:col-span-2 rounded-lg border p-3 text-sm ${fromCatalog.matched ? "border-primary/40 bg-primary/10 text-foreground" : "border-destructive/50 bg-destructive/10 text-foreground"}`}>
+              {fromCatalog.matched
+                ? `Datos de «${fromCatalog.name}» cargados desde el catálogo. Revisa fecha, plazas y punto de encuentro antes de publicar.`
+                : `«${fromCatalog.name}» no tiene un producto reservable idéntico para grupo abierto. Elige la actividad manualmente o créala como grupo privado.`}
+            </p>
+          )}
           <div className="sm:col-span-2"><OutingAssistant key={editingId ?? 'new'} context={{ title: selectedActivity?.name, category: selectedActivity?.categoryLabel, duration: selectedActivity?.duration, place: form.meetingPublic, notes: form.notes, rules: form.rules, steps: form.steps }} fields={['notes', 'rules', 'steps']} onApply={draft => { setForm(p => ({ ...p, ...(draft.notes != null ? { notes: draft.notes } : {}), ...(draft.rules != null ? { rules: draft.rules } : {}), ...(draft.steps != null ? { steps: draft.steps } : {}) })); setAdvanced(true); }} /></div>
           <div className="sm:col-span-2">
             <Label>Actividad del catálogo</Label>

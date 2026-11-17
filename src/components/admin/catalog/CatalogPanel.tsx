@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowUp, ImagePlus, RotateCcw, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowUp, ImagePlus, Lock, Users, RotateCcw, Save, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import type { OutingMode } from '@/lib/catalogOuting';
 import { CATALOG_BUCKET, useAdminCatalog, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
 
 const DISC: Record<CatalogDiscipline, string> = { barranquismo: 'Barranquismo', ferratas: 'Vías ferratas', espeleologia: 'Espeleología' };
@@ -20,7 +21,7 @@ function Thumb({ path }: { path: string }) {
   return urls[path] ? <img src={urls[path]} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-muted" />;
 }
 
-function ItemEditor({ item, onDone }: { item: CatalogItem; onDone: () => Promise<void> }) {
+function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: () => Promise<void>; onConfigure?: (item: CatalogItem, mode: OutingMode) => void }) {
   const { toast } = useToast();
   const [d, setD] = useState<CatalogItemData>(() => {
     const { key: _k, discipline: _d, photos: _p, edited: _e, ...rest } = item; return rest;
@@ -121,6 +122,10 @@ function ItemEditor({ item, onDone }: { item: CatalogItem; onDone: () => Promise
       </div>
       <div className="flex flex-wrap gap-2 border-t border-border pt-4">
         <Button variant="hero" disabled={busy} onClick={save}><Save className="mr-1 h-4 w-4" />Guardar</Button>
+        {onConfigure && <>
+          <Button variant="outline" disabled={busy} onClick={() => onConfigure({ ...item, ...d, photos }, 'privado')}><Lock className="mr-1 h-4 w-4" />Crear salida privada</Button>
+          {item.discipline !== 'espeleologia' && !item.reference && <Button variant="outline" disabled={busy} onClick={() => onConfigure({ ...item, ...d, photos }, 'abierto')}><Users className="mr-1 h-4 w-4" />Crear salida en grupo abierto</Button>}
+        </>}
         {item.edited && <Button variant="ghost" disabled={busy} onClick={restore}><RotateCcw className="mr-1 h-4 w-4" />Restaurar original</Button>}
       </div>
     </div>
@@ -128,7 +133,7 @@ function ItemEditor({ item, onDone }: { item: CatalogItem; onDone: () => Promise
 }
 
 /** Catálogo original completo, editable al detalle (incluidas fotos propias). La web pública sigue mostrando niveles. */
-export function CatalogPanel() {
+export function CatalogPanel({ onConfigure }: { onConfigure?: (item: CatalogItem, mode: OutingMode) => void } = {}) {
   const { items, reload } = useAdminCatalog();
   const [disc, setDisc] = useState<CatalogDiscipline | 'todas'>('todas');
   const [q, setQ] = useState('');
@@ -140,7 +145,7 @@ export function CatalogPanel() {
   if (current) return (
     <div className="space-y-3">
       <Button variant="ghost" onClick={() => setSelected(null)}><ArrowLeft className="mr-1 h-4 w-4" />Volver al catálogo</Button>
-      <ItemEditor key={current.key} item={current} onDone={reload} />
+      <ItemEditor key={current.key} item={current} onDone={reload} onConfigure={onConfigure} />
     </div>
   );
   return (
