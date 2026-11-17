@@ -6,7 +6,6 @@ export type MapsTarget = { name: string | null; latitude: number | null; longitu
 
 /** Único host permitido: el acortador de Google Maps. Nada de URLs arbitrarias. */
 const ALLOWED_HOSTS = new Set(["maps.app.goo.gl", "goo.gl"]);
-const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 const TTL_MS = 24 * 60 * 60 * 1000;
 
 const cache = new Map<string, { at: number; target: MapsTarget }>();
@@ -88,9 +87,10 @@ export async function resolveMapsLink(raw: string, fetchImpl: typeof fetch = fet
 
   let finalUrl = raw;
   try {
-    // redirect: "follow" deja en res.url el destino final; con "manual" la
-    // cabecera Location no es legible desde fetch y no serviría.
-    const res = await fetchImpl(raw, { redirect: "follow", headers: { "user-agent": UA }, signal: AbortSignal.timeout(10000) });
+    // redirect: "follow" deja en res.url el destino final. No se fuerza un
+    // user-agent propio: con él Google devuelve una página intermedia en lugar
+    // de redirigir, y no se obtienen las coordenadas.
+    const res = await fetchImpl(raw, { redirect: "follow", signal: AbortSignal.timeout(10000) });
     if (res.url) finalUrl = res.url;
   } catch {
     return null;
