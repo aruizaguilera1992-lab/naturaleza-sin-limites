@@ -3,6 +3,7 @@ import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { z } from 'npm:zod@3.23.8';
 import { sendTrackedNotification } from '../_shared/email.ts';
 import { isTrustedSiteOrigin } from '../_shared/siteOrigins.ts';
+import { appleMapsUrl, extractUrl, googleMapsUrl, isShortMapLink, resolveMapsLink, textWithoutUrl } from '../_shared/meetingPointLinks.ts';
 
 const schema = z.object({ id: z.string().uuid(), email: z.string().email().max(254), origin: z.string().url().max(300), send_id: z.string().uuid() }).strict();
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });

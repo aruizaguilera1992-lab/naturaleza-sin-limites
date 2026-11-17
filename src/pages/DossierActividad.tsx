@@ -7,6 +7,8 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
+import { MeetingPointStep } from '@/components/shared/MeetingPoint';
+import { isMeetingPointLabel } from '@/lib/meetingPoint';
 import { participantErrors, suggestBootie, suggestWetsuit, type DossierContent, type DossierParticipant } from '@/lib/activityDossier';
 
 const blank = (): DossierParticipant => ({ fullName: '', docId: '', birthDate: '', phone: '', emergencyName: '', emergencyPhone: '', health: '' });
