@@ -19,8 +19,8 @@ export function DossierPanel({ booking, defaultRules }: Props) {
   const paid = !!booking.paid_amount_cents || booking.status === 'confirmada';
 
   useEffect(() => {
-    supabase.from('activity_dossiers').select('id, token, status, content, participants, sent_at, completed_at').eq('booking_id', booking.id).maybeSingle().then(({ data }) => {
-      if (!data) return; const r = data as unknown as Row; setRow(r); setC(r.content); setNeeds(r.content.needs.join('\n')); setRules(r.content.rules.join('\n'));
+    supabase.from('activity_dossiers').select('id, token, status, content, participants, sent_at, completed_at').eq('booking_id', booking.id).then(({ data }) => {
+      const r = (Array.isArray(data) ? data[0] : data) as unknown as Row | undefined; if (!r?.content) return; setRow(r); setC(r.content); setNeeds(r.content.needs.join('\n')); setRules(r.content.rules.join('\n'));
     });
   }, [booking.id]);
 
