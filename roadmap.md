@@ -1,5 +1,14 @@
 # Roadmap
 
+## Ficha del calendario: ajustes pedidos (17/11/2026)
+- [x] Eliminar la característica «Sin material propio» de la ficha de espeleología.
+- [x] Actualizar la duración mostrada en la ficha a la información del catálogo del panel.
+- [x] Unificar «La salida» y «El recorrido» en una sola diapositiva, manteniendo el formato actual.
+- [x] Mostrar la información de la diapositiva de detalle a todo el ancho de la sección.
+- [x] Unificar los datos duplicados «Grupo» y «Ratio guía» en un solo dato de la ficha.
+- [x] Eliminar la sección «Elementos técnicos» de la diapositiva, porque repite lo de la portada.
+- [x] En los grupos abiertos, permitir reservar para 1 persona.
+
 ## Ficha técnica de salidas (17/11/2026)
 - [x] «Me apunto» en la tarjeta de la agenda; la ficha técnica se abre al pulsar y muestra el botón de reserva.
 - [x] Maquetado visual de alto impacto de la ficha técnica, responsive al ancho del dispositivo (escritorio y móvil comprobados).

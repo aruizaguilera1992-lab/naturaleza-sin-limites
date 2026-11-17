@@ -124,6 +124,44 @@ describe("mergeOutingSheet", () => {
     expect(sheet.level).toBe(2);
     expect(sheet.levelLabel).toBe("Intermedio");
   });
+
+  it("la duración del catálogo reescribe la pastilla y la pregunta de duración", () => {
+    const sheet = mergeOutingSheet(
+      event,
+      profile({
+        totalDuration: "Consultar disponibilidad",
+        highlights: [
+          "Espeleología en Archidona, Málaga",
+          "Duración total estimada: Consultar disponibilidad",
+        ],
+        faqs: [
+          {
+            question: "¿Cuánto dura la actividad?",
+            answer:
+              "Duración total: se confirma al cerrar la salida. Parte efectiva del recorrido: se ajusta al ritmo del grupo. Los tiempos pueden variar.",
+          },
+        ],
+      }),
+      { key: "espeleologia:iniciacion", duration: "1 a 3 horas" },
+    );
+    expect(sheet.highlights).toContain("Duración total estimada: 1 a 3 horas");
+    expect(sheet.highlights).toContain("Espeleología en Archidona, Málaga");
+    expect(sheet.faqs[0].answer).toContain("Duración total: 1 a 3 horas.");
+    expect(sheet.faqs[0].answer).toContain("Parte efectiva del recorrido");
+  });
+
+  it("sin duración en el catálogo, la ficha conserva su redacción", () => {
+    const sheet = mergeOutingSheet(
+      event,
+      profile({
+        highlights: ["Duración total estimada: 4 horas"],
+        faqs: [{ question: "¿Cuánto dura la actividad?", answer: "Duración total: 4 horas." }],
+      }),
+      { key: "espeleologia:iniciacion" },
+    );
+    expect(sheet.highlights).toEqual(["Duración total estimada: 4 horas"]);
+    expect(sheet.faqs[0].answer).toBe("Duración total: 4 horas.");
+  });
 });
 
 describe("levelFromLabel", () => {

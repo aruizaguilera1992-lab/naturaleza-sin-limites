@@ -19,7 +19,7 @@ import {
   PackageCheck,
   ShieldCheck,
   Sparkles,
-  UserCheck,
+
   Users,
   Waves,
   X,
@@ -132,6 +132,17 @@ function Stat({
       {hint ? <span className="text-[10px] leading-tight text-muted-foreground">{hint}</span> : null}
     </div>
   );
+}
+
+/**
+ * «Grupo» y «Ratio guía» repiten el mismo máximo mientras el ratio no está
+ * cerrado; el ratio solo se muestra cuando aporta una proporción concreta.
+ */
+function guideHint(group: string, ratio: string) {
+  const r = ratio.trim();
+  if (!r) return undefined;
+  const givesRatio = /\d+\s*(?:gu[ií]as?|\/\s*\d)/i.test(r);
+  return givesRatio ? r : undefined;
 }
 
 /** Lista con viñetas de verificación o numeradas. */
@@ -304,7 +315,7 @@ function Description({ blocks, labels = [] }: { blocks: DescBlock[]; labels?: st
             {b.kind === "text" ? (
               <p
                 className={cn(
-                  "mt-0.5 max-w-[80ch] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]",
+                  "mt-0.5 max-w-none text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]",
                   i === 0 && "text-foreground",
                 )}
               >
@@ -313,7 +324,7 @@ function Description({ blocks, labels = [] }: { blocks: DescBlock[]; labels?: st
             ) : (
               <>
                 {b.intro ? (
-                  <p className="mt-0.5 max-w-[80ch] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
+                  <p className="mt-0.5 max-w-none text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
                     {b.intro}
                   </p>
                 ) : null}
@@ -324,7 +335,7 @@ function Description({ blocks, labels = [] }: { blocks: DescBlock[]; labels?: st
                       className="flex gap-1.5 text-[12px] leading-snug text-muted-foreground sm:text-[13px]"
                     >
                       <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
-                      <span className="max-w-[80ch]">
+                      <span className="max-w-none">
                         {it.title ? (
                           <b className="font-semibold text-foreground">{it.title}. </b>
                         ) : null}
@@ -363,7 +374,7 @@ function Detalle({ blocks }: { blocks: DescBlock[] }) {
               <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
                 Lo esencial
               </p>
-              <p className="mt-1 max-w-[80ch] text-[13px] font-medium leading-relaxed text-foreground sm:text-sm">
+              <p className="mt-1 max-w-none text-[13px] font-medium leading-relaxed text-foreground sm:text-sm">
                 {b.text}
               </p>
             </section>
@@ -372,7 +383,7 @@ function Detalle({ blocks }: { blocks: DescBlock[] }) {
               key={`text-${i}`}
               className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2 sm:p-2.5"
             >
-              <p className="max-w-[80ch] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
+              <p className="max-w-none text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
                 {b.text}
               </p>
             </section>
@@ -387,11 +398,11 @@ function Detalle({ blocks }: { blocks: DescBlock[] }) {
               {b.label ?? "Características"}
             </p>
             {b.intro ? (
-              <p className="mt-0.5 max-w-[80ch] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
+              <p className="mt-0.5 max-w-none text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
                 {b.intro}
               </p>
             ) : null}
-            <ul className="mt-1.5 grid gap-1.5 sm:grid-cols-2">
+            <ul className="mt-1.5 grid gap-1.5">
               {b.items.map((it, j) => (
                 <li
                   key={`${it.title}-${j}`}
@@ -521,12 +532,11 @@ export function EventTechSheet({
       title: "Nivel y condiciones",
       blocks: ["nivelBig", "experience", "highlights"],
     },
-    { key: "salida", eyebrow: "Logística", title: "La salida", blocks: ["meeting", "salidaTiles"] },
     {
-      key: "recorrido",
-      eyebrow: "Itinerario",
-      title: "Recorrido",
-      blocks: sheet.technicalElements.length > 0 ? ["steps", "elements"] : ["steps"],
+      key: "salida",
+      eyebrow: "Logística e itinerario",
+      title: "La salida",
+      blocks: ["salidaTiles", "steps"],
     },
     { key: "material", eyebrow: "Material", title: "Incluye y qué llevar", blocks: ["prepGrid"] },
     {
@@ -631,11 +641,11 @@ export function EventTechSheet({
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         <Stat icon={Clock} label="Duración total" value={sheet.duration || "—"} />
         <Stat icon={CalendarRange} label="Temporada" value={sheet.season || "—"} />
-        <Stat icon={Users} label="Grupo" value={<span className="text-[13px]">{sheet.group || "—"}</span>} />
         <Stat
-          icon={UserCheck}
-          label="Ratio guía"
-          value={<span className="text-[13px]">{sheet.guideRatio || "—"}</span>}
+          icon={Users}
+          label="Grupo"
+          value={<span className="text-[13px]">{sheet.group || "—"}</span>}
+          hint={guideHint(sheet.group, sheet.guideRatio)}
         />
         <Stat
           icon={Compass}
@@ -646,25 +656,6 @@ export function EventTechSheet({
     ),
 
     steps: <Checklist icon={Compass} title="Pasos del recorrido" items={sheet.itinerary} numbered />,
-
-    elements: (
-      <section className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2.5 sm:p-3">
-        <h4 className="mb-1.5 flex items-center gap-2 font-heading text-[13px] font-bold text-foreground">
-          <Cable className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-          Elementos técnicos
-        </h4>
-        <ul className="flex flex-wrap gap-1.5">
-          {sheet.technicalElements.map((e, i) => (
-            <li
-              key={`${e}-${i}`}
-              className="rounded-full border border-border/60 bg-secondary/40 px-2 py-0.5 text-[10px] font-semibold text-foreground sm:px-3 sm:py-1.5 sm:text-xs"
-            >
-              {e}
-            </li>
-          ))}
-        </ul>
-      </section>
-    ),
 
     prepGrid: (
       <div className="grid gap-3 sm:grid-cols-2">

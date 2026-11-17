@@ -82,6 +82,24 @@ const text = (...v: (string | null | undefined)[]) => v.find((s) => Boolean(s &&
 const list = (...v: (string[] | null | undefined)[]) => v.find((s) => Array.isArray(s) && s.length > 0) ?? [];
 
 /**
+ * Los textos de duración que la ficha original redactó a partir de su propio dato
+ * (la pastilla de destacados, la descripción y las preguntas frecuentes) pasan a
+ * llevar la duración escrita en el catálogo del panel.
+ */
+const DURATION_PATTERNS: [RegExp, (d: string) => string][] = [
+  [/(Duración total(?: estimada)?):\s*[^.]+/i, (d) => `$1: ${d}`],
+  [/(duración total estimada de )[^.]+/i, (d) => `$1${d}`],
+];
+
+function withDuration(value: string, duration: string) {
+  if (!value || !duration) return value;
+  return DURATION_PATTERNS.reduce(
+    (out, [re, build]) => out.replace(re, build(duration)),
+    value,
+  );
+}
+
+/**
  * Combina la salida programada con la ficha del catálogo.
  * Orden de prioridad: lo que el admin escribió en el catálogo > datos de la salida > ficha original.
  */
@@ -92,6 +110,8 @@ export function mergeOutingSheet(
 ): OutingSheet {
   const o = override ?? {};
   const p = profile;
+  /** Duración escrita en el catálogo del panel: manda sobre la redacción de la ficha original. */
+  const catalogDuration = text(o.duration);
   const levelLabel = text(o.levelLabel, p?.experienceLevel);
   const level =
     typeof o.level === "number" && o.level >= 1 && o.level <= 3
@@ -107,7 +127,7 @@ export function mergeOutingSheet(
   return {
     title: text(o.name, event.title, p?.name),
     summary: text(o.summary, p?.shortDescription),
-    description: text(o.description, p?.commercialDescription),
+    description: withDuration(text(o.description, p?.commercialDescription), catalogDuration),
     meetingPoint: text(event.meeting_point_public, o.zone, event.zone, p?.zone),
     price,
     duration: text(o.duration, p?.totalDuration),
@@ -129,14 +149,16 @@ export function mergeOutingSheet(
     technicalElements: list(p?.technicalElements),
     itinerary: list(p?.itinerary),
     insurancePermits: list(p?.insurancePermits),
-    highlights: list(p?.highlights),
+    highlights: list(p?.highlights).map((h) => withDuration(h, catalogDuration)),
     season: text(p?.season),
     group: text(p?.group),
     guideRatio: text(p?.guideRatio),
     approachReturn: text(p?.approachReturn),
     weatherPolicy: text(p?.weatherPolicy),
     cancellationPolicy: text(p?.cancellationPolicy),
-    faqs: Array.isArray(p?.faqs) ? p.faqs : [],
+    faqs: Array.isArray(p?.faqs)
+      ? p.faqs.map((f) => ({ ...f, answer: withDuration(f.answer, catalogDuration) }))
+      : [],
     fromCatalog: Boolean(o.key),
   };
 }

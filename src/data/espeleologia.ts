@@ -70,7 +70,7 @@ export const actividadesEspeleologia: ActividadEspeleologia[] = [
       'Primera toma de contacto con el mundo subterráneo: desplazamiento por galerías, uso del frontal y técnica básica de progresión.',
     descripcionLarga:
       'Una salida guiada pensada para quien nunca ha entrado en una cavidad. Trabajamos la orientación bajo tierra, el desplazamiento seguro por galerías y gateras amplias, el uso correcto del casco y la iluminación, y los hábitos de mínimo impacto dentro de la cueva. El recorrido se elige el mismo día en función del grupo, el nivel y el estado de la cavidad.',
-    caracteristicas: ['Apta para principiantes', 'Sin material propio', 'Grupo reducido', 'Ritmo adaptado'],
+    caracteristicas: ['Apta para principiantes', 'Grupo reducido', 'Ritmo adaptado'],
     mejorEpoca: 'Todo el año ',
     grupoMinimo: 2,
     materialIncluido: true,

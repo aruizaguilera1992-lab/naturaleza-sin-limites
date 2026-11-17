@@ -126,10 +126,8 @@ it("opens the full technical sheet and offers booking from every slide", async (
     "Duración total",
     "Temporada",
     "Grupo",
-    "Ratio guía",
     "Aproximación",
     "Pasos del recorrido",
-    "Elementos técnicos",
     "Incluye",
     "Qué llevar",
     "Requisitos de seguridad",
@@ -150,7 +148,32 @@ it("opens the full technical sheet and offers booking from every slide", async (
   expect(within(sheet).getByText("Dudas frecuentes")).toBeInTheDocument();
 });
 
-it("shows the meeting point with map links and side navigation arrows", async () => {
+it("reúne la logística y el recorrido en una sola diapositiva", async () => {
+  renderAgenda();
+  fireEvent.click(
+    screen.getByRole("button", {
+      name: "Me apunto a Espeleología de iniciación: Travesía Cueva de la Higuera",
+    }),
+  );
+  const sheet = await screen.findByRole("dialog");
+
+  const slides: string[] = [];
+  for (let i = 0; i < 25; i++) {
+    slides.push(sheet.textContent ?? "");
+    const next = within(sheet).queryByRole("button", { name: /Diapositiva siguiente/ });
+    if (!next) break;
+    fireEvent.click(next);
+  }
+
+  // La logística y el itinerario se ven juntos, en la misma diapositiva.
+  expect(
+    slides.some((s) => s.includes("Duración total") && s.includes("Pasos del recorrido")),
+  ).toBe(true);
+  // Ya no queda una diapositiva suelta de «Recorrido».
+  expect(slides.some((s) => /(^|\n)Recorrido/.test(s) && !s.includes("Duración total"))).toBe(false);
+});
+
+it("muestra el punto de encuentro con los enlaces de mapas y las flechas laterales", async () => {
   renderAgenda();
   fireEvent.click(
     screen.getByRole("button", {

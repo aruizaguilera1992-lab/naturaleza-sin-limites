@@ -130,12 +130,12 @@ export default function ReservarActividad() {
   }, [selectedEventId, eventsLoading, eventsError, events]);
 
   const maxPeople = selectedEvent ? Math.min(MAX_PEOPLE, selectedEvent.freeSeats) : MAX_PEOPLE;
-  const participantOptions = maxPeople < 2 ? [1] : [2, 3, 4, 5, 6].filter((n) => n <= MAX_PEOPLE);
+  // Una plaza suelta es una reserva válida: el grupo abierto se vende por persona.
+  const participantOptions = [1, 2, 3, 4, 5, 6].filter((n) => n <= maxPeople);
   // Keep the chosen participant count within the available seats and visible options.
   useEffect(() => {
     setForm((prev) => {
       if (prev.participants > maxPeople) return { ...prev, participants: Math.max(1, maxPeople) };
-      if (maxPeople >= 2 && prev.participants < 2) return { ...prev, participants: 2 };
       return prev;
     });
   }, [maxPeople]);
