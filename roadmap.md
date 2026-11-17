@@ -1,5 +1,12 @@
 # Roadmap
 
+## Ficha técnica de salidas (17/11/2026)
+- [x] «Me apunto» en la tarjeta de la agenda; la ficha técnica se abre al pulsar y muestra el botón de reserva.
+- [x] Maquetado visual de alto impacto de la ficha técnica, responsive al ancho del dispositivo (escritorio y móvil comprobados).
+- [x] Sincronizar la ficha técnica con la información editada en el catálogo del panel: todos los campos con datos correctos, claros y visualmente atractivos.
+- [x] Quitar la barra de desplazamiento de la ficha técnica y sustituirla por otra opción que mantenga el estilo visual.
+- [x] Maquetar la ficha técnica como diapositivas tipo presentación: todos los datos de la actividad y una sección de dudas.
+
 ## Retirada del asistente con IA de fichas (17/11/2026)
 - [x] Quitar el botón «Asistente con IA» de grupo privado y grupo abierto, borrar su código y su función del backend; 166 pruebas y compilación OK, ambos formularios comprobados en pantalla, sin publicar.
 

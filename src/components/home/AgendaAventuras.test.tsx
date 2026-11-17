@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, expect, it, vi } from "vitest";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
@@ -52,6 +52,12 @@ const { event } = vi.hoisted(() => ({
       insurancePermits: ["Seguro de accidentes y RC"],
       weatherPolicy: "Si la meteorología no es segura, proponemos nueva fecha.",
       cancellationPolicy: "Se facilitan por escrito antes de confirmar.",
+      faqs: [
+        {
+          question: "¿Necesito experiencia previa?",
+          answer: "No para la salida de iniciación.",
+        },
+      ],
     },
   },
 }));
@@ -82,20 +88,60 @@ it("opens the full technical sheet on click and only then offers booking", async
   renderAgenda();
   fireEvent.click(
     screen.getByRole("button", {
-      name: "Ver ficha técnica de Espeleología de iniciación: Travesía Cueva de la Higuera",
+      name: "Me apunto a Espeleología de iniciación: Travesía Cueva de la Higuera",
     }),
   );
   const sheet = await screen.findByRole("dialog");
   expect(sheet).toBeInTheDocument();
-  expect(screen.getByText("Punto de encuentro")).toBeInTheDocument();
-  expect(screen.getByText("Plazas libres")).toBeInTheDocument();
-  expect(screen.getByText("Nivel técnico")).toBeInTheDocument();
-  expect(screen.getByText("Requisitos de seguridad")).toBeInTheDocument();
+  expect(within(sheet).queryByRole("link", { name: /Reservar plaza/ })).toBeNull();
+
+  // Se recorre la ficha diapositiva a diapositiva y se anota lo que muestra cada una.
+  const seen: string[] = [];
+  for (let i = 0; i < 25; i++) {
+    seen.push(sheet.textContent ?? "");
+    const next = within(sheet).queryByRole("button", { name: /Siguiente/ });
+    if (!next) break;
+    fireEvent.click(next);
+  }
+  const all = seen.join("\n");
+
+  // Todos los datos de la actividad aparecen en alguna diapositiva.
+  for (const dato of [
+    "Fecha",
+    "Precio",
+    "Plazas libres",
+    "Nivel",
+    "Grado técnico",
+    "Edad mínima",
+    "Condición física",
+    "Punto de encuentro",
+    "Duración total",
+    "Actividad efectiva",
+    "Temporada",
+    "Grupo",
+    "Ratio guía",
+    "Aproximación",
+    "Pasos del recorrido",
+    "Elementos técnicos",
+    "Incluye",
+    "Qué llevar",
+    "Requisitos de seguridad",
+    "Seguros y permisos",
+    "Meteorología",
+    "Cancelación",
+    "Norma de prueba",
+    "Paso de prueba",
+    "Dudas frecuentes",
+    "¿Necesito experiencia previa?",
+  ]) {
+    expect(all).toContain(dato);
+  }
+
+  // La reserva solo se ofrece al final del recorrido.
+  expect(within(sheet).getByText("Dudas frecuentes")).toBeInTheDocument();
   await waitFor(() =>
     expect(
-      screen.getByRole("link", {
-        name: /Reservar plaza/,
-      }),
+      within(sheet).getByRole("link", { name: /Reservar plaza/ }),
     ).toHaveAttribute("href", "/reservar/espeleologia/cueva-de-la-higuera?evento=evt-1"),
   );
 });
