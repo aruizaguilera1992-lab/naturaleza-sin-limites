@@ -17,6 +17,9 @@ import {
 } from "@/components/ui/select";
 import { activityProfiles, isSellable } from "@/data/activityProfiles";
 import { DeleteRecordButton } from "@/components/admin/DeleteControls";
+import { EventTechSheet } from "@/components/calendario/EventTechSheet";
+import { getActivityProfile, type ActivityProfile } from "@/data/activityProfiles";
+import { Eye } from "lucide-react";
 
 interface EventRow {
   id: string;
@@ -273,6 +276,28 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
       steps: form.steps.trim() || null,
     };
   };
+
+  /** Salida tal como la vería un cliente en la web, con los cambios aún sin guardar. */
+  const previewEvent = useMemo(() => {
+    if (!selectedActivity || !form.startsAt) return null;
+    const profile: ActivityProfile | undefined = getActivityProfile(selectedActivity.category, selectedActivity.slug);
+    if (!profile) return null;
+    const payload = buildPayload(form.startsAt);
+    const reserved = events.find((e) => e.id === editingId)?.seats_reserved ?? 0;
+    const freeSeats = Math.max(payload.capacity_total - reserved, 0);
+    return {
+      ...payload,
+      id: editingId ?? "vista-previa",
+      seats_reserved: reserved,
+      profile,
+      startDate: new Date(payload.starts_at),
+      freeSeats,
+      isFull: freeSeats <= 0,
+      pricePerPerson: payload.price_cents ? payload.price_cents / 100 : profile.priceValue,
+      zone: payload.meeting_point_public?.trim() || profile.zone,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form, selectedActivity, editingId, events]);
 
   const validate = (event?: EventRow) => {
     if (!selectedActivity) return "Elige una actividad del catálogo vendible.";
@@ -764,6 +789,21 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {editingId ? "Guardar cambios" : "Crear salida"}
             </Button>
+            {previewEvent ? (
+              <EventTechSheet
+                event={previewEvent}
+                bookingUrl="#"
+                trigger={
+                  <Button type="button" variant="secondary">
+                    <Eye className="mr-2 h-4 w-4" /> Vista previa en la web
+                  </Button>
+                }
+              />
+            ) : (
+              <Button type="button" variant="secondary" disabled title="Elige actividad y fecha">
+                <Eye className="mr-2 h-4 w-4" /> Vista previa en la web
+              </Button>
+            )}
             <Button variant="outline" onClick={resetForm}>
               Cancelar
             </Button>
