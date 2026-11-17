@@ -535,7 +535,7 @@ export function EventTechSheet({
     {
       key: "salida",
       eyebrow: "Logística e itinerario",
-      title: "La salida",
+      title: "Cronograma de la actividad",
       blocks: ["salidaSplit"],
     },
     { key: "material", eyebrow: "Material", title: "Incluye y qué llevar", blocks: ["prepGrid"] },
