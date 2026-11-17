@@ -28,6 +28,8 @@ export interface SheetContent {
   experience: boolean;
   photo: string | null; // clave de levelOfferPhotos o «storage:<ruta>» para fotos propias del catálogo
   customerName: string;
+  /** Solicitud web de origen: al aceptar, la ficha reutiliza esa reserva en lugar de crear otra. */
+  sourceBookingId?: string;
 }
 
 export interface SheetBase { id: string; label: string; discipline: SheetContent['discipline'] }
@@ -117,7 +119,7 @@ export function sheetFromRequest(p: SheetRequestPrefill): SheetContent {
     : `${discipline ?? 'barranquismo'}-${tier}`;
   const c = sheetFromBase(sheetBases.some((b) => b.id === base) ? base : sheetBases[0].id);
   const n = parseInt(p.people ?? '', 10);
-  return { ...c, customerName: (p.name ?? '').trim(), date: p.date ?? '',
+  return { ...c, sourceBookingId: p.bookingId, customerName: (p.name ?? '').trim(), date: p.date ?? '',
     people: Number.isFinite(n) ? Math.min(MAX_SHEET_PEOPLE, Math.max(1, n)) : c.people,
     notes: p.message?.trim() ? `Mensaje del cliente: ${p.message.trim()}` : '' };
 }
