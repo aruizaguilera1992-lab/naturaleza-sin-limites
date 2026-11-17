@@ -3664,7 +3664,7 @@ import { z as z3 } from "npm:zod@^3.25.76";
 // src/data/blogPosts.ts
 var defaultAuthor = {
   name: "Antonio Ruiz Aguilera",
-  avatar: "/placeholder.svg",
+  avatar: "/images/avatar-antonio.webp",
   bio: "Fundador de Naturaleza Sin L\xEDmites y T\xE9cnico Deportivo TD2 en Espeleolog\xEDa. Comparte experiencias de aventura y formaci\xF3n con un enfoque cercano y responsable.",
   socialLinks: {
     instagram: "https://instagram.com/naturaleza.sinlimites"

@@ -1,5 +1,8 @@
 # Roadmap
 
+## Imágenes de tarjetas de capacidades (17/11/2026)
+- [x] Añadir fotografía de fondo a las tarjetas 03 «Movilidad y estabilidad» y 04 «Progreso con criterio» de «Lo que la montaña te pide» en /vertigo-sapiens, con fotos ya licenciadas del proyecto; comprobado en escritorio y móvil sin publicar.
+
 ## Motivos visuales de capacidades físicas
 - [x] Añadir cuatro motivos lineales naranjas: ascenso continuo, tensión/agarre, articulación estable y progresión escalonada; escritorio y móvil comprobados, compilación OK, sin publicar.
 

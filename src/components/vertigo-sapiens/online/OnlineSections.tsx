@@ -77,8 +77,8 @@ export function OnlineHero() {
 const benefits = [
   { icon: Timer, title: 'Resistencia', text: 'Llega entero al final de la jornada: aproximaciones largas, desniveles y horas de actividad sin perder energía.', img: '/images/functional-training-documentary.jpg' },
   { icon: Dumbbell, title: 'Fuerza funcional', text: 'Tracción, piernas, core y agarre para trepar, cargar la mochila y moverte con seguridad en cuerda.', img: '/images/rope-detail-documentary.jpg' },
-  { icon: Mountain, title: 'Movilidad y estabilidad', text: 'Articulaciones preparadas para pasos amplios, apoyos inestables y posturas exigentes en roca o cueva.', img: null },
-  { icon: LineChart, title: 'Progreso con criterio', text: 'Cada sesión queda registrada para ver tu evolución y ajustar el plan semana a semana.', img: null },
+  { icon: Mountain, title: 'Movilidad y estabilidad', text: 'Articulaciones preparadas para pasos amplios, apoyos inestables y posturas exigentes en roca o cueva.', img: '/images/vias-ferratas.webp' },
+  { icon: LineChart, title: 'Progreso con criterio', text: 'Cada sesión queda registrada para ver tu evolución y ajustar el plan semana a semana.', img: '/images/caminito-del-rey-malaga.jpg' },
 ];
 
 const capacityPaths = [
