@@ -236,7 +236,12 @@ function packParagraphs(text: string, maxChars: number): string[] {
   return out;
 }
 
-type ListBlock = { kind: "list"; label?: string; items: { title: string; body: string }[] };
+type ListBlock = {
+  kind: "list";
+  label?: string;
+  intro?: string;
+  items: { title: string; body: string }[];
+};
 type DescBlock = { kind: "text"; text: string } | ListBlock;
 
 /** Separa la descripción en párrafos cortos y una lista de características. */
@@ -305,22 +310,29 @@ function Description({ blocks, labels = [] }: { blocks: DescBlock[]; labels?: st
                 {b.text}
               </p>
             ) : (
-              <ul className="mt-1 space-y-1">
-                {b.items.map((it, j) => (
-                  <li
-                    key={`${it.title}-${j}`}
-                    className="flex gap-1.5 text-[12px] leading-snug text-muted-foreground sm:text-[13px]"
-                  >
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
-                    <span className="max-w-[80ch]">
-                      {it.title ? (
-                        <b className="font-semibold text-foreground">{it.title}. </b>
-                      ) : null}
-                      {it.body}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <>
+                {b.intro ? (
+                  <p className="mt-0.5 max-w-[80ch] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
+                    {b.intro}
+                  </p>
+                ) : null}
+                <ul className="mt-1 space-y-1">
+                  {b.items.map((it, j) => (
+                    <li
+                      key={`${it.title}-${j}`}
+                      className="flex gap-1.5 text-[12px] leading-snug text-muted-foreground sm:text-[13px]"
+                    >
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
+                      <span className="max-w-[80ch]">
+                        {it.title ? (
+                          <b className="font-semibold text-foreground">{it.title}. </b>
+                        ) : null}
+                        {it.body}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </>
             )}
           </section>
         );
@@ -375,10 +387,13 @@ export function EventTechSheet({
     ...(desc.paragraphs[0] ? [{ kind: "text", text: desc.paragraphs[0] } as DescBlock] : []),
     ...(listShown ? [listShown] : []),
   ];
-  const descRest: DescBlock[] = [
-    ...desc.paragraphs.slice(1).map((t) => ({ kind: "text", text: t }) as DescBlock),
-    ...(listRest ? [listRest] : []),
-  ];
+  const extraParas = desc.paragraphs.slice(1);
+  const descRest: DescBlock[] = listRest
+    ? [
+        { ...listRest, intro: extraParas[0] },
+        ...extraParas.slice(1).map((t) => ({ kind: "text", text: t }) as DescBlock),
+      ]
+    : extraParas.map((t) => ({ kind: "text", text: t }) as DescBlock);
 
   /* ---- Diapositivas: se arman según la pantalla y los datos que existen ---- */
   const faqGroups = chunkEven(sheet.faqs, wide ? FAQ_PER_SLIDE.wide : FAQ_PER_SLIDE.compact);
@@ -667,12 +682,13 @@ export function EventTechSheet({
           {/* Pie: datos de decisión + navegación entre diapositivas */}
           <div className="flex shrink-0 flex-col gap-1.5 border-t border-border bg-background px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p className="text-xs text-muted-foreground sm:text-sm">
-              <span className="capitalize">{dateLabel}</span>
+              <span className="capitalize sm:hidden">{dateShort}</span>
+              <span className="capitalize hidden sm:inline">{dateLabel}</span>
               <span className="mx-1.5 text-muted-foreground/40">·</span>
               <span className="font-heading text-base font-bold text-primary sm:text-lg">
                 {priceLabel}
               </span>{" "}
-              <span className="text-[11px]">/ persona · señal del 30 %</span>
+              <span className="whitespace-nowrap text-[11px]">/ persona · señal del 30 %</span>
             </p>
             <div className="flex flex-wrap items-center justify-between gap-2 sm:justify-end">
               <div className="mr-1 flex items-center gap-1">

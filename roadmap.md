@@ -260,7 +260,7 @@
 - [x] Borrar salidas de grupo abierto desde Salidas (RPC admin_delete_activity_event; rechaza si hay reservas activas)
 - [x] Cambiar imágenes de tarjetas en Contacto (ContactPathsSection)
 
-- [ ] Reserva disponible desde todas las diapositivas de la ficha técnica
-- [ ] Actualizar las preguntas frecuentes de cada actividad según los detalles de su ficha del catálogo
-- [ ] Descripción maquetada en la primera diapositiva y mínimo de diapositivas en la ficha
-- [ ] Maquetar la información de la ficha para lectura fácil (párrafos y listas) — en curso
+- [x] Reserva disponible desde todas las diapositivas de la ficha técnica
+- [x] Actualizar las preguntas frecuentes de cada actividad según los detalles de su ficha del catálogo
+- [x] Descripción maquetada en la primera diapositiva y mínimo de diapositivas en la ficha
+- [x] Maquetar la información de la ficha para lectura fácil (párrafos y listas)
