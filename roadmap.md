@@ -1,5 +1,8 @@
 # Roadmap
 
+## Retirada del asistente con IA de fichas (17/11/2026)
+- [x] Quitar el botón «Asistente con IA» de grupo privado y grupo abierto, borrar su código y su función del backend; 166 pruebas y compilación OK, ambos formularios comprobados en pantalla, sin publicar.
+
 ## Carrusel lateral de vídeos en el blog
 - [x] Convertir la sección «Vídeos de Naturaleza Sin Límites» en un carrusel lateral con flechas y enlace al canal; 1 tarjeta en móvil, 3 en escritorio, comprobado con sesión sin aviso de cookies, sin publicar.
 
