@@ -26,3 +26,21 @@ describe('activity sheets', () => {
     expect(sheetState({ status: 'enviada', expires_at: null, first_viewed_at: '2026-11-16T10:00:00Z' }, now)).toBe('vista');
   });
 });
+
+import { sheetFromRequest as fromReq } from './activitySheets';
+describe('sheetFromRequest', () => {
+  const base = { bookingId: 'b', activity: 'Barranquismo', date: '2026-11-21', people: '3', level: 'Avanzado', name: 'silvia', email: 'a@b.es', phone: '666', message: 'Quiero algo exigente' };
+  it('copia fecha, personas, nombre y mensaje y elige nivel', () => {
+    const c = fromReq(base);
+    expect(c.base).toBe('barranquismo-avanzado');
+    expect(c.date).toBe('2026-11-21');
+    expect(c.people).toBe(3);
+    expect(c.customerName).toBe('silvia');
+    expect(c.notes).toContain('Quiero algo exigente');
+  });
+  it('limita personas a 6 y reconoce ferratas', () => {
+    const c = fromReq({ ...base, activity: 'Vía ferrata', level: 'Intermedio', people: '9' });
+    expect(c.base).toBe('ferratas-intermedio');
+    expect(c.people).toBe(6);
+  });
+});

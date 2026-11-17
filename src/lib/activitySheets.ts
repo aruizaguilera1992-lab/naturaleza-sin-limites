@@ -103,3 +103,21 @@ export function sheetFromCatalog(item: CatalogItem): SheetContent {
     requirements: [...item.requirements], notes: '', minAge: item.minAge, fitness: item.fitness, experience: item.experience,
     photo: item.photos[0] ? `${STORAGE_PHOTO}${item.photos[0]}` : null, customerName: '' };
 }
+
+export interface SheetRequestPrefill { bookingId: string; activity: string; date: string | null; people: string | null; level: string | null; name: string | null; email: string | null; phone: string | null; message: string | null }
+
+const norm = (s: string | null | undefined) => (s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+/** Ficha nueva a partir de una solicitud web: elige nivel por actividad + experiencia y copia los datos del cliente. */
+export function sheetFromRequest(p: SheetRequestPrefill): SheetContent {
+  const a = norm(p.activity), l = norm(p.level);
+  const discipline = a.includes('ferrat') ? 'ferratas' : a.includes('espeleo') || a.includes('cueva') ? 'espeleologia' : a.includes('barran') ? 'barranquismo' : null;
+  const tier = l.includes('avanz') || l.includes('experto') ? 'avanzado' : l.includes('inter') ? 'intermedio' : 'iniciacion';
+  const base = discipline === 'espeleologia' ? (sheetBases.find((b) => b.discipline === 'espeleologia')?.id ?? sheetBases[0].id)
+    : `${discipline ?? 'barranquismo'}-${tier}`;
+  const c = sheetFromBase(sheetBases.some((b) => b.id === base) ? base : sheetBases[0].id);
+  const n = parseInt(p.people ?? '', 10);
+  return { ...c, customerName: (p.name ?? '').trim(), date: p.date ?? '',
+    people: Number.isFinite(n) ? Math.min(MAX_SHEET_PEOPLE, Math.max(1, n)) : c.people,
+    notes: p.message?.trim() ? `Mensaje del cliente: ${p.message.trim()}` : '' };
+}
