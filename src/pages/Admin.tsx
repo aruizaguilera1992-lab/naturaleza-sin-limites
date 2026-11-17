@@ -1038,8 +1038,6 @@ export default function Admin() {
           )}
         </section>
 
-        <DossierPanel key={`dossier-${b.id}`} booking={b} defaultRules={(ev as { rules?: string | null } | undefined)?.rules ?? null} />
-
         <section aria-labelledby="fin-title" className="mt-4 rounded-xl border border-border bg-background/60 p-4">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h3 id="fin-title" className="font-heading font-semibold text-foreground">Resumen económico</h3>
@@ -1177,6 +1175,7 @@ export default function Admin() {
         <BookingEditForm key={`edit-${b.id}-${b.updated_at ?? ""}`} booking={b} onSaved={(patch) => setBookings((prev) => prev.map((r) => (r.id === b.id ? { ...r, ...patch } : r)))} />
         <div className="mt-6"><StatusSelect table="bookings" id={b.id} value={b.status} /></div>
         <NotesField key={b.id} id={b.id} value={b.admin_notes} onSave={(n) => updateNotes("bookings", b.id, n)} />
+        <DossierPanel key={`dossier-${b.id}`} booking={b} defaultRules={(ev as { rules?: string | null } | undefined)?.rules ?? null} />
         <DeleteRecordButton target="booking" id={b.id} onDeleted={() => { setSelectedId(null); loadData(); }} />
       </section>
     );
