@@ -3759,96 +3759,68 @@ En Naturaleza Sin L\xEDmites te acompa\xF1amos en cada paso, garantizando una ex
   },
   {
     id: "2",
-    title: "3 V\xEDas Ferratas Espectaculares de Andaluc\xEDa (y por qu\xE9 el Caminito del Rey no es una)",
+    title: "\xBFQu\xE9 es una v\xEDa ferrata? Gu\xEDa sencilla para entenderla",
     slug: "5-vias-ferratas-mas-espectaculares-andalucia",
-    excerpt: "Tres v\xEDas ferratas del sur de Espa\xF1a, con datos de fuentes oficiales, y por qu\xE9 el Caminito del Rey es un sendero de pasarelas y no una ferrata.",
+    excerpt: "Una v\xEDa ferrata es un itinerario equipado en la roca: te contamos qu\xE9 lleva, c\xF3mo te aseguras al cable de vida, qu\xE9 significa el grado K y qu\xE9 nivel te corresponde.",
     content: `
-## El Auge de las V\xEDas Ferratas en Andaluc\xEDa
+## Qu\xE9 es una v\xEDa ferrata
 
-Las v\xEDas ferratas han experimentado un boom en los \xFAltimos a\xF1os, y Andaluc\xEDa se ha convertido en uno de los destinos m\xE1s atractivos de Espa\xF1a para practicar esta actividad. La combinaci\xF3n de paisajes espectaculares, buen clima durante casi todo el a\xF1o y una creciente oferta de rutas equipadas hace de nuestra regi\xF3n un para\xEDso para los amantes de la aventura vertical.
+Una v\xEDa ferrata es un itinerario que discurre por la roca y que ya est\xE1 equipado para poder progresar sin tener que escalar de cero: la pared lleva fijados pelda\xF1os o grapas met\xE1licas, y a lo largo de todo el recorrido corre un cable de vida de acero. Avanzas trepando y apoy\xE1ndote en esos pelda\xF1os, sujeto al cable con tu arn\xE9s y un disipador de energ\xEDa, de modo que un resbal\xF3n queda retenido por la l\xEDnea de vida.
 
-## \xBFQu\xE9 es una V\xEDa Ferrata?
+Es un punto intermedio entre un sendero y la escalada: no necesitas saber escalar ni tener experiencia previa, pero s\xED moverte por la vertical con calma y seguir las indicaciones del gu\xEDa.
 
-Para los no iniciados, una v\xEDa ferrata es un itinerario vertical u horizontal equipado con:
+## Qu\xE9 lleva equipado el recorrido
 
-- **Pelda\xF1os y grapas**: Clavados en la roca para facilitar la progresi\xF3n
-- **Cable de vida**: Una l\xEDnea de acero continua para asegurarte
-- **Puentes colgantes**: En algunas rutas, a\xF1aden emoci\xF3n extra
+- **Grapas y pelda\xF1os**: piezas met\xE1licas clavadas en la roca para apoyar pies y manos
+- **Cable de vida**: una l\xEDnea de acero continua que recorre toda la v\xEDa
+- **Mosquetones y disipador**: las piezas con las que te enganchas al cable
+- **Elementos a\xF1adidos**: seg\xFAn la ruta, puentes, pasamanos o tirolinas
 
-> "Las v\xEDas ferratas democratizan la monta\xF1a, permitiendo a personas sin experiencia en escalada disfrutar de la verticalidad."
+## C\xF3mo te aseguras
 
-## Primero, una aclaraci\xF3n: el Caminito del Rey no es una v\xEDa ferrata
+Antes de empezar, el gu\xEDa repasa el equipo y su uso: casco, arn\xE9s y disipador de energ\xEDa con dos mosquetones. La regla es sencilla: siempre hay un mosquet\xF3n enganchado al cable, y se cambian de anclaje de uno en uno. As\xED, en ning\xFAn momento quedas suelto.
 
-El Caminito del Rey es un **sendero de pasarelas** con entrada y horarios propios ([informaci\xF3n oficial](https://www.caminitodelrey.info/es/tu-visita/acceso-recorrido)). No se recorre con disipador ni cable de vida y no tiene clasificaci\xF3n K de ferrata, por eso no lo incluimos en esta comparativa. La V\xEDa Ferrata El Chorro es otra actividad distinta y **no incluye la entrada al Caminito del Rey**.
+## La escala K: qu\xE9 significa el n\xFAmero
 
-## 3 ferratas imprescindibles
+Las v\xEDas ferratas se clasifican con la escala H\xFCsler, de **K1 a K6**. El n\xFAmero indica la dificultad del recorrido. K1 y K2 son itinerarios sencillos, con poca pendiente y exposici\xF3n reducida. K3 y K4 suman tramos verticales seguidos, puentes y m\xE1s altura sobre el vac\xEDo. K5 y K6 requieren experiencia, brazos fuertes y tolerar bien la altura.
 
-### 1. V\xEDa Ferrata El Chorro (M\xE1laga)
+En nuestro cat\xE1logo trabajamos rutas de K2 a K5, repartidas por M\xE1laga y el resto de Andaluc\xEDa.
 
-Muy a\xE9rea y no apta para personas con v\xE9rtigo. Combina subidas de pelda\xF1os, puente tibetano, puente nepal\xED y una tirolina de unos 35 m.
+## Los tres niveles que ofrecemos
 
-**Datos clave** (gu\xEDa t\xE9cnica del Ayuntamiento de M\xE1laga y Visit Costa del Sol):
-- Dificultad: K3
-- Recorrido equipado: unos 650 m
-- Desnivel positivo: unos 250 m
-- Recorrido: unas 3 h (ida y vuelta). La jornada guiada completa, con briefing y equipaci\xF3n, es m\xE1s larga.
+| Nivel | Grados | Para qui\xE9n |
+|-------|--------|------------|
+| [Iniciaci\xF3n](/niveles/ferratas-iniciacion) | K1\u2013K2 | Sin experiencia previa; ni\xF1os desde 10 a\xF1os |
+| [Intermedio](/niveles/ferratas-intermedio) | K3\u2013K4 | Quien ya ha hecho una ferrata de iniciaci\xF3n |
+| [Avanzado](/niveles/ferratas-avanzado) | K5\u2013K6 | Con experiencia previa y buena condici\xF3n f\xEDsica |
 
-[Ver ficha de la V\xEDa Ferrata El Chorro](/actividades/vias-ferratas/ferrata-el-chorro)
+## Qu\xE9 necesitas y qui\xE9n puede hacerla
 
-### 2. V\xEDas ferratas del Tajo de Ronda
+- **Sin experiencia**: el nivel de iniciaci\xF3n est\xE1 pensado para empezar desde cero
+- **Edad m\xEDnima**: desde 10 a\xF1os en iniciaci\xF3n
+- **Condici\xF3n f\xEDsica**: b\xE1sica en iniciaci\xF3n; media o alta seg\xFAn el nivel
+- **Altura**: si te cuesta el vac\xEDo, empieza por una ruta de baja exposici\xF3n
 
-Ronda vista desde una perspectiva completamente diferente. En el Tajo hay m\xE1s de una variante, con dificultades distintas, as\xED que no damos una cifra \xFAnica: consulta la ficha de la variante que ofrecemos.
+## Diferencia con un sendero de pasarelas
 
-[Ver ficha de la V\xEDa Ferrata Tajo de Ronda I (La Sevillana)](/actividades/vias-ferratas/ferrata-tajo-ronda-sevillana)
+No todo camino colgado de un risco es una v\xEDa ferrata. Un sendero de pasarelas, como el Caminito del Rey, se recorre andando por un camino con barandilla, sin arn\xE9s ni cable de vida y sin clasificaci\xF3n K. En una ferrata s\xED te aseguras al cable y trepas por la roca.
 
-### 3. V\xEDa Ferrata de Atajate
+## Antes de reservar
 
-Una joya escondida en la Serran\xEDa de Ronda, con vistas al valle del Genal. Los datos t\xE9cnicos y la clasificaci\xF3n est\xE1n en su ficha del cat\xE1logo.
+Revisa la clasificaci\xF3n y los requisitos de la ruta que te interesa: no todas son para el mismo nivel. Si es tu primera vez, lo m\xE1s c\xF3modo es contratar la jornada guiada, que incluye el equipo, el repaso previo y el acompa\xF1amiento durante todo el recorrido.
 
-[Ver ficha de la V\xEDa Ferrata de Atajate](/actividades/vias-ferratas/ferrata-atajate)
-
-## Comparativa r\xE1pida
-
-| V\xEDa ferrata | Dificultad | Ficha |
-|-------------|------------|-------|
-| El Chorro | K3 | [Ver ficha](/actividades/vias-ferratas/ferrata-el-chorro) |
-| Tajo de Ronda | Seg\xFAn variante | [Ver ficha](/actividades/vias-ferratas/ferrata-tajo-ronda-sevillana) |
-| Atajate | Ver ficha | [Ver ficha](/actividades/vias-ferratas/ferrata-atajate) |
-
-## Preparaci\xF3n y Seguridad
-
-Antes de lanzarte a conquistar estas v\xEDas, ten en cuenta:
-
-1. **Formaci\xF3n previa**: Si es tu primera vez, contrata un gu\xEDa
-2. **Equipo adecuado**: Arn\xE9s, casco, disipador de energ\xEDa y mosquetones espec\xEDficos
-3. **Condiciones meteorol\xF3gicas**: Nunca hagas una ferrata con lluvia o riesgo de tormenta
-4. **Condici\xF3n f\xEDsica**: Aunque no requieren ser atleta, s\xED demandan resistencia
-
-## La Experiencia con Gu\xEDa
-
-Realizar estas v\xEDas con un gu\xEDa profesional te permite:
-
-- Aprender las t\xE9cnicas correctas desde el principio
-- Conocer la historia y curiosidades de cada ruta
-- Tener apoyo en los tramos m\xE1s exigentes
-- Disfrutar sin preocuparte por la log\xEDstica
-
-## Conclusi\xF3n
-
-Andaluc\xEDa ofrece un abanico de posibilidades para disfrutar de las v\xEDas ferratas. Antes de elegir, revisa la clasificaci\xF3n y los requisitos de cada ficha: no todas son para el mismo nivel.
-
-\xBFCu\xE1l ser\xE1 tu pr\xF3xima aventura vertical?
+Puedes ver todas las opciones en [v\xEDas ferratas](/vias-ferratas) o escribirnos por WhatsApp y te decimos qu\xE9 nivel encaja contigo.
     `,
     featuredImage: media.ferrata.src,
-    category: "rutas-recomendadas",
-    tags: ["v\xEDas ferratas", "andaluc\xEDa", "rutas", "aventura"],
+    category: "formacion",
+    tags: ["v\xEDas ferratas", "iniciaci\xF3n", "monta\xF1a", "seguridad"],
     author: defaultAuthor,
     publishedAt: "2024-01-08",
-    readTime: 10,
+    readTime: 3,
     views: 2340,
     seo: {
-      metaTitle: "3 V\xEDas Ferratas Espectaculares de Andaluc\xEDa | Naturaleza Sin L\xEDmites",
-      metaDescription: "V\xEDa Ferrata El Chorro (K3), Tajo de Ronda y Atajate, con datos oficiales. Y por qu\xE9 el Caminito del Rey es un sendero de pasarelas, no una ferrata.",
+      metaTitle: "\xBFQu\xE9 es una v\xEDa ferrata? Definici\xF3n sencilla | Naturaleza Sin L\xEDmites",
+      metaDescription: "Qu\xE9 es una v\xEDa ferrata, qu\xE9 equipo lleva el recorrido, c\xF3mo te aseguras al cable de vida, qu\xE9 significa la escala K de dificultad y qu\xE9 nivel te corresponde.",
       ogImage: media.ferrata.src
     }
   },

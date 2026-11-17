@@ -224,7 +224,6 @@ Puedes ver todas las opciones en [vías ferratas](/vias-ferratas) o escribirnos 
       ogImage: media.ferrata.src,
     },
   },
-  },
   {
     id: "3",
     title: "Técnicas de Rappel: Del Básico al Avanzado",
