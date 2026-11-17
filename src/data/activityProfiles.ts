@@ -294,7 +294,7 @@ function fromBarranco(item: Barranco): ActivityProfile {
       experience
         ? `Nivel de experiencia ${experience.toLowerCase()}; sujeto a valoración previa`
         : item.nivelExperiencia === "principiante"
-        ? "No; sujeto a valoración previa"
+        ? "No exige experiencia previa "
         : `Sí o experiencia equivalente; nivel ${item.nivelExperiencia}`,
     included,
     bring: [PENDING],
