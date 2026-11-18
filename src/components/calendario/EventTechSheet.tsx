@@ -41,6 +41,7 @@ import { useMeetingPointTarget } from "@/hooks/useMeetingPointTarget";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
 import { useCatalogForOuting } from "@/hooks/useCatalogForOuting";
 import { mergeOutingSheet } from "@/lib/catalogSync";
+import { safeVideoEmbed } from "@/lib/safeVideo";
 import { OutingInstructions } from "@/components/shared/OutingInstructions";
 import { cn } from "@/lib/utils";
 
@@ -508,6 +509,7 @@ export function EventTechSheet({
 
   /* ---- Diapositivas: se arman según la pantalla y los datos que existen ---- */
   const faqGroups = chunkEven(sheet.faqs, wide ? FAQ_PER_SLIDE.wide : FAQ_PER_SLIDE.compact);
+  const videoEmbed = safeVideoEmbed(sheet.videoUrl);
 
   const slides: Slide[] = [
     {
@@ -523,6 +525,16 @@ export function EventTechSheet({
             eyebrow: "La actividad",
             title: "En detalle",
             blocks: ["detalle"],
+          },
+        ]
+      : []),
+    ...(videoEmbed
+      ? [
+          {
+            key: "video",
+            eyebrow: "La actividad en vídeo",
+            title: "Así es la experiencia",
+            blocks: ["video"],
           },
         ]
       : []),
@@ -587,6 +599,20 @@ export function EventTechSheet({
     meeting: <MeetingSpot text={sheet.meetingPoint} />,
 
     detalle: <Detalle blocks={descRest} />,
+
+    video: videoEmbed ? (
+      <div className="overflow-hidden rounded-2xl border border-border/60 bg-black/40">
+        <iframe
+          src={videoEmbed}
+          title={`Vídeo de ${sheet.title}`}
+          className="aspect-video w-full"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          referrerPolicy="strict-origin-when-cross-origin"
+        />
+      </div>
+    ) : null,
 
     highlights:
       sheet.highlights.length > 0 ? (

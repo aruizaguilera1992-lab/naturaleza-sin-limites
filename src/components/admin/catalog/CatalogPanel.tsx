@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { safeVideoEmbed } from '@/lib/safeVideo';
 import type { OutingMode } from '@/lib/catalogOuting';
 import { blankItemData, CATALOG_BUCKET, newCustomKey, useAdminCatalog, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
 
@@ -50,6 +51,9 @@ function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: 
 
   const save = async () => {
     if (!d.name.trim()) { toast({ title: 'Falta el nombre', variant: 'destructive' }); return; }
+    if (d.videoUrl.trim() && !safeVideoEmbed(d.videoUrl)) {
+      toast({ title: 'El enlace de vídeo no es válido', description: 'Solo se admiten enlaces de YouTube o Vimeo.', variant: 'destructive' }); return;
+    }
     setBusy(true);
     const { data: u } = await supabase.auth.getUser();
     const { error } = await supabase.from('catalog_entries').upsert({ key: item.key, data: d as unknown as Json, photos, updated_by: u.user?.id ?? null });
@@ -115,6 +119,8 @@ function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: 
         <label className="flex items-center gap-2 pt-6 text-sm text-foreground"><input type="checkbox" checked={d.experience} onChange={(e) => set('experience', e.target.checked)} />Requiere experiencia previa</label>
       </div>
       <div><Label htmlFor="ct-sum">Resumen</Label><Textarea id="ct-sum" rows={2} value={d.summary} onChange={(e) => set('summary', e.target.value)} /></div>
+      <div><Label htmlFor="ct-video">Vídeo (enlace de YouTube o Vimeo)</Label><Input id="ct-video" type="url" inputMode="url" placeholder="https://www.youtube.com/watch?v=…" value={d.videoUrl} onChange={(e) => set('videoUrl', e.target.value)} />
+        <p className="mt-1 text-xs text-muted-foreground">Se muestra en la ficha de la actividad. Déjalo vacío si no hay vídeo.</p></div>
       <div><Label htmlFor="ct-desc">Descripción detallada</Label><Textarea id="ct-desc" rows={5} value={d.description} onChange={(e) => set('description', e.target.value)} /></div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div><Label htmlFor="ct-inc">Incluye (una por línea)</Label><Textarea id="ct-inc" rows={5} value={d.includes.join('\n')} onChange={(e) => set('includes', lines(e.target.value))} /></div>

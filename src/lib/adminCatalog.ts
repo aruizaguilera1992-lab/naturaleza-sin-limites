@@ -26,6 +26,8 @@ export interface CatalogItemData {
   minAge: number;
   fitness: string;
   experience: boolean;
+  /** Enlace de vídeo (YouTube o Vimeo) que se muestra en la ficha pública. */
+  videoUrl: string;
 }
 
 export interface CatalogItem extends CatalogItemData {
@@ -54,20 +56,20 @@ export function baseCatalog(): Omit<CatalogItem, 'photos' | 'edited'>[] {
       province: c.provincia, zone: c.zona, levelLabel: COMMERCIAL_LEVEL_LABEL[c.nivelComercial], level, grade: c.gradoTecnico ?? '',
       duration: '', pricePerPersonEuros: euros(c.precio), summary: c.resumen, description: c.avisoAltura ?? '',
       includes: o ? [...o.incluye] : [], requirements: o ? [...o.caracteristicas] : [], minAge: o?.edadMinima ?? 10,
-      fitness: o?.condicionFisica ?? 'Básica', experience: o?.experienciaPrevia ?? false };
+      fitness: o?.condicionFisica ?? 'Básica', experience: o?.experienciaPrevia ?? false, videoUrl: '' };
   });
   const fer = ferratas.map((f) => {
     const level = kLevel(f.clasificacion); const o = offerFor('ferratas', level);
     return { key: `ferratas:${f.id}`, discipline: 'ferratas' as const, name: f.nombre, province: f.provincia, zone: f.zona,
       levelLabel: LEVEL_LABEL[level - 1], level, grade: f.clasificacion, duration: f.duracion, pricePerPersonEuros: euros(f.precio),
       summary: f.descripcionCorta, description: f.descripcionLarga, includes: o ? [...o.incluye] : [], requirements: o ? [...o.caracteristicas] : [],
-      minAge: o?.edadMinima ?? 10, fitness: o?.condicionFisica ?? 'Básica', experience: o?.experienciaPrevia ?? false };
+      minAge: o?.edadMinima ?? 10, fitness: o?.condicionFisica ?? 'Básica', experience: o?.experienciaPrevia ?? false, videoUrl: '' };
   });
   const esp = espeleologiaPublicada().map((e, i) => ({ key: `espeleologia:${e.id}`, discipline: 'espeleologia' as const, name: e.nombre,
     province: e.provincia, zone: e.zona, levelLabel: e.nivelLabel, level: Math.min(3, i + 1), grade: '', duration: e.duracion,
     pricePerPersonEuros: e.precioDesde > 0 ? e.precioDesde : null, summary: e.descripcionCorta, description: e.descripcionLarga,
     includes: [...e.incluye], requirements: [...e.caracteristicas], minAge: e.requisitos.edadMinima, fitness: e.requisitos.condicionFisica,
-    experience: e.requisitos.experienciaPrevia }));
+    experience: e.requisitos.experienciaPrevia, videoUrl: '' }));
   const norm = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/^(barranco|rio|arroyo|canon)\s+/, '').replace(/^(de|del)\s+/, '').replace(/^(la|las|el|los)\s+/, '').split(/[\s(]/)[0];
   const refs = andaluciaCanyonsRef.filter((r) => !canyonCatalog.some((c) =>
     c.fuentes.some((f) => f.url === r.url) || (r.slug === 'buitre-inferior-cerrada-lezar-castril' && c.id === 'buitre-inferior')
@@ -78,7 +80,7 @@ export function baseCatalog(): Omit<CatalogItem, 'photos' | 'edited'>[] {
       summary: 'Referencia documental pendiente de revisar: no confirma acceso, permisos ni idoneidad para clientes.',
       description: r.rapelMaximo ? `Rápel más largo según la fuente: ${r.rapelMaximo}.` : '',
       includes: o ? [...o.incluye] : [], requirements: o ? [...o.caracteristicas] : [], minAge: o?.edadMinima ?? 10,
-      fitness: o?.condicionFisica ?? 'Básica', experience: level > 1, reference: true, sourceUrl: r.url, sourceLabel: 'RocJumper' };
+      fitness: o?.condicionFisica ?? 'Básica', experience: level > 1, reference: true, sourceUrl: r.url, sourceLabel: 'RocJumper', videoUrl: '' };
   });
   // Preserve full original routes separately from the curated lower/final sections.
   const originals = barrancos.filter((b) =>
@@ -94,7 +96,7 @@ export function baseCatalog(): Omit<CatalogItem, 'photos' | 'edited'>[] {
       description: `Rápel máximo según el catálogo original: ${b.rapelMaximo}. Datos técnicos pendientes de verificar con la fuente.`,
       includes: [], requirements: [], minAge: b.requisitos.edadMinima,
       fitness: b.requisitos.condicionFisica === 'alta' ? 'Alta' : b.requisitos.condicionFisica === 'media' ? 'Media' : 'Básica',
-      experience: level > 1, reference: true, sourceUrl: b.urlInfo, sourceLabel: 'Infobarrancos' };
+      experience: level > 1, reference: true, sourceUrl: b.urlInfo, sourceLabel: 'Infobarrancos', videoUrl: '' };
   });
   const zarzalones = originals.find((b) => b.key === 'barranquismo:original-zarzalones');
   const superior = zarzalones ? [{ ...zarzalones, key: 'barranquismo:original-zarzalones-superior',
@@ -122,7 +124,7 @@ export const isCustomKey = (key: string) => key.startsWith('custom:');
 export const newCustomKey = (d: CatalogDiscipline) => `custom:${d}:${crypto.randomUUID()}`;
 export function blankItemData(): CatalogItemData {
   return { name: '', province: '', zone: '', levelLabel: 'Iniciación', level: 1, grade: '', duration: '', pricePerPersonEuros: null,
-    summary: '', description: '', includes: [], requirements: [], minAge: 10, fitness: 'Básica', experience: false };
+    summary: '', description: '', includes: [], requirements: [], minAge: 10, fitness: 'Básica', experience: false, videoUrl: '' };
 }
 
 export const CATALOG_BUCKET = 'catalog-photos';

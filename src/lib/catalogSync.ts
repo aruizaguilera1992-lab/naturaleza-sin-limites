@@ -23,6 +23,8 @@ export interface CatalogOverride {
   minAge?: number;
   fitness?: string;
   experience?: boolean;
+  /** Enlace de vídeo (YouTube o Vimeo) escrito en el catálogo del panel. */
+  videoUrl?: string;
 }
 
 /** Vista de la ficha técnica: un solo origen para todos los bloques visibles. */
@@ -54,6 +56,8 @@ export interface OutingSheet {
   approachReturn: string;
   weatherPolicy: string;
   cancellationPolicy: string;
+  /** Vídeo de la actividad (enlace validado de YouTube o Vimeo), si el catálogo lo define. */
+  videoUrl: string;
   /** Preguntas frecuentes de la actividad, para la última diapositiva de la ficha. */
   faqs: { question: string; answer: string }[];
   /** true cuando el catálogo del panel aporta alguno de los datos mostrados. */
@@ -156,6 +160,7 @@ export function mergeOutingSheet(
     approachReturn: text(p?.approachReturn),
     weatherPolicy: text(p?.weatherPolicy),
     cancellationPolicy: text(p?.cancellationPolicy),
+    videoUrl: text(o.videoUrl),
     faqs: Array.isArray(p?.faqs)
       ? p.faqs.map((f) => ({ ...f, answer: withDuration(f.answer, catalogDuration) }))
       : [],
