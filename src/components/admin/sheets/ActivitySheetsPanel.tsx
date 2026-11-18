@@ -12,6 +12,9 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { ActivityFieldsEditor } from '@/components/admin/shared/ActivityFieldsEditor';
+import { saveFieldsToCatalog } from '@/lib/activityFields';
+import { fieldsFromSheet, applyFieldsToSheet } from '@/lib/activitySheets';
 import { useToast } from '@/hooks/use-toast';
 import { SheetView } from './SheetView';
 import { CATALOG_BUCKET, type CatalogItem } from '@/lib/adminCatalog';
@@ -41,10 +44,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
   const [busy, setBusy] = useState(false);
   const [uploaded, setUploaded] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
-  // Texto en bruto de los listados: si se guardara ya filtrado, el salto de línea de Enter desaparecería al reescribir el campo.
-  const [incRaw, setIncRaw] = useState(() => init.includes.join('\n'));
-  const [bringRaw, setBringRaw] = useState(() => init.bring.join('\n'));
-  const [reqRaw, setReqRaw] = useState(() => init.requirements.join('\n'));
+  const [fieldsKey, setFieldsKey] = useState(0);
   const ownPhotos = catalog.find((x) => `catalog:${x.key}` === c.base)?.photos ?? [];
   const set = <K extends keyof SheetContent>(k: K, v: SheetContent[K]) => setC((p) => ({ ...p, [k]: v }));
   const errors = validateSheet(c);
@@ -62,6 +62,10 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
     const { data, error } = await q;
     setBusy(false);
     if (error || !data) { toast({ title: 'No se pudo guardar', description: error?.message, variant: 'destructive' }); return null; }
+    if (c.base.startsWith('catalog:')) {
+      const err = await saveFieldsToCatalog(c.base.slice('catalog:'.length), fieldsFromSheet(c));
+      if (err) toast({ title: 'Ficha guardada, pero no se pudo actualizar el Catálogo', description: err, variant: 'destructive' });
+    }
     await onSaved(data.id);
     return data as unknown as SheetRow;
   };
@@ -145,7 +149,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
           </div>
         )}
         <div><Label htmlFor="sh-base">Nivel de partida</Label>
-          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes, rules: p.rules, steps: p.steps })); setIncRaw(next.includes.join('\n')); setBringRaw(next.bring.join('\n')); setReqRaw(next.requirements.join('\n')); }}>
+          <select id="sh-base" className={sel} value={c.base} onChange={(e) => { const v = e.target.value; const it = catalog.find((x) => `catalog:${x.key}` === v); const next = it ? sheetFromCatalog(it) : sheetFromBase(v); setC((p) => ({ ...next, customerName: p.customerName, date: p.date, people: p.people, place: p.place, meetingPoint: p.meetingPoint, notes: p.notes, rules: next.rules || p.rules, steps: next.steps || p.steps })); setFieldsKey((k) => k + 1); }}>
             <optgroup label="Niveles">{sheetBases.map((b) => <option key={b.id} value={b.id}>{b.label}</option>)}</optgroup>
             <optgroup label="Catálogo (recorridos)">{catalog.map((it) => <option key={it.key} value={`catalog:${it.key}`}>{it.name} · {it.levelLabel}</option>)}</optgroup>
           </select>
@@ -157,38 +161,15 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
           </select></div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div><Label htmlFor="sh-name">Nombre del cliente</Label><Input id="sh-name" value={c.customerName} onChange={(e) => set('customerName', e.target.value)} /></div>
-          <div><Label htmlFor="sh-title">Nombre</Label><Input id="sh-title" value={c.title} onChange={(e) => set('title', e.target.value)} /></div>
           <div><Label htmlFor="sh-place">Recorrido / lugar</Label><Input id="sh-place" value={c.place} onChange={(e) => set('place', e.target.value)} /></div>
           <div><Label htmlFor="sh-date">Fecha propuesta (opcional)</Label><Input id="sh-date" type="date" value={c.date} onChange={(e) => set('date', e.target.value)} /><p className="mt-1 text-xs text-muted-foreground">Déjala vacía si la acordáis después: la ficha mostrará «Fecha a acordar».</p></div>
-          <div><Label htmlFor="sh-dur">Duración</Label><Input id="sh-dur" value={c.duration} onChange={(e) => set('duration', e.target.value)} placeholder="p. ej. 4 horas" /></div>
           <div><Label htmlFor="sh-people">Personas (máx. {MAX_SHEET_PEOPLE})</Label><Input id="sh-people" type="number" min={1} max={MAX_SHEET_PEOPLE} value={c.people} onChange={(e) => set('people', Number(e.target.value))} /></div>
-          <div><Label htmlFor="sh-price">Precio por persona (€)</Label><Input id="sh-price" type="number" min={0} value={c.pricePerPersonEuros ?? ''} placeholder="Vacío = a consultar" onChange={(e) => set('pricePerPersonEuros', e.target.value === '' ? null : Number(e.target.value))} /></div>
-          <div><Label htmlFor="sh-grade">Grado técnico</Label><Input id="sh-grade" value={c.grade ?? ''} onChange={(e) => set('grade', e.target.value)} /></div>
-          <div><Label htmlFor="sh-level">Nivel</Label>
-            <select id="sh-level" className={sel} value={c.level} onChange={(e) => { const n = Number(e.target.value); set('level', n); set('levelLabel', ['Iniciación', 'Intermedio', 'Avanzado'][n - 1]); }}>
-              <option value={1}>Iniciación</option><option value={2}>Intermedio</option><option value={3}>Avanzado</option>
-            </select></div>
-          <div><Label htmlFor="sh-age">Edad mínima</Label><Input id="sh-age" type="number" min={0} value={c.minAge} onChange={(e) => set('minAge', Number(e.target.value))} /></div>
-          <div><Label htmlFor="sh-fit">Condición física</Label>
-            <select id="sh-fit" className={sel} value={c.fitness} onChange={(e) => set('fitness', e.target.value)}><option>Básica</option><option>Media</option><option>Alta</option></select></div>
-          <label className="flex items-center gap-2 pt-6 text-sm text-foreground"><input type="checkbox" checked={c.experience} onChange={(e) => set('experience', e.target.checked)} />Requiere experiencia previa</label>
           <div><Label htmlFor="sh-exp">Caduca el</Label><Input id="sh-exp" type="date" value={expires} onChange={(e) => setExpires(e.target.value)} /></div>
         </div>
         <div><Label htmlFor="sh-meet">Punto de encuentro</Label><Input id="sh-meet" value={c.meetingPoint} onChange={(e) => set('meetingPoint', e.target.value)} /></div>
-        <div><Label htmlFor="sh-sum">Resumen</Label><Textarea id="sh-sum" rows={2} value={c.summary} onChange={(e) => set('summary', e.target.value)} /></div>
-        <div><Label htmlFor="sh-video">Vídeo (enlace de YouTube o Vimeo)</Label><Input id="sh-video" type="url" inputMode="url" placeholder="https://www.youtube.com/watch?v=…" value={c.videoUrl ?? ''} onChange={(e) => set('videoUrl', e.target.value)} /></div>
-        <div><Label htmlFor="sh-desc">Descripción detallada</Label><Textarea id="sh-desc" rows={5} value={c.description ?? ''} onChange={(e) => set('description', e.target.value)} /></div>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div><Label htmlFor="sh-inc">Incluye (una por línea)</Label><Textarea id="sh-inc" rows={5} value={incRaw} onChange={(e) => { setIncRaw(e.target.value); set('includes', lines(e.target.value)); }} /></div>
-          <div><Label htmlFor="sh-bring">Qué llevar</Label><Textarea id="sh-bring" rows={5} value={bringRaw} onChange={(e) => { setBringRaw(e.target.value); set('bring', lines(e.target.value)); }} /></div>
-          <div><Label htmlFor="sh-req">Requisitos / características</Label><Textarea id="sh-req" rows={5} value={reqRaw} onChange={(e) => { setReqRaw(e.target.value); set('requirements', lines(e.target.value)); }} /></div>
-        </div>
+        <ActivityFieldsEditor key={fieldsKey} id="sh" value={fieldsFromSheet(c)} onChange={(f) => setC((p) => applyFieldsToSheet(p, f))} />
+        {c.base.startsWith('catalog:') && <p className="text-xs text-muted-foreground">Al guardar, los cambios de la ficha (salvo el precio) se guardan también en el Catálogo para las salidas nuevas.</p>}
         <div><Label htmlFor="sh-notes">Notas para el cliente</Label><Textarea id="sh-notes" rows={3} value={c.notes} onChange={(e) => set('notes', e.target.value)} /></div>
-        <fieldset className="space-y-3 border-t border-border pt-4">
-          <legend className="font-heading font-semibold text-foreground">Normas y pasos a seguir</legend>
-          <div><Label htmlFor="sh-rules">Normas (una por línea)</Label><Textarea id="sh-rules" rows={4} value={c.rules ?? ''} onChange={(e) => set('rules', e.target.value)} /></div>
-          <div><Label htmlFor="sh-steps">Pasos a seguir (uno por línea)</Label><Textarea id="sh-steps" rows={4} value={c.steps ?? ''} onChange={(e) => set('steps', e.target.value)} /></div>
-        </fieldset>
         <div><Label htmlFor="sh-photo">Foto</Label>
           <select id="sh-photo" className={sel} value={c.photo ?? ''} onChange={(e) => set('photo', e.target.value || null)}>
             <option value="">Sin foto</option>

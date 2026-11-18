@@ -128,6 +128,7 @@ export type Database = {
       activity_events: {
         Row: {
           capacity_total: number
+          catalog_snapshot: Json | null
           category: string
           created_at: string
           created_by: string | null
@@ -152,6 +153,7 @@ export type Database = {
         }
         Insert: {
           capacity_total?: number
+          catalog_snapshot?: Json | null
           category: string
           created_at?: string
           created_by?: string | null
@@ -176,6 +178,7 @@ export type Database = {
         }
         Update: {
           capacity_total?: number
+          catalog_snapshot?: Json | null
           category?: string
           created_at?: string
           created_by?: string | null
@@ -1260,6 +1263,7 @@ export type Database = {
       activity_events_public: {
         Row: {
           capacity_total: number | null
+          catalog_snapshot: Json | null
           category: string | null
           ends_at: string | null
           event_type: string | null
@@ -1278,6 +1282,7 @@ export type Database = {
         }
         Insert: {
           capacity_total?: number | null
+          catalog_snapshot?: Json | null
           category?: string | null
           ends_at?: string | null
           event_type?: string | null
@@ -1296,6 +1301,7 @@ export type Database = {
         }
         Update: {
           capacity_total?: number | null
+          catalog_snapshot?: Json | null
           category?: string | null
           ends_at?: string | null
           event_type?: string | null

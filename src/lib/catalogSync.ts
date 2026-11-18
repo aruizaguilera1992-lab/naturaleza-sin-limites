@@ -25,6 +25,8 @@ export interface CatalogOverride {
   experience?: boolean;
   /** Enlace de vídeo (YouTube o Vimeo) escrito en el catálogo del panel. */
   videoUrl?: string;
+  /** Qué llevar, escrito en el catálogo o en la salida. */
+  bring?: string[];
 }
 
 /** Vista de la ficha técnica: un solo origen para todos los bloques visibles. */
@@ -149,7 +151,7 @@ export function mergeOutingSheet(
           : text(p?.experienceLevel, p?.previousExperience),
     includes: list(o.includes, p?.included),
     requirements: list(o.requirements, p?.safetyRequirements),
-    bring: list(p?.bring),
+    bring: list(o.bring, p?.bring),
     technicalElements: list(p?.technicalElements),
     itinerary: list(p?.itinerary),
     insurancePermits: list(p?.insurancePermits),

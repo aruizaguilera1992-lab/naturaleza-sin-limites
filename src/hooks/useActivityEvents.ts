@@ -5,6 +5,7 @@ import {
   isSellable,
   type ActivityProfile,
 } from "@/data/activityProfiles";
+import type { CatalogOverride } from "@/lib/catalogSync";
 
 export interface ActivityEventRow {
   id: string;
@@ -22,6 +23,8 @@ export interface ActivityEventRow {
   status: string;
   rules?: string | null;
   steps?: string | null;
+  /** Copia de la ficha del catálogo guardada al crear o editar la salida. */
+  catalog_snapshot?: CatalogOverride | null;
 }
 
 export interface ActivityEvent extends ActivityEventRow {
@@ -34,7 +37,7 @@ export interface ActivityEvent extends ActivityEventRow {
 }
 
 const EVENT_FIELDS =
-  "id, category, slug, title, starts_at, ends_at, meeting_point_public, latitude, longitude, capacity_total, seats_reserved, price_cents, status, rules, steps";
+  "id, category, slug, title, starts_at, ends_at, meeting_point_public, latitude, longitude, capacity_total, seats_reserved, price_cents, status, rules, steps, catalog_snapshot";
 
 /** Only events whose activity exists in the commercial catalogue with a real price. */
 const decorate = (row: ActivityEventRow): ActivityEvent | null => {

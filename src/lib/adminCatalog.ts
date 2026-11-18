@@ -28,6 +28,10 @@ export interface CatalogItemData {
   experience: boolean;
   /** Enlace de vídeo (YouTube o Vimeo) que se muestra en la ficha pública. */
   videoUrl: string;
+  /** Campos compartidos con las salidas (opcionales en fichas antiguas). */
+  bring?: string[];
+  rules?: string;
+  steps?: string;
 }
 
 export interface CatalogItem extends CatalogItemData {

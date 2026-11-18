@@ -2,6 +2,7 @@ import { levelOffers, levelOfferExplanation, levelOfferPhotos } from '@/data/lev
 import { espeleologiaPublicada } from '@/data/espeleologia';
 import type { CatalogItem } from '@/lib/adminCatalog';
 import { safeVideoEmbed } from '@/lib/safeVideo';
+import type { ActivityFields } from '@/lib/activityFields';
 
 export const MAX_SHEET_PEOPLE = 20;
 
@@ -117,7 +118,7 @@ export function sheetFromCatalog(item: CatalogItem): SheetContent {
   return { base: `catalog:${item.key}`, discipline: item.discipline, level: item.level, levelLabel: item.levelLabel, title: item.name,
     place: [item.zone, item.province].filter(Boolean).join(', '), date: '', duration: item.duration, meetingPoint: '', people: 2,
     pricePerPersonEuros: item.pricePerPersonEuros, summary: item.summary, grade: item.grade, description: item.description,
-    videoUrl: item.videoUrl ?? '', includes: [...item.includes], bring: [],
+    videoUrl: item.videoUrl ?? '', includes: [...item.includes], bring: [...(item.bring ?? [])], rules: item.rules ?? '', steps: item.steps ?? '',
     requirements: [...item.requirements], notes: '', minAge: item.minAge, fitness: item.fitness, experience: item.experience,
     photo: item.photos[0] ? `${STORAGE_PHOTO}${item.photos[0]}` : null, customerName: '' };
 }
@@ -138,4 +139,16 @@ export function sheetFromRequest(p: SheetRequestPrefill): SheetContent {
   return { ...c, sourceBookingId: p.bookingId, customerName: (p.name ?? '').trim(), date: p.date ?? '',
     people: Number.isFinite(n) ? Math.min(MAX_SHEET_PEOPLE, Math.max(1, n)) : c.people,
     notes: p.message?.trim() ? `Mensaje del cliente: ${p.message.trim()}` : '' };
+}
+
+/** Campos comunes (mismo editor que Catálogo y Grupo abierto). */
+export function fieldsFromSheet(c: SheetContent): ActivityFields {
+  return { name: c.title, grade: c.grade ?? '', level: c.level, levelLabel: c.levelLabel, duration: c.duration,
+    pricePerPersonEuros: c.pricePerPersonEuros, minAge: c.minAge, fitness: c.fitness, experience: c.experience,
+    summary: c.summary, videoUrl: c.videoUrl ?? '', description: c.description ?? '', includes: c.includes,
+    bring: c.bring, requirements: c.requirements, rules: c.rules ?? '', steps: c.steps ?? '' };
+}
+export function applyFieldsToSheet(c: SheetContent, f: ActivityFields): SheetContent {
+  const { name, ...rest } = f;
+  return { ...c, ...rest, title: name };
 }

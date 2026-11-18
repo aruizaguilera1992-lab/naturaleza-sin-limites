@@ -467,8 +467,10 @@ export function EventTechSheet({
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
   const wide = useIsWide();
-  const { override } = useCatalogForOuting(event.category, event.slug);
-  const sheet = mergeOutingSheet(event, event.profile, override);
+  // Las salidas guardan su propia copia de la ficha; las antiguas siguen leyendo el catálogo actual.
+  const snapshot = event.catalog_snapshot ?? null;
+  const { override: live } = useCatalogForOuting(snapshot ? undefined : event.category, snapshot ? undefined : event.slug);
+  const sheet = mergeOutingSheet(event, event.profile, snapshot ?? live);
   const p = event.profile;
   const image = p ? getActivityCatalogImage(event.category, event.slug) ?? undefined : undefined;
   const Icon = CATEGORY_ICON[event.category] ?? CalendarDays;

@@ -75,3 +75,21 @@ describe('enlaces legibles de ficha', () => {
     expect(_scp('a'.repeat(64))).toBeNull();
   });
 });
+
+import { fieldsFromSheet as _ffs, applyFieldsToSheet as _afs, sheetFromBase as _sfb, sheetBases as _sb } from './activitySheets';
+import { fieldsFromSnapshot as _fsn, catalogKeyForEvent as _cke } from './activityFields';
+describe('campos unificados', () => {
+  it('ida y vuelta entre ficha privada y campos comunes', () => {
+    const c = _sfb(_sb[0].id);
+    const f = { ..._ffs(c), name: 'Nuevo', bring: ['Agua'] };
+    const out = _afs(c, f);
+    expect(out.title).toBe('Nuevo');
+    expect(out.bring).toEqual(['Agua']);
+  });
+  it('la copia de la salida manda sobre el catálogo actual', () => {
+    const base = _ffs(_sfb(_sb[0].id));
+    const f = _fsn({ name: 'Copia', duration: '3 h' }, { ...base, name: 'Catálogo', duration: '5 h' }, 'Norma', null);
+    expect(f.name).toBe('Copia'); expect(f.duration).toBe('3 h'); expect(f.rules).toBe('Norma');
+  });
+  it('clave de catálogo de ferratas', () => { expect(_cke('vias-ferratas', 'x')).toBe('ferratas:x'); });
+});

@@ -260,6 +260,13 @@
       "when": 1794999391699,
       "tag": "0036_activity_sheet_short_code",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1794999930305,
+      "tag": "0037_activity_events_catalog_snapshot",
+      "breakpoints": true
     }
   ]
 }

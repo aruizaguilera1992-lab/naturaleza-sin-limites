@@ -20,6 +20,10 @@ import { DeleteRecordButton } from "@/components/admin/DeleteControls";
 import { EventTechSheet } from "@/components/calendario/EventTechSheet";
 import { getActivityProfile, type ActivityProfile } from "@/data/activityProfiles";
 import { Eye } from "lucide-react";
+import { ActivityFieldsEditor } from "@/components/admin/shared/ActivityFieldsEditor";
+import { catalogKeyForEvent, fieldsFromCatalog, fieldsFromSnapshot, saveFieldsToCatalog, snapshotFromFields, type ActivityFields } from "@/lib/activityFields";
+import type { CatalogOverride } from "@/lib/catalogSync";
+import type { Json } from "@/integrations/supabase/types";
 
 interface EventRow {
   id: string;
@@ -41,10 +45,11 @@ interface EventRow {
   notes: string | null;
   rules: string | null;
   steps: string | null;
+  catalog_snapshot: CatalogOverride | null;
 }
 
 const EVENT_FIELDS =
-  "id, category, slug, title, starts_at, ends_at, meeting_point_public, meeting_point_private, latitude, longitude, capacity_total, seats_reserved, price_cents, status, event_type, guide_name, notes, rules, steps";
+  "id, category, slug, title, starts_at, ends_at, meeting_point_public, meeting_point_private, latitude, longitude, capacity_total, seats_reserved, price_cents, status, event_type, guide_name, notes, rules, steps, catalog_snapshot";
 
 const STATUS_LABELS: Record<string, string> = {
   borrador: "Borrador",
@@ -139,6 +144,10 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
   const [openId, setOpenId] = useState<string | null>(null);
   const [attendees, setAttendees] = useState<Record<string, Attendee[]>>({});
   const [fromCatalog, setFromCatalog] = useState<{ name: string; matched: boolean } | null>(null);
+  // Ficha de la actividad con los mismos campos que Catálogo y Grupo privado.
+  const [fields, setFields] = useState<ActivityFields | null>(null);
+  const [fieldsKey, setFieldsKey] = useState(0);
+  const loadFields = (f: ActivityFields | null) => { setFields(f); setFieldsKey((k) => k + 1); };
 
   // Salida configurada desde Catálogo: se rellena con lo ya documentado; el admin revisa antes de guardar.
   useEffect(() => {
@@ -151,10 +160,12 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
       activityKey: key ?? "",
       priceEuros: item.pricePerPersonEuros != null ? String(item.pricePerPersonEuros) : "",
       meetingPublic: [item.zone, item.province].filter(Boolean).join(", "),
-      rules: item.requirements.map((r) => `• ${r}`).join("\n"),
+      rules: item.rules || item.requirements.map((r) => `• ${r}`).join("\n"),
+      steps: item.steps ?? "",
       notes: [`Desde catálogo: ${item.name}`, item.summary].filter(Boolean).join("\n"),
     });
     setFromCatalog({ name: item.name, matched: !!key });
+    loadFields(key ? fieldsFromCatalog(item) : null);
     setAdvanced(true);
     setShowForm(true);
   }, [catalogStart]);
@@ -224,6 +235,10 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
         label: `${a.categoryLabel} · ${it.name} (${it.zone || it.province})${it.edited ? " · editada" : ""}` };
     });
   }, [catalogItems]);
+  const catalogItemFor = useCallback((activityKey: string) => {
+    const keys = sellableActivities.map((a) => a.key);
+    return catalogItems.find((it) => openGroupKeyFor(it, keys) === activityKey) ?? null;
+  }, [catalogItems]);
   const selectedActivity = useMemo(
     () => activities.find((a) => a.key === form.activityKey),
     [activities, form.activityKey],
@@ -247,6 +262,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
 
   const resetForm = () => {
     setFromCatalog(null);
+    loadFields(null);
     setForm(emptyForm);
     setEditingId(null);
     setShowForm(false);
@@ -259,7 +275,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
     return {
       category: activity.category,
       slug: activity.slug,
-      title: activity.name,
+      title: fields?.name.trim() || activity.name,
       starts_at: new Date(startsAt).toISOString(),
       ends_at: form.endsAt ? new Date(form.endsAt).toISOString() : null,
       capacity_total: form.capacity,
@@ -274,6 +290,9 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
       notes: form.notes.trim() || null,
       rules: form.rules.trim() || null,
       steps: form.steps.trim() || null,
+      catalog_snapshot: (fields
+        ? snapshotFromFields(catalogKeyForEvent(activity.category, activity.slug), fields, { zone: catalogItemFor(activity.key)?.zone, province: catalogItemFor(activity.key)?.province })
+        : null) as unknown as Json,
     };
   };
 
@@ -287,6 +306,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
     const freeSeats = Math.max(payload.capacity_total - reserved, 0);
     return {
       ...payload,
+      catalog_snapshot: payload.catalog_snapshot as unknown as CatalogOverride | null,
       id: editingId ?? "vista-previa",
       seats_reserved: reserved,
       profile,
@@ -357,6 +377,10 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
       );
     }
 
+    if (fields && selectedActivity) {
+      const err = await saveFieldsToCatalog(catalogKeyForEvent(selectedActivity.category, selectedActivity.slug), fields);
+      if (err) setMessage(`Salida guardada, pero no se pudo actualizar el Catálogo: ${err}`);
+    }
     resetForm();
     void load();
   };
@@ -393,6 +417,8 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
       rules: event.rules ?? "",
       steps: event.steps ?? "",
     });
+    const item = catalogItemFor(`${event.category}|${event.slug}`);
+    loadFields(item ? fieldsFromSnapshot(event.catalog_snapshot, fieldsFromCatalog(item), event.rules, event.steps) : null);
   };
 
   const duplicate = (event: EventRow) => {
@@ -588,7 +614,12 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
             <Label>Actividad del catálogo</Label>
             <Select
               value={form.activityKey}
-              onValueChange={(value) => setForm({ ...form, activityKey: value })}
+              onValueChange={(value) => {
+                const item = catalogItemFor(value);
+                const f = item ? fieldsFromCatalog(item) : null;
+                setForm({ ...form, activityKey: value, priceEuros: f?.pricePerPersonEuros != null ? String(f.pricePerPersonEuros) : "", rules: f?.rules ?? form.rules, steps: f?.steps ?? form.steps });
+                loadFields(f);
+              }}
             >
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Elige una actividad" />
@@ -706,18 +737,6 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
                 />
               </div>
               <div>
-                <Label htmlFor="price">Precio override (€/persona, opcional)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  min={0}
-                  className="mt-1 text-foreground"
-                  value={form.priceEuros}
-                  onChange={(e) => setForm({ ...form, priceEuros: e.target.value })}
-                  placeholder="Vacío = precio del catálogo"
-                />
-              </div>
-              <div>
                 <Label htmlFor="meetingPublic">Zona pública (visible en la web)</Label>
                 <Input
                   id="meetingPublic"
@@ -778,11 +797,21 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
             </>
           )}
           <div className="flex gap-2 sm:col-span-2">
-            <fieldset className="w-full space-y-3 border-t border-border pt-4">
-              <legend className="font-heading font-semibold text-foreground">Normas y pasos a seguir</legend>
-              <div><Label htmlFor="event-rules">Normas (una por línea)</Label><Textarea id="event-rules" rows={4} value={form.rules} onChange={(e) => setForm({ ...form, rules: e.target.value })} /></div>
-              <div><Label htmlFor="event-steps">Pasos a seguir (uno por línea)</Label><Textarea id="event-steps" rows={4} value={form.steps} onChange={(e) => setForm({ ...form, steps: e.target.value })} /></div>
-            </fieldset>
+            {fields ? (
+              <div className="w-full space-y-2 border-t border-border pt-4">
+                <ActivityFieldsEditor key={fieldsKey} id="event" value={fields} onChange={(f) => {
+                  setFields(f);
+                  setForm((prev) => ({ ...prev, priceEuros: f.pricePerPersonEuros != null ? String(f.pricePerPersonEuros) : "", rules: f.rules, steps: f.steps }));
+                }} />
+                <p className="text-xs text-muted-foreground">Al guardar, estos datos (salvo el precio) se guardan también en el Catálogo para las salidas nuevas. Las salidas ya creadas conservan los suyos.</p>
+              </div>
+            ) : (
+              <fieldset className="w-full space-y-3 border-t border-border pt-4">
+                <legend className="font-heading font-semibold text-foreground">Normas y pasos a seguir</legend>
+                <div><Label htmlFor="event-rules">Normas (una por línea)</Label><Textarea id="event-rules" rows={4} value={form.rules} onChange={(e) => setForm({ ...form, rules: e.target.value })} /></div>
+                <div><Label htmlFor="event-steps">Pasos a seguir (uno por línea)</Label><Textarea id="event-steps" rows={4} value={form.steps} onChange={(e) => setForm({ ...form, steps: e.target.value })} /></div>
+              </fieldset>
+            )}
           </div>
           <div className="flex gap-2 sm:col-span-2">
             <Button onClick={save} disabled={saving}>

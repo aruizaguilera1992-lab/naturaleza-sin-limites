@@ -5,15 +5,14 @@ import type { Json } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { safeVideoEmbed } from '@/lib/safeVideo';
 import type { OutingMode } from '@/lib/catalogOuting';
+import { ActivityFieldsEditor } from '@/components/admin/shared/ActivityFieldsEditor';
 import { blankItemData, CATALOG_BUCKET, newCustomKey, useAdminCatalog, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
 
 const DISC: Record<CatalogDiscipline, string> = { barranquismo: 'Barranquismo', ferratas: 'Vías ferratas', espeleologia: 'Espeleología' };
-const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
 const sel = 'flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground';
 const IMG_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
@@ -102,30 +101,11 @@ function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: 
           </li>
         </ul>
       </section>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div><Label htmlFor="ct-name">Nombre</Label><Input id="ct-name" value={d.name} onChange={(e) => set('name', e.target.value)} /></div>
-        <div><Label htmlFor="ct-grade">Grado técnico</Label><Input id="ct-grade" value={d.grade} onChange={(e) => set('grade', e.target.value)} /></div>
+      <ActivityFieldsEditor id="ct" value={{ ...d, videoUrl: d.videoUrl ?? '', bring: d.bring ?? [], rules: d.rules ?? '', steps: d.steps ?? '' }} onChange={(f) => setD((p) => ({ ...p, ...f }))}>
         <div><Label htmlFor="ct-prov">Provincia</Label><Input id="ct-prov" value={d.province} onChange={(e) => set('province', e.target.value)} /></div>
         <div><Label htmlFor="ct-zone">Zona</Label><Input id="ct-zone" value={d.zone} onChange={(e) => set('zone', e.target.value)} /></div>
-        <div><Label htmlFor="ct-level">Nivel</Label>
-          <select id="ct-level" className={sel} value={d.level} onChange={(e) => { const n = Number(e.target.value); setD((p) => ({ ...p, level: n, levelLabel: ['Iniciación', 'Intermedio', 'Avanzado'][n - 1] })); }}>
-            <option value={1}>Iniciación</option><option value={2}>Intermedio</option><option value={3}>Avanzado</option>
-          </select></div>
-        <div><Label htmlFor="ct-dur">Duración</Label><Input id="ct-dur" value={d.duration} onChange={(e) => set('duration', e.target.value)} /></div>
-        <div><Label htmlFor="ct-price">Precio por persona (€)</Label><Input id="ct-price" type="number" min={0} value={d.pricePerPersonEuros ?? ''} placeholder="Vacío = a consultar" onChange={(e) => set('pricePerPersonEuros', e.target.value === '' ? null : Number(e.target.value))} /></div>
-        <div><Label htmlFor="ct-age">Edad mínima</Label><Input id="ct-age" type="number" min={0} value={d.minAge} onChange={(e) => set('minAge', Number(e.target.value))} /></div>
-        <div><Label htmlFor="ct-fit">Condición física</Label>
-          <select id="ct-fit" className={sel} value={d.fitness} onChange={(e) => set('fitness', e.target.value)}><option>Básica</option><option>Media</option><option>Alta</option></select></div>
-        <label className="flex items-center gap-2 pt-6 text-sm text-foreground"><input type="checkbox" checked={d.experience} onChange={(e) => set('experience', e.target.checked)} />Requiere experiencia previa</label>
-      </div>
-      <div><Label htmlFor="ct-sum">Resumen</Label><Textarea id="ct-sum" rows={2} value={d.summary} onChange={(e) => set('summary', e.target.value)} /></div>
-      <div><Label htmlFor="ct-video">Vídeo (enlace de YouTube o Vimeo)</Label><Input id="ct-video" type="url" inputMode="url" placeholder="https://www.youtube.com/watch?v=…" value={d.videoUrl} onChange={(e) => set('videoUrl', e.target.value)} />
-        <p className="mt-1 text-xs text-muted-foreground">Se muestra en la ficha de la actividad. Déjalo vacío si no hay vídeo.</p></div>
-      <div><Label htmlFor="ct-desc">Descripción detallada</Label><Textarea id="ct-desc" rows={5} value={d.description} onChange={(e) => set('description', e.target.value)} /></div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div><Label htmlFor="ct-inc">Incluye (una por línea)</Label><Textarea id="ct-inc" rows={5} value={d.includes.join('\n')} onChange={(e) => set('includes', lines(e.target.value))} /></div>
-        <div><Label htmlFor="ct-req">Requisitos / características</Label><Textarea id="ct-req" rows={5} value={d.requirements.join('\n')} onChange={(e) => set('requirements', lines(e.target.value))} /></div>
-      </div>
+      </ActivityFieldsEditor>
+      <p className="text-xs text-muted-foreground">Los cambios se aplican a las salidas nuevas; las ya creadas conservan sus datos.</p>
       <div className="flex flex-wrap gap-2 border-t border-border pt-4">
         <Button variant="hero" disabled={busy} onClick={save}><Save className="mr-1 h-4 w-4" />Guardar</Button>
         {onConfigure && <>
