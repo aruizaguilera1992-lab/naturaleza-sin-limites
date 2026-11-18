@@ -3,7 +3,7 @@ import { espeleologiaPublicada } from '@/data/espeleologia';
 import type { CatalogItem } from '@/lib/adminCatalog';
 import { safeVideoEmbed } from '@/lib/safeVideo';
 
-export const MAX_SHEET_PEOPLE = 6;
+export const MAX_SHEET_PEOPLE = 20;
 
 export interface SheetContent {
   base: string; // id de nivel de partida

@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { sheetFromBase, validateSheet, sheetTotalEuros, sheetWhatsappUrl, sheetState, waPhone } from './activitySheets';
 
 describe('activity sheets', () => {
-  it('rejects more than 6 people', () => {
+  it('rejects more than 20 people', () => {
     const c = sheetFromBase('barranquismo-iniciacion');
-    expect(validateSheet({ ...c, people: 7 })).toContain('Personas entre 1 y 6');
-    expect(validateSheet({ ...c, people: 6 })).toEqual([]);
+    expect(validateSheet({ ...c, people: 21 })).toContain('Personas entre 1 y 20');
+    expect(validateSheet({ ...c, people: 20 })).toEqual([]);
   });
   it('accepts a proposal without a fixed date', () => {
     const c = sheetFromBase('barranquismo-iniciacion');
@@ -42,10 +42,11 @@ describe('sheetFromRequest', () => {
     expect(c.customerName).toBe('silvia');
     expect(c.notes).toContain('Quiero algo exigente');
   });
-  it('limita personas a 6 y reconoce ferratas', () => {
-    const c = fromReq({ ...base, activity: 'Vía ferrata', level: 'Intermedio', people: '9' });
+  it('limita personas a 20 y reconoce ferratas', () => {
+    const c = fromReq({ ...base, activity: 'Vía ferrata', level: 'Intermedio', people: '25' });
     expect(c.base).toBe('ferratas-intermedio');
-    expect(c.people).toBe(6);
+    expect(c.people).toBe(20);
+    expect(fromReq({ ...base, people: '9' }).people).toBe(9);
   });
 });
 

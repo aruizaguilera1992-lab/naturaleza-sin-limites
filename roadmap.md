@@ -280,3 +280,6 @@
 - [x] Eliminar el dato «Actividad efectiva» de la ficha del calendario
 - [x] Quitar el recuadro anidado de cada característica en «En detalle»
 - [x] Duración de la ficha del calendario: mostrar la de la ficha técnica del catálogo
+- [x] Propuestas de salida sin fecha cerrada (ficha, correo y aceptación muestran «fecha a acordar»)
+- [x] Salidas privadas hasta 20 personas (ficha, panel y aceptación)
+- [ ] Calendario interno en Salidas para ver y gestionar salidas confirmadas
