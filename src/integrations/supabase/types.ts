@@ -212,6 +212,7 @@ export type Database = {
           first_viewed_at: string | null
           id: string
           sent_at: string | null
+          short_code: string | null
           status: string
           token: string
           updated_at: string
@@ -228,6 +229,7 @@ export type Database = {
           first_viewed_at?: string | null
           id?: string
           sent_at?: string | null
+          short_code?: string | null
           status?: string
           token?: string
           updated_at?: string
@@ -244,6 +246,7 @@ export type Database = {
           first_viewed_at?: string | null
           id?: string
           sent_at?: string | null
+          short_code?: string | null
           status?: string
           token?: string
           updated_at?: string
@@ -1390,6 +1393,7 @@ export type Database = {
         }
         Returns: Json
       }
+      gen_sheet_short_code: { Args: never; Returns: string }
       get_activity_dossier: { Args: { _token: string }; Returns: Json }
       get_activity_sheet: { Args: { _token: string }; Returns: Json }
       get_catalog_for_outing: {
@@ -1440,6 +1444,7 @@ export type Database = {
         }
         Returns: Json
       }
+      resolve_activity_sheet_code: { Args: { _code: string }; Returns: string }
       save_editorial_piece: {
         Args: { _expected_updated_at?: string; _piece: Json; _status: string }
         Returns: string

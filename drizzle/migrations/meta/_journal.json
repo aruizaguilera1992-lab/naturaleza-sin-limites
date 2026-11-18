@@ -253,6 +253,13 @@
       "when": 1794998047457,
       "tag": "0035_accept_sheet_up_to_20_people",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1794999391699,
+      "tag": "0036_activity_sheet_short_code",
+      "breakpoints": true
     }
   ]
 }

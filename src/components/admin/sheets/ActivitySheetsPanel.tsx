@@ -49,7 +49,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
   const set = <K extends keyof SheetContent>(k: K, v: SheetContent[K]) => setC((p) => ({ ...p, [k]: v }));
   const errors = validateSheet(c);
   const state = row ? sheetState(row) : 'borrador';
-  const link = row ? sheetUrl(window.location.origin, row.token) : '';
+  const link = row ? sheetUrl(window.location.origin, row.token, c.title, (row as { short_code?: string | null }).short_code) : '';
 
   const save = async (activate = false): Promise<SheetRow | null> => {
     if (errors.length) { toast({ title: 'Revisa la ficha', description: errors.join(' · '), variant: 'destructive' }); return null; }
@@ -74,12 +74,12 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
 
   const copy = async () => {
     const r = await save(true); if (!r) return;
-    await navigator.clipboard.writeText(sheetUrl(window.location.origin, r.token)).catch(() => {});
+    await navigator.clipboard.writeText(sheetUrl(window.location.origin, r.token, c.title, (r as { short_code?: string | null }).short_code)).catch(() => {});
     toast({ title: 'Enlace copiado y activado' });
   };
   const whatsapp = async () => {
     const r = await save(true); if (!r) return;
-    window.open(sheetWhatsappUrl(phone, c, sheetUrl(window.location.origin, r.token)), '_blank', 'noopener,noreferrer');
+    window.open(sheetWhatsappUrl(phone, c, sheetUrl(window.location.origin, r.token, c.title, (r as { short_code?: string | null }).short_code)), '_blank', 'noopener,noreferrer');
     await logContact('comunicacion_whatsapp', `Ficha de actividad enviada por WhatsApp: ${c.title}`);
   };
   const sendEmail = async () => {

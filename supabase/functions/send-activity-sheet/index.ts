@@ -25,14 +25,15 @@ Deno.serve(async (req) => {
   const { data: role } = await db.rpc('has_role', { _user_id: auth.user.id, _role: 'admin' });
   if (!role) return json({ error: 'No autorizado' }, 403);
 
-  const { data: sheet, error } = await db.from('activity_sheets').select('id, token, content, status, expires_at, contact_id').eq('id', p.id).maybeSingle();
+  const { data: sheet, error } = await db.from('activity_sheets').select('id, token, short_code, content, status, expires_at, contact_id').eq('id', p.id).maybeSingle();
   if (error || !sheet) return json({ error: 'Ficha no encontrada' }, 404);
   if (sheet.status === 'desactivada') return json({ error: 'La ficha está desactivada' }, 409);
   if (sheet.expires_at && new Date(sheet.expires_at) < new Date()) return json({ error: 'La ficha ha caducado' }, 409);
 
   const c = (sheet.content ?? {}) as Record<string, unknown>;
   const title = String(c.title ?? 'Tu actividad').slice(0, 200);
-  const link = `${new URL(p.origin).origin}/ficha/${sheet.token}`;
+  const slug = (title || 'actividad').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'actividad';
+  const link = `${new URL(p.origin).origin}/ficha/${sheet.short_code ? `${slug}-${sheet.short_code}` : sheet.token}`;
   const html = renderActivitySheetEmail(c, link, new URL(p.origin).origin, sheet.expires_at);
 
   await db.from('activity_sheets').update({ status: 'enviada', sent_at: new Date().toISOString() }).eq('id', sheet.id);

@@ -7,16 +7,28 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { SheetView } from '@/components/admin/sheets/SheetView';
-import type { SheetContent } from '@/lib/activitySheets';
+import { shortCodeFromParam, type SheetContent } from '@/lib/activitySheets';
 import { AcceptProposal } from '@/components/sheets/AcceptProposal';
 
 export default function FichaPrivada() {
-  const { token = '' } = useParams();
+  const { token: param = '' } = useParams();
+  const [token, setToken] = useState<string>('');
   const [state, setState] = useState<'loading' | 'ok' | 'off'>('loading');
   const [content, setContent] = useState<SheetContent | null>(null);
   const [acceptedAt, setAcceptedAt] = useState<string | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   useEffect(() => {
+    let alive = true;
+    const code = shortCodeFromParam(param);
+    if (!code) { setToken(param); return; }
+    supabase.rpc('resolve_activity_sheet_code', { _code: code }).then(({ data }) => {
+      if (!alive) return;
+      if (typeof data === 'string' && data) setToken(data); else setState('off');
+    });
+    return () => { alive = false; };
+  }, [param]);
+  useEffect(() => {
+    if (!token) return;
     let alive = true;
     supabase.rpc('get_activity_sheet', { _token: token }).then(({ data, error }) => {
       if (!alive) return;

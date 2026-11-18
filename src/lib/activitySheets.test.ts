@@ -64,3 +64,14 @@ describe('ficha privada desde el catálogo', () => {
     expect(validate({ ...fromCatalog(item), videoUrl: 'https://evil.example/v' }).some((e) => e.includes('vídeo'))).toBe(true);
   });
 });
+
+import { sheetUrl as _sheetUrl, shortCodeFromParam as _scp } from './activitySheets';
+describe('enlaces legibles de ficha', () => {
+  it('usa nombre de la actividad y código corto', () => {
+    expect(_sheetUrl('https://x.es/', 'f'.repeat(64), 'Cueva de la Higuera', 'ab23cd45ef')).toBe('https://x.es/ficha/cueva-de-la-higuera-ab23cd45ef');
+  });
+  it('extrae el código corto y acepta enlaces antiguos', () => {
+    expect(_scp('cueva-de-la-higuera-ab23cd45ef')).toBe('ab23cd45ef');
+    expect(_scp('a'.repeat(64))).toBeNull();
+  });
+});

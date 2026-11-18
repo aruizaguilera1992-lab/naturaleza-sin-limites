@@ -76,7 +76,16 @@ export function validateSheet(c: SheetContent): string[] {
 export const sheetTotalEuros = (c: Pick<SheetContent, 'people' | 'pricePerPersonEuros'>) =>
   c.pricePerPersonEuros === null ? null : Math.round(c.pricePerPersonEuros * c.people * 100) / 100;
 
-export const sheetUrl = (origin: string, token: string) => `${origin.replace(/\/$/, '')}/ficha/${token}`;
+export const slugifyTitle = (t: string) => (t || 'actividad').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'actividad';
+/** Enlace legible: /ficha/<nombre-actividad>-<código corto>; sin código corto cae al token completo. */
+export const sheetUrl = (origin: string, token: string, title?: string, shortCode?: string | null) =>
+  `${origin.replace(/\/$/, '')}/ficha/${shortCode ? `${slugifyTitle(title ?? '')}-${shortCode}` : token}`;
+/** Extrae el código corto (10 caracteres finales) de un enlace legible; null si es un token completo. */
+export const shortCodeFromParam = (param: string): string | null => {
+  if (/^[a-f0-9]{64}$/i.test(param)) return null;
+  const m = /(?:^|-)([a-z2-9]{10})$/.exec(param.toLowerCase());
+  return m ? m[1] : null;
+};
 
 /** Teléfono para wa.me: solo dígitos, con prefijo 34 si es un número español de 9 cifras. */
 export function waPhone(phone: string | null | undefined): string | null {
