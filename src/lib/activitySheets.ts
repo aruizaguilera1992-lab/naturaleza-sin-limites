@@ -1,6 +1,7 @@
 import { levelOffers, levelOfferExplanation, levelOfferPhotos } from '@/data/levelOffers';
 import { espeleologiaPublicada } from '@/data/espeleologia';
 import type { CatalogItem } from '@/lib/adminCatalog';
+import { safeVideoEmbed } from '@/lib/safeVideo';
 
 export const MAX_SHEET_PEOPLE = 6;
 
@@ -17,6 +18,10 @@ export interface SheetContent {
   people: number;
   pricePerPersonEuros: number | null;
   summary: string;
+  /** Mismos campos que la ficha del catálogo (opcionales para fichas antiguas). */
+  grade?: string;
+  description?: string;
+  videoUrl?: string;
   includes: string[];
   bring: string[];
   requirements: string[];
@@ -62,6 +67,7 @@ export function sheetFromBase(baseId: string): SheetContent {
 export function validateSheet(c: SheetContent): string[] {
   const errors: string[] = [];
   if (!c.title.trim()) errors.push('Falta el título');
+  if (c.videoUrl?.trim() && !safeVideoEmbed(c.videoUrl)) errors.push('El vídeo debe ser un enlace de YouTube o Vimeo');
   if (!Number.isInteger(c.people) || c.people < 1 || c.people > MAX_SHEET_PEOPLE) errors.push(`Personas entre 1 y ${MAX_SHEET_PEOPLE}`);
   if (c.pricePerPersonEuros !== null && (!(c.pricePerPersonEuros > 0) || c.pricePerPersonEuros > 5000)) errors.push('Precio no válido');
   return errors;
@@ -101,7 +107,8 @@ export const STORAGE_PHOTO = 'storage:';
 export function sheetFromCatalog(item: CatalogItem): SheetContent {
   return { base: `catalog:${item.key}`, discipline: item.discipline, level: item.level, levelLabel: item.levelLabel, title: item.name,
     place: [item.zone, item.province].filter(Boolean).join(', '), date: '', duration: item.duration, meetingPoint: '', people: 2,
-    pricePerPersonEuros: item.pricePerPersonEuros, summary: item.summary, includes: [...item.includes], bring: [],
+    pricePerPersonEuros: item.pricePerPersonEuros, summary: item.summary, grade: item.grade, description: item.description,
+    videoUrl: item.videoUrl ?? '', includes: [...item.includes], bring: [],
     requirements: [...item.requirements], notes: '', minAge: item.minAge, fitness: item.fitness, experience: item.experience,
     photo: item.photos[0] ? `${STORAGE_PHOTO}${item.photos[0]}` : null, customerName: '' };
 }

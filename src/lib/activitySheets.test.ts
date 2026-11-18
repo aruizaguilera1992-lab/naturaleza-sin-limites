@@ -44,3 +44,18 @@ describe('sheetFromRequest', () => {
     expect(c.people).toBe(6);
   });
 });
+
+import { sheetFromCatalog as fromCatalog, validateSheet as validate } from './activitySheets';
+describe('ficha privada desde el catálogo', () => {
+  const item = { key: 'espeleologia:x', discipline: 'espeleologia', name: 'Cueva X', province: 'Málaga', zone: 'Archidona', levelLabel: 'Iniciación', level: 1,
+    grade: 'Clase 1', duration: '1 a 3 horas', pricePerPersonEuros: 55, summary: 'Resumen', description: 'Detalle largo', includes: ['Casco'], requirements: ['Req'],
+    minAge: 12, fitness: 'Básica', experience: false, videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', photos: [], edited: true } as never;
+  it('copia todos los campos completados del catálogo', () => {
+    const c = fromCatalog(item);
+    expect([c.title, c.place, c.grade, c.duration, c.pricePerPersonEuros, c.summary, c.description, c.videoUrl, c.minAge, c.fitness, c.experience])
+      .toEqual(['Cueva X', 'Archidona, Málaga', 'Clase 1', '1 a 3 horas', 55, 'Resumen', 'Detalle largo', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 12, 'Básica', false]);
+  });
+  it('rechaza vídeos que no son de YouTube o Vimeo', () => {
+    expect(validate({ ...fromCatalog(item), videoUrl: 'https://evil.example/v' }).some((e) => e.includes('vídeo'))).toBe(true);
+  });
+});

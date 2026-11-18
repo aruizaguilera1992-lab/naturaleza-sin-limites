@@ -8,6 +8,7 @@ import { STORAGE_PHOTO, sheetTotalEuros, type SheetContent } from '@/lib/activit
 import { usePhotoUrls } from '@/lib/adminCatalog';
 import { OutingInstructions } from '@/components/shared/OutingInstructions';
 import { MeetingPoint } from '@/components/shared/MeetingPoint';
+import { safeVideoEmbed } from '@/lib/safeVideo';
 
 const DISC: Record<SheetContent['discipline'], string> = { barranquismo: 'Barranquismo', ferratas: 'Vía ferrata', espeleologia: 'Espeleología' };
 const fmtDate = (d: string) => { try { return new Date(`${d}T12:00:00`).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch { return d; } };
@@ -29,6 +30,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
   const ownUrls: Record<string, string> = ownPath && ownPhotoUrl ? { [ownPath]: ownPhotoUrl } : adminUrls;
   const photo = ownPath ? (ownUrls[ownPath] ? { src: ownUrls[ownPath], alt: c.title, autor: '', licencia: '', fuente: '' } : null) : c.photo ? levelOfferPhotos[c.photo] : null;
   const total = sheetTotalEuros(c);
+  const video = safeVideoEmbed(c.videoUrl);
   const wa = `https://wa.me/34685609542?text=${encodeURIComponent(`Hola, quiero confirmar la actividad «${c.title}»${reference ? ` (ficha ${reference})` : ''}.`)}`;
   const facts = [
     c.date && { icon: CalendarDays, text: fmtDate(c.date) },
@@ -39,7 +41,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
   return (
     <article className="text-foreground">
       {c.customerName && <p className="text-sm font-semibold uppercase tracking-wide text-primary">Propuesta para {c.customerName}</p>}
-      <div className="mt-2 flex flex-wrap gap-2"><Badge className="border-primary/40 bg-primary/15 text-primary">{DISC[c.discipline]} · {c.levelLabel}</Badge></div>
+      <div className="mt-2 flex flex-wrap gap-2"><Badge className="border-primary/40 bg-primary/15 text-primary">{DISC[c.discipline]} · {c.levelLabel}</Badge>{c.grade?.trim() && <Badge variant="outline">Grado {c.grade.trim()}</Badge>}</div>
       <h1 className="mt-2 text-3xl sm:text-4xl font-heading font-bold">{c.title || 'Sin título'}</h1>
       {c.summary && <p className="mt-3 text-lg text-muted-foreground">{c.summary}</p>}
       <ul className="mt-5 flex flex-wrap gap-2">
@@ -51,6 +53,12 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
           <img src={photo.src} alt={photo.alt} className="h-56 sm:h-72 w-full object-cover" />
           {!ownPath && <figcaption className="px-3 py-2 text-xs text-muted-foreground">Foto ilustrativa: <a href={photo.fuente} target="_blank" rel="noopener noreferrer" className="underline">{photo.autor}</a>, {photo.licencia}</figcaption>}
         </figure>
+      )}
+      {c.description?.trim() && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{c.description.trim()}</p>}
+      {video && (
+        <div className="mt-6 aspect-video overflow-hidden rounded-xl border border-border">
+          <iframe src={video} title={`Vídeo: ${c.title}`} className="h-full w-full" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" />
+        </div>
       )}
       {c.meetingPoint && <MeetingPoint text={c.meetingPoint} />}
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
