@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowUp, ImagePlus, Lock, Users, RotateCcw, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowUp, ImagePlus, Lock, Plus, Users, RotateCcw, Save, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import type { OutingMode } from '@/lib/catalogOuting';
-import { CATALOG_BUCKET, useAdminCatalog, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
+import { blankItemData, CATALOG_BUCKET, newCustomKey, useAdminCatalog, usePhotoUrls, type CatalogDiscipline, type CatalogItem, type CatalogItemData } from '@/lib/adminCatalog';
 
 const DISC: Record<CatalogDiscipline, string> = { barranquismo: 'Barranquismo', ferratas: 'Vías ferratas', espeleologia: 'Espeleología' };
 const lines = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
@@ -21,10 +21,10 @@ function Thumb({ path }: { path: string }) {
   return urls[path] ? <img src={urls[path]} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-muted" />;
 }
 
-function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: () => Promise<void>; onConfigure?: (item: CatalogItem, mode: OutingMode) => void }) {
+function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: (removed?: boolean) => Promise<void>; onConfigure?: (item: CatalogItem, mode: OutingMode) => void }) {
   const { toast } = useToast();
   const [d, setD] = useState<CatalogItemData>(() => {
-    const { key: _k, discipline: _d, photos: _p, edited: _e, ...rest } = item; return rest;
+    const { key: _k, discipline: _d, photos: _p, edited: _e, custom: _c, reference: _r, sourceUrl: _s, sourceLabel: _l, ...rest } = item; return rest;
   });
   const [photos, setPhotos] = useState<string[]>(item.photos);
   const [busy, setBusy] = useState(false);
@@ -59,11 +59,11 @@ function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: 
   };
 
   const restore = async () => {
-    if (!window.confirm('¿Restaurar los datos originales? Se quitarán también las fotos subidas.')) return;
+    if (!window.confirm(item.custom ? '¿Eliminar esta actividad del catálogo? Se borrarán también sus fotos.' : '¿Restaurar los datos originales? Se quitarán también las fotos subidas.')) return;
     setBusy(true);
     if (item.photos.length) await supabase.storage.from(CATALOG_BUCKET).remove(item.photos);
     await supabase.from('catalog_entries').delete().eq('key', item.key);
-    setBusy(false); await onDone();
+    setBusy(false); await onDone(item.custom);
   };
 
   const removePhoto = async (p: string) => {
@@ -73,7 +73,7 @@ function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: 
 
   return (
     <div className="space-y-4 rounded-xl border border-border bg-card p-4">
-      <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{DISC[item.discipline]}</Badge>{item.edited && <Badge className="border-primary/40 bg-primary/15 text-primary">Editada</Badge>}
+      <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{DISC[item.discipline]}</Badge>{item.edited && <Badge className="border-primary/40 bg-primary/15 text-primary">Editada</Badge>}{item.custom && <Badge className="border-primary/40 bg-primary/15 text-primary">Nueva</Badge>}
         {item.reference && <Badge variant="outline">Referencia documental · pendiente de revisar</Badge>}
         {item.sourceUrl && <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">Ver fuente ({item.sourceLabel ?? 'RocJumper'})</a>}</div>
       <section aria-labelledby="ph-title">
@@ -124,9 +124,10 @@ function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: 
         <Button variant="hero" disabled={busy} onClick={save}><Save className="mr-1 h-4 w-4" />Guardar</Button>
         {onConfigure && <>
           <Button variant="outline" disabled={busy} onClick={() => onConfigure({ ...item, ...d, photos }, 'privado')}><Lock className="mr-1 h-4 w-4" />Crear salida privada</Button>
-          {!item.reference && <Button variant="outline" disabled={busy} onClick={() => onConfigure({ ...item, ...d, photos }, 'abierto')}><Users className="mr-1 h-4 w-4" />Crear salida en grupo abierto</Button>}
+          {!item.reference && !item.custom && <Button variant="outline" disabled={busy} onClick={() => onConfigure({ ...item, ...d, photos }, 'abierto')}><Users className="mr-1 h-4 w-4" />Crear salida en grupo abierto</Button>}
         </>}
         {item.edited && <Button variant="ghost" disabled={busy} onClick={restore}><RotateCcw className="mr-1 h-4 w-4" />Restaurar original</Button>}
+        {item.custom && <Button variant="ghost" disabled={busy} onClick={restore}><Trash2 className="mr-1 h-4 w-4" />Eliminar actividad</Button>}
       </div>
     </div>
   );
@@ -140,12 +141,17 @@ export function CatalogPanel({ onConfigure }: { onConfigure?: (item: CatalogItem
   const [prov, setProv] = useState('todas');
   const provinces = useMemo(() => [...new Set(items.map((i) => i.province).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es')), [items]);
   const [selected, setSelected] = useState<string | null>(null);
+  const [draft, setDraft] = useState<CatalogItem | null>(null);
+  const [newDisc, setNewDisc] = useState<CatalogDiscipline>('barranquismo');
+  const startNew = () => setDraft({ ...blankItemData(), key: newCustomKey(newDisc), discipline: newDisc, photos: [], edited: false, custom: true });
   const list = useMemo(() => items.filter((i) => (disc === 'todas' || i.discipline === disc) && (prov === 'todas' || i.province === prov) && `${i.name} ${i.zone} ${i.province}`.toLowerCase().includes(q.toLowerCase())), [items, disc, q, prov]);
-  const current = items.find((i) => i.key === selected);
+  const current = items.find((i) => i.key === selected) ?? (draft && items.find((i) => i.key === draft.key)) ?? draft;
+  const back = () => { setSelected(null); setDraft(null); };
   if (current) return (
     <div className="space-y-3">
-      <Button variant="ghost" onClick={() => setSelected(null)}><ArrowLeft className="mr-1 h-4 w-4" />Volver al catálogo</Button>
-      <ItemEditor key={current.key} item={current} onDone={reload} onConfigure={onConfigure} />
+      <Button variant="ghost" onClick={back}><ArrowLeft className="mr-1 h-4 w-4" />Volver al catálogo</Button>
+      <ItemEditor key={current.key} item={current} onConfigure={onConfigure}
+        onDone={async (removed) => { await reload(); if (removed) back(); else if (draft) { setSelected(draft.key); setDraft(null); } }} />
     </div>
   );
   return (
@@ -158,6 +164,12 @@ export function CatalogPanel({ onConfigure }: { onConfigure?: (item: CatalogItem
         <select aria-label="Filtrar por provincia" className={`${sel} w-auto`} value={prov} onChange={(e) => setProv(e.target.value)}>
           <option value="todas">Todas las provincias</option>{provinces.map((p) => <option key={p}>{p}</option>)}
         </select>
+      </div>
+      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-border p-3">
+        <select aria-label="Disciplina de la nueva actividad" className={`${sel} w-auto`} value={newDisc} onChange={(e) => setNewDisc(e.target.value as CatalogDiscipline)}>
+          {(Object.keys(DISC) as CatalogDiscipline[]).map((d) => <option key={d} value={d}>{DISC[d]}</option>)}
+        </select>
+        <Button variant="hero" size="sm" onClick={startNew}><Plus className="mr-1 h-4 w-4" />Añadir actividad</Button>
       </div>
       <p className="text-xs text-muted-foreground">{list.length} recorridos</p>
       <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">

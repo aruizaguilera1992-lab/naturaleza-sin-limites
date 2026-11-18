@@ -44,3 +44,15 @@ describe('admin catalog', () => {
     expect(other.edited).toBe(false); expect(other.photos).toEqual([]);
   });
 });
+
+import { mergeCatalog as mergeC, baseCatalog as baseC } from './adminCatalog';
+describe('actividades nuevas del catálogo', () => {
+  it('añade al catálogo una actividad guardada con clave custom', () => {
+    const items = mergeC(baseC(), [{ key: 'custom:espeleologia:abc', data: { name: 'Cueva nueva' }, photos: [] }]);
+    const n = items.find((i) => i.key === 'custom:espeleologia:abc');
+    expect(n?.name).toBe('Cueva nueva');
+    expect(n?.discipline).toBe('espeleologia');
+    expect(n?.custom).toBe(true);
+    expect(items.length).toBe(baseC().length + 1);
+  });
+});

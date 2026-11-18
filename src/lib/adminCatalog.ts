@@ -38,6 +38,8 @@ export interface CatalogItem extends CatalogItemData {
   reference?: boolean;
   sourceUrl?: string;
   sourceLabel?: string;
+  /** Actividad nueva creada desde el panel (no existe en el catálogo original). */
+  custom?: boolean;
 }
 
 const euros = (v: string | null | undefined) => { const n = parseInt(v?.match(/\d+/)?.[0] ?? '', 10); return n > 0 ? n : null; };
@@ -106,7 +108,21 @@ export interface CatalogOverride { key: string; data: Partial<CatalogItemData>; 
 /** Los cambios guardados en el panel prevalecen; lo no editado conserva el dato original. */
 export function mergeCatalog(base: Omit<CatalogItem, 'photos' | 'edited'>[], overrides: CatalogOverride[]): CatalogItem[] {
   const map = new Map(overrides.map((o) => [o.key, o]));
-  return base.map((b) => { const o = map.get(b.key); return { ...b, ...(o?.data ?? {}), key: b.key, discipline: b.discipline, photos: o?.photos ?? [], edited: Boolean(o) }; });
+  const merged = base.map((b) => { const o = map.get(b.key); return { ...b, ...(o?.data ?? {}), key: b.key, discipline: b.discipline, photos: o?.photos ?? [], edited: Boolean(o) }; });
+  const custom = overrides.filter((o) => isCustomKey(o.key)).map((o) => {
+    const discipline = o.key.split(':')[1] as CatalogDiscipline;
+    return { ...blankItemData(), ...(o.data ?? {}), key: o.key, discipline, photos: o.photos ?? [], edited: false, custom: true };
+  }).filter((i) => i.discipline in DISCIPLINES);
+  return [...custom, ...merged];
+}
+
+const DISCIPLINES: Record<CatalogDiscipline, true> = { barranquismo: true, ferratas: true, espeleologia: true };
+/** Claves de actividades nuevas: custom:<disciplina>:<id>. */
+export const isCustomKey = (key: string) => key.startsWith('custom:');
+export const newCustomKey = (d: CatalogDiscipline) => `custom:${d}:${crypto.randomUUID()}`;
+export function blankItemData(): CatalogItemData {
+  return { name: '', province: '', zone: '', levelLabel: 'Iniciación', level: 1, grade: '', duration: '', pricePerPersonEuros: null,
+    summary: '', description: '', includes: [], requirements: [], minAge: 10, fitness: 'Básica', experience: false };
 }
 
 export const CATALOG_BUCKET = 'catalog-photos';
