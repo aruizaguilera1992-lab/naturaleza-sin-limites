@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
   if (!nombre) nombre = 'Cliente';
 
   const detalles = [
-    date ? `Fecha: ${date}` : null,
+    date ? `Fecha: ${date}` : 'Fecha: a acordar con el cliente',
     people ? `Personas: ${people}` : null,
     price != null ? `Precio por persona: ${price} €` : null,
     sheet.booking_id ? 'Reserva creada automáticamente (pendiente de señal).' : null,
@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
       kind: 'ficha_confirmada',
       dedupeKey: `sheet_accepted:${sheet.id}`,
       recipients: businessRecipients(),
-      subject: `✅ Fecha confirmada: ${nombre} · ${title}`,
+      subject: `✅ ${date ? 'Fecha confirmada' : 'Propuesta aceptada'}: ${nombre} · ${title}`,
       html: alert.html,
       text: alert.text,
       contactId: sheet.contact_id,
@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
         price != null ? `<strong>Precio por persona:</strong> ${escapeHtml(String(price))} €` : null,
       ].filter(Boolean).map((r) => `<li>${r}</li>`).join('');
       const body = `<p>Hola ${escapeHtml(nombre)},</p>
-        <p>Hemos recibido la confirmación de tu fecha. Tu reserva queda <strong>pendiente de pago</strong>.</p>
+        <p>${date ? 'Hemos recibido la confirmación de tu fecha.' : 'Hemos recibido la aceptación de tu propuesta; acordaremos la fecha contigo.'} Tu reserva queda <strong>pendiente de pago</strong>.</p>
         <ul>${rows}</ul>
         <p>En breve te enviaremos el enlace para pagar la señal del 30 % y asegurar tu plaza. Hasta entonces no se te cobra nada.</p>`;
       try {

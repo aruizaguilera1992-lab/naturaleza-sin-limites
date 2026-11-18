@@ -33,7 +33,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
   const video = safeVideoEmbed(c.videoUrl);
   const wa = `https://wa.me/34685609542?text=${encodeURIComponent(`Hola, quiero confirmar la actividad «${c.title}»${reference ? ` (ficha ${reference})` : ''}.`)}`;
   const facts = [
-    c.date && { icon: CalendarDays, text: fmtDate(c.date) },
+    { icon: CalendarDays, text: c.date ? fmtDate(c.date) : 'Fecha a acordar contigo' },
     c.duration && { icon: Clock, text: c.duration },
     c.place && { icon: MapPin, text: c.place },
     { icon: Users, text: `${c.people} ${c.people === 1 ? 'persona' : 'personas'}` },

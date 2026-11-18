@@ -7,6 +7,10 @@ describe('activity sheets', () => {
     expect(validateSheet({ ...c, people: 7 })).toContain('Personas entre 1 y 6');
     expect(validateSheet({ ...c, people: 6 })).toEqual([]);
   });
+  it('accepts a proposal without a fixed date', () => {
+    const c = sheetFromBase('barranquismo-iniciacion');
+    expect(validateSheet({ ...c, date: '' })).toEqual([]);
+  });
   it('computes total price per person × people, null when to consult', () => {
     expect(sheetTotalEuros({ people: 4, pricePerPersonEuros: 35 })).toBe(140);
     expect(sheetTotalEuros({ people: 4, pricePerPersonEuros: null })).toBeNull();

@@ -10,7 +10,7 @@ const REASONS: Record<string, string> = {
 };
 
 /** Confirmación sin pago: los datos de contacto ya los tiene el equipo (ficha vinculada), solo se pide confirmar. */
-export function AcceptProposal({ token, defaultName, acceptedAt, onAccepted }: { token: string; defaultName: string; acceptedAt: string | null; onAccepted: (at: string) => void }) {
+export function AcceptProposal({ token, defaultName, acceptedAt, hasDate = true, onAccepted }: { token: string; defaultName: string; acceptedAt: string | null; hasDate?: boolean; onAccepted: (at: string) => void }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -19,7 +19,9 @@ export function AcceptProposal({ token, defaultName, acceptedAt, onAccepted }: {
     return (
       <p role="status" className="flex w-full items-start gap-2 rounded-lg border border-primary/40 bg-primary/10 p-3 text-sm text-foreground">
         <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-        ¡Fecha confirmada! Te enviaremos el enlace para pagar la señal del 30 % y cerrar tu plaza.
+        {hasDate
+          ? '¡Fecha confirmada! Te enviaremos el enlace para pagar la señal del 30 % y cerrar tu plaza.'
+          : '¡Propuesta aceptada! Acordaremos la fecha contigo y te enviaremos el enlace para pagar la señal del 30 %.'}
       </p>
     );
   }
@@ -38,16 +40,20 @@ export function AcceptProposal({ token, defaultName, acceptedAt, onAccepted }: {
 
   return (
     <>
-      <Button variant="hero" className="min-h-11" onClick={() => setOpen(true)}><CheckCircle2 className="mr-1 h-4 w-4" />Confirmar fecha</Button>
+      <Button variant="hero" className="min-h-11" onClick={() => setOpen(true)}><CheckCircle2 className="mr-1 h-4 w-4" />{hasDate ? 'Confirmar fecha' : 'Aceptar propuesta'}</Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{defaultName ? `¿Confirmamos, ${defaultName}?` : '¿Confirmamos tu fecha?'}</DialogTitle>
-            <DialogDescription>Reservamos esta propuesta para ti. No se cobra nada ahora: te enviaremos el enlace de la señal del 30 %.</DialogDescription>
+            <DialogTitle>{defaultName ? `¿Confirmamos, ${defaultName}?` : hasDate ? '¿Confirmamos tu fecha?' : '¿Aceptamos la propuesta?'}</DialogTitle>
+            <DialogDescription>
+              {hasDate
+                ? 'Reservamos esta propuesta para ti. No se cobra nada ahora: te enviaremos el enlace de la señal del 30 %.'
+                : 'Reservamos esta propuesta para ti y acordaremos la fecha contigo. No se cobra nada ahora: te enviaremos el enlace de la señal del 30 %.'}
+            </DialogDescription>
           </DialogHeader>
           <p className="text-xs text-muted-foreground">Al confirmar aceptas la <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="text-primary underline">política de privacidad</a> para gestionar tu reserva.</p>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-          <Button variant="hero" className="min-h-11 w-full" disabled={busy} onClick={confirm}>{busy ? 'Confirmando…' : 'Sí, confirmo la fecha'}</Button>
+          <Button variant="hero" className="min-h-11 w-full" disabled={busy} onClick={confirm}>{busy ? 'Confirmando…' : hasDate ? 'Sí, confirmo la fecha' : 'Sí, acepto la propuesta'}</Button>
         </DialogContent>
       </Dialog>
     </>

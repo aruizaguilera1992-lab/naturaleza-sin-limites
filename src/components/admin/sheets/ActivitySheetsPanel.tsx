@@ -159,7 +159,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
           <div><Label htmlFor="sh-name">Nombre del cliente</Label><Input id="sh-name" value={c.customerName} onChange={(e) => set('customerName', e.target.value)} /></div>
           <div><Label htmlFor="sh-title">Nombre</Label><Input id="sh-title" value={c.title} onChange={(e) => set('title', e.target.value)} /></div>
           <div><Label htmlFor="sh-place">Recorrido / lugar</Label><Input id="sh-place" value={c.place} onChange={(e) => set('place', e.target.value)} /></div>
-          <div><Label htmlFor="sh-date">Fecha propuesta</Label><Input id="sh-date" type="date" value={c.date} onChange={(e) => set('date', e.target.value)} /></div>
+          <div><Label htmlFor="sh-date">Fecha propuesta (opcional)</Label><Input id="sh-date" type="date" value={c.date} onChange={(e) => set('date', e.target.value)} /><p className="mt-1 text-xs text-muted-foreground">Déjala vacía si la acordáis después: la ficha mostrará «Fecha a acordar».</p></div>
           <div><Label htmlFor="sh-dur">Duración</Label><Input id="sh-dur" value={c.duration} onChange={(e) => set('duration', e.target.value)} placeholder="p. ej. 4 horas" /></div>
           <div><Label htmlFor="sh-people">Personas (máx. {MAX_SHEET_PEOPLE})</Label><Input id="sh-people" type="number" min={1} max={MAX_SHEET_PEOPLE} value={c.people} onChange={(e) => set('people', Number(e.target.value))} /></div>
           <div><Label htmlFor="sh-price">Precio por persona (€)</Label><Input id="sh-price" type="number" min={0} value={c.pricePerPersonEuros ?? ''} placeholder="Vacío = a consultar" onChange={(e) => set('pricePerPersonEuros', e.target.value === '' ? null : Number(e.target.value))} /></div>

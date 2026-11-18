@@ -32,7 +32,7 @@ export default function FichaPrivada() {
       <Navbar />
       <main className="container mx-auto max-w-4xl px-4 pt-44 sm:pt-48 md:pt-32 lg:pt-40 pb-16">
         {state === 'loading' && <p className="text-muted-foreground">Cargando tu ficha…</p>}
-        {state === 'ok' && content && <SheetView c={content} ownPhotoUrl={photoUrl} reference={token.slice(0, 8)} accept={<AcceptProposal token={token} defaultName={content.customerName} acceptedAt={acceptedAt} onAccepted={setAcceptedAt} />} />}
+        {state === 'ok' && content && <SheetView c={content} ownPhotoUrl={photoUrl} reference={token.slice(0, 8)} accept={<AcceptProposal token={token} defaultName={content.customerName} acceptedAt={acceptedAt} hasDate={Boolean(content.date)} onAccepted={setAcceptedAt} />} />}
         {state === 'off' && (
           <div className="rounded-xl border border-border bg-card p-8 text-center">
             <h1 className="text-2xl font-heading font-bold text-foreground">Este enlace ya no está disponible</h1>

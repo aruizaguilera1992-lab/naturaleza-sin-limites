@@ -16,7 +16,7 @@ export function renderActivitySheetEmail(c: Record<string, unknown>, link: strin
   const price = typeof c.pricePerPersonEuros === 'number' ? c.pricePerPersonEuros : null;
   const badge = [DISC[String(c.discipline)] ?? '', s(c.levelLabel, 60)].filter(Boolean).join(' · ');
   const rows: [string, string][] = [];
-  if (c.date) rows.push(['Fecha', escapeHtml(fmtDate(String(c.date)))]);
+  rows.push(['Fecha', c.date ? escapeHtml(fmtDate(String(c.date))) : 'A acordar contigo']);
   if (c.duration) rows.push(['Duración', s(c.duration, 80)]);
   if (c.place) rows.push(['Lugar', s(c.place, 120)]);
   rows.push(['Personas', `${people} ${people === 1 ? 'persona' : 'personas'}`]);
