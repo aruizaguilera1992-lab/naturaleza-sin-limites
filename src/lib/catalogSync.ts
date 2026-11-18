@@ -27,6 +27,8 @@ export interface CatalogOverride {
   videoUrl?: string;
   /** Qué llevar, escrito en el catálogo o en la salida. */
   bring?: string[];
+  /** Ruta de la foto propia en el bucket catalog-photos (solo la sirve la función outing-photo). */
+  imagePath?: string;
 }
 
 /** Vista de la ficha técnica: un solo origen para todos los bloques visibles. */
@@ -60,6 +62,8 @@ export interface OutingSheet {
   cancellationPolicy: string;
   /** Vídeo de la actividad (enlace validado de YouTube o Vimeo), si el catálogo lo define. */
   videoUrl: string;
+  /** Foto propia subida desde el panel (ruta en el almacén privado), si la salida la define. */
+  imagePath: string;
   /** Preguntas frecuentes de la actividad, para la última diapositiva de la ficha. */
   faqs: { question: string; answer: string }[];
   /** true cuando el catálogo del panel aporta alguno de los datos mostrados. */
@@ -163,6 +167,7 @@ export function mergeOutingSheet(
     weatherPolicy: text(p?.weatherPolicy),
     cancellationPolicy: text(p?.cancellationPolicy),
     videoUrl: text(o.videoUrl),
+    imagePath: text(o.imagePath),
     faqs: Array.isArray(p?.faqs)
       ? p.faqs.map((f) => ({ ...f, answer: withDuration(f.answer, catalogDuration) }))
       : [],

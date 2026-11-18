@@ -146,9 +146,13 @@ export function fieldsFromSheet(c: SheetContent): ActivityFields {
   return { name: c.title, grade: c.grade ?? '', level: c.level, levelLabel: c.levelLabel, duration: c.duration,
     pricePerPersonEuros: c.pricePerPersonEuros, minAge: c.minAge, fitness: c.fitness, experience: c.experience,
     summary: c.summary, videoUrl: c.videoUrl ?? '', description: c.description ?? '', includes: c.includes,
-    bring: c.bring, requirements: c.requirements, rules: c.rules ?? '', steps: c.steps ?? '' };
+    bring: c.bring, requirements: c.requirements, rules: c.rules ?? '', steps: c.steps ?? '',
+    imagePath: c.photo?.startsWith(STORAGE_PHOTO) ? c.photo.slice(STORAGE_PHOTO.length) : '' };
 }
 export function applyFieldsToSheet(c: SheetContent, f: ActivityFields): SheetContent {
-  const { name, ...rest } = f;
-  return { ...c, ...rest, title: name };
+  const { name, imagePath, ...rest } = f;
+  // Una foto propia nueva sustituye a la anterior; vaciarla quita solo las fotos propias
+  // y conserva las ilustrativas de las ofertas por nivel.
+  const photo = imagePath ? `${STORAGE_PHOTO}${imagePath}` : c.photo?.startsWith(STORAGE_PHOTO) ? null : c.photo;
+  return { ...c, ...rest, title: name, photo };
 }

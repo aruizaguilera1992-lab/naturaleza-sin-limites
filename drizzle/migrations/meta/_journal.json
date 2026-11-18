@@ -267,6 +267,13 @@
       "when": 1794999930305,
       "tag": "0037_activity_events_catalog_snapshot",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1795000909718,
+      "tag": "0038_catalog_image_path_for_outing",
+      "breakpoints": true
     }
   ]
 }

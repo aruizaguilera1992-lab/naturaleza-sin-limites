@@ -36,6 +36,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getActivityCatalogImage } from "@/data/activityProfiles";
+import { supabase } from "@/integrations/supabase/client";
 import { MeetingPointActions, MeetingPointLabel } from "@/components/shared/MeetingPoint";
 import { useMeetingPointTarget } from "@/hooks/useMeetingPointTarget";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
@@ -458,11 +459,14 @@ export function EventTechSheet({
   event,
   bookingUrl,
   trigger,
+  imageUrlOverride,
 }: {
   event: ActivityEvent;
   bookingUrl: string;
   /** Elemento que abre la ficha. Por defecto, un botón «Ver ficha y reservar». */
   trigger?: ReactNode;
+  /** Vista previa del panel: URL ya firmada de la foto propia aún sin guardar. */
+  imageUrlOverride?: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -472,7 +476,19 @@ export function EventTechSheet({
   const { override: live } = useCatalogForOuting(snapshot ? undefined : event.category, snapshot ? undefined : event.slug);
   const sheet = mergeOutingSheet(event, event.profile, snapshot ?? live);
   const p = event.profile;
-  const image = p ? getActivityCatalogImage(event.category, event.slug) ?? undefined : undefined;
+  // Foto propia subida desde el panel: la sirve firmada la función outing-photo (el almacén es privado).
+  const [ownPhotoUrl, setOwnPhotoUrl] = useState<string | null>(null);
+  useEffect(() => {
+    setOwnPhotoUrl(null);
+    if (!sheet.imagePath) return;
+    let live = true;
+    supabase.functions
+      .invoke("outing-photo", { body: { category: event.category, slug: event.slug } })
+      .then(({ data }) => { if (live && typeof data?.url === "string") setOwnPhotoUrl(data.url); })
+      .catch(() => undefined);
+    return () => { live = false; };
+  }, [sheet.imagePath, event.category, event.slug]);
+  const image = imageUrlOverride ?? ownPhotoUrl ?? (p ? getActivityCatalogImage(event.category, event.slug) ?? undefined : undefined);
   const Icon = CATEGORY_ICON[event.category] ?? CalendarDays;
   const fit = FITNESS[sheet.fitness.toLowerCase()] ?? 1;
   const dateLabel = event.startDate.toLocaleDateString("es-ES", {

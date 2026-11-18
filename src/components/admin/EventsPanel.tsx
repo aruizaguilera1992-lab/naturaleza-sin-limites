@@ -1,4 +1,4 @@
-import { useAdminCatalog, usePhotoUrls } from "@/lib/adminCatalog";
+import { useAdminCatalog, usePhotoUrls, CATALOG_BUCKET } from "@/lib/adminCatalog";
 import { openGroupKeyFor, type CatalogOutingStart } from "@/lib/catalogOuting";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronDown, Copy, List, Loader2, Pencil, Plus, RefreshCw, Users, X } from "lucide-react";
@@ -318,6 +318,18 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, selectedActivity, editingId, events]);
+
+  // Foto propia de la vista previa (aún sin guardar): el admin firma la URL en el navegador.
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  useEffect(() => {
+    const path = fields?.imagePath;
+    setPreviewImageUrl(null);
+    if (!path) return;
+    let live = true;
+    supabase.storage.from(CATALOG_BUCKET).createSignedUrl(path, 3600)
+      .then(({ data }) => { if (live) setPreviewImageUrl(data?.signedUrl ?? null); });
+    return () => { live = false; };
+  }, [fields?.imagePath]);
 
   const validate = (event?: EventRow) => {
     if (!selectedActivity) return "Elige una actividad del catálogo vendible.";
@@ -822,6 +834,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
               <EventTechSheet
                 event={previewEvent}
                 bookingUrl="#"
+                imageUrlOverride={previewImageUrl}
                 trigger={
                   <Button type="button" variant="secondary">
                     <Eye className="mr-2 h-4 w-4" /> Vista previa en la web

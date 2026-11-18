@@ -92,4 +92,23 @@ describe('campos unificados', () => {
     expect(f.name).toBe('Copia'); expect(f.duration).toBe('3 h'); expect(f.rules).toBe('Norma');
   });
   it('clave de catálogo de ferratas', () => { expect(_cke('vias-ferratas', 'x')).toBe('ferratas:x'); });
+  it('la foto propia viaja entre la ficha y los campos comunes', () => {
+    const c = { ..._sfb(_sb[0].id), photo: 'storage:uploads/a.webp' };
+    const f = _ffs(c);
+    expect(f.imagePath).toBe('uploads/a.webp');
+    expect(_afs(c, f).photo).toBe('storage:uploads/a.webp');
+  });
+  it('vaciar la foto quita la propia pero conserva la ilustrativa', () => {
+    const propia = { ..._sfb(_sb[0].id), photo: 'storage:uploads/a.webp' };
+    expect(_afs(propia, { ..._ffs(propia), imagePath: '' }).photo).toBeNull();
+    const ilustrativa = { ..._sfb(_sb[0].id), photo: 'barranquismo-iniciacion' };
+    expect(_afs(ilustrativa, { ..._ffs(ilustrativa), imagePath: '' }).photo).toBe('barranquismo-iniciacion');
+  });
+  it('la copia de la salida guarda la foto propia', () => {
+    const base = _ffs(_sfb(_sb[0].id));
+    const f = _fsn({ imagePath: 'uploads/b.webp' }, base, null, null);
+    expect(f.imagePath).toBe('uploads/b.webp');
+    const sin = _fsn({}, base, null, null);
+    expect(sin.imagePath).toBe(base.imagePath);
+  });
 });
