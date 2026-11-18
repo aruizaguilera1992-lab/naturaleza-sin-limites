@@ -9,6 +9,7 @@ import { usePhotoUrls } from '@/lib/adminCatalog';
 import { OutingInstructions } from '@/components/shared/OutingInstructions';
 import { MeetingPoint } from '@/components/shared/MeetingPoint';
 import { safeVideoEmbed } from '@/lib/safeVideo';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const DISC: Record<SheetContent['discipline'], string> = { barranquismo: 'Barranquismo', ferratas: 'Vía ferrata', espeleologia: 'Espeleología' };
 const fmtDate = (d: string) => { try { return new Date(`${d}T12:00:00`).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch { return d; } };
@@ -50,7 +51,17 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
       <LevelVisualStrip className="mt-5 max-w-xl" level={c.level} minAge={c.minAge} fitness={c.fitness} experience={c.experience} />
       {photo && (
         <figure className="mt-6 overflow-hidden rounded-xl border border-border">
-          <img src={photo.src} alt={photo.alt} className="h-56 sm:h-72 w-full object-cover" />
+          <Dialog>
+            <DialogTrigger asChild>
+              <button type="button" className="block w-full cursor-zoom-in" aria-label={`Ver la foto «${photo.alt}» a tamaño completo`}>
+                <img src={photo.src} alt={photo.alt} className="h-56 sm:h-72 w-full object-cover transition-transform duration-300 hover:scale-[1.02]" />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-5xl border-none bg-transparent p-0 shadow-none">
+              <DialogTitle className="sr-only">{photo.alt}</DialogTitle>
+              <img src={photo.src} alt={photo.alt} className="max-h-[85vh] w-full rounded-xl object-contain" />
+            </DialogContent>
+          </Dialog>
           {!ownPath && <figcaption className="px-3 py-2 text-xs text-muted-foreground">Foto ilustrativa: <a href={photo.fuente} target="_blank" rel="noopener noreferrer" className="underline">{photo.autor}</a>, {photo.licencia}</figcaption>}
         </figure>
       )}
