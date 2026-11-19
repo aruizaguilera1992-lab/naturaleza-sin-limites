@@ -24,6 +24,7 @@ Deno.serve(async (req) => {
   const origin = new URL(p.origin).origin; const link = `${origin}/dossier/${d.token}`;
   const li = (arr: unknown) => (Array.isArray(arr) ? arr : []).map((x) => `<li style="margin:0 0 6px">${esc(x)}</li>`).join('');
   const mapBtn = 'display:inline-block;margin:6px 8px 0 0;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:bold;text-decoration:none';
+  const waGroup = /^https:\/\/chat\.whatsapp\.com\/(invite\/)?[A-Za-z0-9]{10,40}\/?$/.test(String(c.whatsappGroup ?? '').trim()) ? String(c.whatsappGroup).trim() : null;
   const sched = (await Promise.all((Array.isArray(c.schedule) ? c.schedule : []).map(async (s: any) => {
     const label = String(s.label ?? '');
     const url = extractUrl(label);
@@ -38,7 +39,7 @@ Deno.serve(async (req) => {
   }))).join('');
   const html = `<div style="background:#ffffff;font-family:Arial,sans-serif;color:#1A1A1A"><div style="max-width:600px;margin:0 auto"><div style="background:#1A1A1A;color:#fff;padding:20px 24px;border-bottom:4px solid #FF6B35"><strong>Naturaleza Sin Límites</strong></div><div style="padding:24px">
 <h1 style="font-size:22px;margin:0 0 6px">Pasos a seguir</h1><p style="margin:0 0 18px;color:#555">${esc(b.activity)}${b.preferred_date ? ` · ${esc(b.preferred_date)}` : ''}</p>
-<h2 style="font-size:16px">Cronograma</h2><table style="border-collapse:collapse">${sched}</table>
+${waGroup ? `<p style="margin:0 0 18px"><a href="${esc(waGroup)}" style="display:inline-block;background:#25D366;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:bold">Unirme al grupo de WhatsApp de la actividad</a></p>` : ''}
 <h2 style="font-size:16px">Qué necesitas</h2><ul>${li(c.needs)}</ul><h2 style="font-size:16px">Normas de participación</h2><ul>${li(c.rules)}</ul>
 <p style="margin:18px 0">Completa el <strong>registro para el seguro de responsabilidad</strong>${c.canyoning ? ' y las <strong>medidas para neopreno y escarpines</strong>' : ''} de cada participante:</p>
 <p><a href="${esc(link)}" style="display:inline-block;background:#FF6B35;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:bold">Completar registro</a></p>

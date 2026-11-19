@@ -43,3 +43,12 @@ describe('syncDossier', () => {
     const base = _dd('Espeleología'); expect(_sync(base, {}).needs).toEqual(base.needs);
   });
 });
+
+import { safeWhatsappGroup as _wa } from './activityDossier';
+describe('safeWhatsappGroup', () => {
+  it('acepta solo invitaciones de grupo de WhatsApp', () => {
+    expect(_wa('https://chat.whatsapp.com/AbCdEf1234567890')).toBe('https://chat.whatsapp.com/AbCdEf1234567890');
+    expect(_wa('https://wa.me/34685609542')).toBeNull();
+    expect(_wa('javascript:alert(1)')).toBeNull();
+  });
+});

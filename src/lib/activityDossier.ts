@@ -1,5 +1,5 @@
 export interface ScheduleItem { time: string; label: string }
-export interface DossierContent { schedule: ScheduleItem[]; needs: string[]; rules: string[]; canyoning: boolean; notes?: string; extras?: string[] }
+export interface DossierContent { schedule: ScheduleItem[]; needs: string[]; rules: string[]; canyoning: boolean; notes?: string; extras?: string[]; whatsappGroup?: string }
 export interface DossierParticipant {
   fullName: string; docId: string; birthDate: string; phone: string;
   emergencyName: string; emergencyPhone: string; health?: string;
@@ -93,7 +93,7 @@ export function participantErrors(p: DossierParticipant): string[] {
 }
 
 export function whatsappDossierText(name: string | null, activity: string, link: string) {
-  return `Hola${name ? ` ${name}` : ''}, aquí tienes los pasos a seguir para ${activity}: cronograma, qué necesitas, normas y el registro para el seguro. Complétalo aquí: ${link}`;
+  return `Hola${name ? ` ${name}` : ''}, aquí tienes los pasos a seguir para ${activity}: qué necesitas, normas, el grupo de WhatsApp y el registro para el seguro. Complétalo aquí: ${link}`;
 }
 
 /** Optional rental/extra items the customer can request in the dossier. */
@@ -115,3 +115,7 @@ export function syncDossier(base: DossierContent, src: DossierSource): DossierCo
   const notes = [src.duration?.trim() && `Duración: ${src.duration.trim()}`, src.includes?.length ? `Incluido: ${src.includes.join(', ')}` : ''].filter(Boolean).join('\n');
   return { ...base, schedule, needs: bring.length ? bring : base.needs, rules: rules.length ? rules : base.rules, notes: notes || base.notes };
 }
+
+/** Only official WhatsApp group invite links are accepted. */
+export const WA_GROUP_RE = /^https:\/\/chat\.whatsapp\.com\/(invite\/)?[A-Za-z0-9]{10,40}\/?$/;
+export const safeWhatsappGroup = (u?: string | null) => { const v = (u ?? '').trim(); return WA_GROUP_RE.test(v) ? v : null; };

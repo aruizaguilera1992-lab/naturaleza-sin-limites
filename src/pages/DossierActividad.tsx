@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Plus, Trash2, CheckCircle2 } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, MessageCircle } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
-import { MeetingPointStep } from '@/components/shared/MeetingPoint';
-import { isMeetingPointLabel } from '@/lib/meetingPoint';
-import { participantErrors, suggestBootie, suggestWetsuit, type DossierContent, type DossierParticipant } from '@/lib/activityDossier';
+import { participantErrors, safeWhatsappGroup, suggestBootie, suggestWetsuit, type DossierContent, type DossierParticipant } from '@/lib/activityDossier';
 
 const blank = (): DossierParticipant => ({ fullName: '', docId: '', birthDate: '', phone: '', emergencyName: '', emergencyPhone: '', health: '' });
 type Data = { content: DossierContent; status: string; participants: DossierParticipant[]; activity: string; date: string | null; people: string | null };
@@ -60,8 +58,7 @@ export default function DossierActividad() {
         {state === 'ok' && d && (<div className="space-y-6">
           <header><p className="text-xs uppercase tracking-[0.2em] text-primary">Pasos a seguir</p><h1 className="mt-2 font-heading text-3xl font-bold text-foreground">{d.activity}</h1>{d.date && <p className="mt-1 text-muted-foreground">{new Date(d.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>}{d.content.notes && <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">{d.content.notes}</p>}</header>
           {done && <p className="flex items-center gap-2 rounded-xl border border-primary/50 bg-primary/10 p-4 text-foreground"><CheckCircle2 className="h-5 w-5 text-primary" />Registro recibido. Puedes corregirlo y volver a enviarlo.</p>}
-          <section className="rounded-xl border border-border bg-card p-5"><h2 className="mb-4 font-heading text-lg font-semibold text-foreground">Cronograma</h2>
-            <ol className="relative space-y-4 border-l-2 border-primary/60 pl-5">{d.content.schedule.map((s, i) => <li key={i} className="relative"><span className="absolute -left-[27px] top-1 h-3 w-3 rounded-full bg-primary" /><p className="font-heading font-bold text-primary">{s.time}</p>{isMeetingPointLabel(s.label) ? <MeetingPointStep text={s.label} /> : <p className="text-foreground">{s.label}</p>}</li>)}</ol></section>
+          {safeWhatsappGroup(d.content.whatsappGroup) && <section className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/50 bg-card p-5"><div><h2 className="font-heading text-lg font-semibold text-foreground">Grupo de WhatsApp de la actividad</h2><p className="text-sm text-muted-foreground">Avisos, hora y punto de encuentro con el guía y el grupo.</p></div><Button asChild><a href={safeWhatsappGroup(d.content.whatsappGroup)!} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Unirme al grupo</a></Button></section>}
           <section className="grid gap-4 md:grid-cols-2">
             <div className="rounded-xl border border-border bg-card p-5"><h2 className="mb-3 font-heading text-lg font-semibold text-foreground">Qué necesitas</h2><ul className="list-disc space-y-1 pl-5 text-foreground">{d.content.needs.map((n, i) => <li key={i}>{n}</li>)}</ul></div>
             <div className="rounded-xl border border-border bg-card p-5"><h2 className="mb-3 font-heading text-lg font-semibold text-foreground">Normas de participación</h2><ul className="list-disc space-y-1 pl-5 text-foreground">{d.content.rules.map((n, i) => <li key={i}>{n}</li>)}</ul></div>

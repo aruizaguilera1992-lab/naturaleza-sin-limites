@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Plus, Trash2, Mail, MessageCircle, Save, RefreshCw } from 'lucide-react';
+import { Plus, Mail, MessageCircle, Save, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { defaultDossier, lines, syncDossier, EXTRA_OPTIONS, type DossierSource, whatsappDossierText, type DossierContent, type DossierParticipant } from '@/lib/activityDossier';
+import { defaultDossier, lines, safeWhatsappGroup, syncDossier, EXTRA_OPTIONS, type DossierSource, whatsappDossierText, type DossierContent, type DossierParticipant } from '@/lib/activityDossier';
 
 interface Props { booking: { id: string; activity: string; name?: string | null; email?: string | null; phone?: string | null; contact: string; status: string; paid_amount_cents?: number | null; event_id?: string | null }; defaultRules?: string | null }
 type Row = { id: string; token: string; status: string; content: DossierContent; participants: DossierParticipant[]; sent_at: string | null; completed_at: string | null };
@@ -48,7 +48,7 @@ export function DossierPanel({ booking, defaultRules }: Props) {
   }, [booking.id]);
 
   const toggleExtra = (x: string, on: boolean) => setC({ ...c, extras: on ? [...(c.extras ?? []), x] : (c.extras ?? []).filter((y) => y !== x) });
-  const content = (): DossierContent => ({ ...c, needs: lines(needs), rules: lines(rules), schedule: c.schedule.filter((s) => s.label.trim()), extras: [...(c.extras ?? []).filter((x) => EXTRA_OPTIONS.includes(x)), ...lines(extraText)] });
+  const content = (): DossierContent => ({ ...c, whatsappGroup: safeWhatsappGroup(c.whatsappGroup) ?? '', needs: lines(needs), rules: lines(rules), schedule: c.schedule.filter((s) => s.label.trim()), extras: [...(c.extras ?? []).filter((x) => EXTRA_OPTIONS.includes(x)), ...lines(extraText)] });
   const save = async (): Promise<Row | null> => {
     setBusy(true);
     const payload = { booking_id: booking.id, content: content() as never };
@@ -76,7 +76,6 @@ export function DossierPanel({ booking, defaultRules }: Props) {
     const to = phone.length === 9 ? `34${phone}` : phone;
     window.open(`https://wa.me/${to}?text=${encodeURIComponent(whatsappDossierText(booking.name ?? null, booking.activity, link(r)))}`, '_blank', 'noopener,noreferrer');
   };
-  const setItem = (i: number, k: 'time' | 'label', v: string) => setC({ ...c, schedule: c.schedule.map((s, j) => (j === i ? { ...s, [k]: v } : s)) });
   const statusLabel = row?.status === 'completado' ? 'Completado por el cliente' : row?.status === 'enviado' ? 'Enviado' : row ? 'Borrador' : 'Sin crear';
 
   return (
@@ -93,19 +92,10 @@ export function DossierPanel({ booking, defaultRules }: Props) {
             <Button type="button" size="sm" variant="outline" onClick={() => { apply(syncDossier(content(), src)); toast.success('Dossier sincronizado con la ficha'); }}><RefreshCw className="mr-1 h-4 w-4" />Sincronizar con la ficha</Button>
           </div>
         )}
-        <div>
-          <p className="mb-2 text-sm font-medium text-foreground">Cronograma</p>
-          <div className="space-y-2">
-            {c.schedule.map((s, i) => (
-              <div key={i} className="flex gap-2">
-                <Input aria-label="Hora" type="time" className="w-28" value={s.time} onChange={(e) => setItem(i, 'time', e.target.value)} />
-                <Input aria-label="Paso" value={s.label} maxLength={160} onChange={(e) => setItem(i, 'label', e.target.value)} />
-                <Button type="button" size="icon" variant="ghost" aria-label="Quitar" onClick={() => setC({ ...c, schedule: c.schedule.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></Button>
-              </div>
-            ))}
-            <Button type="button" size="sm" variant="outline" onClick={() => setC({ ...c, schedule: [...c.schedule, { time: '', label: '' }] })}><Plus className="mr-1 h-4 w-4" />Añadir paso</Button>
-          </div>
-        </div>
+        <label className="block text-sm font-medium text-foreground">Enlace del grupo de WhatsApp de la actividad
+          <Input className="mt-1" type="url" placeholder="https://chat.whatsapp.com/..." value={c.whatsappGroup ?? ''} onChange={(e) => setC({ ...c, whatsappGroup: e.target.value })} />
+          {c.whatsappGroup?.trim() && !safeWhatsappGroup(c.whatsappGroup) && <span className="mt-1 block text-xs text-destructive">Pega un enlace de invitación de grupo (https://chat.whatsapp.com/…).</span>}
+        </label>
         <label className="block text-sm font-medium text-foreground">Qué necesitas (uno por línea)<Textarea className="mt-1" rows={4} value={needs} onChange={(e) => setNeeds(e.target.value)} /></label>
         <label className="block text-sm font-medium text-foreground">Normas de participación (una por línea)<Textarea className="mt-1" rows={4} value={rules} onChange={(e) => setRules(e.target.value)} /></label>
         <label className="flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={c.canyoning} onChange={(e) => setC({ ...c, canyoning: e.target.checked })} />Pedir medidas de neopreno y escarpines</label>
