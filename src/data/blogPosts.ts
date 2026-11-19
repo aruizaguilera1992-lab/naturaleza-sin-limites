@@ -72,7 +72,7 @@ export const blogPosts: BlogPost[] = [
     title: "Guía completa: tu primer descenso de barrancos en Málaga",
     slug: "guia-completa-primer-descenso-barrancos-malaga",
     excerpt:
-      "Descubre todo lo que necesitas saber antes de lanzarte a tu primera aventura de barranquismo. Desde el equipo esencial hasta las técnicas básicas de rappel.",
+      "¿Nunca has hecho barranquismo? Te contamos qué necesitas, qué barrancos elegir en Málaga y cómo preparar tu primera experiencia con seguridad.",
     content: `
 ¿Te gustaría descubrir el barranquismo, pero nunca has realizado un descenso? Málaga ofrece algunos de los escenarios naturales más atractivos de Andalucía para iniciarse en esta actividad: cañones excavados por el agua, cascadas, pozas naturales, toboganes y paredes de roca que convierten cada recorrido en una experiencia diferente.
 
@@ -441,15 +441,15 @@ Descubre nuestros recorridos de barranquismo en Málaga y Andalucía. Si no sabe
 `,
     featuredImage: media.canyoning.src,
     category: "consejos-principiantes",
-    tags: ["barranquismo", "principiantes", "málaga", "guía"],
+    tags: ["barranquismo", "barranquismo Málaga", "iniciación", "primer descenso", "seguridad", "aventura"],
     author: defaultAuthor,
     publishedAt: "2026-11-19",
-    readTime: 15,
+    readTime: 12,
     views: 1520,
     seo: {
-      metaTitle: "Guía Completa: Tu Primer Descenso de Barrancos en Málaga | Naturaleza Sin Límites",
+      metaTitle: "Tu primer descenso de barrancos en Málaga | Guía completa",
       metaDescription:
-        "Todo lo que necesitas saber para tu primera experiencia de barranquismo en Málaga. Equipo, técnicas, mejores barrancos para principiantes y consejos de expertos.",
+        "Descubre cómo iniciarte en el barranquismo en Málaga: mejores barrancos, requisitos, material, seguridad y consejos para elegir tu primera aventura.",
       ogImage: media.canyoning.src,
     },
   },
