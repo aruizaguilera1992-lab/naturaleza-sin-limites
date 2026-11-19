@@ -4282,7 +4282,7 @@ En Naturaleza Sin L\xEDmites te asesoramos para encontrar el recorrido que encaj
     ],
     author: defaultAuthor,
     publishedAt: "2024-01-08",
-    readTime: 10,
+    readTime: 6,
     views: 2340,
     seo: {
       metaTitle: "5 v\xEDas ferratas de Andaluc\xEDa: rutas y dificultad | Naturaleza Sin L\xEDmites",
