@@ -1435,7 +1435,14 @@ export default function Admin() {
 
           {tab === "contacts" && (
             <>
-              <div className="mb-4 flex justify-end">
+              <div className="mb-4 flex flex-wrap justify-end gap-2">
+                <Button variant="outline" onClick={async () => {
+                  const { data, error } = await supabase.rpc("admin_sync_bookings_to_contacts");
+                  if (error) { toast({ title: "No se pudo sincronizar", description: error.message, variant: "destructive" }); return; }
+                  const n = (data as { synced?: number } | null)?.synced ?? 0;
+                  toast({ title: "Contactos sincronizados", description: n ? `${n} reserva(s) vinculadas o importadas a Contactos.` : "Todas las reservas ya estaban sincronizadas." });
+                  await loadData();
+                }}>Sincronizar reservas</Button>
                 <NewContactDialog existing={contacts} onCreated={async (id) => { await loadData(); openContact(id); }} onOpenExisting={(id) => openContact(id)} />
               </div>
               {toolbar(contacts.length, filteredContacts.length, "Nombre, email o interés")}

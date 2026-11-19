@@ -1358,6 +1358,7 @@ export type Database = {
       admin_delete_booking: { Args: { _id: string }; Returns: Json }
       admin_delete_contact: { Args: { _id: string }; Returns: Json }
       admin_reset_all: { Args: { _confirm: string }; Returns: Json }
+      admin_sync_bookings_to_contacts: { Args: never; Returns: Json }
       begin_checkout_generation: {
         Args: { _expired_session_id: string; _token: string }
         Returns: Json
@@ -1461,6 +1462,10 @@ export type Database = {
       submit_activity_dossier: {
         Args: { _participants: Json; _rgpd: boolean; _token: string }
         Returns: Json
+      }
+      sync_booking_contact: {
+        Args: { _b: Database["public"]["Tables"]["bookings"]["Row"] }
+        Returns: string
       }
     }
     Enums: {
