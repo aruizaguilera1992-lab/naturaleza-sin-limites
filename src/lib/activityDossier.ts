@@ -1,10 +1,11 @@
 export interface ScheduleItem { time: string; label: string }
-export interface DossierContent { schedule: ScheduleItem[]; needs: string[]; rules: string[]; canyoning: boolean; notes?: string }
+export interface DossierContent { schedule: ScheduleItem[]; needs: string[]; rules: string[]; canyoning: boolean; notes?: string; extras?: string[] }
 export interface DossierParticipant {
   fullName: string; docId: string; birthDate: string; phone: string;
   emergencyName: string; emergencyPhone: string; health?: string;
   sizeGroup?: 'nino' | 'hombre' | 'mujer' | ''; heightCm?: number | null; weightKg?: number | null; chestCm?: number | null; waistCm?: number | null; hipCm?: number | null; footEu?: number | null;
   wetsuitSize?: string | null; bootieSize?: string | null;
+  extras?: string[]; extrasNote?: string;
 }
 export type SizeRow = { group: 'nino' | 'hombre' | 'mujer'; size: string; heightMin: number; heightMax: number; weightMin: number; weightMax: number };
 export type BootieRow = { size: string; footMin: number; footMax: number };
@@ -93,4 +94,24 @@ export function participantErrors(p: DossierParticipant): string[] {
 
 export function whatsappDossierText(name: string | null, activity: string, link: string) {
   return `Hola${name ? ` ${name}` : ''}, aquí tienes los pasos a seguir para ${activity}: cronograma, qué necesitas, normas y el registro para el seguro. Complétalo aquí: ${link}`;
+}
+
+/** Optional rental/extra items the customer can request in the dossier. */
+export const EXTRA_OPTIONS = ['Mochila', 'Bote estanco', 'Bolsa estanca', 'Cuerda auxiliar', 'Linterna frontal', 'Guantes'];
+
+export interface DossierSource { title?: string | null; duration?: string | null; meetingPoint?: string | null; startsAt?: string | null; steps?: string | null; rules?: string | null; bring?: string[] | null; includes?: string[] | null }
+
+/** Fills schedule, needs and rules from the confirmed outing (and its catalog data); keeps admin-chosen extras. */
+export function syncDossier(base: DossierContent, src: DossierSource): DossierContent {
+  const steps = lines(src.steps);
+  const start = src.startsAt ? new Date(src.startsAt) : null;
+  const t0 = start && !Number.isNaN(start.getTime()) ? start.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Madrid' }) : '';
+  const meeting = src.meetingPoint?.trim() ? `Quedada en el punto de encuentro: ${src.meetingPoint.trim()}` : null;
+  const schedule = steps.length
+    ? [...(meeting ? [{ time: t0, label: meeting }] : []), ...steps.map((label, i) => ({ time: i === 0 && !meeting ? t0 : '', label: label.replace(/^[-•\d.)\s]+/, '') || label }))]
+    : base.schedule.map((s, i) => (i === 0 && meeting ? { time: t0 || s.time, label: meeting } : s));
+  const bring = (src.bring ?? []).map((x) => x.trim()).filter(Boolean);
+  const rules = lines(src.rules);
+  const notes = [src.duration?.trim() && `Duración: ${src.duration.trim()}`, src.includes?.length ? `Incluido: ${src.includes.join(', ')}` : ''].filter(Boolean).join('\n');
+  return { ...base, schedule, needs: bring.length ? bring : base.needs, rules: rules.length ? rules : base.rules, notes: notes || base.notes };
 }

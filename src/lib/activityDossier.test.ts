@@ -29,3 +29,17 @@ describe('dossier', () => {
   it('exige datos del seguro', () => { expect(participantErrors(ok)).toEqual([]); expect(participantErrors({ ...ok, docId: '' , emergencyPhone: '1' })).toEqual(['DNI/NIE o pasaporte', 'Teléfono de emergencia']); });
   it('detecta barranquismo', () => { expect(isCanyoning('Río Guadalmina · Barranquismo')).toBe(true); expect(isCanyoning('Vía ferrata')).toBe(false); });
 });
+
+import { syncDossier as _sync, defaultDossier as _dd } from './activityDossier';
+describe('syncDossier', () => {
+  it('usa pasos, material y normas de la salida y el catálogo', () => {
+    const out = _sync({ ..._dd('Barranquismo'), extras: ['Mochila'] }, { steps: 'Rápel\nPozas', rules: 'Casco siempre', bring: ['Bañador'], meetingPoint: 'Lentegí', duration: '4 h', startsAt: '2026-06-01T07:00:00Z' });
+    expect(out.schedule[0]).toEqual({ time: '09:00', label: 'Quedada en el punto de encuentro: Lentegí' });
+    expect(out.schedule.map((s) => s.label).slice(1)).toEqual(['Rápel', 'Pozas']);
+    expect(out.needs).toEqual(['Bañador']); expect(out.rules).toEqual(['Casco siempre']);
+    expect(out.extras).toEqual(['Mochila']); expect(out.notes).toContain('Duración: 4 h');
+  });
+  it('sin datos mantiene el contenido actual', () => {
+    const base = _dd('Espeleología'); expect(_sync(base, {}).needs).toEqual(base.needs);
+  });
+});
