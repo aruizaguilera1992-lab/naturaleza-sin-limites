@@ -1,3 +1,4 @@
+import { createContactForSheet } from '@/lib/sheetContact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Copy, Eye, ImagePlus, Link2Off, Mail, MessageCircle, Plus, Save, Trash2 } from 'lucide-react';
 import { FunctionsHttpError } from '@supabase/supabase-js';
@@ -51,7 +52,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
   const state = row ? sheetState(row) : 'borrador';
   const link = row ? sheetUrl(window.location.origin, row.token, c.title, (row as { short_code?: string | null }).short_code) : '';
 
-  const save = async (activate = false): Promise<SheetRow | null> => {
+  const save = async (activate = false, ensureContact = activate): Promise<SheetRow | null> => {
     if (errors.length) { toast({ title: 'Revisa la ficha', description: errors.join(' · '), variant: 'destructive' }); return null; }
     setBusy(true);
     const payload = { content: c as unknown as Json, contact_id: contactId || null, expires_at: expires ? `${expires}T23:59:59+01:00` : null, ...(activate && row?.status !== 'desactivada' ? { status: 'enviada' } : {}) };
@@ -65,6 +66,12 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
     if (c.base.startsWith('catalog:')) {
       const err = await saveFieldsToCatalog(c.base.slice('catalog:'.length), fieldsFromSheet(c));
       if (err) toast({ title: 'Ficha guardada, pero no se pudo actualizar el Catálogo', description: err, variant: 'destructive' });
+    }
+    // Toda propuesta enviada queda ligada a un perfil de contacto para su seguimiento comercial.
+    if (ensureContact && !contactId) {
+      const r = await createContactForSheet(data.id, { title: c.title, customerName: c.customerName, email, phone });
+      if (r.id) { setContactId(r.id); (data as { contact_id: string | null }).contact_id = r.id; toast({ title: 'Contacto creado en el panel', description: 'La propuesta aparece en la Agenda comercial.' }); }
+      if (r.error) toast({ title: 'No se pudo crear el contacto', description: r.error, variant: 'destructive' });
     }
     await onSaved(data.id);
     return data as unknown as SheetRow;
@@ -88,7 +95,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
   };
   const sendEmail = async () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) { toast({ title: 'Email no válido', variant: 'destructive' }); return; }
-    const r = await save(); if (!r) return;
+    const r = await save(false, true); if (!r) return;
     setBusy(true);
     const { data, error } = await supabase.functions.invoke('send-activity-sheet', { body: { id: r.id, email: email.trim(), origin: window.location.origin, send_id: crypto.randomUUID() } });
     setBusy(false);

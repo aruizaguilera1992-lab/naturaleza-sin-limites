@@ -76,6 +76,7 @@ import { AccessLayout } from "@/components/auth/AccessLayout";
 import { DeleteRecordButton } from "@/components/admin/DeleteControls";
 import { CommercialAgenda } from "@/components/admin/CommercialAgenda";
 import { agendaCounts, type AgendaContact } from "@/lib/commercialAgenda";
+import { pendingProposals, type PendingProposal } from "@/lib/sheetContact";
 import type { ContactTab } from "@/components/admin/contact/ContactDetail";
 
 type AdminTab = "overview" | "bookings" | "contacts" | "notifications" | "events" | "settings" | "plans" | "editorial" | "agenda" | "catalog";
@@ -569,6 +570,7 @@ export default function Admin() {
   const [focusSheet, setFocusSheet] = useState<string | null>(null);
   const [sheetPrefill, setSheetPrefill] = useState<import("@/lib/activitySheets").SheetRequestPrefill | null>(null);
   const [sheetByBooking, setSheetByBooking] = useState<Record<string, string>>({});
+  const [proposals, setProposals] = useState<PendingProposal[]>([]);
   const [sheetPriceByBooking, setSheetPriceByBooking] = useState<Record<string, number>>({});
   const [editorialOpened, setEditorialOpened] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -605,7 +607,8 @@ export default function Admin() {
     if (c.data) setContacts(c.data as Contact[]);
     // Enlace reserva → ficha de origen; opcional, nunca bloquea la carga del panel.
     try {
-      const sh = await supabase.from("activity_sheets").select("id, booking_id, content");
+      const sh = await supabase.from("activity_sheets").select("id, booking_id, content, status, accepted_at, contact_id, sent_at, view_count, expires_at");
+      setProposals(pendingProposals((sh?.data ?? []) as unknown as Parameters<typeof pendingProposals>[0]));
       const linked = ((sh?.data ?? []) as { id: string; booking_id: string | null; content: { pricePerPersonEuros?: number | null } | null }[]).filter((r) => r.booking_id);
       setSheetByBooking(Object.fromEntries(linked.map((r) => [r.booking_id as string, r.id])));
       // Precio por persona confirmado en la ficha: la reserva aceptada hereda su resumen económico.
@@ -1371,6 +1374,9 @@ export default function Admin() {
             <CommercialAgenda
               contacts={contacts as unknown as AgendaContact[]}
               stageLabels={STAGE_LABEL}
+              proposals={proposals}
+              onOpenSheet={(id) => { setMenuOpen(false); setFocusSheet(id); setTab("events"); }}
+              onProposalLinked={loadData}
               onOpen={(id) => { setMenuOpen(false); setTab("contacts"); openContact(id, "seguimiento"); }}
             />
           )}

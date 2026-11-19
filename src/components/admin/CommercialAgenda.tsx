@@ -2,13 +2,18 @@ import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Send } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { createContactForSheet, type PendingProposal } from "@/lib/sheetContact";
 import { agendaCounts, buildAgenda, formatAgendaDate, type AgendaBucket, type AgendaContact, type AgendaFilter } from "@/lib/commercialAgenda";
 
 type Props<T extends AgendaContact> = {
   contacts: T[];
   stageLabels: Record<string, string>;
   onOpen: (id: string) => void;
+  proposals?: PendingProposal[];
+  onOpenSheet?: (id: string) => void;
+  onProposalLinked?: () => void | Promise<void>;
 };
 
 const BUCKETS: { id: AgendaBucket; label: string }[] = [
@@ -26,7 +31,18 @@ const FILTERS: { id: AgendaFilter; label: string }[] = [
 const BUCKET_LABEL: Record<AgendaBucket, string> = { ...Object.fromEntries(BUCKETS.map((b) => [b.id, b.label])), mas_adelante: "Más adelante" } as Record<AgendaBucket, string>;
 
 /** Vista diaria de seguimiento comercial; solo lee los contactos ya cargados. */
-export function CommercialAgenda<T extends AgendaContact>({ contacts, stageLabels, onOpen }: Props<T>) {
+export function CommercialAgenda<T extends AgendaContact>({ contacts, stageLabels, onOpen, proposals = [], onOpenSheet, onProposalLinked }: Props<T>) {
+  const { toast } = useToast();
+  const [linking, setLinking] = useState<string | null>(null);
+  const name = (id: string | null) => (id ? contacts.find((c) => c.id === id)?.nombre : undefined);
+  const link = async (p: PendingProposal) => {
+    setLinking(p.id);
+    const r = await createContactForSheet(p.id, { title: p.title, customerName: p.customerName });
+    setLinking(null);
+    if (r.error) toast({ title: "No se pudo crear el contacto", description: r.error, variant: "destructive" });
+    else toast({ title: "Contacto creado y vinculado" });
+    await onProposalLinked?.();
+  };
   const [filter, setFilter] = useState<AgendaFilter>("todos");
   const [q, setQ] = useState("");
   const counts = useMemo(() => agendaCounts(contacts), [contacts]);
@@ -62,6 +78,39 @@ export function CommercialAgenda<T extends AgendaContact>({ contacts, stageLabel
           <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Nombre, interés, email o teléfono" className="pl-9" />
         </label>
       </div>
+
+      {proposals.length > 0 && (
+        <div className="rounded-lg border border-border bg-card">
+          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+            <Send className="h-4 w-4 text-primary" aria-hidden />
+            <h3 className="font-heading text-sm text-foreground">Propuestas enviadas sin confirmar</h3>
+            <Badge variant="secondary">{proposals.length}</Badge>
+          </div>
+          <ul className="divide-y divide-border">
+            {proposals.map((p) => {
+              const who = name(p.contact_id) ?? (p.customerName || "Sin cliente");
+              return (
+                <li key={p.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="truncate font-medium text-foreground">{p.title}</p>
+                      <Badge variant="outline">{p.view_count > 0 ? `Vista ${p.view_count}×` : "Sin abrir"}</Badge>
+                      {!p.contact_id && <Badge variant="destructive">Sin contacto</Badge>}
+                    </div>
+                    <p className="truncate text-sm text-muted-foreground">{who}{p.sent_at ? ` · enviada ${formatAgendaDate(p.sent_at)}` : ""}</p>
+                  </div>
+                  <div className="flex shrink-0 gap-2">
+                    {onOpenSheet && <Button size="sm" variant="outline" className="min-h-11" onClick={() => onOpenSheet(p.id)}>Ver propuesta</Button>}
+                    {p.contact_id
+                      ? <Button size="sm" className="min-h-11" onClick={() => onOpen(p.contact_id!)}>Abrir seguimiento</Button>
+                      : <Button size="sm" className="min-h-11" disabled={linking === p.id} onClick={() => link(p)}>Crear contacto</Button>}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
 
       {items.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border p-8 text-center">
