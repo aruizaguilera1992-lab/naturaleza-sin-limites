@@ -49,8 +49,11 @@ function AgendaCard({ event }: { event: ActivityEvent }) {
   const { override } = useCatalogForOuting(event.category, event.slug);
   const imagePath = override?.imagePath || event.catalog_snapshot?.imagePath;
   const ownPhoto = useOutingPhoto(event.category, event.slug, imagePath);
-  const image =
-    ownPhoto ?? getActivityCatalogImage(event.category, event.slug) ?? event.profile?.image;
+  // Si hay foto propia, se espera a su URL firmada: mostrar antes la imagen local
+  // provocaba un cambio de imagen visible al cargar la página.
+  const image = imagePath
+    ? ownPhoto
+    : getActivityCatalogImage(event.category, event.slug) ?? event.profile?.image;
   const Icon = CATEGORY_ICON[event.category] ?? CalendarDays;
   const fewSeats = !event.isFull && event.freeSeats <= lastMinuteThreshold;
   const month = MONTHS[event.startDate.getMonth()];

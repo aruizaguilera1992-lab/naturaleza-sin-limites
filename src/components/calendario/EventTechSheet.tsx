@@ -437,7 +437,9 @@ export function EventTechSheet({
   const imagePath = live?.imagePath || sheet.imagePath;
   // Foto propia subida desde el panel: la sirve firmada la función outing-photo (el almacén es privado).
   const ownPhotoUrl = useOutingPhoto(event.category, event.slug, imagePath);
-  const image = imageUrlOverride ?? ownPhotoUrl ?? (p ? getActivityCatalogImage(event.category, event.slug) ?? undefined : undefined);
+  // Con foto propia se espera a la URL firmada (sin mostrar antes la imagen local,
+  // que provocaba un cambio de imagen visible al cargar).
+  const image = imageUrlOverride ?? (imagePath ? ownPhotoUrl : p ? getActivityCatalogImage(event.category, event.slug) ?? undefined : undefined);
   const Icon = CATEGORY_ICON[event.category] ?? CalendarDays;
   const fit = FITNESS[sheet.fitness.toLowerCase()] ?? 1;
   const dateLabel = event.startDate.toLocaleDateString("es-ES", {
