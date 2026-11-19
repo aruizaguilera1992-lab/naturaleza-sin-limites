@@ -705,14 +705,22 @@ export function EventTechSheet({
       <DialogContent className="w-[min(96vw,920px)] max-w-none gap-0 overflow-hidden rounded-none p-0 sm:rounded-2xl">
         <div className="relative flex max-h-[96vh] flex-col">
           {/* Portada fija: foto, disciplina y título */}
-          <div className="relative flex min-h-[124px] shrink-0 items-end overflow-hidden border-b border-border sm:min-h-[150px]">
+          <div className="relative flex h-[clamp(170px,34vh,420px)] shrink-0 items-end overflow-hidden border-b border-border">
             <div className="absolute inset-0 bg-gradient-to-br from-secondary via-background to-secondary/60" />
             {image ? (
-              <img
-                src={image}
-                alt={p?.imageAlt ?? sheet.title}
-                className="absolute inset-0 h-full w-full object-contain object-center"
-              />
+              <>
+                <img
+                  src={image}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full scale-125 object-cover opacity-70 blur-xl"
+                />
+                <img
+                  src={image}
+                  alt={p?.imageAlt ?? sheet.title}
+                  className="absolute inset-0 h-full w-full object-contain object-center"
+                />
+              </>
             ) : null}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
             <div className="relative w-full px-4 pb-2 pt-6 sm:px-6 sm:pb-3 sm:pt-7">
