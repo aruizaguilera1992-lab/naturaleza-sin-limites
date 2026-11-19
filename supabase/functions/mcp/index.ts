@@ -3675,7 +3675,7 @@ var blogPosts = [
     id: "1",
     title: "Gu\xEDa completa: tu primer descenso de barrancos en M\xE1laga",
     slug: "guia-completa-primer-descenso-barrancos-malaga",
-    excerpt: "Descubre todo lo que necesitas saber antes de lanzarte a tu primera aventura de barranquismo. Desde el equipo esencial hasta las t\xE9cnicas b\xE1sicas de rappel.",
+    excerpt: "\xBFNunca has hecho barranquismo? Te contamos qu\xE9 necesitas, qu\xE9 barrancos elegir en M\xE1laga y c\xF3mo preparar tu primera experiencia con seguridad.",
     content: `
 \xBFTe gustar\xEDa descubrir el barranquismo, pero nunca has realizado un descenso? M\xE1laga ofrece algunos de los escenarios naturales m\xE1s atractivos de Andaluc\xEDa para iniciarse en esta actividad: ca\xF1ones excavados por el agua, cascadas, pozas naturales, toboganes y paredes de roca que convierten cada recorrido en una experiencia diferente.
 
@@ -4044,14 +4044,14 @@ Descubre nuestros recorridos de barranquismo en M\xE1laga y Andaluc\xEDa. Si no 
 `,
     featuredImage: media.canyoning.src,
     category: "consejos-principiantes",
-    tags: ["barranquismo", "principiantes", "m\xE1laga", "gu\xEDa"],
+    tags: ["barranquismo", "barranquismo M\xE1laga", "iniciaci\xF3n", "primer descenso", "seguridad", "aventura"],
     author: defaultAuthor,
     publishedAt: "2026-11-19",
-    readTime: 15,
+    readTime: 12,
     views: 1520,
     seo: {
-      metaTitle: "Gu\xEDa Completa: Tu Primer Descenso de Barrancos en M\xE1laga | Naturaleza Sin L\xEDmites",
-      metaDescription: "Todo lo que necesitas saber para tu primera experiencia de barranquismo en M\xE1laga. Equipo, t\xE9cnicas, mejores barrancos para principiantes y consejos de expertos.",
+      metaTitle: "Tu primer descenso de barrancos en M\xE1laga | Gu\xEDa completa",
+      metaDescription: "Descubre c\xF3mo iniciarte en el barranquismo en M\xE1laga: mejores barrancos, requisitos, material, seguridad y consejos para elegir tu primera aventura.",
       ogImage: media.canyoning.src
     }
   },
