@@ -15,6 +15,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useActivityEvents, type ActivityEvent } from "@/hooks/useActivityEvents";
+import { useCatalogForOuting } from "@/hooks/useCatalogForOuting";
+import { useOutingPhoto } from "@/hooks/useOutingPhoto";
 import { getActivityCatalogImage } from "@/data/activityProfiles";
 import { EventTechSheet } from "@/components/calendario/EventTechSheet";
 
@@ -42,7 +44,13 @@ const CATEGORY_ICON: Record<string, LucideIcon> = {
 const lastMinuteThreshold = 2;
 
 function AgendaCard({ event }: { event: ActivityEvent }) {
-  const image = getActivityCatalogImage(event.category, event.slug) ?? event.profile?.image;
+  // La tarjeta muestra la misma foto que la ficha: la foto propia del catálogo
+  // (subida desde el panel) si existe; si no, la imagen local del catálogo.
+  const { override } = useCatalogForOuting(event.category, event.slug);
+  const imagePath = override?.imagePath || event.catalog_snapshot?.imagePath;
+  const ownPhoto = useOutingPhoto(event.category, event.slug, imagePath);
+  const image =
+    ownPhoto ?? getActivityCatalogImage(event.category, event.slug) ?? event.profile?.image;
   const Icon = CATEGORY_ICON[event.category] ?? CalendarDays;
   const fewSeats = !event.isFull && event.freeSeats <= lastMinuteThreshold;
   const month = MONTHS[event.startDate.getMonth()];

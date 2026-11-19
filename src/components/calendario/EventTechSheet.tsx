@@ -36,11 +36,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getActivityCatalogImage } from "@/data/activityProfiles";
-import { supabase } from "@/integrations/supabase/client";
 import { MeetingPointActions, MeetingPointLabel } from "@/components/shared/MeetingPoint";
 import { useMeetingPointTarget } from "@/hooks/useMeetingPointTarget";
 import type { ActivityEvent } from "@/hooks/useActivityEvents";
 import { useCatalogForOuting } from "@/hooks/useCatalogForOuting";
+import { useOutingPhoto } from "@/hooks/useOutingPhoto";
 import { mergeOutingSheet } from "@/lib/catalogSync";
 import { safeVideoEmbed } from "@/lib/safeVideo";
 import { OutingInstructions } from "@/components/shared/OutingInstructions";
@@ -462,17 +462,7 @@ export function EventTechSheet({
   const p = event.profile;
   const imagePath = live?.imagePath || sheet.imagePath;
   // Foto propia subida desde el panel: la sirve firmada la función outing-photo (el almacén es privado).
-  const [ownPhotoUrl, setOwnPhotoUrl] = useState<string | null>(null);
-  useEffect(() => {
-    setOwnPhotoUrl(null);
-    if (!imagePath) return;
-    let alive = true;
-    supabase.functions
-      .invoke("outing-photo", { body: { category: event.category, slug: event.slug } })
-      .then(({ data }) => { if (alive && typeof data?.url === "string") setOwnPhotoUrl(data.url); })
-      .catch(() => undefined);
-    return () => { alive = false; };
-  }, [imagePath, event.category, event.slug]);
+  const ownPhotoUrl = useOutingPhoto(event.category, event.slug, imagePath);
   const image = imageUrlOverride ?? ownPhotoUrl ?? (p ? getActivityCatalogImage(event.category, event.slug) ?? undefined : undefined);
   const Icon = CATEGORY_ICON[event.category] ?? CalendarDays;
   const fit = FITNESS[sheet.fitness.toLowerCase()] ?? 1;
