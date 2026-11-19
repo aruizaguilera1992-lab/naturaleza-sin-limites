@@ -4252,7 +4252,7 @@ Depende de cada ruta, del equipo, de la normativa y del operador, que pueden est
 
 Andaluc\xEDa ofrece v\xEDas ferratas para perfiles muy distintos: desde recorridos cortos con vistas monumentales hasta conjuntos de tramos que exigen experiencia y forma f\xEDsica. Elegir bien consiste en mirar m\xE1s all\xE1 del grado y valorar la jornada completa, el material y el estado actual de la instalaci\xF3n.
 
-En Naturaleza Sin L\xEDmites te asesoramos para encontrar el recorrido que encaja contigo y te acompa\xF1amos con acompa\xF1amiento profesional y el material adecuado. Consulta nuestras [v\xEDas ferratas](/vias-ferratas), descubre el resto de [actividades](/actividades) o escr\xEDbenos desde [contacto](/contacto).
+En Naturaleza Sin L\xEDmites te asesoramos para encontrar el recorrido que encaja contigo y te acompa\xF1amos durante la actividad con un enfoque basado en la seguridad y el respeto al entorno. Consulta nuestras [v\xEDas ferratas](/vias-ferratas), descubre el resto de [actividades](/actividades) o escr\xEDbenos desde [contacto](/contacto).
 
 ## Fuentes para ampliar informaci\xF3n
 

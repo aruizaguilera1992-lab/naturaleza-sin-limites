@@ -651,7 +651,7 @@ Depende de cada ruta, del equipo, de la normativa y del operador, que pueden est
 
 Andalucía ofrece vías ferratas para perfiles muy distintos: desde recorridos cortos con vistas monumentales hasta conjuntos de tramos que exigen experiencia y forma física. Elegir bien consiste en mirar más allá del grado y valorar la jornada completa, el material y el estado actual de la instalación.
 
-En Naturaleza Sin Límites te asesoramos para encontrar el recorrido que encaja contigo y te acompañamos con acompañamiento profesional y el material adecuado. Consulta nuestras [vías ferratas](/vias-ferratas), descubre el resto de [actividades](/actividades) o escríbenos desde [contacto](/contacto).
+En Naturaleza Sin Límites te asesoramos para encontrar el recorrido que encaja contigo y te acompañamos durante la actividad con un enfoque basado en la seguridad y el respeto al entorno. Consulta nuestras [vías ferratas](/vias-ferratas), descubre el resto de [actividades](/actividades) o escríbenos desde [contacto](/contacto).
 
 ## Fuentes para ampliar información
 
