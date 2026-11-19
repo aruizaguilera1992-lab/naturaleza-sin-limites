@@ -14,6 +14,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getActivityCatalogImage, getActivityProfile, PENDING } from "@/data/activityProfiles";
+import { useCatalogForOuting } from "@/hooks/useCatalogForOuting";
+import { useOutingPhotoState } from "@/hooks/useOutingPhoto";
+import { resolveOutingImage } from "@/lib/outingImage";
 import { ActivityEventPicker } from "@/components/actividades/ActivityEventPicker";
 import { useActivityEvents } from "@/hooks/useActivityEvents";
 import { LOGO_SRC } from "@/lib/site";
@@ -39,6 +42,17 @@ export default function ReservarActividad() {
   const [searchParams] = useSearchParams();
   const activity = useMemo(() => getActivityProfile(category, slug), [category, slug]);
   const { events, loading: eventsLoading, error: eventsError, reload: reloadEvents } = useActivityEvents({ category, slug });
+
+  // La imagen lateral es la foto de la ficha del catálogo (subida desde el panel);
+  // la imagen local del catálogo es solo el respaldo.
+  const { override: catalogOverride } = useCatalogForOuting(category, slug);
+  const catalogPhoto = useOutingPhotoState(category, slug, catalogOverride?.imagePath);
+  const asideImage = resolveOutingImage({
+    catalogImagePath: catalogOverride?.imagePath,
+    photoUrl: catalogPhoto.url,
+    settled: catalogPhoto.settled,
+    localImage: getActivityCatalogImage(category, slug),
+  });
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -159,8 +173,8 @@ export default function ReservarActividad() {
         </header>
         <div className="grid overflow-hidden rounded-lg border border-border bg-card shadow-card lg:grid-cols-[minmax(0,0.9fr)_minmax(520px,1.1fr)]">
           <aside className="relative min-h-56 overflow-hidden bg-secondary sm:min-h-72 lg:min-h-[780px]">
-            {activity && getActivityCatalogImage(activity.category, activity.slug) ? (
-              <img src={getActivityCatalogImage(activity.category, activity.slug) ?? undefined} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            {asideImage ? (
+              <img src={asideImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
             ) : (
               <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-background" />
             )}

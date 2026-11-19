@@ -7,6 +7,9 @@ import { getStripe } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { Button } from "@/components/ui/button";
 import { activityProfiles, getActivityCatalogImage } from "@/data/activityProfiles";
+import { useCatalogForOuting } from "@/hooks/useCatalogForOuting";
+import { useOutingPhotoState } from "@/hooks/useOutingPhoto";
+import { resolveOutingImage } from "@/lib/outingImage";
 import { LOGO_SRC } from "@/lib/site";
 import {
   AlertTriangle,
@@ -111,6 +114,22 @@ export default function Pago() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [pollExpired, setPollExpired] = useState(false);
 
+  // La imagen de esta pantalla es la foto de la ficha del catálogo (subida desde
+  // el panel); la imagen local del catálogo es solo el respaldo.
+  const visualProfile = payment?.activity ? getVerifiedActivityProfile(payment.activity) : null;
+  const { override: catalogOverride } = useCatalogForOuting(visualProfile?.category, visualProfile?.slug);
+  const catalogPhoto = useOutingPhotoState(
+    visualProfile?.category ?? "",
+    visualProfile?.slug ?? "",
+    catalogOverride?.imagePath,
+  );
+  const visualImage = resolveOutingImage({
+    catalogImagePath: catalogOverride?.imagePath,
+    photoUrl: catalogPhoto.url,
+    settled: catalogPhoto.settled,
+    localImage: visualProfile ? getActivityCatalogImage(visualProfile.category, visualProfile.slug) : null,
+  });
+
   const loadStatus = useCallback(async () => {
     if (isDesignDemo) {
       setPayment(demoPayment);
@@ -177,7 +196,6 @@ export default function Pago() {
     </p>
   );
 
-  const visualProfile = payment?.activity ? getVerifiedActivityProfile(payment.activity) : null;
   const wrapper = (children: React.ReactNode) => (
     <main className="min-h-screen bg-background">
       <Helmet>
@@ -206,7 +224,7 @@ export default function Pago() {
         <div className="grid flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-card lg:grid-cols-[minmax(0,0.92fr)_minmax(480px,1.08fr)]">
           <PaymentVisual
             activity={payment?.activity}
-            image={visualProfile ? getActivityCatalogImage(visualProfile.category, visualProfile.slug) : null}
+            image={visualImage}
             categoryLabel={visualProfile?.categoryLabel}
           />
           <section className="flex min-w-0 flex-col justify-center px-5 py-6 sm:px-9 sm:py-8 lg:px-12 lg:py-12">
