@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Pencil, Save, X, Loader2 } from "lucide-react";
+import { Pencil, Save, X, Loader2, UserSearch } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+
+export type BookingContactOption = { id: string; nombre: string; email: string | null; phone: string | null };
 
 type Editable = {
   activity: string;
@@ -29,7 +32,7 @@ const FIELDS: { key: keyof Editable; label: string; type?: string; required?: bo
 ];
 
 /** Lets an admin correct any section of a booking request. RLS restricts updates to admins. */
-export function BookingEditForm({ booking, onSaved }: { booking: Editable & { id: string; event_id: string | null }; onSaved: (patch: Partial<Editable>) => void }) {
+export function BookingEditForm({ booking, contacts = [], onSaved }: { booking: Editable & { id: string; event_id: string | null }; contacts?: BookingContactOption[]; onSaved: (patch: Partial<Editable>) => void }) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -79,6 +82,32 @@ export function BookingEditForm({ booking, onSaved }: { booking: Editable & { id
       <h3 className="font-heading font-semibold text-foreground">Editar solicitud</h3>
       {booking.event_id && (
         <p className="mt-1 text-xs text-muted-foreground">Reserva de salida programada: cambiar fecha o participantes aquí no mueve las plazas reservadas.</p>
+      )}
+      {contacts.length > 0 && (
+        <div className="mt-3 rounded-lg border border-border/60 bg-background/40 p-3">
+          <Label htmlFor="edit-link-contact" className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <UserSearch className="h-4 w-4" aria-hidden="true" /> Asociar contacto guardado
+          </Label>
+          <Select
+            onValueChange={(id) => {
+              const c = contacts.find((x) => x.id === id);
+              if (!c) return;
+              setForm((p) => ({ ...p, name: c.nombre, email: c.email ?? "", phone: c.phone ?? "" }));
+            }}
+          >
+            <SelectTrigger id="edit-link-contact" className="mt-1.5 h-11 text-foreground">
+              <SelectValue placeholder="Elige un contacto para rellenar cliente, email y teléfono" />
+            </SelectTrigger>
+            <SelectContent>
+              {contacts.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.nombre}{c.email ? ` · ${c.email}` : ""}{c.phone ? ` · ${c.phone}` : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="mt-1.5 text-xs text-muted-foreground">Rellena los campos del cliente con los datos del contacto; puedes ajustarlos antes de guardar.</p>
+        </div>
       )}
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         {FIELDS.map((f) => (
