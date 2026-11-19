@@ -711,7 +711,7 @@ export function EventTechSheet({
               <img
                 src={image}
                 alt={p?.imageAlt ?? sheet.title}
-                className="absolute inset-0 h-full w-full object-cover object-center"
+                className="absolute inset-0 h-full w-full object-contain object-center"
               />
             ) : null}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
