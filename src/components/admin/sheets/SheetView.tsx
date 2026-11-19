@@ -80,7 +80,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
   const photo = ownPath ? (ownUrls[ownPath] ? { src: ownUrls[ownPath], alt: c.title, autor: '', licencia: '', fuente: '' } : null) : c.photo ? levelOfferPhotos[c.photo] : null;
   const total = sheetTotalEuros(c);
   const video = safeVideoEmbed(c.videoUrl);
-  const wa = `https://wa.me/34685609542?text=${encodeURIComponent(`Hola, quiero confirmar la actividad «${c.title}»${reference ? ` (ficha ${reference})` : ''}.`)}`;
+  const wa = `https://wa.me/34685609542?text=${encodeURIComponent(`Hola, tengo una consulta sobre la actividad «${c.title}»${reference ? ` (ficha ${reference})` : ''}.`)}`;
   const facts = [
     { icon: CalendarDays, text: c.date ? fmtDate(c.date) : 'Fecha a acordar contigo' },
     c.duration && { icon: Clock, text: c.duration },
@@ -135,8 +135,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
         ) : <p className="text-lg font-bold text-primary">Precio a consultar</p>}
         <div className="mt-4 flex flex-wrap gap-2">
           {accept}
-          <Button variant={accept ? 'outline' : 'hero'} className="min-h-11" asChild><a href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Confirmar por WhatsApp</a></Button>
-          <Button variant="outline" className="min-h-11" asChild><a href={`/contacto?interes=${c.discipline === 'ferratas' ? 'vias-ferratas' : c.discipline}`}>Consultar</a></Button>
+          <Button variant={accept ? 'outline' : 'hero'} className="min-h-11" asChild><a href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Consultar por WhatsApp</a></Button>
         </div>
       </div>
     </article>
