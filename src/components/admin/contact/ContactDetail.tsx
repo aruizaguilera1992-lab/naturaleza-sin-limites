@@ -24,6 +24,8 @@ type Props = {
   renderTitle: (name: string) => ReactNode;
   /** Pestaña inicial al montar (por defecto «ficha»). */
   initialTab?: ContactTab;
+  /** Abre una ficha privada nueva ya rellena con este cliente. */
+  onCreateSheet?: () => void;
 };
 
 export type ContactTab = "ficha" | "seguimiento" | "reservas" | "notas";
@@ -67,6 +69,7 @@ export function ContactDetail(p: Props) {
           {mail && <Button asChild size="sm" variant="outline"><a href={mail} target="_blank" rel="noopener noreferrer" aria-label="Email"><Mail className="h-4 w-4" /><span className="hidden sm:inline">Email</span></a></Button>}
           {!wa && !tel && !mail && <span className="text-xs text-muted-foreground">Sin teléfono ni email válidos</span>}
           <Button size="sm" onClick={() => setProposalOpen(true)}><Sparkles className="h-4 w-4" />Preparar propuesta</Button>
+          {p.onCreateSheet && <Button size="sm" variant="outline" onClick={p.onCreateSheet}>Crear ficha privada</Button>}
           <Popover>
             <PopoverTrigger asChild>
               <Button size="sm" variant="ghost" className="ml-auto" aria-label="Opciones administrativas"><MoreHorizontal className="h-4 w-4" /></Button>

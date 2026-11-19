@@ -228,6 +228,7 @@ type Booking = {
   discount_cents?: number | null;
   discount_percent?: number | null;
   updated_at?: string;
+  contact_id?: string | null;
 };
 
 type Contact = {
@@ -1522,6 +1523,7 @@ export default function Admin() {
               <ContactDetail
                 key={c.id}
                 initialTab={contactTab}
+                onCreateSheet={() => { setSelectedId(null); setFocusSheet(null); setSheetPrefill({ bookingId: "", activity: c.interes ?? "", date: null, people: c.personas ?? null, level: null, name: c.nombre, email: c.email ?? (c.contacto.includes("@") ? c.contacto : null), phone: c.phone ?? null, message: c.mensaje ?? null }); setTab("events"); }}
                 contact={c as unknown as CrmContact & { created_at: string }}
                 stageLabel={STAGE_LABEL[(c as unknown as CrmContact).pipeline_stage ?? "nuevo"] ?? "Nuevo"}
                 receivedLabel={`recibido el ${formatDate(c.created_at)}`}
@@ -1550,13 +1552,19 @@ export default function Admin() {
                 </>}
                 reservas={<>
                     <div><p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">Estado de reserva/pago (independiente de la etapa comercial)</p><StatusSelect table="contact_submissions" id={c.id} value={c.status} /></div>
-                    <RelatedBookings contact={c} bookings={bookings} />
+                    <RelatedBookings contact={c} bookings={bookings}
+                      onOpen={(id) => { setTab("bookings"); setSearch(""); setStatusFilter("all"); setSelectedId(id); }}
+                      onLink={async (id) => {
+                        const { error } = await supabase.rpc("admin_link_booking_contact", { _booking: id, _contact: c.id });
+                        if (error) { toast({ title: "No se pudo vincular", description: error.message, variant: "destructive" }); return; }
+                        toast({ title: "Reserva vinculada" }); await loadData();
+                      }} />
                     <PaymentPanel
                       key={`pay-${c.id}`}
                       target="contact"
                       id={c.id}
                       defaultConcept={`Reserva ${c.interes}`}
-                      payments={payments.filter((p) => p.contact_id === c.id)}
+                      payments={payments.filter((p) => p.contact_id === c.id || (!!p.booking_id && bookings.some((b) => b.id === p.booking_id && b.contact_id === c.id)))}
                       onCreated={(msg) => { if (msg) setActionDone(msg); loadData(); }}
                     />
                 </>}

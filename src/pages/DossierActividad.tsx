@@ -24,7 +24,7 @@ export default function DossierActividad() {
     supabase.rpc('get_activity_dossier' as never, { _token: token } as never).then(({ data, error }) => {
       const r = data as unknown as ({ available?: boolean } & Data) | null;
       if (error || !r?.available) { setState('off'); return; }
-      setD(r); const n = Math.min(6, Math.max(1, Number(r.people) || 1));
+      setD(r); const n = Math.min(20, Math.max(1, Number(r.people) || 1));
       setPs(r.participants?.length ? r.participants : Array.from({ length: n }, blank)); setDone(r.status === 'completado'); setState('ok');
     });
   }, [token]);
@@ -77,7 +77,7 @@ export default function DossierActividad() {
                   <div className="mt-2">{f(i, 'extrasNote', 'Otra necesidad (opcional)')}</div></div>}
                 {ps.length > 1 && <Button type="button" variant="ghost" size="sm" className="mt-2" onClick={() => setPs(ps.filter((__, j) => j !== i))}><Trash2 className="mr-1 h-4 w-4" />Quitar</Button>}
               </fieldset>))}
-              {ps.length < 6 && <Button type="button" variant="outline" onClick={() => setPs([...ps, blank()])}><Plus className="mr-1 h-4 w-4" />Añadir participante</Button>}
+              {ps.length < 20 && <Button type="button" variant="outline" onClick={() => setPs([...ps, blank()])}><Plus className="mr-1 h-4 w-4" />Añadir participante</Button>}
             </div>
             <div className="mt-5 space-y-2 text-sm text-foreground">
               <label className="flex gap-2"><input type="checkbox" checked={rulesOk} onChange={(e) => setRulesOk(e.target.checked)} />He leído y acepto las normas de participación.</label>

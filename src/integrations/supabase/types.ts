@@ -316,6 +316,7 @@ export type Database = {
           activity: string
           admin_notes: string | null
           contact: string
+          contact_id: string | null
           created_at: string
           discount_cents: number
           discount_percent: number
@@ -340,6 +341,7 @@ export type Database = {
           activity: string
           admin_notes?: string | null
           contact: string
+          contact_id?: string | null
           created_at?: string
           discount_cents?: number
           discount_percent?: number
@@ -364,6 +366,7 @@ export type Database = {
           activity?: string
           admin_notes?: string | null
           contact?: string
+          contact_id?: string | null
           created_at?: string
           discount_cents?: number
           discount_percent?: number
@@ -385,6 +388,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "bookings_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contact_submissions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "bookings_event_id_fkey"
             columns: ["event_id"]
@@ -1357,8 +1367,22 @@ export type Database = {
       admin_delete_activity_sheet: { Args: { _id: string }; Returns: Json }
       admin_delete_booking: { Args: { _id: string }; Returns: Json }
       admin_delete_contact: { Args: { _id: string }; Returns: Json }
+      admin_link_booking_contact: {
+        Args: { _booking: string; _contact: string }
+        Returns: Json
+      }
       admin_reset_all: { Args: { _confirm: string }; Returns: Json }
       admin_sync_bookings_to_contacts: { Args: never; Returns: Json }
+      advance_contact: {
+        Args: {
+          _action?: string
+          _booking?: string
+          _contact: string
+          _event?: string
+          _stage: string
+        }
+        Returns: undefined
+      }
       begin_checkout_generation: {
         Args: { _expired_session_id: string; _token: string }
         Returns: Json
@@ -1459,6 +1483,7 @@ export type Database = {
         Args: { _expected_updated_at?: string; _piece: Json; _status: string }
         Returns: string
       }
+      stage_rank: { Args: { _s: string }; Returns: number }
       submit_activity_dossier: {
         Args: { _participants: Json; _rgpd: boolean; _token: string }
         Returns: Json

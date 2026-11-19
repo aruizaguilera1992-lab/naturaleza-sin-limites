@@ -288,6 +288,13 @@
       "when": 1795108073971,
       "tag": "0040_sync_bookings_to_contacts",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1795108966922,
+      "tag": "0041_crm_flow_automation",
+      "breakpoints": true
     }
   ]
 }
