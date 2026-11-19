@@ -2,6 +2,7 @@ import { levelOffers, levelOfferExplanation, levelOfferPhotos } from '@/data/lev
 import { espeleologiaPublicada } from '@/data/espeleologia';
 import type { CatalogItem } from '@/lib/adminCatalog';
 import { safeVideoEmbed } from '@/lib/safeVideo';
+import { safeWhatsappGroup } from '@/lib/safeWhatsapp';
 import type { ActivityFields } from '@/lib/activityFields';
 import { buildOutingFaqs, type OutingSheet } from '@/lib/catalogSync';
 
@@ -30,6 +31,8 @@ export interface SheetContent {
   notes: string;
   rules?: string;
   steps?: string;
+  /** Enlace de invitación al grupo de WhatsApp de la actividad (solo chat.whatsapp.com). */
+  whatsappGroup?: string;
   minAge: number;
   fitness: string;
   experience: boolean;
@@ -70,6 +73,7 @@ export function validateSheet(c: SheetContent): string[] {
   const errors: string[] = [];
   if (!c.title.trim()) errors.push('Falta el título');
   if (c.videoUrl?.trim() && !safeVideoEmbed(c.videoUrl)) errors.push('El vídeo debe ser un enlace de YouTube o Vimeo');
+  if (c.whatsappGroup?.trim() && !safeWhatsappGroup(c.whatsappGroup)) errors.push('El grupo de WhatsApp debe ser un enlace de invitación (https://chat.whatsapp.com/…)');
   if (!Number.isInteger(c.people) || c.people < 1 || c.people > MAX_SHEET_PEOPLE) errors.push(`Personas entre 1 y ${MAX_SHEET_PEOPLE}`);
   if (c.pricePerPersonEuros !== null && (!(c.pricePerPersonEuros > 0) || c.pricePerPersonEuros > 5000)) errors.push('Precio no válido');
   return errors;

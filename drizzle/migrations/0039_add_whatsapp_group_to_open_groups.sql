@@ -1,0 +1,1 @@
+alter table public.activity_events add column if not exists whatsapp_group_url text;

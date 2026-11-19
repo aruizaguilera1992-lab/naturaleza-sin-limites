@@ -22,6 +22,7 @@ import { getActivityProfile, type ActivityProfile } from "@/data/activityProfile
 import { Eye } from "lucide-react";
 import { ActivityFieldsEditor } from "@/components/admin/shared/ActivityFieldsEditor";
 import { catalogKeyForEvent, fieldsFromCatalog, fieldsFromSnapshot, saveFieldsToCatalog, snapshotFromFields, type ActivityFields } from "@/lib/activityFields";
+import { safeWhatsappGroup } from "@/lib/safeWhatsapp";
 import type { CatalogOverride } from "@/lib/catalogSync";
 import type { Json } from "@/integrations/supabase/types";
 
@@ -45,11 +46,12 @@ interface EventRow {
   notes: string | null;
   rules: string | null;
   steps: string | null;
+  whatsapp_group_url: string | null;
   catalog_snapshot: CatalogOverride | null;
 }
 
 const EVENT_FIELDS =
-  "id, category, slug, title, starts_at, ends_at, meeting_point_public, meeting_point_private, latitude, longitude, capacity_total, seats_reserved, price_cents, status, event_type, guide_name, notes, rules, steps, catalog_snapshot";
+  "id, category, slug, title, starts_at, ends_at, meeting_point_public, meeting_point_private, latitude, longitude, capacity_total, seats_reserved, price_cents, status, event_type, guide_name, notes, rules, steps, whatsapp_group_url, catalog_snapshot";
 
 const STATUS_LABELS: Record<string, string> = {
   borrador: "Borrador",
@@ -119,6 +121,7 @@ const emptyForm = {
   notes: "",
   rules: "",
   steps: "",
+  whatsappGroup: "",
 };
 
 type FormState = typeof emptyForm;
@@ -290,6 +293,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
       notes: form.notes.trim() || null,
       rules: form.rules.trim() || null,
       steps: form.steps.trim() || null,
+      whatsapp_group_url: safeWhatsappGroup(form.whatsappGroup),
       catalog_snapshot: (fields
         ? snapshotFromFields(catalogKeyForEvent(activity.category, activity.slug), fields, { zone: catalogItemFor(activity.key)?.zone, province: catalogItemFor(activity.key)?.province })
         : null) as unknown as Json,
@@ -428,6 +432,7 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
       notes: event.notes ?? "",
       rules: event.rules ?? "",
       steps: event.steps ?? "",
+      whatsappGroup: event.whatsapp_group_url ?? "",
     });
     const item = catalogItemFor(`${event.category}|${event.slug}`);
     const loaded = item ? fieldsFromSnapshot(event.catalog_snapshot, fieldsFromCatalog(item), event.rules, event.steps) : null;
@@ -768,6 +773,20 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
                   value={form.meetingPrivate}
                   onChange={(e) => setForm({ ...form, meetingPrivate: e.target.value })}
                 />
+              </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="waGroup">Enlace del grupo de WhatsApp (opcional)</Label>
+                <Input
+                  id="waGroup"
+                  type="url"
+                  className="mt-1 text-foreground"
+                  placeholder="https://chat.whatsapp.com/..."
+                  value={form.whatsappGroup}
+                  onChange={(e) => setForm({ ...form, whatsappGroup: e.target.value })}
+                />
+                {form.whatsappGroup.trim() && !safeWhatsappGroup(form.whatsappGroup)
+                  ? <span className="mt-1 block text-xs text-destructive">Pega un enlace de invitación de grupo (https://chat.whatsapp.com/…).</span>
+                  : <p className="mt-1 text-xs text-muted-foreground">Se guarda con la salida y rellena el dossier que recibe el cliente. No se muestra en la web pública.</p>}
               </div>
               <div>
                 <Label htmlFor="latitude">Latitud aproximada (opcional)</Label>

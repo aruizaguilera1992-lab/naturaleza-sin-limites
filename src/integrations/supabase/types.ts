@@ -150,6 +150,7 @@ export type Database = {
           steps: string | null
           title: string
           updated_at: string
+          whatsapp_group_url: string | null
         }
         Insert: {
           capacity_total?: number
@@ -175,6 +176,7 @@ export type Database = {
           steps?: string | null
           title: string
           updated_at?: string
+          whatsapp_group_url?: string | null
         }
         Update: {
           capacity_total?: number
@@ -200,6 +202,7 @@ export type Database = {
           steps?: string | null
           title?: string
           updated_at?: string
+          whatsapp_group_url?: string | null
         }
         Relationships: []
       }

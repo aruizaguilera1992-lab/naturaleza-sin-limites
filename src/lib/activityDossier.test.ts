@@ -42,6 +42,14 @@ describe('syncDossier', () => {
   it('sin datos mantiene el contenido actual', () => {
     const base = _dd('Espeleología'); expect(_sync(base, {}).needs).toEqual(base.needs);
   });
+  it('lleva el grupo de WhatsApp de la salida al dossier', () => {
+    const base = _dd('Barranquismo');
+    expect(_sync(base, { whatsappGroup: 'https://chat.whatsapp.com/AbCdEf1234567890' }).whatsappGroup).toBe('https://chat.whatsapp.com/AbCdEf1234567890');
+  });
+  it('un enlace no válido no borra el grupo ya escrito', () => {
+    const base = { ..._dd('Barranquismo'), whatsappGroup: 'https://chat.whatsapp.com/AbCdEf1234567890' };
+    expect(_sync(base, { whatsappGroup: 'https://evil.example/x' }).whatsappGroup).toBe('https://chat.whatsapp.com/AbCdEf1234567890');
+  });
 });
 
 import { safeWhatsappGroup as _wa } from './activityDossier';

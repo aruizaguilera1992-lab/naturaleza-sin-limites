@@ -26,7 +26,7 @@ export function DossierPanel({ booking, defaultRules }: Props) {
     (async () => {
       const [{ data }, ev, sh] = await Promise.all([
         supabase.from('activity_dossiers').select('id, token, status, content, participants, sent_at, completed_at').eq('booking_id', booking.id),
-        booking.event_id ? supabase.from('activity_events').select('title, starts_at, meeting_point_public, meeting_point_private, rules, steps, catalog_snapshot').eq('id', booking.event_id).maybeSingle() : Promise.resolve({ data: null }),
+        booking.event_id ? supabase.from('activity_events').select('title, starts_at, meeting_point_public, meeting_point_private, rules, steps, whatsapp_group_url, catalog_snapshot').eq('id', booking.event_id).maybeSingle() : Promise.resolve({ data: null }),
         supabase.from('activity_sheets').select('content').eq('booking_id', booking.id).limit(1),
       ]);
       if (!alive) return;
@@ -36,8 +36,8 @@ export function DossierPanel({ booking, defaultRules }: Props) {
       const arr = (v: unknown) => (Array.isArray(v) ? (v as string[]) : null);
       const str = (v: unknown) => (typeof v === 'string' && v.trim() ? v : null);
       const source: DossierSource | null = e
-        ? { title: e.title, startsAt: e.starts_at, meetingPoint: e.meeting_point_private || e.meeting_point_public, steps: e.steps || str(cat.steps), rules: e.rules || str(cat.rules) || defaultRules, bring: arr(cat.bring), includes: arr(cat.includes), duration: str(cat.duration) }
-        : sc ? { title: str(sc.title), meetingPoint: str(sc.meetingPoint), steps: str(sc.steps), rules: str(sc.rules) || defaultRules, bring: arr(sc.bring), includes: arr(sc.includes), duration: str(sc.duration) }
+        ? { title: e.title, startsAt: e.starts_at, meetingPoint: e.meeting_point_private || e.meeting_point_public, steps: e.steps || str(cat.steps), rules: e.rules || str(cat.rules) || defaultRules, bring: arr(cat.bring), includes: arr(cat.includes), duration: str(cat.duration), whatsappGroup: str((e as { whatsapp_group_url?: string | null }).whatsapp_group_url) }
+        : sc ? { title: str(sc.title), meetingPoint: str(sc.meetingPoint), steps: str(sc.steps), rules: str(sc.rules) || defaultRules, bring: arr(sc.bring), includes: arr(sc.includes), duration: str(sc.duration), whatsappGroup: str(sc.whatsappGroup) }
         : null;
       setSrc(source);
       const r = (Array.isArray(data) ? data[0] : data) as unknown as Row | undefined;

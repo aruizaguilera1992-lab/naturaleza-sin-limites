@@ -16,6 +16,7 @@ import {
 import { ActivityFieldsEditor } from '@/components/admin/shared/ActivityFieldsEditor';
 import { saveFieldsToCatalog } from '@/lib/activityFields';
 import { fieldsFromSheet, applyFieldsToSheet } from '@/lib/activitySheets';
+import { safeWhatsappGroup } from '@/lib/safeWhatsapp';
 import { useToast } from '@/hooks/use-toast';
 import { SheetView } from './SheetView';
 import { CATALOG_BUCKET, type CatalogItem } from '@/lib/adminCatalog';
@@ -174,6 +175,13 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
           <div><Label htmlFor="sh-exp">Caduca el</Label><Input id="sh-exp" type="date" value={expires} onChange={(e) => setExpires(e.target.value)} /></div>
         </div>
         <div><Label htmlFor="sh-meet">Punto de encuentro</Label><Input id="sh-meet" value={c.meetingPoint} onChange={(e) => set('meetingPoint', e.target.value)} /></div>
+        <div>
+          <Label htmlFor="sh-wagroup">Enlace del grupo de WhatsApp (opcional)</Label>
+          <Input id="sh-wagroup" type="url" placeholder="https://chat.whatsapp.com/..." value={c.whatsappGroup ?? ''} onChange={(e) => set('whatsappGroup', e.target.value)} />
+          {c.whatsappGroup?.trim() && !safeWhatsappGroup(c.whatsappGroup)
+            ? <span className="mt-1 block text-xs text-destructive">Pega un enlace de invitación de grupo (https://chat.whatsapp.com/…).</span>
+            : <p className="mt-1 text-xs text-muted-foreground">Si lo pegas, el cliente verá el botón «Unirme al grupo» en su ficha.</p>}
+        </div>
         <ActivityFieldsEditor key={fieldsKey} id="sh" value={fieldsFromSheet(c)} onChange={(f) => setC((p) => applyFieldsToSheet(p, f))} />
         {c.base.startsWith('catalog:') && <p className="text-xs text-muted-foreground">Al guardar, los cambios de la ficha (salvo el precio) se guardan también en el Catálogo para las salidas nuevas.</p>}
         <div><Label htmlFor="sh-notes">Notas para el cliente</Label><Textarea id="sh-notes" rows={3} value={c.notes} onChange={(e) => set('notes', e.target.value)} /></div>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
 import { levelOfferPhotos } from '@/data/levelOffers';
 import { STORAGE_PHOTO, sheetFaqs, sheetTotalEuros, type SheetContent } from '@/lib/activitySheets';
+import { safeWhatsappGroup } from '@/lib/safeWhatsapp';
 import { usePhotoUrls } from '@/lib/adminCatalog';
 import { OutingRules, OutingSteps } from '@/components/shared/OutingInstructions';
 import { MeetingPoint } from '@/components/shared/MeetingPoint';
@@ -120,6 +121,17 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
         </div>
       )}
       {c.meetingPoint && <MeetingPoint text={c.meetingPoint} />}
+      {safeWhatsappGroup(c.whatsappGroup) && (
+        <section className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/50 bg-card p-5">
+          <div>
+            <h2 className="font-heading text-lg font-semibold text-foreground">Grupo de WhatsApp de la actividad</h2>
+            <p className="text-sm text-muted-foreground">Avisos, hora y punto de encuentro con el guía y el grupo.</p>
+          </div>
+          <Button asChild className="min-h-11">
+            <a href={safeWhatsappGroup(c.whatsappGroup)!} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Unirme al grupo</a>
+          </Button>
+        </section>
+      )}
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <List title="Incluye" icon={Check} items={c.includes} />
         <List title="Qué llevar" icon={Backpack} items={c.bring} />

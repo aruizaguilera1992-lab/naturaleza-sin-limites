@@ -274,6 +274,13 @@
       "when": 1795000909718,
       "tag": "0038_catalog_image_path_for_outing",
       "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1795106844036,
+      "tag": "0039_add_whatsapp_group_to_open_groups",
+      "breakpoints": true
     }
   ]
 }

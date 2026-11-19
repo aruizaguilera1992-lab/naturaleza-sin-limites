@@ -139,3 +139,18 @@ describe('preguntas frecuentes de la ficha privada', () => {
     expect(faq1.find((f) => f.question === '¿Cuántas personas forman el grupo?')?.answer).toContain('1 persona');
   });
 });
+
+import { sheetFromBase as _sfbWa, validateSheet as _vWa } from './activitySheets';
+describe('grupo de WhatsApp en la ficha privada', () => {
+  it('acepta una invitación oficial y la guarda tal cual', () => {
+    const c = { ..._sfbWa('barranquismo-iniciacion'), whatsappGroup: 'https://chat.whatsapp.com/AbCdEf1234567890' };
+    expect(_vWa(c)).toEqual([]);
+  });
+  it('rechaza un enlace que no es invitación de grupo', () => {
+    const c = { ..._sfbWa('barranquismo-iniciacion'), whatsappGroup: 'https://wa.me/34685609542' };
+    expect(_vWa(c).join(' ')).toContain('grupo de WhatsApp');
+  });
+  it('vacío no bloquea guardar la ficha', () => {
+    expect(_vWa({ ..._sfbWa('barranquismo-iniciacion'), whatsappGroup: '' })).toEqual([]);
+  });
+});

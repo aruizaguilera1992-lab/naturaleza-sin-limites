@@ -1,3 +1,5 @@
+import { safeWhatsappGroup } from './safeWhatsapp';
+
 export interface ScheduleItem { time: string; label: string }
 export interface DossierContent { schedule: ScheduleItem[]; needs: string[]; rules: string[]; canyoning: boolean; notes?: string; extras?: string[]; whatsappGroup?: string }
 export interface DossierParticipant {
@@ -99,7 +101,7 @@ export function whatsappDossierText(name: string | null, activity: string, link:
 /** Optional rental/extra items the customer can request in the dossier. */
 export const EXTRA_OPTIONS = ['Mochila', 'Bote estanco', 'Bolsa estanca', 'Cuerda auxiliar', 'Linterna frontal', 'Guantes'];
 
-export interface DossierSource { title?: string | null; duration?: string | null; meetingPoint?: string | null; startsAt?: string | null; steps?: string | null; rules?: string | null; bring?: string[] | null; includes?: string[] | null }
+export interface DossierSource { title?: string | null; duration?: string | null; meetingPoint?: string | null; startsAt?: string | null; steps?: string | null; rules?: string | null; bring?: string[] | null; includes?: string[] | null; whatsappGroup?: string | null }
 
 /** Fills schedule, needs and rules from the confirmed outing (and its catalog data); keeps admin-chosen extras. */
 export function syncDossier(base: DossierContent, src: DossierSource): DossierContent {
@@ -113,9 +115,9 @@ export function syncDossier(base: DossierContent, src: DossierSource): DossierCo
   const bring = (src.bring ?? []).map((x) => x.trim()).filter(Boolean);
   const rules = lines(src.rules);
   const notes = [src.duration?.trim() && `Duración: ${src.duration.trim()}`, src.includes?.length ? `Incluido: ${src.includes.join(', ')}` : ''].filter(Boolean).join('\n');
-  return { ...base, schedule, needs: bring.length ? bring : base.needs, rules: rules.length ? rules : base.rules, notes: notes || base.notes };
+  const group = safeWhatsappGroup(src.whatsappGroup);
+  return { ...base, whatsappGroup: group ?? base.whatsappGroup, schedule, needs: bring.length ? bring : base.needs, rules: rules.length ? rules : base.rules, notes: notes || base.notes };
 }
 
 /** Only official WhatsApp group invite links are accepted. */
-export const WA_GROUP_RE = /^https:\/\/chat\.whatsapp\.com\/(invite\/)?[A-Za-z0-9]{10,40}\/?$/;
-export const safeWhatsappGroup = (u?: string | null) => { const v = (u ?? '').trim(); return WA_GROUP_RE.test(v) ? v : null; };
+export { WA_GROUP_RE, safeWhatsappGroup } from './safeWhatsapp';
