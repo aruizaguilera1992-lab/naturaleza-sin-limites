@@ -708,21 +708,33 @@ export function EventTechSheet({
           <div className="relative flex h-[clamp(170px,34vh,420px)] shrink-0 items-end overflow-hidden border-b border-border">
             <div className="absolute inset-0 bg-gradient-to-br from-secondary via-background to-secondary/60" />
             {image ? (
-              <>
-                <img
-                  src={image}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 h-full w-full scale-125 object-cover opacity-70 blur-xl"
-                />
-                <img
-                  src={image}
-                  alt={p?.imageAlt ?? sheet.title}
-                  className="absolute inset-0 h-full w-full object-contain object-center"
-                />
-              </>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={`Ver la foto de ${sheet.title} a tamaño completo`}
+                    className="absolute inset-0 cursor-zoom-in"
+                  >
+                    <img
+                      src={image}
+                      alt=""
+                      className="h-full w-full object-cover object-center"
+                    />
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-5xl border-none bg-transparent p-0 shadow-none">
+                  <DialogTitle className="sr-only">
+                    {p?.imageAlt ?? sheet.title}
+                  </DialogTitle>
+                  <img
+                    src={image}
+                    alt={p?.imageAlt ?? sheet.title}
+                    className="max-h-[85vh] w-full rounded-xl object-contain"
+                  />
+                </DialogContent>
+              </Dialog>
             ) : null}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
             <div className="relative w-full px-4 pb-2 pt-6 sm:px-6 sm:pb-3 sm:pt-7">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary sm:px-2.5 sm:text-[10px]">
                 <Icon className="h-3 w-3" aria-hidden="true" />
