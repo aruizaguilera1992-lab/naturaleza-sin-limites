@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, MessageCircle, Leaf } from 'lucide-react';
+import { User, MessageCircle, Leaf, Sparkles } from 'lucide-react';
 import { media } from '@/data/media';
 const guidePortrait = { url: '/images/guia-retrato.png' };
 
@@ -79,13 +79,18 @@ export function QSHeroSection() {
               
               {/* Micro text overlay */}
               <div className="absolute bottom-4 left-4 right-4">
-                <div className="bg-background/90 backdrop-blur-sm rounded-lg px-4 py-3">
-                  <p className="text-sm font-medium text-foreground">
-                    Proyecto personal, trato directo
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Cada aventura es única porque tú lo eres
-                  </p>
+                <div className="flex items-center gap-3 rounded-xl border-l-4 border-primary bg-background/90 px-4 py-3.5 shadow-2xl ring-1 ring-primary/30 backdrop-blur-sm">
+                  <div className="flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-full bg-primary/15">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-heading text-base font-bold leading-tight text-foreground md:text-lg">
+                      Proyecto personal, trato directo
+                    </p>
+                    <p className="text-sm font-medium text-primary">
+                      Cada aventura es única porque tú lo eres
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
