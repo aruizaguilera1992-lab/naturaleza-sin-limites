@@ -415,18 +415,27 @@ export default function Pago() {
 
       {!checkoutOpen ? (
         <div>
+          {/* La llamada a la acción y los mensajes van dentro del botón. */}
           <Button
-            className="w-full text-base normal-case sm:text-lg"
+            className="w-full py-4 text-base normal-case sm:py-5 sm:text-lg"
             size="lg"
             disabled={isDesignDemo}
             onClick={() => { setCheckoutError(null); setCheckoutKey((k) => k + 1); setCheckoutOpen(true); }}
           >
-            {isDesignDemo ? `${payLabel} · deshabilitado` : checkoutError ? `Reintentar · ${payLabel}` : payLabel}
+            <span className="flex w-full flex-col items-center gap-1.5">
+              <span className="font-heading text-lg font-extrabold uppercase tracking-wider sm:text-xl">
+                {isDesignDemo ? `${payLabel} · deshabilitado` : checkoutError ? `Reintentar · ${payLabel}` : payLabel}
+              </span>
+              <span className="mt-0.5 inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-full bg-background/85 px-3 py-1 text-[11px] font-semibold normal-case tracking-normal text-primary-foreground sm:text-xs">
+                <span>Tu próxima aventura empieza aquí</span>
+                <span aria-hidden="true">·</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <ShieldCheck />
+                  Pago seguro con Stripe
+                </span>
+              </span>
+            </span>
           </Button>
-          <p className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
-            Pago seguro con Stripe
-          </p>
         </div>
       ) : (
         <div id="checkout" className="overflow-hidden rounded-md border border-border bg-card p-2">
@@ -447,31 +456,24 @@ function PaymentVisual({ activity, image, categoryLabel }: { activity?: string; 
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-background" />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-transparent to-transparent" />
+      {/* El plano/foto se muestra despejado: el titular y los mensajes van en el botón. */}
+      <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-background/70 to-transparent" />
       <div className="relative flex h-full min-h-56 flex-col justify-between p-5 sm:min-h-80 sm:p-8 lg:min-h-[680px] lg:p-10">
-        <div>
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary sm:tracking-[0.3em] sm:text-xs">
-                Naturaleza Sin Límites
-              </p>
-              <div className="mt-1.5 h-0.5 w-12 bg-primary" />
-            </div>
-            {categoryLabel && (
-              <span className="shrink-0 rounded-full border border-foreground/15 bg-background/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground backdrop-blur-sm">
-                {categoryLabel}
-              </span>
-            )}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary sm:tracking-[0.3em] sm:text-xs">
+              Naturaleza Sin Límites
+            </p>
+            <div className="mt-1.5 h-0.5 w-12 bg-primary" />
           </div>
-          <h2 className="mt-6 font-heading text-[2.1rem] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:mt-8 sm:text-6xl lg:text-[4.1rem]">
-            <span className="block">Tu próxima</span>
-            <span className="block text-primary">aventura</span>
-            <span className="block">empieza aquí</span>
-          </h2>
+          {categoryLabel && (
+            <span className="shrink-0 rounded-full border border-foreground/15 bg-background/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-foreground backdrop-blur-sm">
+              {categoryLabel}
+            </span>
+          )}
         </div>
         {activity && (
-          <div className="flex w-full items-center justify-center rounded-2xl border border-foreground/10 bg-background/45 px-5 py-4 backdrop-blur-md">
+          <div className="mt-auto flex w-full items-center justify-center rounded-2xl border border-foreground/10 bg-background/45 px-5 py-4 backdrop-blur-md">
             <span className="text-center font-heading text-xl font-bold leading-tight text-foreground sm:text-2xl">{activity}</span>
           </div>
         )}
