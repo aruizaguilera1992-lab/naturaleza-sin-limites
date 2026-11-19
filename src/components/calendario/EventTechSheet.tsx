@@ -454,23 +454,25 @@ export function EventTechSheet({
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
   const wide = useIsWide();
-  // Las salidas guardan su propia copia de la ficha; las antiguas siguen leyendo el catálogo actual.
+  // Las salidas guardan su propia copia de la ficha; la foto siempre se toma del catálogo
+  // actual (si el admin la cambia en el catálogo, la ficha pública la refleja).
   const snapshot = event.catalog_snapshot ?? null;
-  const { override: live } = useCatalogForOuting(snapshot ? undefined : event.category, snapshot ? undefined : event.slug);
+  const { override: live } = useCatalogForOuting(event.category, event.slug);
   const sheet = mergeOutingSheet(event, event.profile, snapshot ?? live);
   const p = event.profile;
+  const imagePath = live?.imagePath || sheet.imagePath;
   // Foto propia subida desde el panel: la sirve firmada la función outing-photo (el almacén es privado).
   const [ownPhotoUrl, setOwnPhotoUrl] = useState<string | null>(null);
   useEffect(() => {
     setOwnPhotoUrl(null);
-    if (!sheet.imagePath) return;
-    let live = true;
+    if (!imagePath) return;
+    let alive = true;
     supabase.functions
       .invoke("outing-photo", { body: { category: event.category, slug: event.slug } })
-      .then(({ data }) => { if (live && typeof data?.url === "string") setOwnPhotoUrl(data.url); })
+      .then(({ data }) => { if (alive && typeof data?.url === "string") setOwnPhotoUrl(data.url); })
       .catch(() => undefined);
-    return () => { live = false; };
-  }, [sheet.imagePath, event.category, event.slug]);
+    return () => { alive = false; };
+  }, [imagePath, event.category, event.slug]);
   const image = imageUrlOverride ?? ownPhotoUrl ?? (p ? getActivityCatalogImage(event.category, event.slug) ?? undefined : undefined);
   const Icon = CATEGORY_ICON[event.category] ?? CalendarDays;
   const fit = FITNESS[sheet.fitness.toLowerCase()] ?? 1;

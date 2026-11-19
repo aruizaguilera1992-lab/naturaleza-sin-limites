@@ -3,7 +3,8 @@ import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { z } from 'npm:zod@3.23.8';
 
 // The catalog-photos bucket is admin-only; the public web gets a short-lived signed URL
-// only for the own photo stored in the snapshot of a published (or full) open-group outing.
+// for the own photo of a published (or full) open-group outing. The current catalog photo
+// wins over the outing's saved copy, so editing the photo in the catalog updates the sheet.
 const schema = z.object({ category: z.string().min(1).max(60), slug: z.string().min(1).max(120) }).strict();
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
@@ -20,7 +21,22 @@ Deno.serve(async (req) => {
     .eq('category', parsed.data.category).eq('slug', parsed.data.slug)
     .in('status', ['publicada', 'completa'])
     .order('starts_at', { ascending: false }).limit(1).maybeSingle();
-  const path = typeof ev?.catalog_snapshot?.imagePath === 'string' ? ev.catalog_snapshot.imagePath : '';
+  if (!ev) return json({ url: null });
+  // La foto vigente es la de la ficha del catálogo; la copia guardada en la salida es el respaldo.
+  const catalogKey = parsed.data.category === 'vias-ferratas'
+    ? `ferratas:${parsed.data.slug}`
+    : (parsed.data.category === 'barranquismo' || parsed.data.category === 'espeleologia')
+      ? `${parsed.data.category}:${parsed.data.slug}`
+      : null;
+  let path = '';
+  if (catalogKey) {
+    const { data: entry } = await db.from('catalog_entries').select('photos')
+      .eq('key', catalogKey).not('key', 'like', '%:ref-%').not('key', 'like', '%:original-%')
+      .limit(1).maybeSingle();
+    const first = Array.isArray(entry?.photos) ? entry.photos[0] : null;
+    if (typeof first === 'string') path = first;
+  }
+  if (!path && typeof ev.catalog_snapshot?.imagePath === 'string') path = ev.catalog_snapshot.imagePath;
   if (!path || !/^[a-zA-Z0-9/_.-]+$/.test(path) || path.includes('..')) return json({ url: null });
   const { data } = await db.storage.from('catalog-photos').createSignedUrl(path, 60 * 60);
   return json({ url: data?.signedUrl ?? null });
