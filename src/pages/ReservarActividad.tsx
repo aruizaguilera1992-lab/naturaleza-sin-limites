@@ -56,7 +56,7 @@ export default function ReservarActividad() {
 
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [form, setForm] = useState({
-    participants: 2,
+    participants: 1,
     date: "",
     name: "",
     email: "",
