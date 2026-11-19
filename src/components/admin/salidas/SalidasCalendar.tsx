@@ -23,7 +23,7 @@ export function SalidasCalendar({ onOpenBooking, onManageOpen }: { onOpenBooking
     const { from, to } = monthRange(ym.y, ym.m);
     const [ev, sh] = await Promise.all([
       supabase.from('activity_events').select('id, title, starts_at, capacity_total, seats_reserved, status')
-        .eq('status', 'publicada').gte('starts_at', from).lt('starts_at', to),
+        .in('status', ['publicada', 'completa']).gte('starts_at', from).lt('starts_at', to),
       supabase.from('activity_sheets').select('id, content, accepted_at, booking_id')
         .not('accepted_at', 'is', null).gte('content->>date', from).lt('content->>date', to),
     ]);

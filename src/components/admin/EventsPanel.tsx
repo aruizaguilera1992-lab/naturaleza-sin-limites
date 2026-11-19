@@ -430,7 +430,9 @@ export function EventsPanel({ catalogStart }: { catalogStart?: CatalogOutingStar
       steps: event.steps ?? "",
     });
     const item = catalogItemFor(`${event.category}|${event.slug}`);
-    loadFields(item ? fieldsFromSnapshot(event.catalog_snapshot, fieldsFromCatalog(item), event.rules, event.steps) : null);
+    const loaded = item ? fieldsFromSnapshot(event.catalog_snapshot, fieldsFromCatalog(item), event.rules, event.steps) : null;
+    // The outing's own saved price always wins over catalog/snapshot price.
+    loadFields(loaded && event.price_cents != null ? { ...loaded, pricePerPersonEuros: event.price_cents / 100 } : loaded);
   };
 
   const duplicate = (event: EventRow) => {
