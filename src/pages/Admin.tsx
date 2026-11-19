@@ -282,8 +282,11 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
   const locked = explicitDeposit && typeof lockedDepositCents === "number" && lockedDepositCents >= 50;
   const shownAmount = locked ? (lockedDepositCents! / 100).toFixed(2).replace(".", ",") : amount;
   const [done, setDone] = useState<string | null>(null);
+  /** Confirmación preparada para el teléfono cuando la reserva no tiene email. */
+  const [wa, setWa] = useState<{ phone: string; message: string; url: string } | null>(null);
 
   const create = async (withEmail: boolean) => {
+    setWa(null);
     const value = locked ? lockedDepositCents! / 100 : Number(amount.replace(",", "."));
     if (!Number.isFinite(value) || value < 0.5) {
       toast({ title: "Importe no válido", description: "Introduce un importe mínimo de 0,50 €", variant: "destructive" });
@@ -318,6 +321,17 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
     await navigator.clipboard.writeText(data.url).catch(() => undefined);
 
     const emailStatus: string | undefined = data.email?.status;
+    const waHandoff = data.whatsapp as { phone: string; message: string; url: string } | undefined;
+    if (waHandoff?.phone && waHandoff.url) {
+      setWa(waHandoff);
+      toast({
+        title: "Confirmación lista para WhatsApp",
+        description: `Esta solicitud no tiene email. Envíala al teléfono ${waHandoff.phone} desde el panel.`,
+      });
+      setAmount("");
+      onCreated();
+      return;
+    }
     if (withEmail && emailStatus !== "enviado") {
       toast({
         title: "Enlace creado, pero el email NO se ha enviado",
@@ -351,6 +365,44 @@ function PaymentPanel({ target, id, defaultConcept, defaultAmount, amountHint, p
         <p role="status" className="mt-2 flex items-center gap-2 rounded-lg border border-primary/50 bg-primary/10 px-3 py-2 text-sm text-foreground">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" /> {done}
         </p>
+      )}
+
+      {wa && (
+        <div role="status" className="mt-2 rounded-lg border border-primary/50 bg-primary/10 p-3 text-sm">
+          <p className="flex items-center gap-2 font-medium text-foreground">
+            <MessageCircle className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+            Sin email: confirmación preparada para WhatsApp
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Teléfono asociado: <span className="font-medium text-foreground">{wa.phone}</span>
+          </p>
+          <textarea
+            readOnly
+            value={wa.message}
+            rows={7}
+            aria-label="Mensaje de confirmación para WhatsApp"
+            className="mt-2 w-full rounded-md border border-border bg-background p-2 text-xs text-foreground"
+          />
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <Button size="sm" className="min-h-9 gap-1" onClick={() => window.open(wa.url, "_blank", "noopener,noreferrer")}>
+              <MessageCircle className="h-3.5 w-3.5" /> Enviar por WhatsApp
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="min-h-9 gap-1"
+              onClick={() => {
+                navigator.clipboard.writeText(wa.message);
+                toast({ title: "Mensaje copiado" });
+              }}
+            >
+              <Copy className="h-3.5 w-3.5" /> Copiar mensaje
+            </Button>
+            <Button size="sm" variant="ghost" className="min-h-9" onClick={() => setWa(null)}>
+              Ocultar
+            </Button>
+          </div>
+        </div>
       )}
 
       {payments.length > 0 && (

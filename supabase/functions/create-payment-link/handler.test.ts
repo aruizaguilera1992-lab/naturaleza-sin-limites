@@ -86,7 +86,7 @@ Deno.test("UI -> payload -> emitter -> evidence -> receipt: explicit kind=manual
   assertEquals((intent.presentation as any).recipient, "c@example.com");
   const { ctx, mail } = await receiptFor(db);
   assertEquals(ctx.manualConfirmation, true);
-  assert(mail.subject.includes("Señal recibida"));
+  assert(mail.subject.includes("Reserva confirmada"));
   assert(!mail.text.includes("sigue pendiente de confirmación"));
 });
 
@@ -100,7 +100,8 @@ Deno.test("generic and balance links never claim activity confirmation", async (
     assert(!send.sent[0].subject.includes("Actividad confirmada"));
     const { ctx, mail } = await receiptFor(db);
     assertEquals(ctx.manualConfirmation, undefined);
-    assert(mail.subject.includes("Pago recibido"));
+    assert(mail.subject.includes("Reserva confirmada"));
+    assert(!mail.subject.includes("Señal recibida"));
   }
   // Legacy client body without purpose and contacts default to generic.
   assertEquals("purpose" in paymentLinkBody({ target: "contact", id: BID, amountCents: 100, concept: "xx", environment: "sandbox", sendEmail: true, baseUrl: "https://a.es", confirmDeposit: true }), false);
@@ -164,4 +165,34 @@ Deno.test("evidence matcher requires exact payment, booking, recipient, date and
   assert(!hasMatchingDepositEvidence([row], { ...m, paymentRequestId: "q" }));
   assert(!hasMatchingDepositEvidence([{ ...row, payload: { recipients: ["a@b.es"] } }], m));
   assert(!hasMatchingDepositEvidence([row], { ...m, activityDate: null }));
+});
+
+Deno.test("confirmación de actividad sin email se prepara para el teléfono por WhatsApp", async () => {
+  const db = memoryDb({ bookings: [booking({ email: null, contact: "685 60 95 42", phone: "685 60 95 42" })] });
+  const send = mockSend("enviado");
+  const res = await (await handleCreatePaymentLink(request(true), { db, send: send.fn, now: () => NOW })).json();
+  assertEquals(res.email.status, "sin_email");
+  assertEquals(send.sent.length, 0); // nada enviado por correo
+  assertEquals(res.whatsapp.phone, "34685609542");
+  assert(res.whatsapp.message.includes("está confirmada"));
+  assert(res.whatsapp.message.includes("https://naturalezasinlimites.es/pago/"));
+  assert(res.whatsapp.url.startsWith("https://wa.me/34685609542?text="));
+  assertEquals(db.tables.payment_requests.length, 1);
+  assertEquals(db.tables.bookings[0].status, "pendiente_pago");
+});
+
+Deno.test("sin email y sin teléfono la confirmación se rechaza sin crear cobro", async () => {
+  const db = memoryDb({ bookings: [booking({ email: null, contact: null, phone: null })] });
+  const res = await handleCreatePaymentLink(request(true), { db, send: mockSend("enviado").fn, now: () => NOW });
+  assertEquals(res.status, 409);
+  assert((await res.json()).error.includes("email ni un teléfono"));
+  assertEquals(db.writes, []);
+});
+
+Deno.test("cobro genérico sin email deja también el enlace preparado para WhatsApp", async () => {
+  const db = memoryDb({ bookings: [booking({ email: null, contact: "685 60 95 42", phone: "685 60 95 42" })] });
+  const res = await (await handleCreatePaymentLink(request(false), { db, send: mockSend("enviado").fn, now: () => NOW })).json();
+  assertEquals(res.email.status, "sin_email");
+  assertEquals(res.whatsapp.phone, "34685609542");
+  assert(res.whatsapp.message.includes("https://naturalezasinlimites.es/pago/"));
 });

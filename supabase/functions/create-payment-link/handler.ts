@@ -3,6 +3,7 @@ import { z } from "npm:zod@3.23.8";
 import { isEmail, sendTrackedNotification as defaultSend, type NotificationIntent } from "../_shared/email.ts";
 import { renderBookingEmail } from "../_shared/bookingEmail.ts";
 import { readBookingEmailContext } from "../_shared/bookingEmailContext.ts";
+import { buildWhatsappPaymentMessage, normalizeWaPhone, whatsappHandoffUrl } from "../_shared/whatsapp.ts";
 import {
   DEPOSIT_CONFIRMATION_PURPOSE,
   depositConfirmationDedupeKey,
@@ -53,18 +54,21 @@ export async function handleCreatePaymentLink(req: Request, deps: Deps): Promise
   const depositIntent = body.purpose === DEPOSIT_CONFIRMATION_PURPOSE;
 
   let customerEmail: string | null = null;
+  let customerPhone: string | null = null;
   let customerName: string | null = null;
   let booking: { status: string; preferred_date: string | null } | null = null;
   if (body.target === "booking") {
-    const { data } = await supabase.from("bookings").select("id, contact, email, payment_email, name, status, preferred_date").eq("id", body.id).maybeSingle();
+    const { data } = await supabase.from("bookings").select("id, contact, email, payment_email, phone, name, status, preferred_date").eq("id", body.id).maybeSingle();
     if (!data) return json({ error: "Reserva no encontrada" }, 404);
-    customerEmail = [data.payment_email, data.email, data.contact].find((c) => c && isEmail(c))?.trim() ?? null;
+    customerEmail = [data.payment_email, data.email, data.contact].find((c: string | null) => c && isEmail(c))?.trim() ?? null;
+    customerPhone = normalizeWaPhone(data.phone) ?? normalizeWaPhone(data.contact);
     customerName = data.name;
     booking = { status: data.status, preferred_date: data.preferred_date };
   } else {
-    const { data } = await supabase.from("contact_submissions").select("id, contacto, email, nombre").eq("id", body.id).maybeSingle();
+    const { data } = await supabase.from("contact_submissions").select("id, contacto, email, phone, nombre").eq("id", body.id).maybeSingle();
     if (!data) return json({ error: "Contacto no encontrado" }, 404);
-    customerEmail = [data.email, data.contacto].find((c) => c && isEmail(c))?.trim() ?? null;
+    customerEmail = [data.email, data.contacto].find((c: string | null) => c && isEmail(c))?.trim() ?? null;
+    customerPhone = normalizeWaPhone(data.phone) ?? normalizeWaPhone(data.contacto);
     customerName = data.nombre;
   }
 
@@ -86,7 +90,8 @@ export async function handleCreatePaymentLink(req: Request, deps: Deps): Promise
     }
     const reason = depositConfirmationError({ booking, scheduled, payments, confirmedPaymentIds: confirmedIds, sendEmail: Boolean(body.sendEmail), target: body.target, now });
     if (reason) return json({ error: reason }, 409);
-    if (!customerEmail) return json({ error: "La reserva no tiene un email válido" }, 409);
+    // Sin email pero con teléfono válido, la confirmación se entrega por WhatsApp.
+    if (!customerEmail && !customerPhone) return json({ error: "La reserva no tiene un email ni un teléfono válidos" }, 409);
   }
 
   const { data: pending } = await supabase.from("payment_requests")
@@ -120,9 +125,35 @@ export async function handleCreatePaymentLink(req: Request, deps: Deps): Promise
   }
 
   let email: { status: string; error?: string } = { status: "no_solicitado" };
+  let whatsapp: { phone: string; message: string; url: string } | null = null;
   if (body.sendEmail) {
     if (!customerEmail) {
-      email = { status: "omitido", error: "La solicitud no tiene un email válido" };
+      // Sin email: la confirmación se prepara para el teléfono por WhatsApp.
+      if (customerPhone) {
+        const activityDate = depositIntent ? booking!.preferred_date! : undefined;
+        const context = await readBookingEmailContext(supabase, body.target === "booking" ? body.id : null, record, false, true, activityDate ? { depositConfirmationDate: activityDate } : {});
+        const message = buildWhatsappPaymentMessage({
+          name: customerName,
+          activity: context.activity ?? record.concept,
+          date: activityDate,
+          amountCents: record.amount_cents,
+          currency: record.currency,
+          totalCents: context.money?.totalCents ?? null,
+          deposit: depositIntent,
+          payUrl: url,
+          expiresAt: record.expires_at,
+          concept: record.concept,
+        });
+        const waUrl = whatsappHandoffUrl(customerPhone, message);
+        if (waUrl) {
+          whatsapp = { phone: customerPhone, message, url: waUrl };
+          email = { status: "sin_email", error: "La solicitud no tiene email: confirmación preparada para WhatsApp" };
+        } else {
+          email = { status: "omitido", error: "El teléfono de la solicitud no es válido para WhatsApp" };
+        }
+      } else {
+        email = { status: "omitido", error: "La solicitud no tiene un email válido" };
+      }
     } else {
       const activityDate = depositIntent ? booking!.preferred_date! : undefined;
       const context = await readBookingEmailContext(supabase, body.target === "booking" ? body.id : null, record, false, true, activityDate ? { depositConfirmationDate: activityDate } : {});
@@ -153,5 +184,5 @@ export async function handleCreatePaymentLink(req: Request, deps: Deps): Promise
     }
   }
 
-  return json({ ok: true, url, token: record.token, reused: Boolean(pending && record.id === pending.id), purpose: body.purpose, email });
+  return json({ ok: true, url, token: record.token, reused: Boolean(pending && record.id === pending.id), purpose: body.purpose, email, ...(whatsapp ? { whatsapp } : {}) });
 }
