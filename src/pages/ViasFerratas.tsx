@@ -66,11 +66,13 @@ const ViasFerratas = () => {
             </p>
 
             {/* BOTÓN VERDE */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full border border-green-500/30 mb-4">
-              <ShieldCheck className="h-5 w-5 text-green-400" />
-              <span className="text-green-400 font-medium">
-                Actividad apta para principiantes con equipo de seguridad
-              </span>
+            <div className="flex justify-center mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 backdrop-blur-sm rounded-full border border-green-500/30">
+                <ShieldCheck className="h-5 w-5 text-green-400" />
+                <span className="text-green-400 font-medium">
+                  Actividad apta para principiantes con equipo de seguridad
+                </span>
+              </div>
             </div>
 
             {/* Flecha para hacer scroll al cuestionario */}
