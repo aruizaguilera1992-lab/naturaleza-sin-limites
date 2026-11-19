@@ -6,7 +6,7 @@ import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
 import { levelOfferPhotos } from '@/data/levelOffers';
 import { STORAGE_PHOTO, sheetFaqs, sheetTotalEuros, type SheetContent } from '@/lib/activitySheets';
 import { usePhotoUrls } from '@/lib/adminCatalog';
-import { OutingInstructions } from '@/components/shared/OutingInstructions';
+import { OutingRules, OutingSteps } from '@/components/shared/OutingInstructions';
 import { MeetingPoint } from '@/components/shared/MeetingPoint';
 import { safeVideoEmbed } from '@/lib/safeVideo';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -101,9 +101,10 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
         <List title="Incluye" icon={Check} items={c.includes} />
         <List title="Qué llevar" icon={Backpack} items={c.bring} />
         <List title="Requisitos" icon={Check} items={c.requirements} />
+        <OutingRules rules={c.rules} className="rounded-xl border border-border bg-card p-5" />
       </div>
+      <OutingSteps steps={c.steps} className="mt-4 rounded-xl border border-border bg-card p-5" />
       {c.notes && <p className="mt-6 whitespace-pre-line rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm">{c.notes}</p>}
-      <div className="mt-6"><OutingInstructions rules={c.rules} steps={c.steps} /></div>
       <SheetFaqs items={sheetFaqs(c)} />
       <div className="mt-6 rounded-xl border border-border bg-card p-5">
         {c.pricePerPersonEuros !== null ? (
