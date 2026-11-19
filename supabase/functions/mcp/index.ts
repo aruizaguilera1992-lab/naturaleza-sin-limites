@@ -4199,7 +4199,7 @@ Existen muchos modelos y cada uno responde a un uso previsto. Estos son los gran
 - **Figura de ocho**: dise\xF1o cl\xE1sico y sencillo. Es muy conocido, aunque tiende a rizar la cuerda y su regulaci\xF3n de fricci\xF3n es limitada. Hoy convive con modelos m\xE1s espec\xEDficos.
 - **Dispositivos tubulares**: muy habituales en escalada, ligeros y vers\xE1tiles para asegurar y rapelar con cuerda doble o simple seg\xFAn el modelo. Su fricci\xF3n depende mucho del di\xE1metro de la cuerda.
 - **Descensores de barranquismo**: dise\xF1ados para trabajar con cuerda mojada, permiten ajustar la fricci\xF3n durante el descenso y facilitan maniobras propias de la actividad. Est\xE1n pensados para entornos con agua.
-- **Dispositivos de espeleolog\xEDa**: suelen ser de poleas o barras, adaptados a verticales largas, cuerda semiest\xE1tica y a una progresi\xF3n por cuerda que combina descenso y ascenso. Algunos incorporan funciones de bloqueo seg\xFAn el modelo.
+- **Dispositivos de espeleolog\xEDa**: existen dispositivos espec\xEDficos de espeleolog\xEDa \u2014por ejemplo, modelos de poleas o barras, entre otros\u2014 dise\xF1ados para progresi\xF3n por cuerda y verticales largas, con cuerda semiest\xE1tica y una combinaci\xF3n de descenso y ascenso. Algunos incorporan funciones de bloqueo seg\xFAn el modelo.
 
 Que un aparato funcione en una disciplina no significa que sea adecuado en otra. **Los descensores no son intercambiables**, ni todos se montan igual: cada modelo tiene su forma de instalaci\xF3n, sus cuerdas compatibles y sus limitaciones, que se aprenden con formaci\xF3n y leyendo su manual.
 
@@ -4221,7 +4221,7 @@ En una **placa o pared inclinada**, los pies mantienen mucho contacto con la roc
 
 El mismo descensor puede comportarse de forma muy distinta seg\xFAn las condiciones. Algunos factores que influyen en la fricci\xF3n y el control:
 
-- **Di\xE1metro y estado de la cuerda**: una cuerda m\xE1s fina o m\xE1s gastada puede generar menos fricci\xF3n.
+- **Di\xE1metro, construcci\xF3n y estado de la cuerda**: el di\xE1metro, la construcci\xF3n y el estado de la cuerda modifican la fricci\xF3n. El efecto concreto depende de la combinaci\xF3n de cuerda y descensor, por lo que no debe suponerse una variaci\xF3n universal.
 - **Tipo de dispositivo**: cada modelo tiene su propio comportamiento.
 - **Peso de la persona** y del material que lleva.
 - **Humedad, barro y agua**: modifican el rozamiento y aumentan el desgaste.
@@ -4315,7 +4315,7 @@ Formaci\xF3n espec\xEDfica impartida por profesionales cualificados en la discip
 
 Las t\xE9cnicas de r\xE1pel abren la puerta a cuevas, barrancos y paredes que de otra forma ser\xEDan inaccesibles. Dominarlas no consiste en memorizar una secuencia, sino en entender el sistema, conocer el material y desarrollar criterio con pr\xE1ctica supervisada.
 
-En Naturaleza Sin L\xEDmites te acompa\xF1amos en tus primeros descensos con gu\xEDas titulados y material adecuado a cada disciplina. Descubre nuestras salidas de [barranquismo](/barranquismo) y [espeleolog\xEDa](/espeleologia), o [contacta con nosotros](/contacto) para resolver tus dudas y preparar tu pr\xF3xima aventura vertical.
+En Naturaleza Sin L\xEDmites te acompa\xF1amos en tus primeros descensos con acompa\xF1amiento profesional y material adecuado a cada disciplina. Descubre nuestras salidas de [barranquismo](/barranquismo) y [espeleolog\xEDa](/espeleologia), o [contacta con nosotros](/contacto) para resolver tus dudas y preparar tu pr\xF3xima aventura vertical.
 `,
     featuredImage: media.ropeDetail.src,
     category: "tecnicas-seguridad",
