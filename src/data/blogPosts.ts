@@ -681,7 +681,7 @@ En Naturaleza Sin Límites te asesoramos para encontrar el recorrido que encaja 
     ],
     author: defaultAuthor,
     publishedAt: "2024-01-08",
-    readTime: 10,
+    readTime: 6,
     views: 2340,
     seo: {
       metaTitle: "5 vías ferratas de Andalucía: rutas y dificultad | Naturaleza Sin Límites",
