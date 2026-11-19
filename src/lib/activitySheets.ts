@@ -3,6 +3,7 @@ import { espeleologiaPublicada } from '@/data/espeleologia';
 import type { CatalogItem } from '@/lib/adminCatalog';
 import { safeVideoEmbed } from '@/lib/safeVideo';
 import type { ActivityFields } from '@/lib/activityFields';
+import { buildOutingFaqs, type OutingSheet } from '@/lib/catalogSync';
 
 export const MAX_SHEET_PEOPLE = 20;
 
@@ -155,4 +156,24 @@ export function applyFieldsToSheet(c: SheetContent, f: ActivityFields): SheetCon
   // y conserva las ilustrativas de las ofertas por nivel.
   const photo = imagePath ? `${STORAGE_PHOTO}${imagePath}` : c.photo?.startsWith(STORAGE_PHOTO) ? null : c.photo;
   return { ...c, ...rest, title: name, photo };
+}
+
+/**
+ * Preguntas frecuentes de la ficha privada, redactadas con los datos escritos en ella
+ * (mismo redactor que las salidas de grupo abierto). Lo que la ficha no define se
+ * anuncia como «se confirma antes de la salida»: nunca se inventa.
+ */
+export function sheetFaqs(c: SheetContent): { question: string; answer: string }[] {
+  const s: OutingSheet = {
+    title: c.title, summary: c.summary, description: c.description ?? '', meetingPoint: c.meetingPoint,
+    price: c.pricePerPersonEuros, duration: c.duration, effectiveDuration: '', levelLabel: c.levelLabel,
+    level: c.level, grade: c.grade ?? '', minAge: c.minAge ? `+${c.minAge}` : '', fitness: c.fitness,
+    experience: c.experience ? 'Requiere experiencia previa' : 'No requiere experiencia previa',
+    includes: c.includes, requirements: c.requirements, bring: c.bring,
+    technicalElements: [], itinerary: [], insurancePermits: [], highlights: [], season: '',
+    group: `${c.people} ${c.people === 1 ? 'persona' : 'personas'}`, guideRatio: '',
+    approachReturn: '', weatherPolicy: '', cancellationPolicy: '', videoUrl: c.videoUrl ?? '',
+    imagePath: '', faqs: [], fromCatalog: false,
+  };
+  return buildOutingFaqs(s, { place: c.place, province: '' });
 }

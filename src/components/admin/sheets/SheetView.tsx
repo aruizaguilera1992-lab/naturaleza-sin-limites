@@ -4,12 +4,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
 import { levelOfferPhotos } from '@/data/levelOffers';
-import { STORAGE_PHOTO, sheetTotalEuros, type SheetContent } from '@/lib/activitySheets';
+import { STORAGE_PHOTO, sheetFaqs, sheetTotalEuros, type SheetContent } from '@/lib/activitySheets';
 import { usePhotoUrls } from '@/lib/adminCatalog';
 import { OutingInstructions } from '@/components/shared/OutingInstructions';
 import { MeetingPoint } from '@/components/shared/MeetingPoint';
 import { safeVideoEmbed } from '@/lib/safeVideo';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const DISC: Record<SheetContent['discipline'], string> = { barranquismo: 'Barranquismo', ferratas: 'Vía ferrata', espeleologia: 'Espeleología' };
 const fmtDate = (d: string) => { try { return new Date(`${d}T12:00:00`).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch { return d; } };
@@ -20,6 +21,30 @@ function List({ title, icon: Icon, items }: { title: string; icon: typeof Check;
     <section className="rounded-xl border border-border bg-card p-5">
       <h2 className="font-heading font-bold text-foreground">{title}</h2>
       <ul className="mt-3 grid gap-2 text-sm text-muted-foreground">{items.map((c) => <li key={c} className="flex gap-2"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{c}</li>)}</ul>
+    </section>
+  );
+}
+
+/** Preguntas frecuentes de la ficha, en desplegable: una pregunta abierta cada vez. */
+function SheetFaqs({ items }: { items: { question: string; answer: string }[] }) {
+  if (!items.length) return null;
+  return (
+    <section className="mt-6 rounded-xl border border-border bg-card p-5">
+      <h2 className="font-heading font-bold text-foreground">Preguntas frecuentes</h2>
+      <p className="mt-1 text-sm text-muted-foreground">Toca cada pregunta para ver la respuesta.</p>
+      <Accordion type="single" collapsible className="mt-2">
+        {items.map((f, i) => (
+          <AccordionItem key={`${f.question}-${i}`} value={`f-${i}`} className="border-border">
+            <AccordionTrigger className="py-3 text-left font-heading text-sm font-semibold text-foreground hover:text-primary hover:no-underline">
+              <span className="flex items-start gap-2 text-left">
+                <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-extrabold text-primary">?</span>
+                {f.question}
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="pl-6 text-sm leading-relaxed text-muted-foreground">{f.answer}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </section>
   );
 }
@@ -79,6 +104,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
       </div>
       {c.notes && <p className="mt-6 whitespace-pre-line rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm">{c.notes}</p>}
       <div className="mt-6"><OutingInstructions rules={c.rules} steps={c.steps} /></div>
+      <SheetFaqs items={sheetFaqs(c)} />
       <div className="mt-6 rounded-xl border border-border bg-card p-5">
         {c.pricePerPersonEuros !== null ? (
           <p className="text-muted-foreground"><span className="text-2xl font-extrabold text-primary">{c.pricePerPersonEuros} €</span> / persona{total !== null && c.people > 1 && <> · total <span className="font-bold text-foreground">{total} €</span></>}</p>

@@ -112,3 +112,30 @@ describe('campos unificados', () => {
     expect(sin.imagePath).toBe(base.imagePath);
   });
 });
+
+import { sheetFaqs as _sf, sheetFromBase as _sfb2, sheetBases as _sb2 } from './activitySheets';
+describe('preguntas frecuentes de la ficha privada', () => {
+  const base = { ..._sfb2(_sb2[0].id), title: 'Barranco de Ejemplo', place: 'Benaoján, Málaga', people: 4, pricePerPersonEuros: 35, experience: false };
+  const faqs = _sf(base);
+  const answerOf = (q: string) => faqs.find((f) => f.question === q)?.answer ?? '';
+
+  it('responde con el lugar, el precio y el grupo escritos en la ficha', () => {
+    expect(faqs.some((f) => f.question === '¿Dónde se realiza Barranco de Ejemplo?')).toBe(true);
+    expect(answerOf('¿Dónde se realiza Barranco de Ejemplo?')).toContain('Benaoján, Málaga');
+    expect(answerOf('¿Cuánto cuesta y cómo se paga?')).toContain('35 € por persona');
+    expect(answerOf('¿Cuántas personas forman el grupo?')).toContain('4 personas');
+    expect(answerOf('¿Necesito experiencia previa?')).toContain('No requiere experiencia previa');
+  });
+
+  it('avisa de lo que la ficha no define en lugar de inventarlo', () => {
+    const sin = _sf({ ...base, place: '', pricePerPersonEuros: null });
+    const q = '¿Dónde se realiza Barranco de Ejemplo?';
+    expect(sin.find((f) => f.question === q)?.answer).toContain('se confirma antes de la salida');
+    expect(sin.find((f) => f.question === '¿Cuánto cuesta y cómo se paga?')?.answer).toContain('El precio se confirma al cerrar la salida');
+  });
+
+  it('una sola persona se escribe en singular', () => {
+    const faq1 = _sf({ ...base, people: 1 });
+    expect(faq1.find((f) => f.question === '¿Cuántas personas forman el grupo?')?.answer).toContain('1 persona');
+  });
+});
