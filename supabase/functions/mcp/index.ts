@@ -4057,68 +4057,236 @@ Descubre nuestros recorridos de barranquismo en M\xE1laga y Andaluc\xEDa. Si no 
   },
   {
     id: "2",
-    title: "\xBFQu\xE9 es una v\xEDa ferrata? Gu\xEDa sencilla para entenderla",
+    title: "5 v\xEDas ferratas espectaculares de Andaluc\xEDa: rutas, grados y consejos",
     slug: "5-vias-ferratas-mas-espectaculares-andalucia",
-    excerpt: "Una v\xEDa ferrata es un itinerario equipado en la roca: te contamos qu\xE9 lleva, c\xF3mo te aseguras al cable de vida, qu\xE9 significa el grado K y qu\xE9 nivel te corresponde.",
+    excerpt: "Una selecci\xF3n de cinco v\xEDas ferratas en Andaluc\xEDa, de Ronda a Berja: qu\xE9 ofrece cada una, c\xF3mo interpretar su dificultad K1\u2013K6 y qu\xE9 criterios de seguridad revisar antes de elegir tu recorrido.",
     content: `
-## Qu\xE9 es una v\xEDa ferrata
+## Qu\xE9 es una v\xEDa ferrata y por qu\xE9 Andaluc\xEDa
 
-Una v\xEDa ferrata es un itinerario que discurre por la roca y que ya est\xE1 equipado para poder progresar sin tener que escalar de cero: la pared lleva fijados pelda\xF1os o grapas met\xE1licas, y a lo largo de todo el recorrido corre un cable de vida de acero. Avanzas trepando y apoy\xE1ndote en esos pelda\xF1os, sujeto al cable con tu arn\xE9s y un disipador de energ\xEDa, de modo que un resbal\xF3n queda retenido por la l\xEDnea de vida.
+Una v\xEDa ferrata es un itinerario vertical u horizontal equipado en la roca con elementos fijos \u2014grapas, pelda\xF1os, clavijas, pasamanos y, en algunos casos, puentes o tirolinas\u2014 y recorrido de principio a fin por un **cable de vida** de acero. Quien la recorre progresa por sus propios medios, trepando sobre esos elementos y conectado al cable mediante un arn\xE9s y un kit de v\xEDa ferrata con disipador de energ\xEDa.
 
-Es un punto intermedio entre un sendero y la escalada: no necesitas saber escalar ni tener experiencia previa, pero s\xED moverte por la vertical con calma y seguir las indicaciones del gu\xEDa.
+Conviene no confundirla con otros itinerarios aparentemente similares:
 
-## Qu\xE9 lleva equipado el recorrido
+- **Sendero equipado**: un camino de monta\xF1a con alg\xFAn tramo de cadena, barandilla o escalones para facilitar el paso. Se recorre andando y no exige ir conectado de forma continua a una l\xEDnea de vida.
+- **V\xEDa cordata**: un itinerario que combina tramos equipados con pasos de escalada f\xE1cil y en el que la progresi\xF3n se apoya en una cuerda manejada por la cordada. Exige conocimientos de aseguramiento.
+- **Itinerario de pasarelas**, como el Caminito del Rey: un recorrido peatonal sobre pasarelas con barandilla, con acceso regulado, que no es una v\xEDa ferrata ni utiliza la escala K.
 
-- **Grapas y pelda\xF1os**: piezas met\xE1licas clavadas en la roca para apoyar pies y manos
-- **Cable de vida**: una l\xEDnea de acero continua que recorre toda la v\xEDa
-- **Mosquetones y disipador**: las piezas con las que te enganchas al cable
-- **Elementos a\xF1adidos**: seg\xFAn la ruta, puentes, pasamanos o tirolinas
+Andaluc\xEDa re\xFAne macizos calizos, tajos urbanos, desfiladeros y sierras cercanas al mar. Esa variedad geol\xF3gica se traduce en ferratas muy distintas entre s\xED: recorridos cortos con mucha exposici\xF3n visual, verticales con desplomes, itinerarios largos con puentes y tirolinas, o conjuntos de tramos que permiten ajustar la dificultad.
 
-## C\xF3mo te aseguras
+Las cinco rutas de este art\xEDculo no son un ranking ni pretenden ser \xABlas cinco mejores\xBB. Son una **selecci\xF3n editorial representativa** elegida por la variedad de paisajes, dificultades y elementos que ofrecen.
 
-Antes de empezar, el gu\xEDa repasa el equipo y su uso: casco, arn\xE9s y disipador de energ\xEDa con dos mosquetones. La regla es sencilla: siempre hay un mosquet\xF3n enganchado al cable, y se cambian de anclaje de uno en uno. As\xED, en ning\xFAn momento quedas suelto.
+## C\xF3mo se grad\xFAa la dificultad: la escala K1\u2013K6
 
-## La escala K: qu\xE9 significa el n\xFAmero
+Muchas fichas de v\xEDas ferratas utilizan la escala de dificultad K1\u2013K6, conocida habitualmente como escala H\xFCsler:
 
-Las v\xEDas ferratas se clasifican con la escala H\xFCsler, de **K1 a K6**. El n\xFAmero indica la dificultad del recorrido. K1 y K2 son itinerarios sencillos, con poca pendiente y exposici\xF3n reducida. K3 y K4 suman tramos verticales seguidos, puentes y m\xE1s altura sobre el vac\xEDo. K5 y K6 requieren experiencia, brazos fuertes y tolerar bien la altura.
+- **K1 \u2013 Muy f\xE1cil**: terreno poco inclinado, con abundantes apoyos.
+- **K2 \u2013 F\xE1cil**: tramos algo m\xE1s inclinados, a\xFAn con buenos apoyos.
+- **K3 \u2013 Moderada**: tramos verticales, pasos que exigen algo m\xE1s de fuerza y exposici\xF3n mayor.
+- **K4 \u2013 Dif\xEDcil**: verticales sostenidas, posibles desplomes cortos y necesidad de buena fuerza de brazos.
+- **K5 \u2013 Muy dif\xEDcil**: tramos verticales o desplomados continuos, con apoyos escasos; exige experiencia y buena forma f\xEDsica.
+- **K6 \u2013 Extremadamente dif\xEDcil**: pasos desplomados muy exigentes, cercanos a la escalada.
 
-En nuestro cat\xE1logo trabajamos rutas de K2 a K5, repartidas por M\xE1laga y el resto de Andaluc\xEDa.
+El grado resume la dificultad t\xE9cnica del paso m\xE1s exigente o del tramo caracter\xEDstico, pero **no resume por s\xED solo** la exposici\xF3n, la longitud, la aproximaci\xF3n, el retorno, el compromiso (si hay escapes o no) ni el estado de la instalaci\xF3n. Una K2 muy expuesta puede impresionar m\xE1s que una K3 protegida, y una ferrata corta puede tener un \xFAnico paso clave muy f\xEDsico.
 
-## Los tres niveles que ofrecemos
+No debe confundirse esta escala con la llamada **cruz H\xFCsler**, una valoraci\xF3n complementaria que algunas fichas incluyen para indicar por separado la fuerza, la experiencia, la resistencia y el factor psicol\xF3gico que exige el recorrido.
 
-| Nivel | Grados | Para qui\xE9n |
-|-------|--------|------------|
-| Iniciaci\xF3n | K1\u2013K2 | Sin experiencia previa; ni\xF1os desde 10 a\xF1os |
-| Intermedio | K3\u2013K4 | Quien ya ha hecho una ferrata de iniciaci\xF3n |
-| Avanzado | K5\u2013K6 | Con experiencia previa y buena condici\xF3n f\xEDsica |
+Adem\xE1s, los grados y tiempos que aparecen en este art\xEDculo son **orientativos**: pueden variar seg\xFAn la fuente, las condiciones, el mantenimiento y el ritmo del grupo. Tambi\xE9n es importante distinguir el **tiempo en la v\xEDa** de la **duraci\xF3n total de la jornada**, que incluye desplazamiento, preparaci\xF3n del material, aproximaci\xF3n, retorno y pausas.
 
-## Qu\xE9 necesitas y qui\xE9n puede hacerla
+## Cinco v\xEDas ferratas destacadas de Andaluc\xEDa
 
-- **Sin experiencia**: el nivel de iniciaci\xF3n est\xE1 pensado para empezar desde cero
-- **Edad m\xEDnima**: desde 10 a\xF1os en iniciaci\xF3n
-- **Condici\xF3n f\xEDsica**: b\xE1sica en iniciaci\xF3n; media o alta seg\xFAn el nivel
-- **Altura**: si te cuesta el vac\xEDo, empieza por una ruta de baja exposici\xF3n
+Las rutas se presentan sin orden de preferencia.
 
-## Diferencia con un sendero de pasarelas
+### V\xEDa Ferrata Tajo de Ronda I (La Sevillana) \u2014 Ronda, M\xE1laga
 
-No todo camino colgado de un risco es una v\xEDa ferrata. Un sendero de pasarelas, como el Caminito del Rey, se recorre andando por un camino con barandilla, sin arn\xE9s ni cable de vida y sin clasificaci\xF3n K. En una ferrata s\xED te aseguras al cable y trepas por la roca.
+- **Grado de referencia**: K2
+- **Recorrido equipado**: unos 75 m
+- **Desnivel**: unos 50 m
+- **Tiempo en la v\xEDa**: unos 20 min, con aproximaci\xF3n y retorno cortos
 
-## Antes de reservar
+Su gran atractivo es la ubicaci\xF3n: discurre por las paredes del Tajo de Ronda, con vistas al Puente Nuevo y al desfiladero del Guadalev\xEDn. Es un recorrido corto y t\xE9cnicamente sencillo, pero la **exposici\xF3n visual es importante**: el vac\xEDo bajo los pies y el entorno monumental pueden impresionar a quien no est\xE1 habituado a la altura. Baja dificultad t\xE9cnica no significa ausencia de exposici\xF3n.
 
-Revisa la clasificaci\xF3n y los requisitos de la ruta que te interesa: no todas son para el mismo nivel. Si es tu primera vez, lo m\xE1s c\xF3modo es contratar la jornada guiada, que incluye el equipo, el repaso previo y el acompa\xF1amiento durante todo el recorrido.
+M\xE1s informaci\xF3n: [ficha t\xE9cnica en Rocjumper](https://www.rocjumper.com/via-ferrata/tajo-ronda-i-sevillana/) y [Diputaci\xF3n de M\xE1laga](https://www.malaga.es/es/laprovincia/naturaleza/lis_cd-5851/via-ferrata-del-tajo-i-en-ronda-serrania-de-ronda).
 
-Puedes ver todas las opciones en [v\xEDas ferratas](/vias-ferratas) o escribirnos por WhatsApp y te decimos qu\xE9 nivel encaja contigo.
+### V\xEDa Ferrata de Benaoj\xE1n \u2014 Benaoj\xE1n, M\xE1laga
+
+- **Grado de referencia**: K3
+- **Recorrido equipado**: unos 90 m
+- **Desnivel**: unos 70 m
+- **Aproximaci\xF3n**: unos 5 min
+- **Tiempo en la v\xEDa**: entre 30 y 60 min seg\xFAn fuente y ritmo
+
+Recorrido corto y muy vertical, con un **desplome exigente al inicio** y un puente tibetano de unos 10 m. Desde lo alto se obtienen panor\xE1micas del pueblo y del Valle del Guadiaro.
+
+Pese a su brevedad, el desplome inicial exige fuerza de brazos y control del cuerpo. No es la mejor primera opci\xF3n para todas las personas sin experiencia: conviene valorar la condici\xF3n f\xEDsica y la soltura en vertical antes de elegirla.
+
+M\xE1s informaci\xF3n: [ficha t\xE9cnica en Rocjumper](https://www.rocjumper.com/via-ferrata/benaojan/) y [Gu\xEDa de turismo activo de la Serran\xEDa de Ronda](https://ventanaverde.org/download/50/economia-rural/1426/guia-de-turismo-activo-en-la-serrania-de-ronda-esp-eng.pdf).
+
+### V\xEDa Ferrata El Chorro \u2014 Desfiladero de los Gaitanes, M\xE1laga
+
+- **Grado de referencia**: K3
+- **Recorrido equipado**: unos 650 m
+- **Desnivel positivo**: unos 250 m
+- **Elementos**: puente tibetano, puente nepal\xED y tirolina de unos 35 m
+
+Es un itinerario largo, con tramos a\xE9reos y muy panor\xE1micos sobre el entorno del Desfiladero de los Gaitanes. La combinaci\xF3n de longitud, desnivel y elementos a\xE9reos hace que la resistencia y la gesti\xF3n de la exposici\xF3n pesen tanto como el grado.
+
+**Importante**: esta v\xEDa ferrata y el Caminito del Rey son actividades e instalaciones distintas. Comparten entorno, pero la entrada al Caminito del Rey no forma parte de esta ferrata ni la ferrata da acceso al Caminito.
+
+M\xE1s informaci\xF3n: [gu\xEDa de la v\xEDa ferrata El Chorro (\xC1rea de Juventud de M\xE1laga)](https://juventud.malaga.eu/opencms/export/sites/juventud/.content/galerias/ocio/20260425_ALUA-GUIA-VF-EL-CHORRO_-ARDALES.pdf) y [ficha t\xE9cnica en Rocjumper](https://www.rocjumper.com/via-ferrata/chorro-caminitio-rey/).
+
+### V\xEDa Ferrata Tajo de las Vi\xF1as \u2014 Lenteg\xED, Granada
+
+- **Grado de referencia**: K3
+- **Recorrido equipado**: unos 320 m
+- **Desnivel**: unos 50 m
+- **Elementos**: dos puentes y un peque\xF1o desplome
+- **Tiempo en la v\xEDa**: unos 40 min, variable seg\xFAn el grupo
+
+Situada en el interior de la Costa Tropical, ofrece un recorrido m\xE1s horizontal que vertical, con puentes y un paso desplomado corto. Su entorno permite plantear una visita a la zona combinada con otras actividades de naturaleza, aunque la compatibilidad de horarios y log\xEDstica en un mismo d\xEDa debe valorarse en cada caso.
+
+M\xE1s informaci\xF3n: [ficha t\xE9cnica en Rocjumper](https://www.rocjumper.com/via-ferrata/tajo-vinas-lentegi/).
+
+### V\xEDa Ferrata de Castala \u2014 Berja, Almer\xEDa
+
+- **Grado de referencia**: varios tramos y variantes, de K2 a K5
+- **Longitud**: unos 320 m
+- **Duraci\xF3n**: entre 2 y 4 h seg\xFAn la combinaci\xF3n de recorridos
+- **Elementos**: puente colgante, tirolinas, escaleras, p\xE9ndulo y posibilidad de r\xE1pel seg\xFAn tramo y configuraci\xF3n
+
+Castala no es un \xFAnico K5 continuo: es un **conjunto de tramos** cuya dificultad depende de los que se elijan. Eso la convierte en una opci\xF3n interesante para quien busca una progresi\xF3n m\xE1s deportiva y variada, pero los sectores superiores exigen experiencia, fuerza y resistencia.
+
+El Ayuntamiento de Berja inform\xF3 en febrero de 2025 de su reapertura tras trabajos de mantenimiento. Ese aviso no garantiza su estado actual: **la configuraci\xF3n del recorrido y su disponibilidad deben confirmarse con el Ayuntamiento antes de desplazarse**.
+
+M\xE1s informaci\xF3n: [configuraci\xF3n de la v\xEDa ferrata (Ayuntamiento de Berja)](https://www.berja.es/Servicios/cmsdipro/index.nsf/noticias.xsp?documentId=B434FC23D3587680C12587D6002C5632&p=Berja) y [aviso de reapertura de febrero de 2025](https://www.berja.es/Servicios/cmsdipro/index.nsf/noticias.xsp?documentId=CDE72D054DAEE256C1258C2A003905CF&p=Berja).
+
+## Tabla comparativa
+
+| Ruta | Provincia / localidad | Grado | Rasgo diferencial | Perfil orientativo |
+|------|-----------------------|-------|-------------------|--------------------|
+| Tajo de Ronda I | M\xE1laga / Ronda | K2 | Corta, entorno monumental y vistas al Puente Nuevo | Primeras experiencias con buena tolerancia a la exposici\xF3n |
+| Benaoj\xE1n | M\xE1laga / Benaoj\xE1n | K3 | Desplome inicial y puente tibetano | Personas con fuerza de brazos o alguna experiencia previa |
+| El Chorro | M\xE1laga / Desfiladero de los Gaitanes | K3 | Larga, a\xE9rea, con puentes y tirolina | Quien busca un recorrido completo y tiene buena resistencia |
+| Tajo de las Vi\xF1as | Granada / Lenteg\xED | K3 | Recorrido horizontal con puentes y desplome corto | Progresi\xF3n desde niveles iniciales con acompa\xF1amiento |
+| Castala | Almer\xEDa / Berja | K2\u2013K5 | Tramos combinables y elementos variados | Desde nivel medio hasta experimentado, seg\xFAn tramos |
+
+## Equipo necesario
+
+- **Casco** homologado para monta\xF1a.
+- **Arn\xE9s** de escalada o de v\xEDa ferrata, bien ajustado.
+- **Kit de v\xEDa ferrata con disipador de energ\xEDa** espec\xEDfico, con dos conectores apropiados para el cable.
+- **Calzado de monta\xF1a** con buen agarre.
+- **Ropa c\xF3moda** que permita moverse con libertad.
+- **Guantes**, opcionales seg\xFAn condiciones y preferencia.
+- **Agua y una mochila peque\xF1a** que no estorbe en los pasos verticales.
+
+Si el recorrido incluye tirolina, la **polea debe ser la indicada y compatible con la instalaci\xF3n**. Nunca debe sustituirse el kit espec\xEDfico por una baga simple, un cabo de anclaje corriente o una cinta: no est\xE1n dise\xF1ados para absorber la energ\xEDa de una ca\xEDda en v\xEDa ferrata.
+
+El kit debe utilizarse dentro del rango de peso y en las condiciones que indique su fabricante. No existen l\xEDmites universales v\xE1lidos para todos los modelos.
+
+## C\xF3mo progresar con seguridad
+
+- Mant\xE9n **siempre al menos un mosquet\xF3n del kit conectado al cable**.
+- Cambia los conectores **de uno en uno** en cada anclaje, conforme a las instrucciones del fabricante.
+- Respeta la **distancia entre participantes**: entre dos anclajes no deber\xEDa haber m\xE1s de una persona, y en tramos verticales conviene evitar situarse justo debajo de otra.
+- Recuerda que el disipador **limita parte de la fuerza de una ca\xEDda, pero no impide golpear** la roca, las grapas, las estructuras u otros usuarios. El objetivo es no caer.
+
+En pasos dif\xEDciles, con determinados participantes o cuando el montaje no es adecuado, puede ser necesaria una **progresi\xF3n con cuerda adicional**. Esa t\xE9cnica requiere un responsable competente y formaci\xF3n espec\xEDfica, igual que las maniobras de rescate o el montaje de tirolinas; no se improvisa.
+
+Tampoco todos los itinerarios con cable tienen el mismo dise\xF1o, mantenimiento ni nivel de protecci\xF3n. Que una instalaci\xF3n est\xE9 equipada o abierta al p\xFAblico no la hace fiable por s\xED sola: comprueba avisos, mantenimiento y restricciones vigentes.
+
+## Qu\xE9 valorar antes de elegir
+
+- **Grado t\xE9cnico** y paso m\xE1s exigente.
+- **Fuerza de brazos** necesaria, especialmente si hay desplomes.
+- **Resistencia** para la longitud y el desnivel.
+- **Exposici\xF3n y v\xE9rtigo**: c\xF3mo te sientes sobre el vac\xEDo.
+- **Longitud, aproximaci\xF3n y retorno**: la jornada completa, no solo la v\xEDa.
+- **Puentes y tirolinas**: si los hay, qu\xE9 material exigen.
+- **Edad, talla y peso** compatibles con el equipo y con la distancia entre apoyos.
+- **Experiencia previa** en v\xEDa ferrata o en terreno vertical.
+- **Meteorolog\xEDa**: calor, lluvia, tormentas o roca mojada cambian por completo la actividad.
+- **Estado de la instalaci\xF3n y regulaci\xF3n**: acceso, permisos, cierres y restricciones deben comprobarse antes de cada salida.
+
+## Errores frecuentes
+
+- Elegir la ruta solo por el grado, sin valorar exposici\xF3n, longitud ni retorno.
+- Usar material no espec\xEDfico de v\xEDa ferrata.
+- Avanzar demasiado juntos.
+- Soltar los dos mosquetones a la vez.
+- Confiar en el disipador como protecci\xF3n total.
+- Improvisar poleas en las tirolinas.
+- No comprobar cierres, avisos ni restricciones.
+- No respetar el entorno: residuos, ruido o salirse de los accesos.
+
+## Preguntas frecuentes
+
+### \xBFQu\xE9 v\xEDa ferrata elegir para empezar?
+
+Lo razonable es empezar por un recorrido de grado bajo (K1\u2013K2), corto, con aproximaci\xF3n sencilla y escapes, y preferiblemente con acompa\xF1amiento profesional. Adem\xE1s del grado, valora la exposici\xF3n: una K2 muy a\xE9rea puede no ser c\xF3moda para todas las personas.
+
+### \xBFQu\xE9 significa K3?
+
+Que el recorrido tiene una dificultad moderada: tramos verticales, pasos que exigen algo m\xE1s de fuerza y una exposici\xF3n mayor que en K1\u2013K2. Su exigencia real depende tambi\xE9n de la longitud, los desplomes y el estado de la instalaci\xF3n.
+
+### \xBFPuedo hacerla si tengo v\xE9rtigo?
+
+Depende del grado de v\xE9rtigo y del recorrido. Una ruta corta, poco expuesta y con buen acompa\xF1amiento ayuda a valorarlo. Si la sensaci\xF3n de vac\xEDo te bloquea, conviene elegir con prudencia y no forzar.
+
+### \xBFQu\xE9 equipo necesito?
+
+Casco, arn\xE9s, kit de v\xEDa ferrata con disipador espec\xEDfico y dos conectores, calzado de monta\xF1a con agarre, ropa c\xF3moda, agua y una mochila peque\xF1a. Si hay tirolina, la polea compatible con la instalaci\xF3n.
+
+### \xBFEl disipador evita cualquier lesi\xF3n?
+
+No. Limita parte de la fuerza de una ca\xEDda, pero no evita golpes contra la roca, las grapas, las estructuras u otras personas antes o despu\xE9s de desplegarse. La prioridad es progresar sin caer.
+
+### \xBFEl Caminito del Rey es una ferrata?
+
+No. Es un itinerario de pasarelas con acceso regulado que se recorre andando. La v\xEDa ferrata El Chorro est\xE1 en el mismo entorno, pero es una instalaci\xF3n distinta.
+
+### \xBFPueden participar menores?
+
+Depende de cada ruta, del equipo, de la normativa y del operador, que pueden establecer requisitos distintos. Adem\xE1s de la edad, importan la talla, el peso compatible con el kit y la capacidad de alcanzar los apoyos.
+
+## Conclusi\xF3n
+
+Andaluc\xEDa ofrece v\xEDas ferratas para perfiles muy distintos: desde recorridos cortos con vistas monumentales hasta conjuntos de tramos que exigen experiencia y forma f\xEDsica. Elegir bien consiste en mirar m\xE1s all\xE1 del grado y valorar la jornada completa, el material y el estado actual de la instalaci\xF3n.
+
+En Naturaleza Sin L\xEDmites te asesoramos para encontrar el recorrido que encaja contigo y te acompa\xF1amos con acompa\xF1amiento profesional y el material adecuado. Consulta nuestras [v\xEDas ferratas](/vias-ferratas), descubre el resto de [actividades](/actividades) o escr\xEDbenos desde [contacto](/contacto).
+
+## Fuentes para ampliar informaci\xF3n
+
+- [Schweizer Alpen-Club: escala de dificultad K1\u2013K6](https://www.sac-cas.ch/fileadmin/Ausbildung_und_Sicherheit/Sicher_unterwegs/Sicher_unterwegs_Klettersteig/2020_Via_Ferrata_Grade_Scale.pdf)
+- [Petzl: aseguramiento con cuerda como complemento del disipador](https://www.petzl.com/INT/en/Sport/Belaying-with-a-rope-as-a-complement-to-energy-absorbing-lanyards?ActivityName=Via-ferrata)
+- [Rocjumper: Tajo de Ronda I (La Sevillana)](https://www.rocjumper.com/via-ferrata/tajo-ronda-i-sevillana/)
+- [Diputaci\xF3n de M\xE1laga: v\xEDa ferrata del Tajo I en Ronda](https://www.malaga.es/es/laprovincia/naturaleza/lis_cd-5851/via-ferrata-del-tajo-i-en-ronda-serrania-de-ronda)
+- [Rocjumper: Benaoj\xE1n](https://www.rocjumper.com/via-ferrata/benaojan/)
+- [Gu\xEDa de turismo activo de la Serran\xEDa de Ronda](https://ventanaverde.org/download/50/economia-rural/1426/guia-de-turismo-activo-en-la-serrania-de-ronda-esp-eng.pdf)
+- [Gu\xEDa de la v\xEDa ferrata El Chorro](https://juventud.malaga.eu/opencms/export/sites/juventud/.content/galerias/ocio/20260425_ALUA-GUIA-VF-EL-CHORRO_-ARDALES.pdf)
+- [Rocjumper: El Chorro](https://www.rocjumper.com/via-ferrata/chorro-caminitio-rey/)
+- [Rocjumper: Tajo de las Vi\xF1as](https://www.rocjumper.com/via-ferrata/tajo-vinas-lentegi/)
+- [Ayuntamiento de Berja: v\xEDa ferrata de Castala](https://www.berja.es/Servicios/cmsdipro/index.nsf/noticias.xsp?documentId=B434FC23D3587680C12587D6002C5632&p=Berja)
+- [Ayuntamiento de Berja: aviso de reapertura (febrero de 2025)](https://www.berja.es/Servicios/cmsdipro/index.nsf/noticias.xsp?documentId=CDE72D054DAEE256C1258C2A003905CF&p=Berja)
     `,
     featuredImage: media.ferrata.src,
-    category: "formacion",
-    tags: ["v\xEDas ferratas", "iniciaci\xF3n", "monta\xF1a", "seguridad"],
+    category: "rutas-recomendadas",
+    tags: [
+      "v\xEDas ferratas",
+      "v\xEDas ferratas Andaluc\xEDa",
+      "v\xEDa ferrata M\xE1laga",
+      "v\xEDa ferrata Granada",
+      "v\xEDa ferrata Almer\xEDa",
+      "dificultad K1 K6",
+      "seguridad",
+      "material v\xEDa ferrata"
+    ],
     author: defaultAuthor,
     publishedAt: "2024-01-08",
-    readTime: 3,
+    readTime: 10,
     views: 2340,
     seo: {
-      metaTitle: "\xBFQu\xE9 es una v\xEDa ferrata? Definici\xF3n sencilla | Naturaleza Sin L\xEDmites",
-      metaDescription: "Qu\xE9 es una v\xEDa ferrata, qu\xE9 equipo lleva el recorrido, c\xF3mo te aseguras al cable de vida, qu\xE9 significa la escala K de dificultad y qu\xE9 nivel te corresponde.",
+      metaTitle: "5 v\xEDas ferratas de Andaluc\xEDa: rutas y dificultad | Naturaleza Sin L\xEDmites",
+      metaDescription: "Compara cinco v\xEDas ferratas de Andaluc\xEDa en M\xE1laga, Granada y Almer\xEDa: grado K, elementos, exposici\xF3n, material y claves de seguridad para elegir tu nivel.",
       ogImage: media.ferrata.src
     }
   },

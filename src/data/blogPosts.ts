@@ -455,70 +455,238 @@ Descubre nuestros recorridos de barranquismo en Málaga y Andalucía. Si no sabe
   },
   {
     id: "2",
-    title: "¿Qué es una vía ferrata? Guía sencilla para entenderla",
+    title: "5 vías ferratas espectaculares de Andalucía: rutas, grados y consejos",
     slug: "5-vias-ferratas-mas-espectaculares-andalucia",
     excerpt:
-      "Una vía ferrata es un itinerario equipado en la roca: te contamos qué lleva, cómo te aseguras al cable de vida, qué significa el grado K y qué nivel te corresponde.",
+      "Una selección de cinco vías ferratas en Andalucía, de Ronda a Berja: qué ofrece cada una, cómo interpretar su dificultad K1–K6 y qué criterios de seguridad revisar antes de elegir tu recorrido.",
     content: `
-## Qué es una vía ferrata
+## Qué es una vía ferrata y por qué Andalucía
 
-Una vía ferrata es un itinerario que discurre por la roca y que ya está equipado para poder progresar sin tener que escalar de cero: la pared lleva fijados peldaños o grapas metálicas, y a lo largo de todo el recorrido corre un cable de vida de acero. Avanzas trepando y apoyándote en esos peldaños, sujeto al cable con tu arnés y un disipador de energía, de modo que un resbalón queda retenido por la línea de vida.
+Una vía ferrata es un itinerario vertical u horizontal equipado en la roca con elementos fijos —grapas, peldaños, clavijas, pasamanos y, en algunos casos, puentes o tirolinas— y recorrido de principio a fin por un **cable de vida** de acero. Quien la recorre progresa por sus propios medios, trepando sobre esos elementos y conectado al cable mediante un arnés y un kit de vía ferrata con disipador de energía.
 
-Es un punto intermedio entre un sendero y la escalada: no necesitas saber escalar ni tener experiencia previa, pero sí moverte por la vertical con calma y seguir las indicaciones del guía.
+Conviene no confundirla con otros itinerarios aparentemente similares:
 
-## Qué lleva equipado el recorrido
+- **Sendero equipado**: un camino de montaña con algún tramo de cadena, barandilla o escalones para facilitar el paso. Se recorre andando y no exige ir conectado de forma continua a una línea de vida.
+- **Vía cordata**: un itinerario que combina tramos equipados con pasos de escalada fácil y en el que la progresión se apoya en una cuerda manejada por la cordada. Exige conocimientos de aseguramiento.
+- **Itinerario de pasarelas**, como el Caminito del Rey: un recorrido peatonal sobre pasarelas con barandilla, con acceso regulado, que no es una vía ferrata ni utiliza la escala K.
 
-- **Grapas y peldaños**: piezas metálicas clavadas en la roca para apoyar pies y manos
-- **Cable de vida**: una línea de acero continua que recorre toda la vía
-- **Mosquetones y disipador**: las piezas con las que te enganchas al cable
-- **Elementos añadidos**: según la ruta, puentes, pasamanos o tirolinas
+Andalucía reúne macizos calizos, tajos urbanos, desfiladeros y sierras cercanas al mar. Esa variedad geológica se traduce en ferratas muy distintas entre sí: recorridos cortos con mucha exposición visual, verticales con desplomes, itinerarios largos con puentes y tirolinas, o conjuntos de tramos que permiten ajustar la dificultad.
 
-## Cómo te aseguras
+Las cinco rutas de este artículo no son un ranking ni pretenden ser «las cinco mejores». Son una **selección editorial representativa** elegida por la variedad de paisajes, dificultades y elementos que ofrecen.
 
-Antes de empezar, el guía repasa el equipo y su uso: casco, arnés y disipador de energía con dos mosquetones. La regla es sencilla: siempre hay un mosquetón enganchado al cable, y se cambian de anclaje de uno en uno. Así, en ningún momento quedas suelto.
+## Cómo se gradúa la dificultad: la escala K1–K6
 
-## La escala K: qué significa el número
+Muchas fichas de vías ferratas utilizan la escala de dificultad K1–K6, conocida habitualmente como escala Hüsler:
 
-Las vías ferratas se clasifican con la escala Hüsler, de **K1 a K6**. El número indica la dificultad del recorrido. K1 y K2 son itinerarios sencillos, con poca pendiente y exposición reducida. K3 y K4 suman tramos verticales seguidos, puentes y más altura sobre el vacío. K5 y K6 requieren experiencia, brazos fuertes y tolerar bien la altura.
+- **K1 – Muy fácil**: terreno poco inclinado, con abundantes apoyos.
+- **K2 – Fácil**: tramos algo más inclinados, aún con buenos apoyos.
+- **K3 – Moderada**: tramos verticales, pasos que exigen algo más de fuerza y exposición mayor.
+- **K4 – Difícil**: verticales sostenidas, posibles desplomes cortos y necesidad de buena fuerza de brazos.
+- **K5 – Muy difícil**: tramos verticales o desplomados continuos, con apoyos escasos; exige experiencia y buena forma física.
+- **K6 – Extremadamente difícil**: pasos desplomados muy exigentes, cercanos a la escalada.
 
-En nuestro catálogo trabajamos rutas de K2 a K5, repartidas por Málaga y el resto de Andalucía.
+El grado resume la dificultad técnica del paso más exigente o del tramo característico, pero **no resume por sí solo** la exposición, la longitud, la aproximación, el retorno, el compromiso (si hay escapes o no) ni el estado de la instalación. Una K2 muy expuesta puede impresionar más que una K3 protegida, y una ferrata corta puede tener un único paso clave muy físico.
 
-## Los tres niveles que ofrecemos
+No debe confundirse esta escala con la llamada **cruz Hüsler**, una valoración complementaria que algunas fichas incluyen para indicar por separado la fuerza, la experiencia, la resistencia y el factor psicológico que exige el recorrido.
 
-| Nivel | Grados | Para quién |
-|-------|--------|------------|
-| Iniciación | K1–K2 | Sin experiencia previa; niños desde 10 años |
-| Intermedio | K3–K4 | Quien ya ha hecho una ferrata de iniciación |
-| Avanzado | K5–K6 | Con experiencia previa y buena condición física |
+Además, los grados y tiempos que aparecen en este artículo son **orientativos**: pueden variar según la fuente, las condiciones, el mantenimiento y el ritmo del grupo. También es importante distinguir el **tiempo en la vía** de la **duración total de la jornada**, que incluye desplazamiento, preparación del material, aproximación, retorno y pausas.
 
-## Qué necesitas y quién puede hacerla
+## Cinco vías ferratas destacadas de Andalucía
 
-- **Sin experiencia**: el nivel de iniciación está pensado para empezar desde cero
-- **Edad mínima**: desde 10 años en iniciación
-- **Condición física**: básica en iniciación; media o alta según el nivel
-- **Altura**: si te cuesta el vacío, empieza por una ruta de baja exposición
+Las rutas se presentan sin orden de preferencia.
 
-## Diferencia con un sendero de pasarelas
+### Vía Ferrata Tajo de Ronda I (La Sevillana) — Ronda, Málaga
 
-No todo camino colgado de un risco es una vía ferrata. Un sendero de pasarelas, como el Caminito del Rey, se recorre andando por un camino con barandilla, sin arnés ni cable de vida y sin clasificación K. En una ferrata sí te aseguras al cable y trepas por la roca.
+- **Grado de referencia**: K2
+- **Recorrido equipado**: unos 75 m
+- **Desnivel**: unos 50 m
+- **Tiempo en la vía**: unos 20 min, con aproximación y retorno cortos
 
-## Antes de reservar
+Su gran atractivo es la ubicación: discurre por las paredes del Tajo de Ronda, con vistas al Puente Nuevo y al desfiladero del Guadalevín. Es un recorrido corto y técnicamente sencillo, pero la **exposición visual es importante**: el vacío bajo los pies y el entorno monumental pueden impresionar a quien no está habituado a la altura. Baja dificultad técnica no significa ausencia de exposición.
 
-Revisa la clasificación y los requisitos de la ruta que te interesa: no todas son para el mismo nivel. Si es tu primera vez, lo más cómodo es contratar la jornada guiada, que incluye el equipo, el repaso previo y el acompañamiento durante todo el recorrido.
+Más información: [ficha técnica en Rocjumper](https://www.rocjumper.com/via-ferrata/tajo-ronda-i-sevillana/) y [Diputación de Málaga](https://www.malaga.es/es/laprovincia/naturaleza/lis_cd-5851/via-ferrata-del-tajo-i-en-ronda-serrania-de-ronda).
 
-Puedes ver todas las opciones en [vías ferratas](/vias-ferratas) o escribirnos por WhatsApp y te decimos qué nivel encaja contigo.
+### Vía Ferrata de Benaoján — Benaoján, Málaga
+
+- **Grado de referencia**: K3
+- **Recorrido equipado**: unos 90 m
+- **Desnivel**: unos 70 m
+- **Aproximación**: unos 5 min
+- **Tiempo en la vía**: entre 30 y 60 min según fuente y ritmo
+
+Recorrido corto y muy vertical, con un **desplome exigente al inicio** y un puente tibetano de unos 10 m. Desde lo alto se obtienen panorámicas del pueblo y del Valle del Guadiaro.
+
+Pese a su brevedad, el desplome inicial exige fuerza de brazos y control del cuerpo. No es la mejor primera opción para todas las personas sin experiencia: conviene valorar la condición física y la soltura en vertical antes de elegirla.
+
+Más información: [ficha técnica en Rocjumper](https://www.rocjumper.com/via-ferrata/benaojan/) y [Guía de turismo activo de la Serranía de Ronda](https://ventanaverde.org/download/50/economia-rural/1426/guia-de-turismo-activo-en-la-serrania-de-ronda-esp-eng.pdf).
+
+### Vía Ferrata El Chorro — Desfiladero de los Gaitanes, Málaga
+
+- **Grado de referencia**: K3
+- **Recorrido equipado**: unos 650 m
+- **Desnivel positivo**: unos 250 m
+- **Elementos**: puente tibetano, puente nepalí y tirolina de unos 35 m
+
+Es un itinerario largo, con tramos aéreos y muy panorámicos sobre el entorno del Desfiladero de los Gaitanes. La combinación de longitud, desnivel y elementos aéreos hace que la resistencia y la gestión de la exposición pesen tanto como el grado.
+
+**Importante**: esta vía ferrata y el Caminito del Rey son actividades e instalaciones distintas. Comparten entorno, pero la entrada al Caminito del Rey no forma parte de esta ferrata ni la ferrata da acceso al Caminito.
+
+Más información: [guía de la vía ferrata El Chorro (Área de Juventud de Málaga)](https://juventud.malaga.eu/opencms/export/sites/juventud/.content/galerias/ocio/20260425_ALUA-GUIA-VF-EL-CHORRO_-ARDALES.pdf) y [ficha técnica en Rocjumper](https://www.rocjumper.com/via-ferrata/chorro-caminitio-rey/).
+
+### Vía Ferrata Tajo de las Viñas — Lentegí, Granada
+
+- **Grado de referencia**: K3
+- **Recorrido equipado**: unos 320 m
+- **Desnivel**: unos 50 m
+- **Elementos**: dos puentes y un pequeño desplome
+- **Tiempo en la vía**: unos 40 min, variable según el grupo
+
+Situada en el interior de la Costa Tropical, ofrece un recorrido más horizontal que vertical, con puentes y un paso desplomado corto. Su entorno permite plantear una visita a la zona combinada con otras actividades de naturaleza, aunque la compatibilidad de horarios y logística en un mismo día debe valorarse en cada caso.
+
+Más información: [ficha técnica en Rocjumper](https://www.rocjumper.com/via-ferrata/tajo-vinas-lentegi/).
+
+### Vía Ferrata de Castala — Berja, Almería
+
+- **Grado de referencia**: varios tramos y variantes, de K2 a K5
+- **Longitud**: unos 320 m
+- **Duración**: entre 2 y 4 h según la combinación de recorridos
+- **Elementos**: puente colgante, tirolinas, escaleras, péndulo y posibilidad de rápel según tramo y configuración
+
+Castala no es un único K5 continuo: es un **conjunto de tramos** cuya dificultad depende de los que se elijan. Eso la convierte en una opción interesante para quien busca una progresión más deportiva y variada, pero los sectores superiores exigen experiencia, fuerza y resistencia.
+
+El Ayuntamiento de Berja informó en febrero de 2025 de su reapertura tras trabajos de mantenimiento. Ese aviso no garantiza su estado actual: **la configuración del recorrido y su disponibilidad deben confirmarse con el Ayuntamiento antes de desplazarse**.
+
+Más información: [configuración de la vía ferrata (Ayuntamiento de Berja)](https://www.berja.es/Servicios/cmsdipro/index.nsf/noticias.xsp?documentId=B434FC23D3587680C12587D6002C5632&p=Berja) y [aviso de reapertura de febrero de 2025](https://www.berja.es/Servicios/cmsdipro/index.nsf/noticias.xsp?documentId=CDE72D054DAEE256C1258C2A003905CF&p=Berja).
+
+## Tabla comparativa
+
+| Ruta | Provincia / localidad | Grado | Rasgo diferencial | Perfil orientativo |
+|------|-----------------------|-------|-------------------|--------------------|
+| Tajo de Ronda I | Málaga / Ronda | K2 | Corta, entorno monumental y vistas al Puente Nuevo | Primeras experiencias con buena tolerancia a la exposición |
+| Benaoján | Málaga / Benaoján | K3 | Desplome inicial y puente tibetano | Personas con fuerza de brazos o alguna experiencia previa |
+| El Chorro | Málaga / Desfiladero de los Gaitanes | K3 | Larga, aérea, con puentes y tirolina | Quien busca un recorrido completo y tiene buena resistencia |
+| Tajo de las Viñas | Granada / Lentegí | K3 | Recorrido horizontal con puentes y desplome corto | Progresión desde niveles iniciales con acompañamiento |
+| Castala | Almería / Berja | K2–K5 | Tramos combinables y elementos variados | Desde nivel medio hasta experimentado, según tramos |
+
+## Equipo necesario
+
+- **Casco** homologado para montaña.
+- **Arnés** de escalada o de vía ferrata, bien ajustado.
+- **Kit de vía ferrata con disipador de energía** específico, con dos conectores apropiados para el cable.
+- **Calzado de montaña** con buen agarre.
+- **Ropa cómoda** que permita moverse con libertad.
+- **Guantes**, opcionales según condiciones y preferencia.
+- **Agua y una mochila pequeña** que no estorbe en los pasos verticales.
+
+Si el recorrido incluye tirolina, la **polea debe ser la indicada y compatible con la instalación**. Nunca debe sustituirse el kit específico por una baga simple, un cabo de anclaje corriente o una cinta: no están diseñados para absorber la energía de una caída en vía ferrata.
+
+El kit debe utilizarse dentro del rango de peso y en las condiciones que indique su fabricante. No existen límites universales válidos para todos los modelos.
+
+## Cómo progresar con seguridad
+
+- Mantén **siempre al menos un mosquetón del kit conectado al cable**.
+- Cambia los conectores **de uno en uno** en cada anclaje, conforme a las instrucciones del fabricante.
+- Respeta la **distancia entre participantes**: entre dos anclajes no debería haber más de una persona, y en tramos verticales conviene evitar situarse justo debajo de otra.
+- Recuerda que el disipador **limita parte de la fuerza de una caída, pero no impide golpear** la roca, las grapas, las estructuras u otros usuarios. El objetivo es no caer.
+
+En pasos difíciles, con determinados participantes o cuando el montaje no es adecuado, puede ser necesaria una **progresión con cuerda adicional**. Esa técnica requiere un responsable competente y formación específica, igual que las maniobras de rescate o el montaje de tirolinas; no se improvisa.
+
+Tampoco todos los itinerarios con cable tienen el mismo diseño, mantenimiento ni nivel de protección. Que una instalación esté equipada o abierta al público no la hace fiable por sí sola: comprueba avisos, mantenimiento y restricciones vigentes.
+
+## Qué valorar antes de elegir
+
+- **Grado técnico** y paso más exigente.
+- **Fuerza de brazos** necesaria, especialmente si hay desplomes.
+- **Resistencia** para la longitud y el desnivel.
+- **Exposición y vértigo**: cómo te sientes sobre el vacío.
+- **Longitud, aproximación y retorno**: la jornada completa, no solo la vía.
+- **Puentes y tirolinas**: si los hay, qué material exigen.
+- **Edad, talla y peso** compatibles con el equipo y con la distancia entre apoyos.
+- **Experiencia previa** en vía ferrata o en terreno vertical.
+- **Meteorología**: calor, lluvia, tormentas o roca mojada cambian por completo la actividad.
+- **Estado de la instalación y regulación**: acceso, permisos, cierres y restricciones deben comprobarse antes de cada salida.
+
+## Errores frecuentes
+
+- Elegir la ruta solo por el grado, sin valorar exposición, longitud ni retorno.
+- Usar material no específico de vía ferrata.
+- Avanzar demasiado juntos.
+- Soltar los dos mosquetones a la vez.
+- Confiar en el disipador como protección total.
+- Improvisar poleas en las tirolinas.
+- No comprobar cierres, avisos ni restricciones.
+- No respetar el entorno: residuos, ruido o salirse de los accesos.
+
+## Preguntas frecuentes
+
+### ¿Qué vía ferrata elegir para empezar?
+
+Lo razonable es empezar por un recorrido de grado bajo (K1–K2), corto, con aproximación sencilla y escapes, y preferiblemente con acompañamiento profesional. Además del grado, valora la exposición: una K2 muy aérea puede no ser cómoda para todas las personas.
+
+### ¿Qué significa K3?
+
+Que el recorrido tiene una dificultad moderada: tramos verticales, pasos que exigen algo más de fuerza y una exposición mayor que en K1–K2. Su exigencia real depende también de la longitud, los desplomes y el estado de la instalación.
+
+### ¿Puedo hacerla si tengo vértigo?
+
+Depende del grado de vértigo y del recorrido. Una ruta corta, poco expuesta y con buen acompañamiento ayuda a valorarlo. Si la sensación de vacío te bloquea, conviene elegir con prudencia y no forzar.
+
+### ¿Qué equipo necesito?
+
+Casco, arnés, kit de vía ferrata con disipador específico y dos conectores, calzado de montaña con agarre, ropa cómoda, agua y una mochila pequeña. Si hay tirolina, la polea compatible con la instalación.
+
+### ¿El disipador evita cualquier lesión?
+
+No. Limita parte de la fuerza de una caída, pero no evita golpes contra la roca, las grapas, las estructuras u otras personas antes o después de desplegarse. La prioridad es progresar sin caer.
+
+### ¿El Caminito del Rey es una ferrata?
+
+No. Es un itinerario de pasarelas con acceso regulado que se recorre andando. La vía ferrata El Chorro está en el mismo entorno, pero es una instalación distinta.
+
+### ¿Pueden participar menores?
+
+Depende de cada ruta, del equipo, de la normativa y del operador, que pueden establecer requisitos distintos. Además de la edad, importan la talla, el peso compatible con el kit y la capacidad de alcanzar los apoyos.
+
+## Conclusión
+
+Andalucía ofrece vías ferratas para perfiles muy distintos: desde recorridos cortos con vistas monumentales hasta conjuntos de tramos que exigen experiencia y forma física. Elegir bien consiste en mirar más allá del grado y valorar la jornada completa, el material y el estado actual de la instalación.
+
+En Naturaleza Sin Límites te asesoramos para encontrar el recorrido que encaja contigo y te acompañamos con acompañamiento profesional y el material adecuado. Consulta nuestras [vías ferratas](/vias-ferratas), descubre el resto de [actividades](/actividades) o escríbenos desde [contacto](/contacto).
+
+## Fuentes para ampliar información
+
+- [Schweizer Alpen-Club: escala de dificultad K1–K6](https://www.sac-cas.ch/fileadmin/Ausbildung_und_Sicherheit/Sicher_unterwegs/Sicher_unterwegs_Klettersteig/2020_Via_Ferrata_Grade_Scale.pdf)
+- [Petzl: aseguramiento con cuerda como complemento del disipador](https://www.petzl.com/INT/en/Sport/Belaying-with-a-rope-as-a-complement-to-energy-absorbing-lanyards?ActivityName=Via-ferrata)
+- [Rocjumper: Tajo de Ronda I (La Sevillana)](https://www.rocjumper.com/via-ferrata/tajo-ronda-i-sevillana/)
+- [Diputación de Málaga: vía ferrata del Tajo I en Ronda](https://www.malaga.es/es/laprovincia/naturaleza/lis_cd-5851/via-ferrata-del-tajo-i-en-ronda-serrania-de-ronda)
+- [Rocjumper: Benaoján](https://www.rocjumper.com/via-ferrata/benaojan/)
+- [Guía de turismo activo de la Serranía de Ronda](https://ventanaverde.org/download/50/economia-rural/1426/guia-de-turismo-activo-en-la-serrania-de-ronda-esp-eng.pdf)
+- [Guía de la vía ferrata El Chorro](https://juventud.malaga.eu/opencms/export/sites/juventud/.content/galerias/ocio/20260425_ALUA-GUIA-VF-EL-CHORRO_-ARDALES.pdf)
+- [Rocjumper: El Chorro](https://www.rocjumper.com/via-ferrata/chorro-caminitio-rey/)
+- [Rocjumper: Tajo de las Viñas](https://www.rocjumper.com/via-ferrata/tajo-vinas-lentegi/)
+- [Ayuntamiento de Berja: vía ferrata de Castala](https://www.berja.es/Servicios/cmsdipro/index.nsf/noticias.xsp?documentId=B434FC23D3587680C12587D6002C5632&p=Berja)
+- [Ayuntamiento de Berja: aviso de reapertura (febrero de 2025)](https://www.berja.es/Servicios/cmsdipro/index.nsf/noticias.xsp?documentId=CDE72D054DAEE256C1258C2A003905CF&p=Berja)
     `,
     featuredImage: media.ferrata.src,
-    category: "formacion",
-    tags: ["vías ferratas", "iniciación", "montaña", "seguridad"],
+    category: "rutas-recomendadas",
+    tags: [
+      "vías ferratas",
+      "vías ferratas Andalucía",
+      "vía ferrata Málaga",
+      "vía ferrata Granada",
+      "vía ferrata Almería",
+      "dificultad K1 K6",
+      "seguridad",
+      "material vía ferrata",
+    ],
     author: defaultAuthor,
     publishedAt: "2024-01-08",
-    readTime: 3,
+    readTime: 10,
     views: 2340,
     seo: {
-      metaTitle: "¿Qué es una vía ferrata? Definición sencilla | Naturaleza Sin Límites",
+      metaTitle: "5 vías ferratas de Andalucía: rutas y dificultad | Naturaleza Sin Límites",
       metaDescription:
-        "Qué es una vía ferrata, qué equipo lleva el recorrido, cómo te aseguras al cable de vida, qué significa la escala K de dificultad y qué nivel te corresponde.",
+        "Compara cinco vías ferratas de Andalucía en Málaga, Granada y Almería: grado K, elementos, exposición, material y claves de seguridad para elegir tu nivel.",
       ogImage: media.ferrata.src,
     },
   },
