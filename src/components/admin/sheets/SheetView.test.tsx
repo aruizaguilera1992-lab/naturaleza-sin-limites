@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
 import type { SheetContent } from "@/lib/activitySheets";
 import { SheetView } from "./SheetView";
@@ -51,4 +51,17 @@ it("coloca las normas a la derecha de los requisitos y los pasos debajo, al anch
   expect(
     ficha.compareDocumentPosition(pasos!) & Node.DOCUMENT_POSITION_FOLLOWING,
   ).toBeTruthy();
+});
+
+it("muestra las preguntas frecuentes plegadas y las abre al pulsar la cabecera", () => {
+  render(<SheetView c={sheet} />);
+
+  const cabecera = screen.getByRole("button", { name: /Preguntas frecuentes/ });
+  expect(cabecera).toHaveAttribute("aria-expanded", "false");
+  // Plegada: no se ve ninguna pregunta.
+  expect(screen.queryByRole("button", { name: /¿/ })).toBeNull();
+
+  fireEvent.click(cabecera);
+  expect(cabecera).toHaveAttribute("aria-expanded", "true");
+  expect(screen.getAllByRole("button", { name: /¿/ }).length).toBeGreaterThan(0);
 });

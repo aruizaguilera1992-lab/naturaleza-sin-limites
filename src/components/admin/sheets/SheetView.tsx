@@ -1,5 +1,7 @@
 import type React from 'react';
-import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack } from 'lucide-react';
+import { useState } from 'react';
+import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LevelVisualStrip } from '@/components/shared/LevelVisualStrip';
@@ -25,26 +27,47 @@ function List({ title, icon: Icon, items }: { title: string; icon: typeof Check;
   );
 }
 
-/** Preguntas frecuentes de la ficha, en desplegable: una pregunta abierta cada vez. */
+/**
+ * Preguntas frecuentes de la ficha: la sección llega plegada y se abre al
+ * pulsar su cabecera; dentro, una pregunta abierta cada vez.
+ */
 function SheetFaqs({ items }: { items: { question: string; answer: string }[] }) {
+  const [open, setOpen] = useState(false);
   if (!items.length) return null;
   return (
-    <section className="mt-6 rounded-xl border border-border bg-card p-5">
-      <h2 className="font-heading font-bold text-foreground">Preguntas frecuentes</h2>
-      <p className="mt-1 text-sm text-muted-foreground">Toca cada pregunta para ver la respuesta.</p>
-      <Accordion type="single" collapsible className="mt-2">
-        {items.map((f, i) => (
-          <AccordionItem key={`${f.question}-${i}`} value={`f-${i}`} className="border-border">
-            <AccordionTrigger className="py-3 text-left font-heading text-sm font-semibold text-foreground hover:text-primary hover:no-underline">
-              <span className="flex items-start gap-2 text-left">
-                <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-extrabold text-primary">?</span>
-                {f.question}
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="pl-6 text-sm leading-relaxed text-muted-foreground">{f.answer}</AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+    <section className="mt-6 rounded-xl border border-border bg-card">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="sheet-faqs"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between gap-3 p-5 text-left transition-all duration-300 active:scale-[0.99]"
+      >
+        <span className="min-w-0">
+          <span className="block font-heading font-bold text-foreground">Preguntas frecuentes</span>
+          <span className="mt-1 block text-sm text-muted-foreground">
+            {open ? 'Toca cada pregunta para ver la respuesta.' : `Toca para ver las ${items.length} preguntas.`}
+          </span>
+        </span>
+        <ChevronDown className={cn('h-5 w-5 shrink-0 text-primary transition-transform duration-300', open && 'rotate-180')} />
+      </button>
+      {open && (
+        <div id="sheet-faqs" className="px-5 pb-5">
+          <Accordion type="single" collapsible className="mt-1">
+            {items.map((f, i) => (
+              <AccordionItem key={`${f.question}-${i}`} value={`f-${i}`} className="border-border">
+                <AccordionTrigger className="py-3 text-left font-heading text-sm font-semibold text-foreground hover:text-primary hover:no-underline">
+                  <span className="flex items-start gap-2 text-left">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-extrabold text-primary">?</span>
+                    {f.question}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="pl-6 text-sm leading-relaxed text-muted-foreground">{f.answer}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      )}
     </section>
   );
 }
