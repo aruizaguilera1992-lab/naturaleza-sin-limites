@@ -196,3 +196,29 @@ it("muestra el punto de encuentro con los enlaces de mapas y las flechas lateral
   fireEvent.click(within(sheet).getByRole("button", { name: "Diapositiva siguiente" }));
   expect(within(sheet).getByRole("button", { name: "Diapositiva anterior" })).toBeInTheDocument();
 });
+
+it("muestra las dudas plegadas y amplía cada pregunta al pulsarla", async () => {
+  renderAgenda();
+  fireEvent.click(
+    screen.getByRole("button", {
+      name: "Me apunto a Espeleología de iniciación: Travesía Cueva de la Higuera",
+    }),
+  );
+  const sheet = await screen.findByRole("dialog");
+
+  // Se salta a la diapositiva de dudas, que llega sin respuestas a la vista.
+  fireEvent.click(within(sheet).getByRole("button", { name: "Ver diapositiva Dudas frecuentes" }));
+  expect(within(sheet).getByText("Dudas frecuentes")).toBeInTheDocument();
+  expect(
+    within(sheet).queryByText(/Antes de cerrar la plaza revisamos la experiencia/),
+  ).toBeNull();
+
+  // Al pulsar la pregunta se amplía su respuesta.
+  const pregunta = within(sheet).getByRole("button", { name: /¿Necesito experiencia previa\?/ });
+  expect(pregunta).toHaveAttribute("aria-expanded", "false");
+  fireEvent.click(pregunta);
+  expect(pregunta).toHaveAttribute("aria-expanded", "true");
+  expect(
+    within(sheet).getByText(/Antes de cerrar la plaza revisamos la experiencia/),
+  ).toBeInTheDocument();
+});

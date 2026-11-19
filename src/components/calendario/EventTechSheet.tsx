@@ -44,6 +44,7 @@ import { useCatalogForOuting } from "@/hooks/useCatalogForOuting";
 import { mergeOutingSheet } from "@/lib/catalogSync";
 import { safeVideoEmbed } from "@/lib/safeVideo";
 import { OutingInstructions } from "@/components/shared/OutingInstructions";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
@@ -55,8 +56,6 @@ const CATEGORY_ICON: Record<string, LucideIcon> = {
 
 const FITNESS: Record<string, number> = { básica: 1, basica: 1, media: 2, alta: 3 };
 const LEVEL_NAME = ["Iniciación", "Intermedio", "Avanzado"];
-/** Cuántas preguntas caben por diapositiva en cada formato. */
-const FAQ_PER_SLIDE = { wide: 6, compact: 4 };
 
 /** Etiqueta del párrafo de apertura de la descripción. */
 const DESC_LABELS = ["La salida"];
@@ -77,18 +76,6 @@ function useIsWide() {
 
 /** Una diapositiva de la ficha: cabecera propia y uno o varios bloques. */
 type Slide = { key: string; eyebrow: string; title: string; blocks: string[] };
-
-const chunkEven = <T,>(items: T[], maxPer: number): T[][] => {
-  const groups = Math.max(1, Math.ceil(items.length / maxPer));
-  const out: T[][] = [];
-  let at = 0;
-  for (let g = 0; g < groups; g++) {
-    const size = Math.ceil((items.length - at) / (groups - g));
-    out.push(items.slice(at, at + size));
-    at += size;
-  }
-  return out;
-};
 
 function Meter({ value, max = 3 }: { value: number; max?: number }) {
   return (
@@ -201,33 +188,29 @@ function Note({ icon: Icon, title, text }: { icon: LucideIcon; title: string; te
   );
 }
 
-/** Preguntas y respuestas de la actividad. */
-function Faqs({
-  items,
-  columns,
-}: {
-  items: { question: string; answer: string }[];
-  columns?: boolean;
-}) {
+/**
+ * Preguntas y respuestas de la actividad: el apartado llega plegado y cada
+ * pregunta se amplía solo al pulsarla (una abierta cada vez).
+ */
+function Faqs({ items }: { items: { question: string; answer: string }[] }) {
   return (
-    <div
-      className={cn(
-        "space-y-1.5",
-        columns && "grid grid-cols-1 gap-1.5 space-y-0 sm:grid-cols-2",
-      )}
-    >
+    <Accordion type="single" collapsible className="mt-1">
       {items.map((f, i) => (
-        <div key={`${f.question}-${i}`} className="rounded-xl border border-border/60 bg-card/60 p-2">
-          <p className="flex items-start gap-1.5 font-heading text-[11px] font-bold leading-snug text-foreground">
-            <span className="mt-0.5 flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[8px] font-extrabold text-primary">
-              ?
+        <AccordionItem key={`${f.question}-${i}`} value={`f-${i}`} className="border-border/60">
+          <AccordionTrigger className="py-2 text-left font-heading text-[11px] font-bold leading-snug text-foreground hover:text-primary hover:no-underline sm:text-[13px]">
+            <span className="flex items-start gap-1.5 text-left">
+              <span className="mt-0.5 flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[8px] font-extrabold text-primary">
+                ?
+              </span>
+              {f.question}
             </span>
-            {f.question}
-          </p>
-          <p className="mt-0.5 pl-4 text-[11px] leading-snug text-muted-foreground">{f.answer}</p>
-        </div>
+          </AccordionTrigger>
+          <AccordionContent className="pl-5 text-[11px] leading-snug text-muted-foreground sm:text-[13px]">
+            {f.answer}
+          </AccordionContent>
+        </AccordionItem>
       ))}
-    </div>
+    </Accordion>
   );
 }
 
@@ -526,7 +509,6 @@ export function EventTechSheet({
   ];
 
   /* ---- Diapositivas: se arman según la pantalla y los datos que existen ---- */
-  const faqGroups = chunkEven(sheet.faqs, wide ? FAQ_PER_SLIDE.wide : FAQ_PER_SLIDE.compact);
   const videoEmbed = safeVideoEmbed(sheet.videoUrl);
 
   const slides: Slide[] = [
@@ -575,15 +557,16 @@ export function EventTechSheet({
       title: "Requisitos, seguros y normas",
       blocks: wide ? ["securityGrid", "rules"] : ["securityPanels", "policies", "rules"],
     },
-    ...faqGroups.map((_, i) => ({
-      key: `dudas-${i}`,
-      eyebrow: "Preguntas",
-      title:
-        faqGroups.length > 1
-          ? `Dudas frecuentes ${i + 1} de ${faqGroups.length}`
-          : "Dudas frecuentes",
-      blocks: [`dudas-${i}`],
-    })),
+    ...(sheet.faqs.length > 0
+      ? [
+          {
+            key: "dudas",
+            eyebrow: "Preguntas",
+            title: "Dudas frecuentes",
+            blocks: ["dudas"],
+          },
+        ]
+      : []),
   ];
 
   const last = slides.length - 1;
@@ -734,9 +717,7 @@ export function EventTechSheet({
 
     rules: <OutingInstructions rules={event.rules} steps={event.steps} />,
 
-    ...Object.fromEntries(
-      faqGroups.map((group, i) => [`dudas-${i}`, <Faqs items={group} columns={wide} />]),
-    ),
+    dudas: <Faqs items={sheet.faqs} />,
   };
 
   return (
