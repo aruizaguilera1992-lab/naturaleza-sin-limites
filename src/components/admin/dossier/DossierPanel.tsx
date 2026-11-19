@@ -78,7 +78,7 @@ export function DossierPanel({ booking, defaultRules }: Props) {
         </div>
         <label className="block text-sm font-medium text-foreground">Qué necesitas (uno por línea)<Textarea className="mt-1" rows={4} value={needs} onChange={(e) => setNeeds(e.target.value)} /></label>
         <label className="block text-sm font-medium text-foreground">Normas de participación (una por línea)<Textarea className="mt-1" rows={4} value={rules} onChange={(e) => setRules(e.target.value)} /></label>
-        <label className="flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={c.canyoning} onChange={(e) => setC({ ...c, canyoning: e.target.checked })} />Pedir medidas de neopreno y escarpines (SELAND)</label>
+        <label className="flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={c.canyoning} onChange={(e) => setC({ ...c, canyoning: e.target.checked })} />Pedir medidas de neopreno y escarpines</label>
         <div className="flex flex-wrap gap-2">
           <Button type="button" variant="outline" onClick={save}><Save className="mr-1 h-4 w-4" />Guardar</Button>
           <Button type="button" onClick={sendEmail}><Mail className="mr-1 h-4 w-4" />Enviar por email</Button>
