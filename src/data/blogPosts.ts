@@ -600,7 +600,7 @@ Existen muchos modelos y cada uno responde a un uso previsto. Estos son los gran
 - **Figura de ocho**: diseño clásico y sencillo. Es muy conocido, aunque tiende a rizar la cuerda y su regulación de fricción es limitada. Hoy convive con modelos más específicos.
 - **Dispositivos tubulares**: muy habituales en escalada, ligeros y versátiles para asegurar y rapelar con cuerda doble o simple según el modelo. Su fricción depende mucho del diámetro de la cuerda.
 - **Descensores de barranquismo**: diseñados para trabajar con cuerda mojada, permiten ajustar la fricción durante el descenso y facilitan maniobras propias de la actividad. Están pensados para entornos con agua.
-- **Dispositivos de espeleología**: suelen ser de poleas o barras, adaptados a verticales largas, cuerda semiestática y a una progresión por cuerda que combina descenso y ascenso. Algunos incorporan funciones de bloqueo según el modelo.
+- **Dispositivos de espeleología**: existen dispositivos específicos de espeleología —por ejemplo, modelos de poleas o barras, entre otros— diseñados para progresión por cuerda y verticales largas, con cuerda semiestática y una combinación de descenso y ascenso. Algunos incorporan funciones de bloqueo según el modelo.
 
 Que un aparato funcione en una disciplina no significa que sea adecuado en otra. **Los descensores no son intercambiables**, ni todos se montan igual: cada modelo tiene su forma de instalación, sus cuerdas compatibles y sus limitaciones, que se aprenden con formación y leyendo su manual.
 
@@ -622,7 +622,7 @@ En una **placa o pared inclinada**, los pies mantienen mucho contacto con la roc
 
 El mismo descensor puede comportarse de forma muy distinta según las condiciones. Algunos factores que influyen en la fricción y el control:
 
-- **Diámetro y estado de la cuerda**: una cuerda más fina o más gastada puede generar menos fricción.
+- **Diámetro, construcción y estado de la cuerda**: el diámetro, la construcción y el estado de la cuerda modifican la fricción. El efecto concreto depende de la combinación de cuerda y descensor, por lo que no debe suponerse una variación universal.
 - **Tipo de dispositivo**: cada modelo tiene su propio comportamiento.
 - **Peso de la persona** y del material que lleva.
 - **Humedad, barro y agua**: modifican el rozamiento y aumentan el desgaste.
@@ -716,7 +716,7 @@ Formación específica impartida por profesionales cualificados en la disciplina
 
 Las técnicas de rápel abren la puerta a cuevas, barrancos y paredes que de otra forma serían inaccesibles. Dominarlas no consiste en memorizar una secuencia, sino en entender el sistema, conocer el material y desarrollar criterio con práctica supervisada.
 
-En Naturaleza Sin Límites te acompañamos en tus primeros descensos con guías titulados y material adecuado a cada disciplina. Descubre nuestras salidas de [barranquismo](/barranquismo) y [espeleología](/espeleologia), o [contacta con nosotros](/contacto) para resolver tus dudas y preparar tu próxima aventura vertical.
+En Naturaleza Sin Límites te acompañamos en tus primeros descensos con acompañamiento profesional y material adecuado a cada disciplina. Descubre nuestras salidas de [barranquismo](/barranquismo) y [espeleología](/espeleologia), o [contacta con nosotros](/contacto) para resolver tus dudas y preparar tu próxima aventura vertical.
 `,
     featuredImage: media.ropeDetail.src,
     category: "tecnicas-seguridad",
