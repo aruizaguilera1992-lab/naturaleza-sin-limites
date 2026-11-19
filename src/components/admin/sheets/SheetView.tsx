@@ -31,11 +31,11 @@ function List({ title, icon: Icon, items }: { title: string; icon: typeof Check;
  * Preguntas frecuentes de la ficha: la sección llega plegada y se abre al
  * pulsar su cabecera; dentro, una pregunta abierta cada vez.
  */
-function SheetFaqs({ items }: { items: { question: string; answer: string }[] }) {
+export function SheetFaqs({ items, className = 'mt-6' }: { items: { question: string; answer: string }[]; className?: string }) {
   const [open, setOpen] = useState(false);
   if (!items.length) return null;
   return (
-    <section className="mt-6 rounded-xl border border-border bg-card">
+    <section className={cn('rounded-xl border border-border bg-card', className)}>
       <button
         type="button"
         aria-expanded={open}

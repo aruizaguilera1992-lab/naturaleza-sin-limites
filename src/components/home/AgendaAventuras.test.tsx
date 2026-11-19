@@ -136,8 +136,7 @@ it("opens the full technical sheet and offers booking from every slide", async (
     "Cancelación",
     "Norma de prueba",
     "Paso de prueba",
-    "Dudas frecuentes",
-    "¿Necesito experiencia previa?",
+    "Preguntas frecuentes",
   ]) {
     expect(all).toContain(dato);
   }
@@ -208,7 +207,10 @@ it("muestra las dudas plegadas y amplía cada pregunta al pulsarla", async () =>
 
   // Se salta a la diapositiva de dudas, que llega sin respuestas a la vista.
   fireEvent.click(within(sheet).getByRole("button", { name: "Ver diapositiva Dudas frecuentes" }));
-  expect(within(sheet).getByText("Dudas frecuentes")).toBeInTheDocument();
+  // Como en la ficha privada, el apartado llega plegado: se abre su cabecera.
+  const cabecera = within(sheet).getByRole("button", { name: /Preguntas frecuentes/ });
+  expect(cabecera).toHaveAttribute("aria-expanded", "false");
+  fireEvent.click(cabecera);
   expect(
     within(sheet).queryByText(/Antes de cerrar la plaza revisamos la experiencia/),
   ).toBeNull();

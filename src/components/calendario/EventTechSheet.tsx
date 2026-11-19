@@ -43,8 +43,8 @@ import { useCatalogForOuting } from "@/hooks/useCatalogForOuting";
 import { useOutingPhoto } from "@/hooks/useOutingPhoto";
 import { mergeOutingSheet } from "@/lib/catalogSync";
 import { safeVideoEmbed } from "@/lib/safeVideo";
-import { OutingInstructions } from "@/components/shared/OutingInstructions";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { OutingRules, OutingSteps } from "@/components/shared/OutingInstructions";
+import { SheetFaqs } from "@/components/admin/sheets/SheetView";
 import { cn } from "@/lib/utils";
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
@@ -107,7 +107,7 @@ function Stat({
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-col items-center gap-0.5 rounded-2xl border border-border/60 bg-secondary/40 px-2 py-0.5 text-center sm:py-1",
+        "flex min-w-0 flex-col items-center gap-0.5 rounded-xl border border-border bg-card px-2 py-1.5 text-center sm:py-2",
         className,
       )}
     >
@@ -148,23 +148,23 @@ function Checklist({
 }) {
   if (!items || items.length === 0) return null;
   return (
-    <section className="min-w-0 rounded-2xl border border-border/60 bg-card/60 p-2 sm:p-2.5">
-      <h4 className="mb-1 flex items-center gap-2 font-heading text-[12px] font-bold text-foreground">
-        <Icon className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+    <section className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
+      <h4 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-foreground sm:text-base">
+        <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
         {title}
       </h4>
       <ol className="space-y-0.5">
         {items.map((item, i) => (
           <li
             key={`${item}-${i}`}
-            className="flex items-start gap-1.5 text-[11px] leading-snug text-muted-foreground"
+            className="flex items-start gap-2 text-[13px] leading-snug text-muted-foreground sm:text-sm"
           >
             {numbered ? (
-              <span className="mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[9px] font-extrabold text-primary">
+              <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-extrabold text-primary">
                 {i + 1}
               </span>
             ) : (
-              <Check className="mt-0.5 h-3 w-3 shrink-0 text-primary" aria-hidden="true" />
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
             )}
             <span className="break-words">{item}</span>
           </li>
@@ -178,39 +178,13 @@ function Checklist({
 function Note({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text: string }) {
   if (!text) return null;
   return (
-    <section className="min-w-0 rounded-2xl border border-border/60 bg-secondary/30 p-2 sm:p-2.5">
-      <h4 className="mb-0.5 flex items-center gap-2 font-heading text-[12px] font-bold text-foreground">
-        <Icon className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+    <section className="min-w-0 rounded-xl border border-border bg-card p-4 sm:p-5">
+      <h4 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-foreground sm:text-base">
+        <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
         {title}
       </h4>
-      <p className="text-[11px] leading-snug text-muted-foreground">{text}</p>
+      <p className="text-[13px] leading-snug text-muted-foreground sm:text-sm">{text}</p>
     </section>
-  );
-}
-
-/**
- * Preguntas y respuestas de la actividad: el apartado llega plegado y cada
- * pregunta se amplía solo al pulsarla (una abierta cada vez).
- */
-function Faqs({ items }: { items: { question: string; answer: string }[] }) {
-  return (
-    <Accordion type="single" collapsible className="mt-1">
-      {items.map((f, i) => (
-        <AccordionItem key={`${f.question}-${i}`} value={`f-${i}`} className="border-border/60">
-          <AccordionTrigger className="py-2 text-left font-heading text-[11px] font-bold leading-snug text-foreground hover:text-primary hover:no-underline sm:text-[13px]">
-            <span className="flex items-start gap-1.5 text-left">
-              <span className="mt-0.5 flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[8px] font-extrabold text-primary">
-                ?
-              </span>
-              {f.question}
-            </span>
-          </AccordionTrigger>
-          <AccordionContent className="pl-5 text-[11px] leading-snug text-muted-foreground sm:text-[13px]">
-            {f.answer}
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
   );
 }
 
@@ -707,9 +681,14 @@ export function EventTechSheet({
       </div>
     ),
 
-    rules: <OutingInstructions rules={event.rules} steps={event.steps} />,
+    rules: (
+      <div className="space-y-3">
+        <OutingRules rules={event.rules} className="rounded-xl border border-border bg-card p-4 sm:p-5" />
+        <OutingSteps steps={event.steps} className="rounded-xl border border-border bg-card p-4 sm:p-5" />
+      </div>
+    ),
 
-    dudas: <Faqs items={sheet.faqs} />,
+    dudas: <SheetFaqs items={sheet.faqs} className="" />,
   };
 
   return (
