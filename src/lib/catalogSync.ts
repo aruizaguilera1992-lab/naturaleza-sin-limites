@@ -27,6 +27,8 @@ export interface CatalogOverride {
   videoUrl?: string;
   /** Qué llevar, escrito en el catálogo o en la salida. */
   bring?: string[];
+  /** Lo más destacado escrito en el catálogo o en la salida. */
+  highlights?: string[];
   /** Ruta de la foto propia en el bucket catalog-photos (solo la sirve la función outing-photo). */
   imagePath?: string;
 }
@@ -159,7 +161,7 @@ export function mergeOutingSheet(
     technicalElements: list(p?.technicalElements),
     itinerary: list(p?.itinerary),
     insurancePermits: list(p?.insurancePermits),
-    highlights: list(p?.highlights).map((h) => withDuration(h, catalogDuration)),
+    highlights: list(o.highlights, p?.highlights).map((h) => withDuration(h, catalogDuration)),
     season: text(p?.season),
     group: text(p?.group),
     guideRatio: text(p?.guideRatio),

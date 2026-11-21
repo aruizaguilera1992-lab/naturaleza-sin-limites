@@ -23,6 +23,8 @@ export interface ActivityFields {
   includes: string[];
   bring: string[];
   requirements: string[];
+  /** Lo más destacado (ficha técnica); vacío = se usan los de la ficha original. */
+  highlights: string[];
   rules: string;
   steps: string;
   /** Ruta de la foto propia en el bucket catalog-photos; '' = sin foto propia. */
@@ -36,7 +38,7 @@ export function fieldsFromCatalog(item: CatalogItem): ActivityFields {
     name: item.name, grade: item.grade, level: item.level, levelLabel: item.levelLabel, duration: item.duration,
     pricePerPersonEuros: item.pricePerPersonEuros, minAge: item.minAge, fitness: item.fitness, experience: item.experience,
     summary: item.summary, videoUrl: item.videoUrl ?? '', description: item.description,
-    includes: [...item.includes], bring: [...(item.bring ?? [])], requirements: [...item.requirements],
+    includes: [...item.includes], bring: [...(item.bring ?? [])], requirements: [...item.requirements], highlights: [...(item.highlights ?? [])],
     rules: item.rules ?? '', steps: item.steps ?? '', imagePath: item.photos[0] ?? '',
   };
 }
@@ -45,7 +47,7 @@ export function fieldsFromCatalog(item: CatalogItem): ActivityFields {
 export function snapshotFromFields(key: string, f: ActivityFields, place: { zone?: string; province?: string } = {}): CatalogOverride {
   return { key, name: f.name, zone: place.zone, province: place.province, levelLabel: f.levelLabel, level: f.level, grade: f.grade,
     duration: f.duration, pricePerPersonEuros: f.pricePerPersonEuros, summary: f.summary, description: f.description,
-    includes: f.includes, bring: f.bring, requirements: f.requirements, minAge: f.minAge, fitness: f.fitness,
+    includes: f.includes, bring: f.bring, requirements: f.requirements, highlights: f.highlights, minAge: f.minAge, fitness: f.fitness,
     experience: f.experience, videoUrl: f.videoUrl, imagePath: f.imagePath || undefined };
 }
 
@@ -78,7 +80,7 @@ export function fieldsFromSnapshot(snap: CatalogOverride | null | undefined, fal
     ...fallback,
     ...Object.fromEntries(Object.entries({ name: o.name, grade: o.grade, level: o.level, levelLabel: o.levelLabel, duration: o.duration,
       pricePerPersonEuros: o.pricePerPersonEuros, minAge: o.minAge, fitness: o.fitness, experience: o.experience, summary: o.summary,
-      videoUrl: o.videoUrl, description: o.description, includes: o.includes, bring: o.bring, requirements: o.requirements,
+      videoUrl: o.videoUrl, description: o.description, includes: o.includes, bring: o.bring, requirements: o.requirements, highlights: o.highlights,
       imagePath: o.imagePath })
       .filter(([, v]) => v !== undefined)),
     rules: rules ?? fallback.rules, steps: steps ?? fallback.steps,

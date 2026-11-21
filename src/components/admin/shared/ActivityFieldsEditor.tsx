@@ -35,7 +35,7 @@ export function ActivityFieldsEditor({ id, value, onChange, showImage = true, ch
   /** El Catálogo ya tiene su gestor de varias fotos; allí se oculta este campo. */
   showImage?: boolean; children?: React.ReactNode;
 }) {
-  const [raw, setRaw] = useState(() => ({ includes: value.includes.join('\n'), bring: value.bring.join('\n'), requirements: value.requirements.join('\n') }));
+  const [raw, setRaw] = useState(() => ({ includes: value.includes.join('\n'), bring: value.bring.join('\n'), requirements: value.requirements.join('\n'), highlights: value.highlights.join('\n') }));
   const [imgError, setImgError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -53,7 +53,7 @@ export function ActivityFieldsEditor({ id, value, onChange, showImage = true, ch
     if (error) { setImgError(`No se pudo subir: ${error.message}`); return; }
     set('imagePath', path);
   };
-  const list = (k: 'includes' | 'bring' | 'requirements', label: string) => (
+  const list = (k: 'includes' | 'bring' | 'requirements' | 'highlights', label: string) => (
     <div><Label htmlFor={`${id}-${k}`}>{label}</Label>
       <Textarea id={`${id}-${k}`} rows={5} value={raw[k]} onChange={(e) => { setRaw((r) => ({ ...r, [k]: e.target.value })); set(k, lines(e.target.value)); }} /></div>
   );
@@ -97,6 +97,7 @@ export function ActivityFieldsEditor({ id, value, onChange, showImage = true, ch
         {list('bring', 'Qué llevar (una por línea)')}
         {list('requirements', 'Requisitos / características')}
       </div>
+      {list('highlights', 'Lo esencial: zona, nivel técnico, duración, temporada, rápeles… (una por línea; vacío = los de la ficha original)')}
       <div className="grid gap-3 sm:grid-cols-2">
         <div><Label htmlFor={`${id}-rules`}>Normas (una por línea)</Label><Textarea id={`${id}-rules`} rows={4} value={value.rules} onChange={(e) => set('rules', e.target.value)} /></div>
         <div><Label htmlFor={`${id}-steps`}>Pasos a seguir (uno por línea)</Label><Textarea id={`${id}-steps`} rows={4} value={value.steps} onChange={(e) => set('steps', e.target.value)} /></div>

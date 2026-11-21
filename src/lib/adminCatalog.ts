@@ -30,6 +30,7 @@ export interface CatalogItemData {
   videoUrl: string;
   /** Campos compartidos con las salidas (opcionales en fichas antiguas). */
   bring?: string[];
+  highlights?: string[];
   rules?: string;
   steps?: string;
 }

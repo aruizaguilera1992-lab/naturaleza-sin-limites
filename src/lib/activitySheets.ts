@@ -28,6 +28,7 @@ export interface SheetContent {
   includes: string[];
   bring: string[];
   requirements: string[];
+  highlights?: string[];
   notes: string;
   rules?: string;
   steps?: string;
@@ -124,7 +125,7 @@ export function sheetFromCatalog(item: CatalogItem): SheetContent {
     place: [item.zone, item.province].filter(Boolean).join(', '), date: '', duration: item.duration, meetingPoint: '', people: 2,
     pricePerPersonEuros: item.pricePerPersonEuros, summary: item.summary, grade: item.grade, description: item.description,
     videoUrl: item.videoUrl ?? '', includes: [...item.includes], bring: [...(item.bring ?? [])], rules: item.rules ?? '', steps: item.steps ?? '',
-    requirements: [...item.requirements], notes: '', minAge: item.minAge, fitness: item.fitness, experience: item.experience,
+    requirements: [...item.requirements], highlights: [...(item.highlights ?? [])], notes: '', minAge: item.minAge, fitness: item.fitness, experience: item.experience,
     photo: item.photos[0] ? `${STORAGE_PHOTO}${item.photos[0]}` : null, customerName: '' };
 }
 
@@ -151,7 +152,7 @@ export function fieldsFromSheet(c: SheetContent): ActivityFields {
   return { name: c.title, grade: c.grade ?? '', level: c.level, levelLabel: c.levelLabel, duration: c.duration,
     pricePerPersonEuros: c.pricePerPersonEuros, minAge: c.minAge, fitness: c.fitness, experience: c.experience,
     summary: c.summary, videoUrl: c.videoUrl ?? '', description: c.description ?? '', includes: c.includes,
-    bring: c.bring, requirements: c.requirements, rules: c.rules ?? '', steps: c.steps ?? '',
+    bring: c.bring, requirements: c.requirements, highlights: c.highlights ?? [], rules: c.rules ?? '', steps: c.steps ?? '',
     imagePath: c.photo?.startsWith(STORAGE_PHOTO) ? c.photo.slice(STORAGE_PHOTO.length) : '' };
 }
 export function applyFieldsToSheet(c: SheetContent, f: ActivityFields): SheetContent {
@@ -174,7 +175,7 @@ export function sheetFaqs(c: SheetContent): { question: string; answer: string }
     level: c.level, grade: c.grade ?? '', minAge: c.minAge ? `+${c.minAge}` : '', fitness: c.fitness,
     experience: c.experience ? 'Requiere experiencia previa' : 'No requiere experiencia previa',
     includes: c.includes, requirements: c.requirements, bring: c.bring,
-    technicalElements: [], itinerary: [], insurancePermits: [], highlights: [], season: '',
+    technicalElements: [], itinerary: [], insurancePermits: [], highlights: c.highlights ?? [], season: '',
     group: `${c.people} ${c.people === 1 ? 'persona' : 'personas'}`, guideRatio: '',
     approachReturn: '', weatherPolicy: '', cancellationPolicy: '', videoUrl: c.videoUrl ?? '',
     imagePath: '', faqs: [], fromCatalog: false,

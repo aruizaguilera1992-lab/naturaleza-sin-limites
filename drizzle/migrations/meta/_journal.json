@@ -295,6 +295,13 @@
       "when": 1795108966922,
       "tag": "0041_crm_flow_automation",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1795253656541,
+      "tag": "0042_migration",
+      "breakpoints": true
     }
   ]
 }

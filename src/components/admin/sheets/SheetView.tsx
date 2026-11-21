@@ -136,6 +136,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
         <List title="Incluye" icon={Check} items={c.includes} />
         <List title="Qué llevar" icon={Backpack} items={c.bring} />
         <List title="Requisitos" icon={Check} items={c.requirements} />
+        {(c.highlights?.length ?? 0) > 0 && <List title="Lo esencial" icon={Check} items={c.highlights!} />}
         <OutingRules rules={c.rules} className="rounded-xl border border-border bg-card p-5" />
       </div>
       <OutingSteps steps={c.steps} className="mt-4 rounded-xl border border-border bg-card p-5" />

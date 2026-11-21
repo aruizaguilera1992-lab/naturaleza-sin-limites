@@ -101,7 +101,7 @@ function ItemEditor({ item, onDone, onConfigure }: { item: CatalogItem; onDone: 
           </li>
         </ul>
       </section>
-      <ActivityFieldsEditor id="ct" showImage={false} value={{ ...d, videoUrl: d.videoUrl ?? '', bring: d.bring ?? [], rules: d.rules ?? '', steps: d.steps ?? '', imagePath: photos[0] ?? '' }} onChange={(f) => { const { imagePath, ...rest } = f; setD((p) => ({ ...p, ...rest })); if (imagePath !== (photos[0] ?? '')) setPhotos((x) => imagePath ? [imagePath, ...x.filter((y) => y !== imagePath)] : x.slice(1)); }}>
+      <ActivityFieldsEditor id="ct" showImage={false} value={{ ...d, videoUrl: d.videoUrl ?? '', bring: d.bring ?? [], highlights: d.highlights ?? [], rules: d.rules ?? '', steps: d.steps ?? '', imagePath: photos[0] ?? '' }} onChange={(f) => { const { imagePath, ...rest } = f; setD((p) => ({ ...p, ...rest })); if (imagePath !== (photos[0] ?? '')) setPhotos((x) => imagePath ? [imagePath, ...x.filter((y) => y !== imagePath)] : x.slice(1)); }}>
         <div><Label htmlFor="ct-prov">Provincia</Label><Input id="ct-prov" value={d.province} onChange={(e) => set('province', e.target.value)} /></div>
         <div><Label htmlFor="ct-zone">Zona</Label><Input id="ct-zone" value={d.zone} onChange={(e) => set('zone', e.target.value)} /></div>
       </ActivityFieldsEditor>
