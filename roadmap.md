@@ -1,5 +1,9 @@
 # Roadmap
 
+## Vértigo Sapiens: quitar imágenes de fondo (23/11/2026)
+- [x] Quitar las fotografías de fondo de la cabecera, las tarjetas de «Lo que la montaña te pide», «Tu entrenamiento empieza…» y «El programa» en /vertigo-sapiens, manteniendo el retrato de Antonio en «Tu entrenador».
+- [x] Comprobar en pantalla (escritorio y móvil) que ninguna sección vuelve a mostrar fotografía de fondo y que el texto se sigue leyendo.
+
 ## Ficha del calendario: ajustes pedidos (17/11/2026)
 - [x] Eliminar la característica «Sin material propio» de la ficha de espeleología.
 - [x] Actualizar la duración mostrada en la ficha a la información del catálogo del panel.

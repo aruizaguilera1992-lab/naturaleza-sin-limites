@@ -1,9 +1,6 @@
-import { useEffect, useState } from 'react';
 import { ArrowDown, ArrowRight, Award, Check, ClipboardCheck, Dumbbell, LineChart, Mountain, ShieldCheck, SlidersHorizontal, Timer, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import athleteImage from '@/assets/atleta-reto-naturaleza.jpg';
-import athleteImageAlt from '@/assets/atleta-reto-naturaleza-mujer.jpg';
 import { OnlineRequestForm } from './OnlineRequestForm';
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
@@ -14,42 +11,12 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 
 const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-const heroSlides = [athleteImage, athleteImageAlt];
-const HERO_ROTATE_MS = 10000;
-
-function useHeroSlide(count: number) {
-  const [active, setActive] = useState(0);
-  useEffect(() => {
-    if (count < 2) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const id = window.setInterval(() => setActive((current) => (current + 1) % count), HERO_ROTATE_MS);
-    return () => window.clearInterval(id);
-  }, [count]);
-  return active;
-}
-
 export function OnlineHero() {
-  const active = useHeroSlide(heroSlides.length);
   return (
     <section className="relative flex min-h-[100svh] items-end overflow-hidden border-b border-border pt-36 lg:min-h-[860px]">
-      <div role="img" aria-label="Deportista progresando por terreno de montaña al atardecer" className="absolute inset-0">
-        {heroSlides.map((src, index) => (
-          <img
-            key={src}
-            src={src}
-            alt=""
-            aria-hidden
-            width={1408}
-            height={1008}
-            loading="eager"
-            decoding="async"
-            fetchPriority={index === 0 ? 'high' : 'low'}
-            className={`absolute inset-0 h-full w-full object-cover object-[62%_center] transition-opacity duration-[1800ms] ease-in-out motion-safe:animate-[nsl-hero-drift_18s_ease-in-out_infinite_alternate] ${index === active ? 'opacity-100' : 'opacity-0'}`}
-          />
-        ))}
-      </div>
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/10" />
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-background via-card to-background" />
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       <div className="container relative mx-auto px-4 pb-12 sm:pb-20 lg:pb-24">
         <div className="max-w-4xl">
           <Eyebrow>Vértigo Sapiens · online</Eyebrow>
@@ -75,10 +42,10 @@ export function OnlineHero() {
 }
 
 const benefits = [
-  { icon: Timer, title: 'Resistencia', text: 'Llega entero al final de la jornada: aproximaciones largas, desniveles y horas de actividad sin perder energía.', img: '/images/functional-training-documentary.jpg' },
-  { icon: Dumbbell, title: 'Fuerza funcional', text: 'Tracción, piernas, core y agarre para trepar, cargar la mochila y moverte con seguridad en cuerda.', img: '/images/rope-detail-documentary.jpg' },
-  { icon: Mountain, title: 'Movilidad y estabilidad', text: 'Articulaciones preparadas para pasos amplios, apoyos inestables y posturas exigentes en roca o cueva.', img: '/images/vias-ferratas.webp' },
-  { icon: LineChart, title: 'Progreso con criterio', text: 'Cada sesión queda registrada para ver tu evolución y ajustar el plan semana a semana.', img: '/images/caminito-del-rey-malaga.jpg' },
+  { icon: Timer, title: 'Resistencia', text: 'Llega entero al final de la jornada: aproximaciones largas, desniveles y horas de actividad sin perder energía.' },
+  { icon: Dumbbell, title: 'Fuerza funcional', text: 'Tracción, piernas, core y agarre para trepar, cargar la mochila y moverte con seguridad en cuerda.' },
+  { icon: Mountain, title: 'Movilidad y estabilidad', text: 'Articulaciones preparadas para pasos amplios, apoyos inestables y posturas exigentes en roca o cueva.' },
+  { icon: LineChart, title: 'Progreso con criterio', text: 'Cada sesión queda registrada para ver tu evolución y ajustar el plan semana a semana.' },
 ];
 
 const capacityPaths = [
@@ -111,14 +78,8 @@ export function OnlineBenefits() {
         <Eyebrow>Qué entrenamos</Eyebrow>
         <h2 className="max-w-2xl text-3xl font-extrabold leading-tight sm:text-5xl">Lo que la montaña te pide.</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {benefits.map(({ icon: Icon, title, text, img }, index) => (
+          {benefits.map(({ icon: Icon, title, text }, index) => (
             <article key={title} className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card p-6">
-              {img && (
-                <>
-                  <img src={img} alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-40 transition-transform duration-700 motion-safe:group-hover:scale-105" />
-                  <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-                </>
-              )}
               <div className="relative">
                 <CapacityMotif index={index} />
                 <Icon className="h-9 w-9 text-primary" aria-hidden />
@@ -143,8 +104,6 @@ const pillars = [
 export function OnlineValue() {
   return (
     <section className="relative overflow-hidden border-y border-border bg-card py-20 sm:py-28">
-      <img src="/images/rope-detail-documentary.jpg" alt="" aria-hidden loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-15" />
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-card via-card/80 to-card" />
       <div className="container relative mx-auto px-4">
         <h2 className="mx-auto max-w-4xl text-center text-3xl font-extrabold leading-tight sm:text-6xl">
           Tu entrenamiento empieza en <span className="text-primary">lo que te exige la montaña.</span>
@@ -181,8 +140,6 @@ const details = [
 export function OnlineProgram() {
   return (
     <section id="programa" className="relative isolate scroll-mt-28 overflow-hidden py-20 sm:py-28">
-      <img src="/images/escalada.webp" alt="" aria-hidden loading="lazy" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-20" />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-background/85 to-background" />
       <div className="container mx-auto max-w-5xl px-4 text-center">
         <Eyebrow>El programa</Eyebrow>
         <h2 className="text-3xl font-extrabold sm:text-5xl">Vértigo Sapiens <span className="text-primary">Online</span></h2>
