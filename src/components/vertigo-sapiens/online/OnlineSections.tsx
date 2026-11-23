@@ -1,6 +1,9 @@
 import { ArrowDown, ArrowRight, Award, Check, ClipboardCheck, Dumbbell, LineChart, Mountain, ShieldCheck, SlidersHorizontal, Timer, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import escaladaHombre from '@/assets/escalada-techo-hombre.jpg';
+import escaladaMujer from '@/assets/escalada-techo-mujer.jpg';
 import { OnlineRequestForm } from './OnlineRequestForm';
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
@@ -11,12 +14,35 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 
 const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+const heroSlides = [escaladaHombre, escaladaMujer];
+const HERO_ROTATE_MS = 4000;
+
+function useHeroSlide(count: number) {
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    if (count < 2) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = window.setInterval(() => setActive((current) => (current + 1) % count), HERO_ROTATE_MS);
+    return () => window.clearInterval(id);
+  }, [count]);
+  return active;
+}
+
 export function OnlineHero() {
+  const active = useHeroSlide(heroSlides.length);
   return (
     <section className="relative flex min-h-[100svh] items-end overflow-hidden border-b border-border pt-36 lg:min-h-[860px]">
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-background via-card to-background" />
-      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+      <div role="img" aria-label="Escaladores colgados en un techo de roca: un modelo y una modelo alternando cada pocos segundos" className="absolute inset-0 overflow-hidden bg-gradient-to-br from-background via-card to-background">
+        <div className="absolute inset-x-0 top-[104px] h-[230px] w-full sm:inset-0 sm:h-full">
+          {heroSlides.map((src, index) => (
+            <img key={src} src={src} alt="" aria-hidden width={1536} height={717} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" fetchPriority={index === 0 ? 'high' : 'low'} className={`absolute inset-0 h-full w-full object-cover object-right transition-opacity duration-[1000ms] ease-in-out ${index === active ? 'opacity-100' : 'opacity-0'}`} />
+          ))}
+          <div aria-hidden className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b from-transparent to-background sm:hidden" />
+        </div>
+      </div>
+      <div aria-hidden className="absolute inset-0 bg-background/25" />
+      <div aria-hidden className="hidden absolute inset-0 bg-gradient-to-r from-background/80 via-background/35 via-50% to-transparent to-85% sm:block" />
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
       <div className="container relative mx-auto px-4 pb-12 sm:pb-20 lg:pb-24">
         <div className="max-w-4xl">
           <Eyebrow>Vértigo Sapiens · online</Eyebrow>

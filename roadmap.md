@@ -1,5 +1,10 @@
 # Roadmap
 
+## Vértigo Sapiens: fondo con dos modelos alternando (23/11/2026)
+- [ ] Generar dos fondos panorámicos en el estilo de la foto de referencia subida por el usuario: uno con modelo hombre y otro con modelo mujer.
+- [ ] Alternar entre ambos cada 4 segundos con fundido en la cabecera de /vertigo-sapiens.
+- [ ] Comprobar en escritorio y móvil que ambos modelos se ven completos, el texto sigue legible y no hay solapamientos.
+
 ## Vértigo Sapiens: quitar imágenes de fondo (23/11/2026)
 - [x] Quitar las fotografías de fondo de la cabecera, las tarjetas de «Lo que la montaña te pide», «Tu entrenamiento empieza…» y «El programa» en /vertigo-sapiens, manteniendo el retrato de Antonio en «Tu entrenador».
 - [x] Comprobar en pantalla (escritorio y móvil) que ninguna sección vuelve a mostrar fotografía de fondo y que el texto se sigue leyendo.
