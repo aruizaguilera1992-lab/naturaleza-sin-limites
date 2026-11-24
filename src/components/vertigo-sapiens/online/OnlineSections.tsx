@@ -15,7 +15,7 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 const heroSlides = [escaladaHombre, escaladaMujer];
-const HERO_ROTATE_MS = 4000;
+const HERO_ROTATE_MS = 10000;
 
 function useHeroSlide(count: number) {
   const [active, setActive] = useState(0);
@@ -166,6 +166,9 @@ const details = [
 export function OnlineProgram() {
   return (
     <section id="programa" className="relative isolate scroll-mt-28 overflow-hidden py-20 sm:py-28">
+      <img src={escaladaHombre} alt="" aria-hidden loading="lazy" decoding="async" className="absolute inset-0 -z-10 h-full w-full object-cover object-center" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-background/85" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-transparent to-background" />
       <div className="container mx-auto max-w-5xl px-4 text-center">
         <Eyebrow>El programa</Eyebrow>
         <h2 className="text-3xl font-extrabold sm:text-5xl">Vértigo Sapiens <span className="text-primary">Online</span></h2>
