@@ -680,7 +680,7 @@ En Naturaleza Sin Límites te asesoramos para encontrar el recorrido que encaja 
       "material vía ferrata",
     ],
     author: defaultAuthor,
-    publishedAt: "2024-01-08",
+    publishedAt: "2026-11-25",
     readTime: 6,
     views: 2340,
     seo: {

@@ -4281,7 +4281,7 @@ En Naturaleza Sin L\xEDmites te asesoramos para encontrar el recorrido que encaj
       "material v\xEDa ferrata"
     ],
     author: defaultAuthor,
-    publishedAt: "2024-01-08",
+    publishedAt: "2026-11-25",
     readTime: 6,
     views: 2340,
     seo: {
