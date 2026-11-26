@@ -56,7 +56,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
   const save = async (activate = false, ensureContact = activate): Promise<SheetRow | null> => {
     if (errors.length) { toast({ title: 'Revisa la ficha', description: errors.join(' · '), variant: 'destructive' }); return null; }
     setBusy(true);
-    const payload = { content: c as unknown as Json, contact_id: contactId || null, expires_at: expires ? `${expires}T23:59:59+01:00` : null, ...(activate && row?.status !== 'desactivada' ? { status: 'enviada' } : {}) };
+    const payload = { content: { ...c, gallery: ownPhotos.length ? ownPhotos : c.gallery } as unknown as Json, contact_id: contactId || null, expires_at: expires ? `${expires}T23:59:59+01:00` : null, ...(activate && row?.status !== 'desactivada' ? { status: 'enviada' } : {}) };
     const { data: u } = await supabase.auth.getUser();
     const q = row
       ? supabase.from('activity_sheets').update(payload).eq('id', row.id).select().single()
@@ -234,7 +234,7 @@ function Editor({ row, contacts, catalog, onSaved, onDeleted, onOpenBooking, pre
       </div>
       <div className="rounded-xl border border-border bg-background p-4 sm:p-6">
         <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Vista previa del cliente</p>
-        <SheetView c={c} />
+        <SheetView c={{ ...c, gallery: ownPhotos.length ? ownPhotos : c.gallery }} />
       </div>
     </div>
   );

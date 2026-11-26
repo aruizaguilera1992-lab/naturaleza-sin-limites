@@ -38,6 +38,8 @@ export interface SheetContent {
   fitness: string;
   experience: boolean;
   photo: string | null; // clave de levelOfferPhotos o «storage:<ruta>» para fotos propias del catálogo
+  /** Rutas extra (bucket catalog-photos) de las fotos guardadas en el catálogo, mostradas como galería. */
+  gallery?: string[];
   customerName: string;
   /** Solicitud web de origen: al aceptar, la ficha reutiliza esa reserva en lugar de crear otra. */
   sourceBookingId?: string;
@@ -126,7 +128,7 @@ export function sheetFromCatalog(item: CatalogItem): SheetContent {
     pricePerPersonEuros: item.pricePerPersonEuros, summary: item.summary, grade: item.grade, description: item.description,
     videoUrl: item.videoUrl ?? '', includes: [...item.includes], bring: [...(item.bring ?? [])], rules: item.rules ?? '', steps: item.steps ?? '',
     requirements: [...item.requirements], highlights: [...(item.highlights ?? [])], notes: '', minAge: item.minAge, fitness: item.fitness, experience: item.experience,
-    photo: item.photos[0] ? `${STORAGE_PHOTO}${item.photos[0]}` : null, customerName: '' };
+    photo: item.photos[0] ? `${STORAGE_PHOTO}${item.photos[0]}` : null, gallery: [...item.photos], customerName: '' };
 }
 
 export interface SheetRequestPrefill { bookingId: string; activity: string; date: string | null; people: string | null; level: string | null; name: string | null; email: string | null; phone: string | null; message: string | null }

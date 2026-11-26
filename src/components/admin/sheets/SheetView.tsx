@@ -1,6 +1,6 @@
 import type React from 'react';
-import { useState } from 'react';
-import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack, ChevronDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -73,12 +73,58 @@ export function SheetFaqs({ items, className = 'mt-6' }: { items: { question: st
   );
 }
 
+function SheetGallery({ photos, credit }: { photos: { src: string; alt: string }[]; credit?: React.ReactNode }) {
+  const [i, setI] = useState(0);
+  useEffect(() => { if (i >= photos.length) setI(0); }, [i, photos.length]);
+  const cur = photos[Math.min(i, photos.length - 1)];
+  const many = photos.length > 1;
+  const go = (d: number) => setI((v) => (v + d + photos.length) % photos.length);
+  const Arrows = () => many ? (<>
+    <button type="button" onClick={() => go(-1)} aria-label="Foto anterior" className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground transition-all duration-300 active:scale-95"><ChevronLeft className="h-5 w-5" /></button>
+    <button type="button" onClick={() => go(1)} aria-label="Foto siguiente" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground transition-all duration-300 active:scale-95"><ChevronRight className="h-5 w-5" /></button>
+  </>) : null;
+  return (
+    <figure className="mt-6 overflow-hidden rounded-xl border border-border">
+      <Dialog>
+        <div className="relative">
+          <DialogTrigger asChild>
+            <button type="button" className="block w-full cursor-zoom-in" aria-label={`Ver la foto «${cur.alt}» a tamaño completo`}>
+              <img src={cur.src} alt={cur.alt} className="h-56 sm:h-72 w-full object-cover transition-transform duration-300 hover:scale-[1.02]" />
+            </button>
+          </DialogTrigger>
+          <Arrows />
+          {many && <span className="absolute bottom-2 right-2 rounded-full bg-background/80 px-2 py-0.5 text-xs text-foreground">{i + 1} / {photos.length}</span>}
+        </div>
+        <DialogContent className="max-w-5xl border-none bg-transparent p-0 shadow-none">
+          <DialogTitle className="sr-only">{cur.alt}</DialogTitle>
+          <div className="relative"><img src={cur.src} alt={cur.alt} className="max-h-[85vh] w-full rounded-xl object-contain" /><Arrows /></div>
+        </DialogContent>
+      </Dialog>
+      {many && (
+        <div className="flex gap-2 overflow-x-auto p-2">
+          {photos.map((p, k) => (
+            <button key={p.src} type="button" onClick={() => setI(k)} aria-label={`Ver foto ${k + 1}`} aria-current={k === i} className={cn('h-14 w-20 shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300 active:scale-95', k === i ? 'border-primary' : 'border-transparent opacity-70')}>
+              <img src={p.src} alt="" className="h-full w-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+      {credit && <figcaption className="px-3 py-2 text-xs text-muted-foreground">{credit}</figcaption>}
+    </figure>
+  );
+}
+
 /** Ficha de actividad privada; se usa en la vista previa del panel y en el enlace del cliente. */
-export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetContent; reference?: string; accept?: React.ReactNode; /** Customer view: URL signed server-side (the bucket is admin-only). */ ownPhotoUrl?: string | null }) {
+export function SheetView({ c, reference, accept, ownPhotoUrls }: { c: SheetContent; reference?: string; accept?: React.ReactNode; /** Customer view: URLs signed server-side by path (the bucket is admin-only). */ ownPhotoUrls?: Record<string, string> }) {
   const ownPath = c.photo?.startsWith(STORAGE_PHOTO) ? c.photo.slice(STORAGE_PHOTO.length) : null;
-  const adminUrls = usePhotoUrls(ownPath && ownPhotoUrl === undefined ? [ownPath] : []);
-  const ownUrls: Record<string, string> = ownPath && ownPhotoUrl ? { [ownPath]: ownPhotoUrl } : adminUrls;
-  const photo = ownPath ? (ownUrls[ownPath] ? { src: ownUrls[ownPath], alt: c.title, autor: '', licencia: '', fuente: '' } : null) : c.photo ? levelOfferPhotos[c.photo] : null;
+  const paths = [...new Set([...(ownPath ? [ownPath] : []), ...(c.gallery ?? [])])];
+  const adminUrls = usePhotoUrls(ownPhotoUrls === undefined ? paths : []);
+  const ownUrls: Record<string, string> = ownPhotoUrls ?? adminUrls;
+  const stock = !ownPath && c.photo ? levelOfferPhotos[c.photo] : null;
+  const photos: { src: string; alt: string }[] = [
+    ...(stock ? [{ src: stock.src, alt: stock.alt }] : []),
+    ...paths.filter((p) => ownUrls[p]).map((p, i) => ({ src: ownUrls[p], alt: `${c.title} · foto ${i + 1}` })),
+  ];
   const total = sheetTotalEuros(c);
   const video = safeVideoEmbed(c.videoUrl);
   const wa = `https://wa.me/34685609542?text=${encodeURIComponent(`Hola, tengo una consulta sobre la actividad «${c.title}»${reference ? ` (ficha ${reference})` : ''}.`)}`;
@@ -98,22 +144,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrl }: { c: SheetConte
         {facts.map(({ icon: I, text }) => <li key={text} className="flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1.5 text-sm"><I className="h-4 w-4 text-primary" />{text}</li>)}
       </ul>
       <LevelVisualStrip className="mt-5 max-w-xl" level={c.level} minAge={c.minAge} fitness={c.fitness} experience={c.experience} />
-      {photo && (
-        <figure className="mt-6 overflow-hidden rounded-xl border border-border">
-          <Dialog>
-            <DialogTrigger asChild>
-              <button type="button" className="block w-full cursor-zoom-in" aria-label={`Ver la foto «${photo.alt}» a tamaño completo`}>
-                <img src={photo.src} alt={photo.alt} className="h-56 sm:h-72 w-full object-cover transition-transform duration-300 hover:scale-[1.02]" />
-              </button>
-            </DialogTrigger>
-            <DialogContent className="max-w-5xl border-none bg-transparent p-0 shadow-none">
-              <DialogTitle className="sr-only">{photo.alt}</DialogTitle>
-              <img src={photo.src} alt={photo.alt} className="max-h-[85vh] w-full rounded-xl object-contain" />
-            </DialogContent>
-          </Dialog>
-          {!ownPath && <figcaption className="px-3 py-2 text-xs text-muted-foreground">Foto ilustrativa: <a href={photo.fuente} target="_blank" rel="noopener noreferrer" className="underline">{photo.autor}</a>, {photo.licencia}</figcaption>}
-        </figure>
-      )}
+      {photos.length > 0 && <SheetGallery photos={photos} credit={stock && <>Foto ilustrativa: <a href={stock.fuente} target="_blank" rel="noopener noreferrer" className="underline">{stock.autor}</a>, {stock.licencia}</>} />}
       {c.description?.trim() && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{c.description.trim()}</p>}
       {video && (
         <div className="mt-6 aspect-video overflow-hidden rounded-xl border border-border">

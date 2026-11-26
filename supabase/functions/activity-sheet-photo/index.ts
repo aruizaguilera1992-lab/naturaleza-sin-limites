@@ -18,11 +18,19 @@ Deno.serve(async (req) => {
   if (!url || !key) return json({ error: 'Configuración no disponible' }, 500);
   const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   const { data: s } = await db.from('activity_sheets').select('content, status, expires_at').eq('token', parsed.data.token).maybeSingle();
-  if (!s || s.status !== 'enviada' || (s.expires_at && new Date(s.expires_at) < new Date())) return json({ url: null });
+  if (!s || s.status !== 'enviada' || (s.expires_at && new Date(s.expires_at) < new Date())) return json({ url: null, urls: {} });
+  // Portada + galería guardada en el catálogo: solo rutas que la propia ficha declara.
+  const paths = new Set<string>();
   const photo = typeof s.content?.photo === 'string' ? s.content.photo : '';
-  if (!photo.startsWith(PREFIX)) return json({ url: null });
-  const path = photo.slice(PREFIX.length);
-  if (!/^[a-zA-Z0-9/_.-]+$/.test(path) || path.includes('..')) return json({ url: null });
-  const { data } = await db.storage.from('catalog-photos').createSignedUrl(path, 60 * 60);
-  return json({ url: data?.signedUrl ?? null });
+  if (photo.startsWith(PREFIX)) paths.add(photo.slice(PREFIX.length));
+  const gallery = Array.isArray(s.content?.gallery) ? s.content.gallery : [];
+  for (const g of gallery.slice(0, 20)) if (typeof g === 'string') paths.add(g);
+  const urls: Record<string, string> = {};
+  for (const path of paths) {
+    if (!/^[a-zA-Z0-9/_.-]+$/.test(path) || path.includes('..')) continue;
+    const { data } = await db.storage.from('catalog-photos').createSignedUrl(path, 60 * 60);
+    if (data?.signedUrl) urls[path] = data.signedUrl;
+  }
+  const main = photo.startsWith(PREFIX) ? photo.slice(PREFIX.length) : '';
+  return json({ url: urls[main] ?? null, urls });
 });
