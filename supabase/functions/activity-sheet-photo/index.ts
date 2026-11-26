@@ -25,6 +25,12 @@ Deno.serve(async (req) => {
   if (photo.startsWith(PREFIX)) paths.add(photo.slice(PREFIX.length));
   const gallery = Array.isArray(s.content?.gallery) ? s.content.gallery : [];
   for (const g of gallery.slice(0, 20)) if (typeof g === 'string') paths.add(g);
+  // Fichas guardadas antes de la galería: usa las fotos actuales de su recorrido del catálogo.
+  const base = typeof s.content?.base === 'string' ? s.content.base : '';
+  if (!gallery.length && base.startsWith('catalog:')) {
+    const { data: entry } = await db.from('catalog_entries').select('photos').eq('key', base.slice('catalog:'.length)).maybeSingle();
+    for (const g of (entry?.photos ?? []).slice(0, 20)) if (typeof g === 'string') paths.add(g);
+  }
   const urls: Record<string, string> = {};
   for (const path of paths) {
     if (!/^[a-zA-Z0-9/_.-]+$/.test(path) || path.includes('..')) continue;

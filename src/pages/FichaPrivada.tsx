@@ -34,7 +34,7 @@ export default function FichaPrivada() {
       if (!alive) return;
       const r = data as { available?: boolean; content?: SheetContent; accepted_at?: string | null } | null;
       if (error || !r?.available || !r.content) setState('off'); else { setContent(r.content); setAcceptedAt(r.accepted_at ?? null); setState('ok');
-        if (r.content.photo?.startsWith('storage:') || r.content.gallery?.length) void supabase.functions.invoke('activity-sheet-photo', { body: { token } }).then(({ data: p }) => { if (alive) setPhotoUrls((p as { urls?: Record<string, string> } | null)?.urls ?? {}); }); }
+        if (r.content.photo?.startsWith('storage:') || r.content.gallery?.length || r.content.base?.startsWith('catalog:')) void supabase.functions.invoke('activity-sheet-photo', { body: { token } }).then(({ data: p }) => { if (alive) { const u = (p as { urls?: Record<string, string> } | null)?.urls ?? {}; setPhotoUrls(u); setContent((cur) => cur && !cur.gallery?.length ? { ...cur, gallery: Object.keys(u) } : cur); } }); }
     });
     return () => { alive = false; };
   }, [token]);
