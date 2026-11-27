@@ -50,26 +50,20 @@ it('an own-photo selection still allows switching between catalog photos', () =>
   expect(screen.getByRole('img').getAttribute('src')).toBe('/images/two.webp');
 });
 
-it("coloca las normas a la derecha de los requisitos y los pasos debajo, al ancho de la ficha", () => {
+it("permite consultar requisitos, normas y pasos sin mostrar sus detalles al abrir", () => {
   render(<SheetView c={sheet} />);
-
-  const ficha = screen.getByRole("article");
-  const requisitos = screen.getByRole("heading", { name: "Requisitos" }).closest("section");
-  const normas = screen.getByRole("heading", { name: "Normas" }).closest("section");
-  const pasos = screen.getByRole("heading", { name: "Pasos a seguir" }).closest("section");
-
-  expect(requisitos).not.toBeNull();
-  expect(normas).not.toBeNull();
-  expect(pasos).not.toBeNull();
-
-  // Las normas comparten rejilla con los requisitos: quedan a su derecha.
-  expect(normas!.parentElement).toBe(requisitos!.parentElement);
-
-  // Los pasos quedan fuera de esa rejilla, ocupando todo el ancho de la ficha.
-  expect(pasos!.parentElement).toBe(ficha);
-  expect(
-    ficha.compareDocumentPosition(pasos!) & Node.DOCUMENT_POSITION_FOLLOWING,
-  ).toBeTruthy();
+  for (const [section, detail] of [
+    ['Requisitos', 'Saber nadar'],
+    ['Normas de participación', 'No dejar residuos'],
+    ['Pasos a seguir', 'Llegada y presentación'],
+  ]) {
+    expect(screen.queryByText(detail)).toBeNull();
+    const trigger = screen.getByRole('button', { name: section });
+    fireEvent.click(trigger);
+    expect(screen.getByText(detail)).toBeInTheDocument();
+    fireEvent.click(trigger);
+    expect(screen.queryByText(detail)).toBeNull();
+  }
 });
 
 it("muestra las preguntas frecuentes plegadas y las abre al pulsar la cabecera", () => {

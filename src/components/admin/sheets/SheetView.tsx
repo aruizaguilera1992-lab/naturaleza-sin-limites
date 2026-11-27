@@ -15,6 +15,7 @@ import { MeetingPoint } from '@/components/shared/MeetingPoint';
 import { safeVideoEmbed } from '@/lib/safeVideo';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ActivitySection } from '@/components/shared/ActivitySection';
 
 const DISC: Record<SheetContent['discipline'], string> = { barranquismo: 'Barranquismo', ferratas: 'Vía ferrata', espeleologia: 'Espeleología' };
 const fmtDate = (d: string) => { try { return new Date(`${d}T12:00:00`).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch { return d; } };
@@ -22,10 +23,9 @@ const fmtDate = (d: string) => { try { return new Date(`${d}T12:00:00`).toLocale
 function List({ title, icon: Icon, items }: { title: string; icon: typeof Check; items: string[] }) {
   if (!items.length) return null;
   return (
-    <section className="rounded-xl border border-border bg-card p-5">
-      <h2 className="font-heading font-bold text-foreground">{title}</h2>
-      <ul className="mt-3 grid gap-2 text-sm text-muted-foreground">{items.map((c) => <li key={c} className="flex gap-2"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{c}</li>)}</ul>
-    </section>
+    <ActivitySection title={title} icon={Icon}>
+      <ul className="grid gap-2">{items.map((c) => <li key={c} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /><span className="min-w-0 break-words">{c}</span></li>)}</ul>
+    </ActivitySection>
   );
 }
 
@@ -144,35 +144,33 @@ export function SheetView({ c, reference, accept, ownPhotoUrls }: { c: SheetCont
       <ul className="mt-5 flex flex-wrap gap-2">
         {facts.map(({ icon: I, text }) => <li key={text} className="flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1.5 text-sm"><I className="h-4 w-4 text-primary" />{text}</li>)}
       </ul>
-      <LevelVisualStrip className="mt-5 max-w-xl" level={c.level} minAge={c.minAge} fitness={c.fitness} experience={c.experience} />
       {photos.length > 0 && <SheetGallery photos={photos} credit={stock && <>Foto ilustrativa: <a href={stock.fuente} target="_blank" rel="noopener noreferrer" className="underline">{stock.autor}</a>, {stock.licencia}</>} />}
-      {c.description?.trim() && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{c.description.trim()}</p>}
+      <div className="mt-6 border-t border-border">
+      {c.description?.trim() && <ActivitySection title="La actividad"><p className="whitespace-pre-line break-words">{c.description.trim()}</p></ActivitySection>}
+      <ActivitySection title="Nivel y condiciones"><LevelVisualStrip className="max-w-xl" level={c.level} minAge={c.minAge} fitness={c.fitness} experience={c.experience} /></ActivitySection>
       {video && (
-        <div className="mt-6 aspect-video overflow-hidden rounded-xl border border-border">
+        <ActivitySection title="La actividad en vídeo">
+        <div className="aspect-video overflow-hidden rounded-lg">
           <iframe src={video} title={`Vídeo: ${c.title}`} className="h-full w-full" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" />
         </div>
+        </ActivitySection>
       )}
-      {c.meetingPoint && <MeetingPoint text={c.meetingPoint} />}
+      {c.meetingPoint && <ActivitySection title="Punto de encuentro" icon={MapPin}><MeetingPoint text={c.meetingPoint} /></ActivitySection>}
       {safeWhatsappGroup(c.whatsappGroup) && (
-        <section className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/50 bg-card p-5">
-          <div>
-            <h2 className="font-heading text-lg font-semibold text-foreground">Grupo de WhatsApp de la actividad</h2>
-            <p className="text-sm text-muted-foreground">Avisos, hora y punto de encuentro con el guía y el grupo.</p>
-          </div>
+        <ActivitySection title="Grupo de WhatsApp de la actividad" icon={MessageCircle}>
           <Button asChild className="min-h-11">
-            <a href={safeWhatsappGroup(c.whatsappGroup)!} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Unirme al grupo</a>
+            <a href={safeWhatsappGroup(c.whatsappGroup) ?? undefined} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Unirme al grupo</a>
           </Button>
-        </section>
+        </ActivitySection>
       )}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <List title="Incluye" icon={Check} items={c.includes} />
         <List title="Qué llevar" icon={Backpack} items={c.bring} />
         <List title="Requisitos" icon={Check} items={c.requirements} />
-        {(c.highlights?.length ?? 0) > 0 && <List title="Lo esencial" icon={Check} items={c.highlights!} />}
-        <OutingRules rules={c.rules} className="rounded-xl border border-border bg-card p-5" />
+        {(c.highlights?.length ?? 0) > 0 && <List title="Lo esencial" icon={Check} items={c.highlights ?? []} />}
+        {c.rules?.trim() && <ActivitySection title="Normas de participación"><OutingRules rules={c.rules} /></ActivitySection>}
+        {c.steps?.trim() && <ActivitySection title="Pasos a seguir"><OutingSteps steps={c.steps} /></ActivitySection>}
+        {c.notes && <ActivitySection title="Notas para ti"><p className="whitespace-pre-line break-words">{c.notes}</p></ActivitySection>}
       </div>
-      <OutingSteps steps={c.steps} className="mt-4 rounded-xl border border-border bg-card p-5" />
-      {c.notes && <p className="mt-6 whitespace-pre-line rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm">{c.notes}</p>}
       <SheetFaqs items={sheetFaqs(c)} />
       <div className="mt-6 rounded-xl border border-border bg-card p-5">
         {c.pricePerPersonEuros !== null ? (

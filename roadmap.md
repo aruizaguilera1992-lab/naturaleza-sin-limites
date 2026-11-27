@@ -1,5 +1,9 @@
 # Roadmap
 
+## Fichas públicas y privadas: lectura plegable (27/11/2026)
+- [ ] Mostrar los apartados detallados plegados, conservando presentación, fotos y reserva visibles.
+- [ ] Comprobar apertura/cierre, acceso a todos los datos y formato en móvil y tableta.
+
 ## QA: selección de fotos en fichas privadas (27/11/2026)
 - [x] Respetar «Sin foto» y fotos ilustrativas en guardado, vista previa y selección de URLs para el cliente; conservar galerías con foto propia y compatibilidad de fichas antiguas.
 - [x] Verificar 33 pruebas de fichas y selección de fotos; compilación correcta.

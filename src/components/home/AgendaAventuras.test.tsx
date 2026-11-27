@@ -84,7 +84,7 @@ it("does not offer booking directly on the agenda card", () => {
   expect(screen.getByText("55 €")).toBeInTheDocument();
 });
 
-it("opens the full technical sheet and offers booking from every slide", async () => {
+it("opens the full technical sheet and keeps booking available in every section", async () => {
   renderAgenda();
   fireEvent.click(
     screen.getByRole("button", {
@@ -101,15 +101,14 @@ it("opens the full technical sheet and offers booking from every slide", async (
     BOOKING_HREF,
   );
 
-  // Se recorre la ficha diapositiva a diapositiva y se anota lo que muestra cada una.
-  const seen: string[] = [];
+  const seen: string[] = [sheet.textContent ?? ""];
   const bookingHrefs: (string | null)[] = [];
-  for (let i = 0; i < 25; i++) {
+  const sections = within(sheet).getAllByRole("button").filter((button) => button.getAttribute("aria-expanded") === "false");
+  for (const section of sections) {
+    fireEvent.click(section);
     seen.push(sheet.textContent ?? "");
-    bookingHrefs.push(within(sheet).queryByRole("link", { name: /Reservar plaza/ })?.getAttribute("href") ?? null);
-    const next = within(sheet).queryByRole("button", { name: /Diapositiva siguiente/ });
-    if (!next) break;
-    fireEvent.click(next);
+    bookingHrefs.push(within(sheet).getByRole("link", { name: /Reservar plaza/ }).getAttribute("href"));
+    fireEvent.click(section);
   }
   const all = seen.join("\n");
 
@@ -144,10 +143,21 @@ it("opens the full technical sheet and offers booking from every slide", async (
   // La reserva se ofrece en todas las diapositivas, siempre con el mismo destino.
   expect(bookingHrefs.length).toBeGreaterThan(1);
   expect(bookingHrefs.every((href) => href === BOOKING_HREF)).toBe(true);
-  expect(within(sheet).getByText(/Dudas frecuentes/)).toBeInTheDocument();
+  expect(within(sheet).getByRole("button", { name: /Preguntas frecuentes/ })).toHaveAttribute("aria-expanded", "false");
 });
 
-it("reúne la logística y el recorrido en una sola diapositiva", async () => {
+it("permite consultar la logística y el recorrido sin perder el enlace de reserva", async () => {
+  renderAgenda();
+  fireEvent.click(screen.getByRole("button", { name: "Me apunto a Espeleología de iniciación: Travesía Cueva de la Higuera" }));
+  const sheet = await screen.findByRole("dialog");
+  expect(within(sheet).queryByText("Recepción del grupo y briefing técnico.")).toBeNull();
+  fireEvent.click(within(sheet).getByRole("button", { name: "Cronograma de la actividad" }));
+  expect(within(sheet).getByText("Recepción del grupo y briefing técnico.")).toBeInTheDocument();
+  expect(within(sheet).getByText("3 horas")).toBeInTheDocument();
+  expect(within(sheet).getByRole("link", { name: /Reservar plaza/ })).toHaveAttribute("href", "/reservar/espeleologia/cueva-de-la-higuera?evento=evt-1");
+});
+
+it("permite desplegar el punto de encuentro y abrir los dos mapas", async () => {
   renderAgenda();
   fireEvent.click(
     screen.getByRole("button", {
@@ -156,44 +166,14 @@ it("reúne la logística y el recorrido en una sola diapositiva", async () => {
   );
   const sheet = await screen.findByRole("dialog");
 
-  const slides: string[] = [];
-  for (let i = 0; i < 25; i++) {
-    slides.push(sheet.textContent ?? "");
-    const next = within(sheet).queryByRole("button", { name: /Diapositiva siguiente/ });
-    if (!next) break;
-    fireEvent.click(next);
-  }
-
-  // La logística y el itinerario se ven juntos, en la misma diapositiva.
-  expect(
-    slides.some((s) => s.includes("Duración total") && s.includes("Pasos del recorrido")),
-  ).toBe(true);
-  // Ya no queda una diapositiva suelta de «Recorrido».
-  expect(slides.some((s) => /(^|\n)Recorrido/.test(s) && !s.includes("Duración total"))).toBe(false);
-});
-
-it("muestra el punto de encuentro con los enlaces de mapas y las flechas laterales", async () => {
-  renderAgenda();
-  fireEvent.click(
-    screen.getByRole("button", {
-      name: "Me apunto a Espeleología de iniciación: Travesía Cueva de la Higuera",
-    }),
-  );
-  const sheet = await screen.findByRole("dialog");
-
-  // El punto de encuentro se ve en la portada y abre en los dos mapas.
-  expect(within(sheet).getByText("Punto de encuentro")).toBeInTheDocument();
+  fireEvent.click(within(sheet).getByRole("button", { name: "Punto de encuentro" }));
   expect(within(sheet).getByText("Archidona, Málaga")).toBeInTheDocument();
   const g = within(sheet).getByRole("link", { name: /Abrir en Google Maps/ });
   expect(g).toHaveAttribute("href", expect.stringContaining("google.com/maps"));
   const a = within(sheet).getByRole("link", { name: /Abrir en Apple Maps/ });
   expect(a).toHaveAttribute("href", expect.stringContaining("maps.apple.com"));
 
-  // Avanzar y retroceder están en los laterales de la ficha.
-  expect(within(sheet).getByRole("button", { name: "Diapositiva siguiente" })).toBeInTheDocument();
-  expect(within(sheet).queryByRole("button", { name: "Diapositiva anterior" })).toBeNull();
-  fireEvent.click(within(sheet).getByRole("button", { name: "Diapositiva siguiente" }));
-  expect(within(sheet).getByRole("button", { name: "Diapositiva anterior" })).toBeInTheDocument();
+
 });
 
 it("muestra las dudas plegadas y amplía cada pregunta al pulsarla", async () => {
@@ -205,8 +185,6 @@ it("muestra las dudas plegadas y amplía cada pregunta al pulsarla", async () =>
   );
   const sheet = await screen.findByRole("dialog");
 
-  // Se salta a la diapositiva de dudas, que llega sin respuestas a la vista.
-  fireEvent.click(within(sheet).getByRole("button", { name: "Ver diapositiva Dudas frecuentes" }));
   // Como en la ficha privada, el apartado llega plegado: se abre su cabecera.
   const cabecera = within(sheet).getByRole("button", { name: /Preguntas frecuentes/ });
   expect(cabecera).toHaveAttribute("aria-expanded", "false");

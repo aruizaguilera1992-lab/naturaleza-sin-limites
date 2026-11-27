@@ -23,8 +23,6 @@ import {
   Users,
   Waves,
   X,
-  ChevronLeft,
-  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -46,6 +44,7 @@ import { safeVideoEmbed } from "@/lib/safeVideo";
 import { OutingRules, OutingSteps } from "@/components/shared/OutingInstructions";
 import { SheetFaqs } from "@/components/admin/sheets/SheetView";
 import { cn } from "@/lib/utils";
+import { ActivitySection } from "@/components/shared/ActivitySection";
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
   barranquismo: Waves,
@@ -426,7 +425,6 @@ export function EventTechSheet({
   imageUrlOverride?: string | null;
 }) {
   const [open, setOpen] = useState(false);
-  const [page, setPage] = useState(0);
   const wide = useIsWide();
   // Las salidas guardan su propia copia de la ficha; la foto siempre se toma del catálogo
   // actual (si el admin la cambia en el catálogo, la ficha pública la refleja).
@@ -537,13 +535,7 @@ export function EventTechSheet({
       : []),
   ];
 
-  const last = slides.length - 1;
-  const current = slides[Math.min(page, last)];
-
-  const openChange = (next: boolean) => {
-    setOpen(next);
-    if (next) setPage(0);
-  };
+  const openChange = (next: boolean) => setOpen(next);
 
   const BLOCKS: Record<string, ReactNode> = {
     stats: (
@@ -759,52 +751,25 @@ export function EventTechSheet({
             </button>
           </div>
 
-          {/* Diapositiva actual */}
+          {/* Datos de decisión visibles; el resto se abre por apartado. */}
           <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <div
-              key={current.key}
-              className="animate-in fade-in-0 slide-in-from-right-2 space-y-1.5 px-10 py-2 duration-300 sm:space-y-1.5 sm:px-11 sm:py-2.5"
-            >
-              <div className="flex items-end justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary sm:text-[10px]">
-                    {current.eyebrow}
-                  </p>
-                  <h3 className="mt-0.5 font-heading text-base font-extrabold leading-tight text-foreground sm:text-xl">
-                    {current.title}
-                  </h3>
-                </div>
-                <span className="shrink-0 font-heading text-xs font-bold text-muted-foreground/60">
-                  {String(page + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
-                </span>
+            <div className="px-4 py-3 sm:px-6">
+              {BLOCKS.stats}
+              <div key={String(open)} className="mt-3 border-t border-border">
+                <ActivitySection title="La actividad" icon={Icon}>
+                  {BLOCKS.descripcion}
+                  {BLOCKS.detalle}
+                </ActivitySection>
+                {sheet.meetingPoint && <ActivitySection title="Punto de encuentro" icon={MapPin}>{BLOCKS.meeting}</ActivitySection>}
+                {slides.filter((s) => !['portada', 'detalle', 'dudas'].includes(s.key)).map((s) => (
+                  <ActivitySection key={s.key} title={s.title}>
+                    <div className="space-y-3">{s.blocks.map((b) => <div key={b}>{BLOCKS[b]}</div>)}</div>
+                  </ActivitySection>
+                ))}
               </div>
-              {current.blocks.map((b) => (
-                <div key={b}>{BLOCKS[b]}</div>
-              ))}
+              {sheet.faqs.length > 0 && <SheetFaqs items={sheet.faqs} className="mt-3" />}
             </div>
           </div>
-
-          {/* Avance y retroceso en los laterales de la ficha */}
-          {page > 0 && (
-            <button
-              type="button"
-              onClick={() => setPage((v) => Math.max(0, v - 1))}
-              aria-label="Diapositiva anterior"
-              className="absolute left-1 top-1/2 z-20 -translate-y-1/2 rounded-full border border-border/60 bg-card/85 p-1.5 text-foreground shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-primary/60 active:scale-95 sm:left-2"
-            >
-              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
-            </button>
-          )}
-          {page < last && (
-            <button
-              type="button"
-              onClick={() => setPage((v) => Math.min(last, v + 1))}
-              aria-label="Diapositiva siguiente"
-              className="absolute right-1 top-1/2 z-20 -translate-y-1/2 rounded-full border border-border/60 bg-card/85 p-1.5 text-foreground shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-primary/60 active:scale-95 sm:right-2"
-            >
-              <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
-            </button>
-          )}
 
           {/* Pie: datos de decisión + navegación entre diapositivas */}
           <div className="flex shrink-0 flex-col gap-1.5 border-t border-border bg-background px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-6">
@@ -818,23 +783,8 @@ export function EventTechSheet({
               <span className="whitespace-nowrap text-[11px]">/ persona · señal del 30 %</span>
             </p>
             <div className="flex flex-wrap items-center justify-between gap-2 sm:justify-end">
-              <div className="mr-1 flex items-center gap-1">
-                {slides.map((s, i) => (
-                  <button
-                    key={s.key}
-                    type="button"
-                    onClick={() => setPage(i)}
-                    aria-label={`Ver diapositiva ${s.title}`}
-                    aria-current={i === page ? "step" : undefined}
-                    className={cn(
-                      "h-2 rounded-full transition-all duration-300",
-                      i === page ? "w-5 bg-primary" : "w-2 bg-muted-foreground/30 hover:bg-primary/50",
-                    )}
-                  />
-                ))}
-              </div>
               <div className="flex flex-wrap items-center justify-end gap-2">
-                {/* La reserva está disponible desde cualquier diapositiva. */}
+                {/* La reserva permanece accesible con los apartados abiertos o cerrados. */}
                 {event.isFull ? (
                   <Button size="sm" disabled>
                     Sin plazas
