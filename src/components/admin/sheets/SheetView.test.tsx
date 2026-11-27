@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
 import type { SheetContent } from "@/lib/activitySheets";
 import { SheetView } from "./SheetView";
+import { levelOfferPhotos } from '@/data/levelOffers';
 
 const sheet: SheetContent = {
   base: "barranquismo-iniciacion",
@@ -30,6 +31,24 @@ const sheet: SheetContent = {
 };
 
 afterEach(cleanup);
+
+it('Sin foto hides a previously saved gallery even with signed URLs', () => {
+  render(<SheetView c={{ ...sheet, photo: null, gallery: ['routes/one.webp'] }} ownPhotoUrls={{ 'routes/one.webp': '/images/one.webp' }} />);
+  expect(screen.queryAllByRole('img')).toHaveLength(0);
+});
+
+it('an illustrative selection shows only that photo, not catalog photos', () => {
+  const [key, photo] = Object.entries(levelOfferPhotos)[0];
+  const { container } = render(<SheetView c={{ ...sheet, photo: key, gallery: ['routes/one.webp'] }} ownPhotoUrls={{ 'routes/one.webp': '/images/one.webp' }} />);
+  expect([...container.querySelectorAll('img')].map((img) => img.getAttribute('src'))).toEqual([photo.src]);
+});
+
+it('an own-photo selection still allows switching between catalog photos', () => {
+  render(<SheetView c={{ ...sheet, photo: 'storage:routes/one.webp', gallery: ['routes/one.webp', 'routes/two.webp'] }} ownPhotoUrls={{ 'routes/one.webp': '/images/one.webp', 'routes/two.webp': '/images/two.webp' }} />);
+  expect(screen.getByRole('img').getAttribute('src')).toBe('/images/one.webp');
+  fireEvent.click(screen.getByRole('button', { name: 'Foto siguiente' }));
+  expect(screen.getByRole('img').getAttribute('src')).toBe('/images/two.webp');
+});
 
 it("coloca las normas a la derecha de los requisitos y los pasos debajo, al ancho de la ficha", () => {
   render(<SheetView c={sheet} />);

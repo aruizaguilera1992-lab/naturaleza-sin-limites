@@ -1,5 +1,10 @@
 # Roadmap
 
+## QA: selección de fotos en fichas privadas (27/11/2026)
+- [x] Respetar «Sin foto» y fotos ilustrativas en guardado, vista previa y selección de URLs para el cliente; conservar galerías con foto propia y compatibilidad de fichas antiguas.
+- [x] Verificar 33 pruebas de fichas y selección de fotos; compilación correcta.
+- [ ] Desplegar activity-sheet-photo y comprobar la ficha real con sesión admin (bloqueado: Lovable Cloud está pausado y no permite despliegue ni acceso).
+
 ## Vértigo Sapiens: fondo con dos modelos alternando (23/11/2026)
 - [ ] Generar dos fondos panorámicos en el estilo de la foto de referencia subida por el usuario: uno con modelo hombre y otro con modelo mujer.
 - [ ] Alternar entre ambos cada 4 segundos con fundido en la cabecera de /vertigo-sapiens.

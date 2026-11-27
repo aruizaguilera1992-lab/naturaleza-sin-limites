@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { z } from 'npm:zod@3.23.8';
+import { sheetPhotoPaths } from '../_shared/activitySheetPhotos.ts';
 
 // The catalog-photos bucket is admin-only; a customer gets a short-lived signed URL
 // only for the own photo of a sheet they hold a valid (sent, unexpired) token for.
@@ -19,18 +20,18 @@ Deno.serve(async (req) => {
   const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   const { data: s } = await db.from('activity_sheets').select('content, status, expires_at').eq('token', parsed.data.token).maybeSingle();
   if (!s || s.status !== 'enviada' || (s.expires_at && new Date(s.expires_at) < new Date())) return json({ url: null, urls: {} });
-  // Portada + galería guardada en el catálogo: solo rutas que la propia ficha declara.
-  const paths = new Set<string>();
   const photo = typeof s.content?.photo === 'string' ? s.content.photo : '';
-  if (photo.startsWith(PREFIX)) paths.add(photo.slice(PREFIX.length));
+  // «Sin foto» and illustrative selections must never sign catalog photos.
+  if (!photo.startsWith(PREFIX) || photo === PREFIX) return json({ url: null, urls: {} });
   const gallery = Array.isArray(s.content?.gallery) ? s.content.gallery : [];
-  for (const g of gallery.slice(0, 20)) if (typeof g === 'string') paths.add(g);
+  let catalogPhotos: unknown = [];
   // Fichas guardadas antes de la galería: usa las fotos actuales de su recorrido del catálogo.
   const base = typeof s.content?.base === 'string' ? s.content.base : '';
   if (!gallery.length && base.startsWith('catalog:')) {
     const { data: entry } = await db.from('catalog_entries').select('photos').eq('key', base.slice('catalog:'.length)).maybeSingle();
-    for (const g of (entry?.photos ?? []).slice(0, 20)) if (typeof g === 'string') paths.add(g);
+    catalogPhotos = entry?.photos ?? [];
   }
+  const paths = sheetPhotoPaths(photo, gallery, catalogPhotos);
   const urls: Record<string, string> = {};
   for (const path of paths) {
     if (!/^[a-zA-Z0-9/_.-]+$/.test(path) || path.includes('..')) continue;

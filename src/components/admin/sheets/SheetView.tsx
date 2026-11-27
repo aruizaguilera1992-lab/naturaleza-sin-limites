@@ -1,4 +1,5 @@
 import type React from 'react';
+import { sheetPhotoPaths } from '../../../../supabase/functions/_shared/activitySheetPhotos';
 import { useEffect, useState } from 'react';
 import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -117,7 +118,7 @@ function SheetGallery({ photos, credit }: { photos: { src: string; alt: string }
 /** Ficha de actividad privada; se usa en la vista previa del panel y en el enlace del cliente. */
 export function SheetView({ c, reference, accept, ownPhotoUrls }: { c: SheetContent; reference?: string; accept?: React.ReactNode; /** Customer view: URLs signed server-side by path (the bucket is admin-only). */ ownPhotoUrls?: Record<string, string> }) {
   const ownPath = c.photo?.startsWith(STORAGE_PHOTO) ? c.photo.slice(STORAGE_PHOTO.length) : null;
-  const paths = [...new Set([...(ownPath ? [ownPath] : []), ...(c.gallery ?? [])])];
+  const paths = sheetPhotoPaths(c.photo, c.gallery);
   const adminUrls = usePhotoUrls(ownPhotoUrls === undefined ? paths : []);
   const ownUrls: Record<string, string> = ownPhotoUrls ?? adminUrls;
   const stock = !ownPath && c.photo ? levelOfferPhotos[c.photo] : null;
