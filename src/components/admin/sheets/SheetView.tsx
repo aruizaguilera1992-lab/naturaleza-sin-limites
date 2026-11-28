@@ -1,7 +1,7 @@
 import type React from 'react';
 import { sheetPhotoPaths } from '../../../../supabase/functions/_shared/activitySheetPhotos';
 import { useEffect, useState } from 'react';
-import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarDays, Check, Clock, MapPin, MessageCircle, Users, Backpack, ChevronDown, ShieldCheck, ListOrdered, PlayCircle, StickyNote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -144,12 +144,12 @@ export function SheetView({ c, reference, accept, ownPhotoUrls }: { c: SheetCont
       <ul className="mt-5 flex flex-wrap gap-2">
         {facts.map(({ icon: I, text }) => <li key={text} className="flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1.5 text-sm"><I className="h-4 w-4 text-primary" />{text}</li>)}
       </ul>
+      <LevelVisualStrip className="mt-6 w-full" level={c.level} minAge={c.minAge} fitness={c.fitness} experience={c.experience} />
       {photos.length > 0 && <SheetGallery photos={photos} credit={stock && <>Foto ilustrativa: <a href={stock.fuente} target="_blank" rel="noopener noreferrer" className="underline">{stock.autor}</a>, {stock.licencia}</>} />}
+      {c.description?.trim() && <p className="mt-6 whitespace-pre-line break-words leading-relaxed text-foreground/90">{c.description.trim()}</p>}
       <div className="mt-6 border-t border-border">
-      {c.description?.trim() && <ActivitySection title="La actividad"><p className="whitespace-pre-line break-words">{c.description.trim()}</p></ActivitySection>}
-      <ActivitySection title="Nivel y condiciones"><LevelVisualStrip className="max-w-xl" level={c.level} minAge={c.minAge} fitness={c.fitness} experience={c.experience} /></ActivitySection>
       {video && (
-        <ActivitySection title="La actividad en vídeo">
+        <ActivitySection title="La actividad en vídeo" icon={PlayCircle}>
         <div className="aspect-video overflow-hidden rounded-lg">
           <iframe src={video} title={`Vídeo: ${c.title}`} className="h-full w-full" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" />
         </div>
@@ -166,10 +166,9 @@ export function SheetView({ c, reference, accept, ownPhotoUrls }: { c: SheetCont
         <List title="Incluye" icon={Check} items={c.includes} />
         <List title="Qué llevar" icon={Backpack} items={c.bring} />
         <List title="Requisitos" icon={Check} items={c.requirements} />
-        {(c.highlights?.length ?? 0) > 0 && <List title="Lo esencial" icon={Check} items={c.highlights ?? []} />}
-        {c.rules?.trim() && <ActivitySection title="Normas de participación"><OutingRules rules={c.rules} /></ActivitySection>}
-        {c.steps?.trim() && <ActivitySection title="Pasos a seguir"><OutingSteps steps={c.steps} /></ActivitySection>}
-        {c.notes && <ActivitySection title="Notas para ti"><p className="whitespace-pre-line break-words">{c.notes}</p></ActivitySection>}
+        {c.rules?.trim() && <ActivitySection title="Normas de participación" icon={ShieldCheck}><OutingRules rules={c.rules} /></ActivitySection>}
+        {c.steps?.trim() && <ActivitySection title="Pasos a seguir" icon={ListOrdered}><OutingSteps steps={c.steps} /></ActivitySection>}
+        {c.notes && <ActivitySection title="Notas para ti" icon={StickyNote}><p className="whitespace-pre-line break-words">{c.notes}</p></ActivitySection>}
       </div>
       <SheetFaqs items={sheetFaqs(c)} />
       <div className="mt-6 rounded-xl border border-border bg-card p-5">

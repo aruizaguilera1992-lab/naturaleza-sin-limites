@@ -18,6 +18,8 @@ import {
   Mountain,
   PackageCheck,
   ShieldCheck,
+  ListOrdered,
+  PlayCircle,
   Sparkles,
 
   Users,
@@ -329,10 +331,7 @@ function Detalle({ blocks }: { blocks: DescBlock[] }) {
               key={`text-${i}`}
               className="min-w-0 rounded-2xl border border-primary/25 border-l-2 border-l-primary bg-primary/5 p-2.5 sm:p-3"
             >
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
-                Lo esencial
-              </p>
-              <p className="mt-1 max-w-none text-[13px] font-medium leading-relaxed text-foreground sm:text-sm">
+              <p className="max-w-none text-[13px] font-medium leading-relaxed text-foreground sm:text-sm">
                 {b.text}
               </p>
             </section>
@@ -410,6 +409,8 @@ function MeetingSpot({ text }: { text: string }) {
     </section>
   );
 }
+
+const SECTION_ICONS: Record<string, typeof Clock> = { video: PlayCircle, salida: Compass, material: Backpack, seguridad: ShieldCheck };
 
 export function EventTechSheet({
   event,
@@ -508,7 +509,7 @@ export function EventTechSheet({
       key: "nivel",
       eyebrow: "Dificultad",
       title: "Nivel y condiciones",
-      blocks: ["nivelBig", "experience", "highlights"],
+      blocks: ["nivelBig", "experience"],
     },
     {
       key: "salida",
@@ -520,8 +521,8 @@ export function EventTechSheet({
     {
       key: "seguridad",
       eyebrow: "Seguridad",
-      title: "Requisitos, seguros y normas",
-      blocks: wide ? ["securityGrid", "rules"] : ["securityPanels", "policies", "rules"],
+      title: "Requisitos y seguros",
+      blocks: wide ? ["securityGrid"] : ["securityPanels", "policies"],
     },
     ...(sheet.faqs.length > 0
       ? [
@@ -696,76 +697,81 @@ export function EventTechSheet({
       </DialogTrigger>
       <DialogContent className="w-[min(96vw,920px)] max-w-none gap-0 overflow-hidden rounded-none p-0 sm:rounded-2xl">
         <div className="relative flex max-h-[96vh] flex-col">
-          {/* Portada fija: foto, disciplina y título */}
-          <div className="relative flex h-[clamp(170px,34vh,420px)] shrink-0 items-end overflow-hidden border-b border-border">
-            <div className="absolute inset-0 bg-gradient-to-br from-secondary via-background to-secondary/60" />
-            {image ? (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <button
-                    type="button"
-                    aria-label={`Ver la foto de ${sheet.title} a tamaño completo`}
-                    className="absolute inset-0 cursor-zoom-in"
-                  >
-                    <img
-                      src={image}
-                      alt=""
-                      className="h-full w-full object-cover object-center"
-                    />
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="max-w-5xl border-none bg-transparent p-0 shadow-none">
-                  <DialogTitle className="sr-only">
-                    {p?.imageAlt ?? sheet.title}
-                  </DialogTitle>
-                  <img
-                    src={image}
-                    alt={p?.imageAlt ?? sheet.title}
-                    className="max-h-[85vh] w-full rounded-xl object-contain"
-                  />
-                </DialogContent>
-              </Dialog>
-            ) : null}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
-            <div className="relative w-full px-4 pb-2 pt-6 sm:px-6 sm:pb-3 sm:pt-7">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary sm:px-2.5 sm:text-[10px]">
-                <Icon className="h-3 w-3" aria-hidden="true" />
-                {p?.categoryLabel ?? event.category}
-              </span>
-              <DialogTitle className="mt-1 font-heading text-base font-extrabold leading-tight text-foreground sm:text-xl">
-                {sheet.title}
-              </DialogTitle>
-              {sheet.summary && (
-                <DialogDescription className="mt-0.5 line-clamp-2 hidden text-[12px] text-muted-foreground sm:block">
-                  {sheet.summary}
-                </DialogDescription>
-              )}
-            </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Cerrar ficha"
-              className="absolute right-3 top-3 z-10 rounded-full border border-border/60 bg-card/80 p-2 text-foreground transition-all duration-300 hover:border-primary/60 active:scale-95"
+              className="absolute right-3 top-3 z-20 rounded-full border border-border/60 bg-card/80 p-2 text-foreground transition-all duration-300 hover:border-primary/60 active:scale-95"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
-          </div>
-
           {/* Datos de decisión visibles; el resto se abre por apartado. */}
           <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <div className="px-4 py-3 sm:px-6">
-              {BLOCKS.stats}
+            <div className="px-4 py-3 pr-14 sm:px-6 sm:pr-16">
+              <div className="space-y-3">{BLOCKS.nivelBig}{BLOCKS.experience}</div>
+            </div>
+            <div className="px-4 pb-3 sm:px-6">
+          {/* Portada: foto, disciplina y título */}
+            <div className="relative flex mt-3 h-[clamp(170px,34vh,420px)] items-end overflow-hidden rounded-2xl border border-border">
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary via-background to-secondary/60" />
+              {image ? (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label={`Ver la foto de ${sheet.title} a tamaño completo`}
+                      className="absolute inset-0 cursor-zoom-in"
+                    >
+                      <img
+                        src={image}
+                        alt=""
+                        className="h-full w-full object-cover object-center"
+                      />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-5xl border-none bg-transparent p-0 shadow-none">
+                    <DialogTitle className="sr-only">
+                      {p?.imageAlt ?? sheet.title}
+                    </DialogTitle>
+                    <img
+                      src={image}
+                      alt={p?.imageAlt ?? sheet.title}
+                      className="max-h-[85vh] w-full rounded-xl object-contain"
+                    />
+                  </DialogContent>
+                </Dialog>
+              ) : null}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent" />
+              <div className="relative w-full px-4 pb-2 pt-6 sm:px-6 sm:pb-3 sm:pt-7">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary sm:px-2.5 sm:text-[10px]">
+                  <Icon className="h-3 w-3" aria-hidden="true" />
+                  {p?.categoryLabel ?? event.category}
+                </span>
+                <DialogTitle className="mt-1 font-heading text-base font-extrabold leading-tight text-foreground sm:text-xl">
+                  {sheet.title}
+                </DialogTitle>
+                {sheet.summary && (
+                  <DialogDescription className="mt-0.5 line-clamp-2 hidden text-[12px] text-muted-foreground sm:block">
+                    {sheet.summary}
+                  </DialogDescription>
+                )}
+              </div>
+            </div>
+
+              <div className="mt-3 space-y-3 text-foreground">
+                {BLOCKS.descripcion}
+                {BLOCKS.detalle}
+              </div>
+              <div className="mt-3">{BLOCKS.stats}</div>
               <div key={String(open)} className="mt-3 border-t border-border">
-                <ActivitySection title="La actividad" icon={Icon}>
-                  {BLOCKS.descripcion}
-                  {BLOCKS.detalle}
-                </ActivitySection>
                 {sheet.meetingPoint && <ActivitySection title="Punto de encuentro" icon={MapPin}>{BLOCKS.meeting}</ActivitySection>}
-                {slides.filter((s) => !['portada', 'detalle', 'dudas'].includes(s.key)).map((s) => (
-                  <ActivitySection key={s.key} title={s.title}>
+                {slides.filter((s) => !['portada', 'detalle', 'dudas', 'nivel'].includes(s.key)).map((s) => (
+                  <ActivitySection key={s.key} title={s.title} icon={SECTION_ICONS[s.key]}>
                     <div className="space-y-3">{s.blocks.map((b) => <div key={b}>{BLOCKS[b]}</div>)}</div>
                   </ActivitySection>
                 ))}
+                {event.rules?.trim() && <ActivitySection title="Normas de participación" icon={ShieldCheck}><OutingRules rules={event.rules} /></ActivitySection>}
+                {event.steps?.trim() && <ActivitySection title="Pasos a seguir" icon={ListOrdered}><OutingSteps steps={event.steps} /></ActivitySection>}
               </div>
               {sheet.faqs.length > 0 && <SheetFaqs items={sheet.faqs} className="mt-3" />}
             </div>
