@@ -302,3 +302,4 @@
 - [x] Propuestas de salida sin fecha cerrada (ficha, correo y aceptación muestran «fecha a acordar»)
 - [x] Salidas privadas hasta 20 personas (ficha, panel y aceptación)
 - [x] Calendario interno en Salidas para ver y gestionar salidas confirmadas
+- [ ] Aviso WhatsApp al admin al aceptar propuesta privada: falta número distinto del emisor (secreto ADMIN_WHATSAPP_TO) y aprobación Meta de la plantilla aviso_propuesta_confirmada
