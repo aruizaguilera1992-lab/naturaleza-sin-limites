@@ -1,8 +1,9 @@
 # Roadmap
 
 ## Fichas públicas y privadas: lectura plegable (27/11/2026)
-- [ ] Mostrar los apartados detallados plegados, conservando presentación, fotos y reserva visibles.
-- [ ] Comprobar apertura/cierre, acceso a todos los datos y formato en móvil y tableta.
+- [x] Mostrar los apartados detallados plegados, conservando presentación, fotos y reserva visibles.
+- [x] Pruebas de apertura/cierre y acceso a todos los datos (38 OK).
+- [ ] Revisar en pantalla con actividades reales (bloqueado: Lovable Cloud pausado, el calendario no carga salidas).
 
 ## QA: selección de fotos en fichas privadas (27/11/2026)
 - [x] Respetar «Sin foto» y fotos ilustrativas en guardado, vista previa y selección de URLs para el cliente; conservar galerías con foto propia y compatibilidad de fichas antiguas.
