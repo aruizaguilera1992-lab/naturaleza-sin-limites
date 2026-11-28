@@ -175,7 +175,7 @@ export function SheetView({ c, reference, accept, ownPhotoUrls }: { c: SheetCont
         {c.pricePerPersonEuros !== null ? (
           <p className="text-muted-foreground"><span className="text-2xl font-extrabold text-primary">{c.pricePerPersonEuros} €</span> / persona{total !== null && c.people > 1 && <> · total <span className="font-bold text-foreground">{total} €</span></>}</p>
         ) : <p className="text-lg font-bold text-primary">Precio a consultar</p>}
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
           {accept}
           <Button variant={accept ? 'outline' : 'hero'} className="min-h-11" asChild><a href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-4 w-4" />Consultar por WhatsApp</a></Button>
         </div>
