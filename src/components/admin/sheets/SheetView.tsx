@@ -81,8 +81,8 @@ function SheetGallery({ photos, credit }: { photos: { src: string; alt: string }
   const many = photos.length > 1;
   const go = (d: number) => setI((v) => (v + d + photos.length) % photos.length);
   const Arrows = () => many ? (<>
-    <button type="button" onClick={() => go(-1)} aria-label="Foto anterior" className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground transition-all duration-300 active:scale-95"><ChevronLeft className="h-5 w-5" /></button>
-    <button type="button" onClick={() => go(1)} aria-label="Foto siguiente" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground transition-all duration-300 active:scale-95"><ChevronRight className="h-5 w-5" /></button>
+    <button type="button" onClick={() => go(-1)} aria-label="Foto anterior" className="absolute left-1.5 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-1.5 text-foreground transition-all duration-300 hover:bg-background active:scale-95 sm:left-2 sm:p-2"><ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" /></button>
+    <button type="button" onClick={() => go(1)} aria-label="Foto siguiente" className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-1.5 text-foreground transition-all duration-300 hover:bg-background active:scale-95 sm:right-2 sm:p-2"><ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" /></button>
   </>) : null;
   return (
     <figure className="mt-6 overflow-hidden rounded-xl border border-border">
@@ -90,7 +90,7 @@ function SheetGallery({ photos, credit }: { photos: { src: string; alt: string }
         <div className="relative">
           <DialogTrigger asChild>
             <button type="button" className="block w-full cursor-zoom-in" aria-label={`Ver la foto «${cur.alt}» a tamaño completo`}>
-              <img src={cur.src} alt={cur.alt} className="h-56 sm:h-72 w-full object-cover transition-transform duration-300 hover:scale-[1.02]" />
+              <img src={cur.src} alt={cur.alt} className="aspect-[4/3] max-h-[560px] w-full object-cover object-center transition-transform duration-300 hover:scale-[1.02] sm:aspect-[3/2]" />
             </button>
           </DialogTrigger>
           <Arrows />
@@ -104,7 +104,7 @@ function SheetGallery({ photos, credit }: { photos: { src: string; alt: string }
       {many && (
         <div className="flex gap-2 overflow-x-auto p-2">
           {photos.map((p, k) => (
-            <button key={p.src} type="button" onClick={() => setI(k)} aria-label={`Ver foto ${k + 1}`} aria-current={k === i} className={cn('h-14 w-20 shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300 active:scale-95', k === i ? 'border-primary' : 'border-transparent opacity-70')}>
+            <button key={p.src} type="button" onClick={() => setI(k)} aria-label={`Ver foto ${k + 1}`} aria-current={k === i} className={cn('h-12 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300 active:scale-95 sm:h-16 sm:w-24 lg:h-20 lg:w-28', k === i ? 'border-primary' : 'border-transparent opacity-70')}>
               <img src={p.src} alt="" className="h-full w-full object-cover" />
             </button>
           ))}
