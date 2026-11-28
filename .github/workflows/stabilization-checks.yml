@@ -1,7 +1,7 @@
 name: Stabilization checks
 on:
   pull_request:
-    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security, test/sprint-c-isolated-bookings, test/local-schema-baseline, test/local-booking-validation]
+    branches: [main, fix/stabilization-capacity-sandbox, fix/sprint-b-security, test/sprint-c-isolated-bookings, test/local-schema-baseline, test/local-booking-validation, fix/build-dependency-hardening]
 permissions:
   contents: read
 jobs:
@@ -96,3 +96,5 @@ jobs:
         run: node scripts/local-db/check-deposit-intents.mjs --database nsl_rebuild_ci
       - name: Refuse an existing fixture database
         run: node scripts/local-db/check-existing.mjs --database nsl_rebuild_ci
+      - name: Backup and restore fictitious local database with structural comparison
+        run: node scripts/local-db/check-backup-restore.mjs --database nsl_rebuild_ci

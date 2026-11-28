@@ -1,13 +1,16 @@
-# Preparación de integración — 17 de octubre de 2026
+# Preparación e integración — actualizado el 19 de octubre de 2026
 
 ## Estado y decisión actual
 
-No se autoriza ninguna fusión ni despliegue. main sigue en
-d04930abf68ce196d40eb627d11c168291216504 y su workflow vigente publica por FTP
-al recibir un push. Esta rama propone retirar ese paso, sin usar sus secretos,
-sin añadir una publicación manual y sin modificar datos o servicios externos.
-La protección NO estará activa en main hasta que este PR se revise y se fusione
-con autorización explícita. Las pruebas no sustituyen esa autorización.
+El promotor autorizó posteriormente integrar #7 y #1–#6 con CI correcto. Esa
+secuencia terminó el 19 de octubre, con main en
+4e12e2e1384b37f1d1c8556c5b08d048e4631075. El paso FTP ya no existe en main y
+el workflow sigue desactivado en los ajustes de GitHub. No se han autorizado ni
+realizado despliegues ni migraciones remotas. El PR #8 sigue para revisión.
+La evidencia actual y los límites pendientes están en release-urgent-validation.md.
+
+Las secciones siguientes conservan el análisis histórico del 17 de octubre y sus
+SHA anteriores a la autorización; no son el estado actual ni un permiso para publicar.
 
 La revisión actual es de preparación: identidad de ramas, relación entre PR,
 historial, CI y rutas de publicación en Git. No es una nueva auditoría exhaustiva
@@ -61,7 +64,7 @@ cualquier futura modificación de main, revisar otras automatizaciones, webhooks
 sincronización Lovable, hosting, reglas de rama y permisos de revisión. No se ha
 confirmado que esos canales externos carezcan de publicación automática.
 
-## Secuencia futura, todavía no ejecutada
+## Secuencia histórica propuesta el 17 de octubre
 
 1. Revisar este PR independiente y los canales externos de publicación. Solicitar
    autorización concreta para integrarlo; el acuerdo de no fusionar sigue vigente.
