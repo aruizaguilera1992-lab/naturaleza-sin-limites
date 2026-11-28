@@ -4,6 +4,7 @@ import { z } from 'npm:zod@3.23.8';
 import { businessRecipients, escapeHtml, isEmail, layout, sendTrackedNotification } from '../_shared/email.ts';
 import { renderLeadAlert } from '../_shared/leadAlertEmail.ts';
 import { isTrustedSiteOrigin } from '../_shared/siteOrigins.ts';
+import { adminAcceptanceParams, sendAdminWhatsapp } from '../_shared/adminWhatsapp.ts';
 
 // Aviso interno cuando un cliente confirma la fecha de su ficha privada.
 // Idempotente: la clave de deduplicación es la propia ficha, así que reintentos
@@ -78,6 +79,8 @@ Deno.serve(async (req) => {
       contactId: sheet.contact_id,
       bookingId: sheet.booking_id,
     });
+    // WhatsApp al administrador solo en el primer envío real (los reintentos devuelven ya_enviado).
+    const whatsapp = result.status === 'enviado' ? await sendAdminWhatsapp(adminAcceptanceParams({ nombre, title, date, people })) : 'omitido';
     // Copia al cliente: confirma la fecha y anuncia el enlace de la señal (sin cobrar nada aquí).
     let customerStatus: string | null = null;
     if (email && isEmail(email)) {
@@ -104,7 +107,7 @@ Deno.serve(async (req) => {
         customerStatus = r.status;
       } catch (e) { customerStatus = `error: ${String(e)}`; }
     }
-    return json({ ok: ['enviado', 'ya_enviado'].includes(result.status), status: result.status, customer: customerStatus });
+    return json({ ok: ['enviado', 'ya_enviado'].includes(result.status), status: result.status, customer: customerStatus, whatsapp });
   } catch (e) {
     return json({ error: 'No se pudo enviar', details: String(e) }, 500);
   }
